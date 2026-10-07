@@ -94,9 +94,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "bytes"u8);
                 for (int i = 0; i < Utf8Bytes.Value.Span.Length; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.bytes[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.bytes[{i}]")))
                     {
                         continue;
                     }

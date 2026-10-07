@@ -68,15 +68,10 @@ namespace OpenAI.Realtime {
             add;
             remove;
         }
-        public virtual ClientResult<CreateClientSecretResult> CreateRealtimeClientSecret(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
-        public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<CreateClientSecretResult>> CreateRealtimeClientSecretAsync(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI002")]
@@ -444,8 +439,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeFunctionCallItem : RealtimeItem, IJsonModel<RealtimeFunctionCallItem>, IPersistableModel<RealtimeFunctionCallItem> {
-        public RealtimeFunctionCallItem();
-        public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
+        public RealtimeFunctionCallItem() : base(default);
+        public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments) : base(default);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
@@ -454,8 +449,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeFunctionCallOutputItem : RealtimeItem, IJsonModel<RealtimeFunctionCallOutputItem>, IPersistableModel<RealtimeFunctionCallOutputItem> {
-        public RealtimeFunctionCallOutputItem();
-        public RealtimeFunctionCallOutputItem(string callId, string functionOutput);
+        public RealtimeFunctionCallOutputItem() : base(default);
+        public RealtimeFunctionCallOutputItem(string callId, string functionOutput) : base(default);
         public string CallId { get; set; }
         public string FunctionOutput { get; set; }
         public string Id { get; set; }
@@ -497,8 +492,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeFunctionTool : RealtimeTool, IJsonModel<RealtimeFunctionTool>, IPersistableModel<RealtimeFunctionTool> {
-        public RealtimeFunctionTool();
-        public RealtimeFunctionTool(string functionName);
+        public RealtimeFunctionTool() : base(default);
+        public RealtimeFunctionTool(string functionName) : base(default);
         public string FunctionDescription { get; set; }
         public string FunctionName { get; set; }
         public BinaryData FunctionParameters { get; set; }
@@ -557,6 +552,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeItem : IJsonModel<RealtimeItem>, IPersistableModel<RealtimeItem> {
+        protected internal RealtimeItem(RealtimeItemKind kind);
+        public RealtimeItemKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -575,23 +572,40 @@ namespace OpenAI.Realtime {
         public static RealtimeMessageItem CreateUserMessageItem(string inputTextContent);
     }
     [Experimental("OPENAI002")]
+    public readonly partial struct RealtimeItemKind : IEquatable<RealtimeItemKind> {
+        public RealtimeItemKind(string value);
+        public static RealtimeItemKind FunctionCall { get; }
+        public static RealtimeItemKind FunctionCallOutput { get; }
+        public static RealtimeItemKind McpApprovalRequest { get; }
+        public static RealtimeItemKind McpApprovalResponse { get; }
+        public static RealtimeItemKind McpCall { get; }
+        public static RealtimeItemKind McpListTools { get; }
+        public static RealtimeItemKind Message { get; }
+        public readonly bool Equals(RealtimeItemKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeItemKind left, RealtimeItemKind right);
+        public static implicit operator RealtimeItemKind(string value);
+        public static implicit operator RealtimeItemKind?(string value);
+        public static bool operator !=(RealtimeItemKind left, RealtimeItemKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
     public class RealtimeMaxOutputTokenCount : IJsonModel<RealtimeMaxOutputTokenCount>, IPersistableModel<RealtimeMaxOutputTokenCount> {
         public RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
         public RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
         public int? CustomMaxOutputTokenCount { get; }
         public RealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
         public static implicit operator RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
     }
     [Experimental("OPENAI002")]
     public class RealtimeMcpTool : RealtimeTool, IJsonModel<RealtimeMcpTool>, IPersistableModel<RealtimeMcpTool> {
-        public RealtimeMcpTool();
-        public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId);
-        public RealtimeMcpTool(string serverLabel, Uri serverUri);
+        public RealtimeMcpTool() : base(default);
+        public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId) : base(default);
+        public RealtimeMcpTool(string serverLabel, Uri serverUri) : base(default);
         public RealtimeMcpToolFilter AllowedTools { get; set; }
         public string AuthorizationToken { get; set; }
         public RealtimeMcpToolConnectorId? ConnectorId { get; set; }
@@ -607,17 +621,13 @@ namespace OpenAI.Realtime {
         public RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
         public RealtimeCustomMcpToolCallApprovalPolicy CustomPolicy { get; }
         public RealtimeDefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy);
         public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
     }
     [Experimental("OPENAI002")]
     public class RealtimeMcpToolCallApprovalRequestItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalRequestItem>, IPersistableModel<RealtimeMcpToolCallApprovalRequestItem> {
-        public RealtimeMcpToolCallApprovalRequestItem();
-        public RealtimeMcpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public RealtimeMcpToolCallApprovalRequestItem() : base(default);
+        public RealtimeMcpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public string Id { get; set; }
         public string ServerLabel { get; set; }
         public BinaryData ToolArguments { get; set; }
@@ -625,8 +635,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>, IPersistableModel<RealtimeMcpToolCallApprovalResponseItem> {
-        public RealtimeMcpToolCallApprovalResponseItem();
-        public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
+        public RealtimeMcpToolCallApprovalResponseItem() : base(default);
+        public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(default);
         public string ApprovalRequestId { get; set; }
         public bool Approved { get; set; }
         public string Id { get; set; }
@@ -634,8 +644,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeMcpToolCallItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallItem>, IPersistableModel<RealtimeMcpToolCallItem> {
-        public RealtimeMcpToolCallItem();
-        public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public RealtimeMcpToolCallItem() : base(default);
+        public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public string ApprovalRequestId { get; set; }
         public RealtimeError Error { get; set; }
         public string Id { get; set; }
@@ -681,8 +691,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeMcpToolDefinitionListItem : RealtimeItem, IJsonModel<RealtimeMcpToolDefinitionListItem>, IPersistableModel<RealtimeMcpToolDefinitionListItem> {
-        public RealtimeMcpToolDefinitionListItem();
-        public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions);
+        public RealtimeMcpToolDefinitionListItem() : base(default);
+        public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions) : base(default);
         public string Id { get; set; }
         public string ServerLabel { get; set; }
         public IList<RealtimeMcpToolDefinition> ToolDefinitions { get; }
@@ -705,8 +715,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeMessageItem : RealtimeItem, IJsonModel<RealtimeMessageItem>, IPersistableModel<RealtimeMessageItem> {
-        public RealtimeMessageItem();
-        public RealtimeMessageItem(RealtimeMessageRole role, IEnumerable<RealtimeMessageContentPart> content);
+        public RealtimeMessageItem() : base(default);
+        public RealtimeMessageItem(RealtimeMessageRole role, IEnumerable<RealtimeMessageContentPart> content) : base(default);
         public IList<RealtimeMessageContentPart> Content { get; }
         public string Id { get; set; }
         public RealtimeMessageRole Role { get; set; }
@@ -1519,44 +1529,25 @@ namespace OpenAI.Realtime {
     public class RealtimeSessionClient : IDisposable {
         protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
-        public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
-        public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default);
         public virtual Task AddItemAsync(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
         public virtual Task AddItemAsync(RealtimeItem item, CancellationToken cancellationToken = default);
-        public virtual void CancelResponse(CancellationToken cancellationToken = default);
         public virtual Task CancelResponseAsync(CancellationToken cancellationToken = default);
-        public virtual void ClearInputAudio(CancellationToken cancellationToken = default);
         public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
-        public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
         public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
-        public virtual void ConfigureConversationSession(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureConversationSessionAsync(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureTranscriptionSession(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
-        public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
-        public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
-        public virtual IEnumerable<RealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
         public virtual IAsyncEnumerable<RealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
-        public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
         public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
-        public virtual void SendCommand(RealtimeClientCommand command, CancellationToken cancellationToken = default);
-        public virtual void SendCommand(BinaryData data, RequestOptions options);
         public virtual Task SendCommandAsync(RealtimeClientCommand command, CancellationToken cancellationToken = default);
         public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
-        public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
-        public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
-        public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI002")]
@@ -1584,6 +1575,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeTool : IJsonModel<RealtimeTool>, IPersistableModel<RealtimeTool> {
+        protected internal RealtimeTool(RealtimeToolKind kind);
+        public RealtimeToolKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -1595,12 +1588,24 @@ namespace OpenAI.Realtime {
         public RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
         public RealtimeCustomToolChoice CustomToolChoice { get; }
         public RealtimeDefaultToolChoice? DefaultToolChoice { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice);
         public static implicit operator RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct RealtimeToolKind : IEquatable<RealtimeToolKind> {
+        public RealtimeToolKind(string value);
+        public static RealtimeToolKind Function { get; }
+        public static RealtimeToolKind Mcp { get; }
+        public readonly bool Equals(RealtimeToolKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeToolKind left, RealtimeToolKind right);
+        public static implicit operator RealtimeToolKind(string value);
+        public static implicit operator RealtimeToolKind?(string value);
+        public static bool operator !=(RealtimeToolKind left, RealtimeToolKind right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
     public class RealtimeTracing : IJsonModel<RealtimeTracing>, IPersistableModel<RealtimeTracing> {
@@ -1608,10 +1613,6 @@ namespace OpenAI.Realtime {
         public RealtimeTracing(RealtimeDefaultTracing defaultTracing);
         public RealtimeCustomTracing CustomTracing { get; }
         public RealtimeDefaultTracing? DefaultTracing { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeTracing(RealtimeCustomTracing customTracing);
         public static implicit operator RealtimeTracing(RealtimeDefaultTracing defaultTracing);
     }
@@ -1685,10 +1686,6 @@ namespace OpenAI.Realtime {
         public RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
         public RealtimeCustomTruncation CustomTruncation { get; }
         public RealtimeDefaultTruncation? DefaultTruncation { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeTruncation(RealtimeCustomTruncation customTruncation);
         public static implicit operator RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
     }

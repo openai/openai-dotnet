@@ -104,9 +104,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("choices"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "choices"u8);
                 for (int i = 0; i < Choices.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) || Choices[i] != null && Choices[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) || Choices[i] != null && Choices[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -345,9 +346,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "choices"u8);
             for (int i = 0; i < Choices.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]"))) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Choices[i];
                 }

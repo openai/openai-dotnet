@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
                 for (int i = 0; i < Annotations.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -114,9 +115,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
                 for (int i = 0; i < Logprobs.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || Logprobs[i] != null && Logprobs[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || Logprobs[i] != null && Logprobs[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -316,9 +318,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
             for (int i = 0; i < Annotations.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Annotations[i];
                 }
@@ -344,9 +347,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
             for (int i = 0; i < Logprobs.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) && (Logprobs[i] == null || !Logprobs[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (Logprobs[i] == null || !Logprobs[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Logprobs[i];
                 }

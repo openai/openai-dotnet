@@ -772,7 +772,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-search-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-5-search-api");
 
         ChatCompletionOptions options = new()
         {
@@ -870,22 +870,26 @@ public class ChatTests : OpenAIRecordedTestBase
         ChatClient client = CreateProxyFromClient(TestEnvironment.GetTestClient<ChatClient>());
 
         // Test with null completion ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-        {
-            await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+        Assert.That(
+            async () =>
             {
-                // Should not reach here
-            }
-        });
+                await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+                {
+                    // Should not reach here
+                }
+            },
+            Throws.TypeOf<ArgumentNullException>());
 
         // Test with empty completion ID
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-        {
-            await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+        Assert.That(
+            async () =>
             {
-                // Should not reach here
-            }
-        });
+                await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+                {
+                    // Should not reach here
+                }
+            },
+            Throws.TypeOf<ArgumentException>());
     }
 
     [RecordedTest]

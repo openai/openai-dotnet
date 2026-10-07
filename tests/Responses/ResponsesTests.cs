@@ -473,12 +473,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             Assert.That(retrievedResponse.Id, Is.EqualTo(response.Id));
         }
 
-        Assert.DoesNotThrowAsync(RetrieveThatResponseAsync);
+        Assert.That(RetrieveThatResponseAsync, Throws.Nothing);
 
         ResponseDeletionResult deletionResult = await client.DeleteResponseAsync(response.Id);
         Assert.That(deletionResult.Deleted, Is.True);
 
-        Assert.ThrowsAsync<ClientResultException>(RetrieveThatResponseAsync);
+        Assert.That(RetrieveThatResponseAsync, Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]
@@ -493,8 +493,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new GetResponseOptions(response.Id)));
-        Assert.That(expectedException.Message, Does.Contain("not found"));
+        Assert.That(
+            async () => await client.GetResponseAsync(new GetResponseOptions(response.Id)),
+            Throws.TypeOf<ClientResultException>()
+                .With.Message.Contains("not found"));
     }
 
     [RecordedTest]

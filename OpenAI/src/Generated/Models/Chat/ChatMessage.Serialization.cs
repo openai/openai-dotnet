@@ -98,18 +98,18 @@ namespace OpenAI.Chat
             {
                 switch (discriminator.GetString())
                 {
-                    case "system":
-                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
-                    case "developer":
-                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
-                    case "user":
-                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
                     case "assistant":
                         return AssistantChatMessage.DeserializeAssistantChatMessage(element, data, options);
-                    case "tool":
-                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
+                    case "developer":
+                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
                     case "function":
                         return FunctionChatMessage.DeserializeFunctionChatMessage(element, data, options);
+                    case "system":
+                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
+                    case "tool":
+                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
+                    case "user":
+                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
                 }
             }
             return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, data, options);

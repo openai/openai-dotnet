@@ -86,9 +86,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("vector_store_ids"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "vector_store_ids"u8);
                 for (int i = 0; i < VectorStoreIds.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.vector_store_ids[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.vector_store_ids[{i}]")))
                     {
                         continue;
                     }
@@ -205,7 +206,7 @@ namespace OpenAI.Responses
                         filters = null;
                         continue;
                     }
-                    filters = BinaryData.FromString(prop.Value.GetRawText());
+                    filters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

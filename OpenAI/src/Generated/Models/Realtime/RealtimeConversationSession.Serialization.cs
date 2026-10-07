@@ -91,9 +91,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("output_modalities"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "output_modalities"u8);
                 for (int i = 0; i < OutputModalities.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output_modalities[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output_modalities[{i}]")))
                     {
                         continue;
                     }
@@ -129,9 +130,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "include"u8);
                 for (int i = 0; i < IncludedProperties.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
                     {
                         continue;
                     }
@@ -157,9 +159,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -530,9 +533,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
             for (int i = 0; i < Tools.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Tools[i];
                 }

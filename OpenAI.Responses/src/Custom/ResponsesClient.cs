@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -17,13 +18,16 @@ namespace OpenAI.Responses;
 [CodeGenType("Responses")]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
+// Suppression is evaluated before PaginationVisitor, so these signatures match the shared model's expanded scalar order.
+[CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(ResponseItemCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(ResponseItemCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 
 public partial class ResponsesClient
 {
+    private readonly OpenTelemetrySource _telemetry;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
@@ -73,6 +77,7 @@ public partial class ResponsesClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint);
     }
 
     // CUSTOM:
@@ -90,6 +95,7 @@ public partial class ResponsesClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint);
     }
 
     [Experimental("SCME0002")]
@@ -117,8 +123,19 @@ public partial class ResponsesClient
                 + $"For streaming scenarios, call {nameof(CreateResponseStreaming)} instead.");
         }
 
-        ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        using var scope = _telemetry?.StartResponsesScope(options);
+        try
+        {
+            ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions());
+            var response = (ResponseResult)result;
+            scope?.RecordResponseResult(response);
+            return ClientResult.FromValue(response, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     // CUSTOM: Added protocol model method.
@@ -144,8 +161,19 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to true when calling {nameof(CreateResponseAsync)}.");
         }
 
-        ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        using var scope = _telemetry?.StartResponsesScope(options);
+        try
+        {
+            ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
+            var response = (ResponseResult)result;
+            scope?.RecordResponseResult(response);
+            return ClientResult.FromValue(response, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     // CUSTOM: Added convenience method with no options.
@@ -524,7 +552,13 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(
+            responseId: responseId,
+            afterId: after,
+            beforeId: before,
+            pageSizeLimit: limit,
+            order: order,
+            options: options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
@@ -533,7 +567,13 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(
+            responseId: responseId,
+            afterId: after,
+            beforeId: before,
+            pageSizeLimit: limit,
+            order: order,
+            options: options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -578,11 +618,11 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
-            cancellationToken.ToRequestOptions());
+            options: cancellationToken.ToRequestOptions());
     }
 
     // CUSTOM: Added convenience method with pagination.
@@ -593,11 +633,11 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
-            cancellationToken.ToRequestOptions());
+            options: cancellationToken.ToRequestOptions());
     }
 
     // CUSTOM: Added convenience method with pagination and no options.

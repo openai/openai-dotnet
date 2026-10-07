@@ -153,7 +153,7 @@ namespace OpenAI
                     {
                         continue;
                     }
-                    parameters = BinaryData.FromString(prop.Value.GetRawText());
+                    parameters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))
@@ -167,7 +167,7 @@ namespace OpenAI
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalAssistantsFunctionDefinition(description, name, parameters, strict, additionalBinaryDataProperties);
         }

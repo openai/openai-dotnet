@@ -148,7 +148,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    schema = BinaryData.FromString(prop.Value.GetRawText());
+                    schema = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))

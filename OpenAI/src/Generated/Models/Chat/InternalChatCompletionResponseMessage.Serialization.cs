@@ -103,9 +103,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
                 for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -126,9 +127,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
                 for (int i = 0; i < Annotations.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -421,9 +423,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
             for (int i = 0; i < ToolCalls.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]"))) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolCalls[i];
                 }
@@ -449,9 +452,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
             for (int i = 0; i < Annotations.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Annotations[i];
                 }

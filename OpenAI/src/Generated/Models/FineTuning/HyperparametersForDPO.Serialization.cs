@@ -161,7 +161,7 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    beta = BinaryData.FromString(prop.Value.GetRawText());
+                    beta = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("batch_size"u8))
@@ -170,7 +170,7 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    batchSize = BinaryData.FromString(prop.Value.GetRawText());
+                    batchSize = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("learning_rate_multiplier"u8))
@@ -179,7 +179,7 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
+                    learningRateMultiplier = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("n_epochs"u8))
@@ -188,11 +188,11 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    nEpochs = BinaryData.FromString(prop.Value.GetRawText());
+                    nEpochs = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new HyperparametersForDPO(beta, batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties);
         }

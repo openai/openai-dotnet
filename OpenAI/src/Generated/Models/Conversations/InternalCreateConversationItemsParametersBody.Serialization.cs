@@ -86,9 +86,10 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "items"u8);
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -220,9 +221,10 @@ namespace OpenAI.Conversations
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "items"u8);
             for (int i = 0; i < Items.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]")) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]"))) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Items[i];
                 }

@@ -23,23 +23,35 @@ public class MutualTlsExamplesTests
     private const string ApiKey = "test-api-key";
     private const string PfxPassword = "test-password";
 
+    private CertificateFixture _certificates;
+
+    [SetUp]
+    public void CreateCertificates()
+    {
+        _certificates = CertificateFixture.Create();
+    }
+
+    [TearDown]
+    public void DisposeCertificates()
+    {
+        _certificates?.Dispose();
+        _certificates = null;
+    }
+
 #if NET9_0_OR_GREATER
-    // Loading a PFX private key affects the temporary key store on macOS, so run it last.
     [Test]
-    [Order(7)]
     public async Task FullChainCompletesSdkRequestEndToEnd()
     {
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         using DisposableCertificateCollection imported =
             DisposableCertificateCollection.Load(
-                certificates.ExportClientBundle(PfxPassword),
+                _certificates.ExportClientBundle(PfxPassword),
                 PfxPassword);
         using HttpClient httpClient = CreateHttpClient(
             imported.Certificates,
-            certificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         ChatClient client = CreateChatClient(server.Endpoint, httpClient);
         ChatCompletion completion;
@@ -85,70 +97,60 @@ public class MutualTlsExamplesTests
             Assert.That(server.ClientCertificateWasAccepted, Is.True);
             Assert.That(
                 server.PresentedClientChainThumbprints,
-                Does.Contain(certificates.IntermediateCertificate.Thumbprint));
+                Does.Contain(_certificates.IntermediateCertificate.Thumbprint));
         });
     }
 #endif
 
     [Test]
-    [Order(2)]
     public async Task MissingIntermediateFailsClosed()
     {
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         using HttpClient httpClient = CreateHttpClient(
-            new X509Certificate2Collection(certificates.ClientCertificate),
-            certificates.ServerCertificate);
+            new X509Certificate2Collection(_certificates.ClientCertificate),
+            _certificates.ServerCertificate);
 
         ChatClient client = CreateChatClient(server.Endpoint, httpClient);
 
-        Exception exception =
-            Assert.CatchAsync(
-                async () => await client.CompleteChatAsync("Hello"));
+        Assert.That(
+            async () => await client.CompleteChatAsync("Hello"),
+            Throws.InstanceOf<ClientResultException>()
+                .Or.InstanceOf<OperationCanceledException>());
         await server.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
-            Assert.That(
-                exception,
-                Is.InstanceOf<ClientResultException>()
-                    .Or.InstanceOf<OperationCanceledException>());
             Assert.That(server.Request, Is.Null);
             Assert.That(server.ClientCertificateWasAccepted, Is.False);
             Assert.That(
                 server.PresentedClientChainThumbprints,
-                Does.Not.Contain(certificates.IntermediateCertificate.Thumbprint));
+                Does.Not.Contain(_certificates.IntermediateCertificate.Thumbprint));
             Assert.That(server.Failure, Is.Not.Null);
         });
     }
 
     [Test]
-    [Order(1)]
     public async Task MissingClientCertificateFailsClosed()
     {
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         using HttpClient httpClient = CreateHttpClient(
             new X509Certificate2Collection(),
-            certificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         ChatClient client = CreateChatClient(server.Endpoint, httpClient);
 
-        Exception exception =
-            Assert.CatchAsync(
-                async () => await client.CompleteChatAsync("Hello"));
+        Assert.That(
+            async () => await client.CompleteChatAsync("Hello"),
+            Throws.InstanceOf<ClientResultException>()
+                .Or.InstanceOf<OperationCanceledException>());
         await server.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
-            Assert.That(
-                exception,
-                Is.InstanceOf<ClientResultException>()
-                    .Or.InstanceOf<OperationCanceledException>());
             Assert.That(server.Request, Is.Null);
             Assert.That(server.ClientCertificateWasAccepted, Is.False);
             Assert.That(server.Failure, Is.Not.Null);
@@ -156,50 +158,47 @@ public class MutualTlsExamplesTests
     }
 
     [Test]
-    [Order(5)]
     public async Task CertificateBearingHandlerDoesNotFollowRedirects()
     {
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer redirectTarget = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         await using MutualTlsServer redirectSource = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate,
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate,
             redirectLocation: new Uri(redirectTarget.Endpoint, "chat/completions"));
         using HttpClient httpClient = CreateHttpClient(
             new X509Certificate2Collection(
                 new X509Certificate2[]
                 {
-                    certificates.ClientCertificate,
-                    certificates.IntermediateCertificate,
+                    _certificates.ClientCertificate,
+                    _certificates.IntermediateCertificate,
                 }),
-            certificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         ChatClient client = CreateChatClient(redirectSource.Endpoint, httpClient);
 
-        ClientResultException exception =
-            Assert.ThrowsAsync<ClientResultException>(
-                async () => await client.CompleteChatAsync("Hello"));
+        Assert.That(
+            async () => await client.CompleteChatAsync("Hello"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status))
+                .EqualTo((int)HttpStatusCode.TemporaryRedirect));
         await redirectSource.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
-            Assert.That(exception.Status, Is.EqualTo((int)HttpStatusCode.TemporaryRedirect));
             Assert.That(redirectSource.Request, Is.Not.Null);
             Assert.That(redirectTarget.ConnectionCount, Is.Zero);
         });
     }
 
     [Test]
-    [Order(3)]
     public async Task UntrustedClientCertificateFailsClosed()
     {
-        using CertificateFixture trustedCertificates = CertificateFixture.Create();
         using CertificateFixture untrustedCertificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            trustedCertificates.ServerCertificate,
-            trustedCertificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         using HttpClient httpClient = CreateHttpClient(
             new X509Certificate2Collection(
                 new X509Certificate2[]
@@ -207,21 +206,18 @@ public class MutualTlsExamplesTests
                     untrustedCertificates.ClientCertificate,
                     untrustedCertificates.IntermediateCertificate,
                 }),
-            trustedCertificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         ChatClient client = CreateChatClient(server.Endpoint, httpClient);
 
-        Exception exception =
-            Assert.CatchAsync(
-                async () => await client.CompleteChatAsync("Hello"));
+        Assert.That(
+            async () => await client.CompleteChatAsync("Hello"),
+            Throws.InstanceOf<ClientResultException>()
+                .Or.InstanceOf<OperationCanceledException>());
         await server.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
-            Assert.That(
-                exception,
-                Is.InstanceOf<ClientResultException>()
-                    .Or.InstanceOf<OperationCanceledException>());
             Assert.That(server.Request, Is.Null);
             Assert.That(server.ClientCertificateWasAccepted, Is.False);
             Assert.That(server.Failure, Is.Not.Null);
@@ -229,35 +225,34 @@ public class MutualTlsExamplesTests
     }
 
     [Test]
-    [Order(4)]
     public async Task InvalidApiKeyIsRejectedAfterSuccessfulTlsAuthentication()
     {
         const string invalidApiKey = "invalid-api-key";
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate,
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate,
             requiredApiKey: ApiKey);
         using HttpClient httpClient = CreateHttpClient(
             new X509Certificate2Collection(
                 new X509Certificate2[]
                 {
-                    certificates.ClientCertificate,
-                    certificates.IntermediateCertificate,
+                    _certificates.ClientCertificate,
+                    _certificates.IntermediateCertificate,
                 }),
-            certificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         ChatClient client =
             CreateChatClient(server.Endpoint, httpClient, invalidApiKey);
 
-        ClientResultException exception =
-            Assert.ThrowsAsync<ClientResultException>(
-                async () => await client.CompleteChatAsync("Hello"));
+        Assert.That(
+            async () => await client.CompleteChatAsync("Hello"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status))
+                .EqualTo((int)HttpStatusCode.Unauthorized));
         await server.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
         {
-            Assert.That(exception.Status, Is.EqualTo((int)HttpStatusCode.Unauthorized));
             Assert.That(server.ClientCertificateWasAccepted, Is.True);
             Assert.That(server.Request, Is.Not.Null);
             Assert.That(
@@ -267,22 +262,20 @@ public class MutualTlsExamplesTests
     }
 
     [Test]
-    [Order(6)]
     public async Task RequestBodyIsReadUsingContentLengthBytes()
     {
         const string requestBody = "Zażółć gęślą jaźń ☕";
-        using CertificateFixture certificates = CertificateFixture.Create();
         await using MutualTlsServer server = MutualTlsServer.Start(
-            certificates.ServerCertificate,
-            certificates.RootCertificate);
+            _certificates.ServerCertificate,
+            _certificates.RootCertificate);
         using HttpClient httpClient = CreateHttpClient(
             new X509Certificate2Collection(
                 new X509Certificate2[]
                 {
-                    certificates.ClientCertificate,
-                    certificates.IntermediateCertificate,
+                    _certificates.ClientCertificate,
+                    _certificates.IntermediateCertificate,
                 }),
-            certificates.ServerCertificate);
+            _certificates.ServerCertificate);
 
         using StringContent requestContent =
             new(requestBody, Encoding.UTF8);
@@ -360,11 +353,14 @@ public class MutualTlsExamplesTests
 
         public static DisposableCertificateCollection Load(byte[] pfx, string password)
         {
+            X509KeyStorageFlags keyStorageFlags = OperatingSystem.IsWindows()
+                ? X509KeyStorageFlags.DefaultKeySet
+                : X509KeyStorageFlags.EphemeralKeySet;
             X509Certificate2Collection certificates =
                 X509CertificateLoader.LoadPkcs12Collection(
                     pfx,
                     password,
-                    X509KeyStorageFlags.DefaultKeySet);
+                    keyStorageFlags);
             return new DisposableCertificateCollection(certificates);
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,6 @@ public partial class CustomToolCallOutputItem : IJsonModel<CustomToolCallOutputI
             return;
         }
 
-        throw new JsonException($"Expected output to be a string or an array but found {property.Value.ValueKind}.");
+        throw new InvalidOperationException($"Expected output to be a string or an array but found {property.Value.ValueKind}.");
     }
 }

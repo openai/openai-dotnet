@@ -169,32 +169,37 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     public void ExceptionThrownOnInvalidFileName()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-            await client.FineTuneAsync(baseModel: "gpt-3.5-turbo", trainingFileId: "Invalid File Name", waitUntilCompleted: false)
-        );
+        Assert.That(
+            async () => await client.FineTuneAsync(
+                baseModel: "gpt-3.5-turbo",
+                trainingFileId: "Invalid File Name",
+                waitUntilCompleted: false),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]
     public void ExceptionThrownOnInvalidModelName()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-            await client.FineTuneAsync(baseModel: "gpt-nonexistent", trainingFileId: sampleFile.Id, waitUntilCompleted: false)
-        );
+        Assert.That(
+            async () => await client.FineTuneAsync(
+                baseModel: "gpt-nonexistent",
+                trainingFileId: sampleFile.Id,
+                waitUntilCompleted: false),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]
     public void ExceptionThrownOnInvalidValidationIdAsync()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            await client.FineTuneAsync(
+        Assert.That(
+            async () => await client.FineTuneAsync(
                 "gpt-3.5-turbo",
                 sampleFile.Id,
-                false, new() { ValidationFile = "7" }
-            );
-        });
+                false,
+                new() { ValidationFile = "7" }),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]

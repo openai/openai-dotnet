@@ -117,10 +117,10 @@ namespace OpenAI.Evals
                         return InternalEvalRunFileContentDataContentSource.DeserializeInternalEvalRunFileContentDataContentSource(element, options);
                     case "file_id":
                         return InternalEvalRunFileIdDataContentSource.DeserializeInternalEvalRunFileIdDataContentSource(element, options);
-                    case "stored_completions":
-                        return InternalEvalRunStoredCompletionsDataContentSource.DeserializeInternalEvalRunStoredCompletionsDataContentSource(element, options);
                     case "responses":
                         return InternalEvalRunResponsesDataContentSource.DeserializeInternalEvalRunResponsesDataContentSource(element, options);
+                    case "stored_completions":
+                        return InternalEvalRunStoredCompletionsDataContentSource.DeserializeInternalEvalRunStoredCompletionsDataContentSource(element, options);
                 }
             }
             return InternalUnknownEvalRunDataContentSource.DeserializeInternalUnknownEvalRunDataContentSource(element, options);

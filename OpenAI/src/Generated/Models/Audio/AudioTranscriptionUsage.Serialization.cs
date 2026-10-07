@@ -112,10 +112,10 @@ namespace OpenAI.Audio
             {
                 switch (discriminator.GetString())
                 {
-                    case "tokens":
-                        return AudioTranscriptionTokenUsage.DeserializeAudioTranscriptionTokenUsage(element, options);
                     case "duration":
                         return AudioTranscriptionDurationUsage.DeserializeAudioTranscriptionDurationUsage(element, options);
+                    case "tokens":
+                        return AudioTranscriptionTokenUsage.DeserializeAudioTranscriptionTokenUsage(element, options);
                 }
             }
             return InternalUnknownCreateTranscriptionResponseJsonUsage.DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(element, options);

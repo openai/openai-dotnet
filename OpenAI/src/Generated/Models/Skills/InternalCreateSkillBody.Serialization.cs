@@ -122,11 +122,11 @@ namespace OpenAI.Skills
             {
                 if (prop.NameEquals("files"u8))
                 {
-                    files = BinaryData.FromString(prop.Value.GetRawText());
+                    files = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalCreateSkillBody(files, additionalBinaryDataProperties);
         }

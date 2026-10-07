@@ -90,9 +90,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("filters"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "filters"u8);
                 for (int i = 0; i < Filters.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.filters[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.filters[{i}]")))
                     {
                         continue;
                     }
@@ -160,7 +161,7 @@ namespace OpenAI.Responses
                         }
                         else
                         {
-                            array.Add(BinaryData.FromString(item.GetRawText()));
+                            array.Add(item.GetUtf8Bytes());
                         }
                     }
                     filters = array;

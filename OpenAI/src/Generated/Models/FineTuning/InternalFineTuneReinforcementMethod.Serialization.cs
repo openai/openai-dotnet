@@ -129,7 +129,7 @@ namespace OpenAI.FineTuning
             {
                 if (prop.NameEquals("grader"u8))
                 {
-                    grader = BinaryData.FromString(prop.Value.GetRawText());
+                    grader = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("hyperparameters"u8))
@@ -142,7 +142,7 @@ namespace OpenAI.FineTuning
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalFineTuneReinforcementMethod(grader, hyperparameters, additionalBinaryDataProperties);
         }

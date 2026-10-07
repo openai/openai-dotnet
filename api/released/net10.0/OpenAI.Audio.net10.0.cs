@@ -42,6 +42,8 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
+        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual ClientResult GetVoiceConsent(string consentId, RequestOptions options = null);
@@ -69,6 +71,8 @@ namespace OpenAI.Audio {
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
@@ -248,6 +252,7 @@ namespace OpenAI.Audio {
         public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
         public string Text { get; }
         public AudioTranscriptionUsage Usage { get; }
+        public static explicit operator DiarizedAudioTranscription(ClientResult result);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment>, IJsonModel<object>, IPersistableModel<object> {

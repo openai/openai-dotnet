@@ -91,9 +91,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("rate_limits"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
                 for (int i = 0; i < RateLimitDetails.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) || RateLimitDetails[i] != null && RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) || RateLimitDetails[i] != null && RateLimitDetails[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -237,9 +238,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
             for (int i = 0; i < RateLimitDetails.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) && (RateLimitDetails[i] == null || !RateLimitDetails[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]"))) && (RateLimitDetails[i] == null || !RateLimitDetails[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return RateLimitDetails[i];
                 }

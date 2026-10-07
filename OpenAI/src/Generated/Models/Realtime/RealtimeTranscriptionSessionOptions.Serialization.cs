@@ -87,9 +87,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "include"u8);
                 for (int i = 0; i < IncludedProperties.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
                     {
                         continue;
                     }

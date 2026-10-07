@@ -145,7 +145,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(rankingOptions, results ?? new ChangeTrackingList<RunStepFileSearchResult>(), additionalBinaryDataProperties);
         }

@@ -96,9 +96,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("acknowledged_safety_checks"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "acknowledged_safety_checks"u8);
                 for (int i = 0; i < AcknowledgedSafetyChecks.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]")) || AcknowledgedSafetyChecks[i] != null && AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]")) || AcknowledgedSafetyChecks[i] != null && AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -297,9 +298,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "acknowledged_safety_checks"u8);
             for (int i = 0; i < AcknowledgedSafetyChecks.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]")) && (AcknowledgedSafetyChecks[i] == null || !AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]"))) && (AcknowledgedSafetyChecks[i] == null || !AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return AcknowledgedSafetyChecks[i];
                 }
