@@ -284,14 +284,12 @@ public class InferenceTokenMetricsTests
         using var listener = new TestMeterListener(meter.Name);
         var recorder = new OpenTelemetryTokenMetrics(meter);
         var total = (long)int.MaxValue + 10;
-        recorder.Record(new OpenTelemetryTokenUsage
-        {
-            InputTokens = total,
-            OutputTokens = total,
-            CacheReadInputTokens = 5,
-            CacheWriteInputTokens = 3,
-            ReasoningOutputTokens = 7,
-        }, default);
+        recorder.Record(new OpenTelemetryTokenUsage(
+            inputTokens: total,
+            outputTokens: total,
+            cacheReadInputTokens: 5,
+            cacheWriteInputTokens: 3,
+            reasoningOutputTokens: 7), default);
         AssertValue(listener, "usage.input_tokens", total);
         AssertValue(listener, "usage.output_tokens", total);
         AssertValue(listener, "operation.input_tokens", total);

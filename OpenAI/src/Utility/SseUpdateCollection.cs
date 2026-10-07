@@ -34,7 +34,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                   sendRequestFunc,
                   AsyncSseUpdateCollection<T>.DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
                   cancellationToken)
-
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
     }
@@ -59,7 +58,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                   sendRequestFunc,
                   AsyncSseUpdateCollection<T>.DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
                   cancellationToken)
-
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
     }

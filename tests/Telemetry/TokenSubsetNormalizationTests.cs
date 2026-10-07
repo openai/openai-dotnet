@@ -203,8 +203,10 @@ public class TokenSubsetNormalizationTests
         {
             inputDetails["cache_write_tokens"] = values.Write;
         }
+
         usage[inputName + "_details"] = inputDetails;
         usage[outputName + "_details"] = new Dictionary<string, object> { ["reasoning_tokens"] = values.Reasoning };
+
         var response = new Dictionary<string, object>
         {
             ["id"] = "response-id",

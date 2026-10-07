@@ -51,7 +51,7 @@ internal partial class OpenTelemetryScope : IDisposable
     private Stopwatch _duration;
     private Activity _activity;
     private TagList _commonTags;
-    private OpenTelemetryResponseMetadata _responseMetadata;
+    private readonly OpenTelemetryResponseMetadata _responseMetadata = new();
     private bool _exceptionLogged;
 
     private OpenTelemetryScope(
@@ -414,14 +414,14 @@ internal partial class OpenTelemetryScope : IDisposable
     }
 
     private void RecordMetrics(string responseModel, string responseServiceTier, string errorType,
-        int? inputTokensUsage, int? outputTokensUsage, OpenTelemetryTokenUsage usage = default,
+        int? inputTokensUsage, int? outputTokensUsage, OpenTelemetryTokenUsage usage = null,
         string responseSystemFingerprint = null)
     {
         var tags = GetMetricTags(responseModel, responseServiceTier, responseSystemFingerprint);
 
         if (_useLatestSemanticConventions)
         {
-            _inferenceTokens.Record(usage, tags);
+            _inferenceTokens.Record(usage ?? OpenTelemetryTokenUsage.Empty, tags);
         }
         else
         {
@@ -477,6 +477,8 @@ internal partial class OpenTelemetryScope : IDisposable
 
     private void RecordUsageAttributes(OpenTelemetryTokenUsage usage)
     {
+        usage ??= OpenTelemetryTokenUsage.Empty;
+
         SetActivityTagIfNotNull(GenAiUsageInputTokensKey, usage.InputTokens);
         SetActivityTagIfNotNull(GenAiUsageOutputTokensKey, usage.OutputTokens);
         SetActivityTagIfNotNull(GenAiUsageCacheReadInputTokensKey, usage.CacheReadInputTokens);

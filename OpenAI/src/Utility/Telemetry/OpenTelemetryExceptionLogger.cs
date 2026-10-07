@@ -15,7 +15,7 @@ internal static class OpenTelemetryExceptionLogger
             return;
         }
 
-        // Passing the exception itself allows logging bridges to export its message and response body.
+        // Passing null prevents logging bridges from exporting the exception message, stack, or response content.
         logger.Log(LogLevel.Warning, s_exceptionEvent,
             new KeyValuePair<string, object>[] { new("exception.type", exception.GetType().FullName) },
             null, static (_, _) => "GenAI operation failed.");

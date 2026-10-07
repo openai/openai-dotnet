@@ -147,7 +147,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToMultipleViaJson<U>(
-    Func<JsonElement, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
+        Func<JsonElement, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
     {
         return (item) =>
         {
@@ -164,7 +164,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToMultipleViaJson<U>(
-    Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
     {
         return (item) =>
         {

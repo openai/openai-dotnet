@@ -500,15 +500,10 @@ public class SseUpdateCollectionTests
     private sealed class ProbeLifecycle : SseLifecycle<string>
     {
         public int Depth { get; private set; }
-
         public int TypedResponses { get; private set; }
-
         public int Events { get; private set; }
-
         public List<string> Updates { get; } = [];
-
         public SseCompletionKind? CompletionKind { get; private set; }
-
         public Exception Exception { get; private set; }
 
         public override IDisposable Enter()

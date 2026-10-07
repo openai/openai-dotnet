@@ -229,9 +229,7 @@ public class ResponseStreamTelemetryTests
     private sealed class ProbeStream(string ending) : MemoryStream(new byte[] { 1, 2, 3 })
     {
         public int Reads { get; private set; }
-
         public int Disposals { get; private set; }
-
         public Activity CompletionContext { get; private set; }
 
         private void BeforeRead()
