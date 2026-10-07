@@ -1,0 +1,1673 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Realtime
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+paths:
+  /realtime/calls:
+    post:
+      summary: >-
+        Create a new Realtime API call over WebRTC and receive the SDP answer needed to complete the peer connection.
+      operationId: create-realtime-call
+      tags:
+      - Realtime
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/RealtimeCallCreateRequest"
+            encoding:
+              sdp:
+                contentType: application/sdp
+              session:
+                contentType: application/json
+          application/sdp:
+            schema:
+              type: string
+              description: >-
+                WebRTC SDP offer. Use this variant when you have previously created an ephemeral **session token** and are authenticating the request with it. Realtime session parameters will be retrieved from the session token.
+      responses:
+        "201":
+          description: Realtime call created successfully.
+          headers:
+            Location:
+              description: Relative URL containing the call ID for subsequent control requests.
+              schema:
+                type: string
+          content:
+            application/sdp:
+              schema:
+                type: string
+                description: SDP answer produced by OpenAI for the peer connection.
+  /realtime/calls/{call_id}/accept:
+    post:
+      summary: |-
+        Accept an incoming SIP call and configure the realtime session that will handle it.
+      operationId: accept-realtime-call
+      tags:
+      - Realtime
+      parameters:
+      - in: path
+        name: call_id
+        required: true
+        schema:
+          type: string
+        description: |-
+          The identifier for the call provided in the [`realtime.call.incoming`](/docs/api-reference/webhook-events/realtime/call/incoming) webhook.
+      requestBody:
+        required: true
+        description: Session configuration to apply before the caller is bridged to the model.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeSessionCreateRequestGA"
+      responses:
+        "200":
+          description: Call accepted successfully.
+  /realtime/calls/{call_id}/hangup:
+    post:
+      summary: |-
+        End an active Realtime API call, whether it was initiated over SIP or WebRTC.
+      operationId: hangup-realtime-call
+      tags:
+      - Realtime
+      parameters:
+      - in: path
+        name: call_id
+        required: true
+        schema:
+          type: string
+        description: |-
+          The identifier for the call. For SIP calls, use the value provided in the [`realtime.call.incoming`](/docs/api-reference/webhook-events/realtime/call/incoming) webhook. For WebRTC sessions, reuse the call ID returned in the `Location` header when creating the call with [`POST /v1/realtime/calls`](/docs/api-reference/realtime/create-call).
+      responses:
+        "200":
+          description: Call hangup initiated successfully.
+  /realtime/calls/{call_id}/refer:
+    post:
+      summary: Transfer an active SIP call to a new destination using the SIP REFER verb.
+      operationId: refer-realtime-call
+      tags:
+      - Realtime
+      parameters:
+      - in: path
+        name: call_id
+        required: true
+        schema:
+          type: string
+        description: |-
+          The identifier for the call provided in the [`realtime.call.incoming`](/docs/api-reference/webhook-events/realtime/call/incoming) webhook.
+      requestBody:
+        required: true
+        description: Destination URI for the REFER request.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeCallReferRequest"
+      responses:
+        "200":
+          description: Call referred successfully.
+  /realtime/calls/{call_id}/reject:
+    post:
+      summary: Decline an incoming SIP call by returning a SIP status code to the caller.
+      operationId: reject-realtime-call
+      tags:
+      - Realtime
+      parameters:
+      - in: path
+        name: call_id
+        required: true
+        schema:
+          type: string
+        description: |-
+          The identifier for the call provided in the [`realtime.call.incoming`](/docs/api-reference/webhook-events/realtime/call/incoming) webhook.
+      requestBody:
+        required: false
+        description: >-
+          Provide an optional SIP status code. When omitted the API responds with `603 Decline`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeCallRejectRequest"
+      responses:
+        "200":
+          description: Call rejected successfully.
+  /realtime/client_secrets:
+    post:
+      summary: >-
+        Create a Realtime client secret with an associated session configuration.
+
+        Client secrets are short-lived tokens that can be passed to a client app, such as a web frontend or mobile client, which grants access to the Realtime API without leaking your main API key. You can configure a custom TTL for each client secret.
+
+        You can also attach session configuration options to the client secret, which will be applied to any sessions created using that client secret, but these can also be overridden by the client connection.
+
+        [Learn more about authentication with client secrets over WebRTC](/docs/guides/realtime-webrtc).
+
+        Returns the created client secret and the effective session object. The client secret is a string that looks like `ek_1234`.
+      operationId: create-realtime-client-secret
+      tags:
+      - Realtime
+      requestBody:
+        description: Create a client secret with the given session configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeCreateClientSecretRequest"
+      responses:
+        "200":
+          description: Client secret created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RealtimeCreateClientSecretResponse"
+  /realtime/translations/client_secrets:
+    post:
+      summary: >-
+        Create a Realtime translation client secret with an associated translation session configuration.
+
+        Client secrets are short-lived tokens that can be passed to a client app, such as a web frontend or mobile client, which grants access to the Realtime Translation API without leaking your main API key. You can configure a custom TTL for each client secret.
+
+        Returns the created client secret and the effective translation session object. The client secret is a string that looks like `ek_1234`.
+      operationId: create-realtime-translation-client-secret
+      tags:
+      - Realtime
+      requestBody:
+        description: Create a client secret with the given translation session configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealtimeTranslationClientSecretCreateRequest"
+      responses:
+        "200":
+          description: Translation client secret created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RealtimeTranslationClientSecretCreateResponse"
+components:
+  schemas:
+    AudioTranscription:
+      type: object
+      properties:
+        model:
+          description: >-
+            The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - whisper-1
+            - gpt-transcribe
+            - gpt-live-transcribe
+            - gpt-4o-mini-transcribe
+            - gpt-4o-mini-transcribe-2025-12-15
+            - gpt-4o-transcribe
+            - gpt-4o-transcribe-diarize
+            - gpt-realtime-whisper
+        language:
+          type: string
+          description: >-
+            The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (e.g. `en`) format will improve accuracy and latency.
+        languages:
+          type: array
+          description: >-
+            Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
+          minItems: 1
+          items:
+            type: string
+        keywords:
+          type: array
+          description: >-
+            Words or phrases to guide transcription of the input audio. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
+          items:
+            type: string
+        prompt:
+          type: string
+          description: >-
+            An optional text to guide the model's style or continue a previous audio segment. For `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting). For `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example "expect words related to technology". Prompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.
+        delay:
+          type: string
+          description: >-
+            Controls how long the model waits before emitting transcription text. Higher values can improve transcription accuracy at the cost of latency. Only supported with `gpt-realtime-whisper` in GA Realtime sessions.
+          enum:
+          - minimal
+          - low
+          - medium
+          - high
+          - xhigh
+    AudioTranscriptionResponse:
+      type: object
+      properties:
+        model:
+          description: >-
+            The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - whisper-1
+            - gpt-transcribe
+            - gpt-live-transcribe
+            - gpt-4o-mini-transcribe
+            - gpt-4o-mini-transcribe-2025-12-15
+            - gpt-4o-transcribe
+            - gpt-4o-transcribe-diarize
+            - gpt-realtime-whisper
+        language:
+          type: string
+          description: |-
+            The language of the input audio.
+        languages:
+          type: array
+          description: >-
+            The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+          minItems: 1
+          items:
+            type: string
+        prompt:
+          type: string
+          description: |-
+            The prompt configured for input audio transcription, when present.
+    CallableToolAllowedCaller:
+      type: string
+      enum:
+      - direct
+      - programmatic
+    FileInputDetail:
+      type: string
+      enum:
+      - auto
+      - low
+      - high
+    ImageDetail:
+      type: string
+      enum:
+      - low
+      - high
+      - auto
+      - original
+    InputFileContent:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_file
+          description: The type of the input item. Always `input_file`.
+          default: input_file
+          x-stainless-const: true
+        file_id:
+          anyOf:
+          - type: string
+            description: The ID of the file to be sent to the model.
+          - type: "null"
+        filename:
+          type: string
+          description: The name of the file to be sent to the model.
+        file_data:
+          type: string
+          description: |-
+            The content of the file to be sent to the model.
+        prompt_cache_breakpoint:
+          $ref: "#/components/schemas/PromptCacheBreakpointConfig"
+        file_url:
+          type: string
+          format: uri
+          description: The URL of the file to be sent to the model.
+        detail:
+          $ref: "#/components/schemas/FileInputDetail"
+          description: The detail level of the file to be sent to the model. Use `auto` to let the system select the detail level; for GPT-5.6 and later models, `auto` uses high-quality rendering, which may increase input token usage. Use `low` for lower-cost rendering, or `high` to render the file at higher quality. Defaults to `auto`.
+      type: object
+      required:
+      - type
+      title: Input file
+      description: A file input to the model.
+    InputImageContent:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_image
+          description: The type of the input item. Always `input_image`.
+          default: input_image
+          x-stainless-const: true
+        image_url:
+          anyOf:
+          - type: string
+            format: uri
+            description: The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
+          - type: "null"
+        file_id:
+          anyOf:
+          - type: string
+            description: The ID of the file to be sent to the model.
+          - type: "null"
+        detail:
+          $ref: "#/components/schemas/ImageDetail"
+          description: The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
+        prompt_cache_breakpoint:
+          $ref: "#/components/schemas/PromptCacheBreakpointConfig"
+      type: object
+      required:
+      - type
+      - detail
+      title: Input image
+      description: An image input to the model. Learn about [image inputs](/docs/guides/vision).
+    InputTextContent:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_text
+          description: The type of the input item. Always `input_text`.
+          default: input_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: The text input to the model.
+        prompt_cache_breakpoint:
+          $ref: "#/components/schemas/PromptCacheBreakpointConfig"
+      type: object
+      required:
+      - type
+      - text
+      title: Input text
+      description: A text input to the model.
+    MCPTool:
+      type: object
+      title: MCP tool
+      description: >-
+        Give the model access to additional tools via remote Model Context Protocol (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp
+          description: The type of the MCP tool. Always `mcp`.
+          x-stainless-const: true
+        server_label:
+          type: string
+          description: |-
+            A label for this MCP server, used to identify it in tool calls.
+        server_url:
+          type: string
+          format: uri
+          description: |-
+            The URL for the MCP server. One of `server_url`, `connector_id`, or `tunnel_id` must be provided.
+        connector_id:
+          type: string
+          enum:
+          - connector_dropbox
+          - connector_gmail
+          - connector_googlecalendar
+          - connector_googledrive
+          - connector_microsoftteams
+          - connector_outlookcalendar
+          - connector_outlookemail
+          - connector_sharepoint
+          description: >-
+            Identifier for service connectors, like those available in ChatGPT. One of `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+
+            Currently supported `connector_id` values are:
+
+            - Dropbox: `connector_dropbox`
+
+            - Gmail: `connector_gmail`
+
+            - Google Calendar: `connector_googlecalendar`
+
+            - Google Drive: `connector_googledrive`
+
+            - Microsoft Teams: `connector_microsoftteams`
+
+            - Outlook Calendar: `connector_outlookcalendar`
+
+            - Outlook Email: `connector_outlookemail`
+
+            - SharePoint: `connector_sharepoint`
+        tunnel_id:
+          type: string
+          pattern: ^tunnel_[a-z0-9]{32}$
+          description: >-
+            The Secure MCP Tunnel ID to use instead of a direct server URL. One of `server_url`, `connector_id`, or `tunnel_id` must be provided.
+        authorization:
+          type: string
+          description: >-
+            An OAuth access token that can be used with a remote MCP server, either with a custom MCP server URL or a service connector. Your application must handle the OAuth authorization flow and provide the token here.
+        server_description:
+          type: string
+          description: >-
+            Optional description of the MCP server, used to provide more context.
+        headers:
+          anyOf:
+          - type: object
+            additionalProperties:
+              type: string
+            description: >-
+              Optional HTTP headers to send to the MCP server. Use for authentication or other purposes.
+          - type: "null"
+        allowed_tools:
+          anyOf:
+          - description: |-
+              List of allowed tool names or a filter object.
+            oneOf:
+            - type: array
+              title: MCP allowed tools
+              description: A string array of allowed tool names
+              items:
+                type: string
+            - $ref: "#/components/schemas/MCPToolFilter"
+          - type: "null"
+        allowed_callers:
+          anyOf:
+          - type: array
+            minItems: 1
+            items:
+              $ref: "#/components/schemas/CallableToolAllowedCaller"
+            description: The tool invocation context(s).
+          - type: "null"
+        require_approval:
+          anyOf:
+          - description: Specify which of the MCP server's tools require approval.
+            oneOf:
+            - type: object
+              title: MCP tool approval filter
+              description: >-
+                Specify which of the MCP server's tools require approval. Can be `always`, `never`, or a filter object associated with tools that require approval.
+              properties:
+                always:
+                  $ref: "#/components/schemas/MCPToolFilter"
+                never:
+                  $ref: "#/components/schemas/MCPToolFilter"
+              additionalProperties: false
+            - type: string
+              title: MCP tool approval setting
+              description: >-
+                Specify a single approval policy for all tools. One of `always` or `never`. When set to `always`, all tools will require approval. When set to `never`, all tools will not require approval.
+              enum:
+              - always
+              - never
+            default: always
+          - type: "null"
+        defer_loading:
+          type: boolean
+          description: |-
+            Whether this MCP tool is deferred and discovered via tool search.
+      required:
+      - type
+      - server_label
+    MCPToolFilter:
+      type: object
+      title: MCP tool filter
+      description: |-
+        A filter object to specify which tools are allowed.
+      properties:
+        tool_names:
+          type: array
+          title: MCP allowed tools
+          items:
+            type: string
+          description: List of allowed tool names.
+        read_only:
+          type: boolean
+          description: |-
+            Indicates whether or not a tool modifies data or is read-only. If an MCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint), it will match this filter.
+      required: []
+      additionalProperties: false
+    NoiseReductionType:
+      type: string
+      enum:
+      - near_field
+      - far_field
+      description: >-
+        Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.
+    Prompt:
+      anyOf:
+      - type: object
+        description: |-
+          Reference to a prompt template and its variables. [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            description: The unique identifier of the prompt template to use.
+          version:
+            anyOf:
+            - type: string
+              description: Optional version of the prompt template.
+            - type: "null"
+          variables:
+            $ref: "#/components/schemas/ResponsePromptVariables"
+      - type: "null"
+    PromptCacheBreakpointConfig:
+      properties:
+        mode:
+          type: string
+          enum:
+          - explicit
+          description: The breakpoint mode. Always `explicit`.
+          default: explicit
+          x-stainless-const: true
+      type: object
+      required:
+      - mode
+      title: Prompt cache breakpoint
+      description: Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+    RealtimeAudioFormats:
+      anyOf:
+      - type: object
+        title: PCM audio format
+        description: The PCM audio format. Only a 24kHz sample rate is supported.
+        properties:
+          type:
+            type: string
+            description: The audio format. Always `audio/pcm`.
+            enum:
+            - audio/pcm
+          rate:
+            type: integer
+            description: The sample rate of the audio. Always `24000`.
+            enum:
+            - 24000
+      - type: object
+        title: PCMU audio format
+        description: The G.711 μ-law format.
+        properties:
+          type:
+            type: string
+            description: The audio format. Always `audio/pcmu`.
+            enum:
+            - audio/pcmu
+      - type: object
+        title: PCMA audio format
+        description: The G.711 A-law format.
+        properties:
+          type:
+            type: string
+            description: The audio format. Always `audio/pcma`.
+            enum:
+            - audio/pcma
+    RealtimeCallCreateRequest:
+      title: Realtime call creation request
+      type: object
+      description: >-
+        Parameters required to initiate a realtime call and receive the SDP answer needed to complete a WebRTC peer connection. Provide an SDP offer generated by your client and optionally configure the session that will answer the call.
+      required:
+      - sdp
+      properties:
+        sdp:
+          type: string
+          description: WebRTC Session Description Protocol (SDP) offer generated by the caller.
+        session:
+          title: Session configuration
+          allOf:
+          - $ref: "#/components/schemas/RealtimeSessionCreateRequestGA"
+          description: |-
+            Optional session configuration to apply before the realtime session is created. Use the same parameters you would send in a [`create client secret`](/docs/api-reference/realtime-sessions/create-realtime-client-secret) request.
+      additionalProperties: false
+    RealtimeCallReferRequest:
+      title: Realtime call refer request
+      type: object
+      description: >-
+        Parameters required to transfer a SIP call to a new destination using the Realtime API.
+      required:
+      - target_uri
+      properties:
+        target_uri:
+          type: string
+          description: >-
+            URI that should appear in the SIP Refer-To header. Supports values like `tel:+14155550123` or `sip:agent@example.com`.
+          example: tel:+14155550123
+      additionalProperties: false
+    RealtimeCallRejectRequest:
+      title: Realtime call reject request
+      type: object
+      description: Parameters used to decline an incoming SIP call handled by the Realtime API.
+      properties:
+        status_code:
+          type: integer
+          description: >-
+            SIP response code to send back to the caller. Defaults to `603` (Decline) when omitted.
+          example: 486
+      additionalProperties: false
+    RealtimeCreateClientSecretRequest:
+      type: object
+      title: Realtime client secret creation request
+      description: >-
+        Create a session and client secret for the Realtime API. The request can specify either a realtime or a transcription session configuration. [Learn more about the Realtime API](/docs/guides/realtime).
+      properties:
+        expires_after:
+          type: object
+          title: Client secret expiration
+          description: >-
+            Configuration for the client secret expiration. Expiration refers to the time after which a client secret will no longer be valid for creating sessions. The session itself may continue after that time once started. A secret can be used to create multiple sessions until it expires.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - created_at
+              description: >-
+                The anchor point for the client secret expiration, meaning that `seconds` will be added to the `created_at` time of the client secret to produce an expiration timestamp. Only `created_at` is currently supported.
+              default: created_at
+              x-stainless-const: true
+            seconds:
+              type: integer
+              format: int64
+              description: >-
+                The number of seconds from the anchor point to the expiration. Select a value between `10` and `7200` (2 hours). This default to 600 seconds (10 minutes) if not specified.
+              minimum: 10
+              maximum: 7200
+              default: 600
+        session:
+          title: Session configuration
+          description: >-
+            Session configuration to use for the client secret. Choose either a realtime session or a transcription session.
+          oneOf:
+          - $ref: "#/components/schemas/RealtimeSessionCreateRequestGA"
+          - $ref: "#/components/schemas/RealtimeTranscriptionSessionCreateRequestGA"
+    RealtimeCreateClientSecretResponse:
+      type: object
+      title: Realtime session and client secret
+      description: |-
+        Response from creating a session and client secret for the Realtime API.
+      properties:
+        value:
+          type: string
+          description: The generated client secret value.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: Expiration timestamp for the client secret, in seconds since epoch.
+        session:
+          title: Session configuration
+          description: >-
+            The session configuration for either a realtime or transcription session.
+          oneOf:
+          - $ref: "#/components/schemas/RealtimeSessionCreateResponseGA"
+          - $ref: "#/components/schemas/RealtimeTranscriptionSessionCreateResponseGA"
+          discriminator:
+            propertyName: type
+      required:
+      - value
+      - expires_at
+      - session
+    RealtimeFunctionTool:
+      type: object
+      title: Function tool
+      properties:
+        type:
+          type: string
+          enum:
+          - function
+          description: The type of the tool, i.e. `function`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the function.
+        description:
+          type: string
+          description: |-
+            The description of the function, including guidance on when and how to call it, and guidance about what to tell the user when calling (if anything).
+        parameters:
+          type: object
+          description: Parameters of the function in JSON Schema.
+    RealtimeReasoning:
+      type: object
+      title: Realtime reasoning configuration
+      description: >-
+        Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
+      properties:
+        effort:
+          $ref: "#/components/schemas/RealtimeReasoningEffort"
+    RealtimeReasoningEffort:
+      type: string
+      description: >-
+        Constrains effort on reasoning for reasoning-capable Realtime models such as `gpt-realtime-2`.
+      enum:
+      - minimal
+      - low
+      - medium
+      - high
+      - xhigh
+      default: low
+    RealtimeSessionCreateRequestGA:
+      type: object
+      title: Realtime session configuration
+      description: Realtime session object configuration.
+      properties:
+        type:
+          type: string
+          description: >-
+            The type of session to create. Always `realtime` for the Realtime API.
+          enum:
+          - realtime
+          x-stainless-const: true
+        output_modalities:
+          type: array
+          description: >-
+            The set of modalities the model can respond with. It defaults to `["audio"]`, indicating that the model will respond with audio plus a transcript. `["text"]` can be used to make the model respond with text only. It is not possible to request both `text` and `audio` at the same time.
+          default:
+          - audio
+          items:
+            type: string
+            enum:
+            - text
+            - audio
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - gpt-realtime
+            - gpt-realtime-1.5
+            - gpt-realtime-2
+            - gpt-realtime-2.1
+            - gpt-realtime-2.1-mini
+            - gpt-realtime-2025-08-28
+            - gpt-4o-realtime-preview
+            - gpt-4o-realtime-preview-2024-10-01
+            - gpt-4o-realtime-preview-2024-12-17
+            - gpt-4o-realtime-preview-2025-06-03
+            - gpt-4o-mini-realtime-preview
+            - gpt-4o-mini-realtime-preview-2024-12-17
+            - gpt-realtime-mini
+            - gpt-realtime-mini-2025-10-06
+            - gpt-realtime-mini-2025-12-15
+            - gpt-audio-1.5
+            - gpt-audio-mini
+            - gpt-audio-mini-2025-10-06
+            - gpt-audio-mini-2025-12-15
+          description: |-
+            The Realtime model used for this session.
+        instructions:
+          type: string
+          description: >-
+            The default system instructions (i.e. system message) prepended to model calls. This field allows the client to guide the model on desired responses. The model can be instructed on response content and format, (e.g. "be extremely succinct", "act friendly", "here are examples of good responses") and on audio behavior (e.g. "talk quickly", "inject emotion into your voice", "laugh frequently"). The instructions are not guaranteed to be followed by the model, but they provide guidance to the model on the desired behavior.
+
+            Note that the server sets default instructions which will be used if this field is not set and are visible in the `session.created` event at the start of the session.
+        audio:
+          type: object
+          description: |-
+            Configuration for input and output audio.
+          properties:
+            input:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                  description: The format of the input audio.
+                transcription:
+                  description: >-
+                    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+                  $ref: "#/components/schemas/AudioTranscription"
+                noise_reduction:
+                  type: object
+                  default: null
+                  description: >-
+                    Configuration for input audio noise reduction. This can be set to `null` to turn off. Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model. Filtering the audio can improve VAD and turn detection accuracy (reducing false positives) and model performance by improving perception of the input audio.
+                  properties:
+                    type:
+                      $ref: "#/components/schemas/NoiseReductionType"
+                turn_detection:
+                  $ref: "#/components/schemas/RealtimeTurnDetection"
+            output:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                  description: The format of the output audio.
+                voice:
+                  $ref: "#/components/schemas/VoiceIdsOrCustomVoice"
+                  default: alloy
+                  description: >-
+                    The voice the model uses to respond. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Voice cannot be changed during the session once the model has responded with audio at least once. We recommend `marin` and `cedar` for best quality.
+                speed:
+                  type: number
+                  default: 1
+                  maximum: 1.5
+                  minimum: 0.25
+                  description: >-
+                    The speed of the model's spoken response as a multiple of the original speed. 1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
+
+                    This parameter is a post-processing adjustment to the audio after it is generated, it's also possible to prompt the model to speak faster or slower.
+        include:
+          type: array
+          items:
+            type: string
+            enum:
+            - item.input_audio_transcription.logprobs
+          description: >-
+            Additional fields to include in server outputs.
+
+            `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+        tracing:
+          title: Tracing Configuration
+          default: null
+          description: >-
+            Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once tracing is enabled for a session, the configuration cannot be modified.
+
+            `auto` will create a trace for the session with default values for the workflow name, group id, and metadata.
+          nullable: true
+          oneOf:
+          - type: string
+            title: auto
+            default: auto
+            description: >-
+              Enables tracing and sets default values for tracing configuration options. Always `auto`.
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: object
+            title: Tracing Configuration
+            description: |-
+              Granular configuration for tracing.
+            properties:
+              workflow_name:
+                type: string
+                description: >-
+                  The name of the workflow to attach to this trace. This is used to name the trace in the Traces Dashboard.
+              group_id:
+                type: string
+                description: |-
+                  The group id to attach to this trace to enable filtering and grouping in the Traces Dashboard.
+              metadata:
+                type: object
+                description: |-
+                  The arbitrary metadata to attach to this trace to enable filtering in the Traces Dashboard.
+        tools:
+          type: array
+          description: Tools available to the model.
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/RealtimeFunctionTool"
+            - $ref: "#/components/schemas/MCPTool"
+        tool_choice:
+          description: >-
+            How the model chooses tools. Provide one of the string modes or force a specific function/MCP tool.
+          oneOf:
+          - $ref: "#/components/schemas/ToolChoiceOptions"
+          - $ref: "#/components/schemas/ToolChoiceFunction"
+          - $ref: "#/components/schemas/ToolChoiceMCP"
+          default: auto
+        parallel_tool_calls:
+          type: boolean
+          description: >-
+            Whether the model may call multiple tools in parallel. Only supported by reasoning Realtime models such as `gpt-realtime-2`.
+        reasoning:
+          $ref: "#/components/schemas/RealtimeReasoning"
+        max_output_tokens:
+          oneOf:
+          - type: integer
+          - type: string
+            enum:
+            - inf
+            x-stainless-const: true
+          description: |-
+            Maximum number of output tokens for a single assistant response, inclusive of tool calls. Provide an integer between 1 and 4096 to limit output tokens, or `inf` for the maximum available tokens for a given model. Defaults to `inf`.
+        truncation:
+          $ref: "#/components/schemas/RealtimeTruncation"
+        prompt:
+          $ref: "#/components/schemas/Prompt"
+      required:
+      - type
+    RealtimeSessionCreateResponseGA:
+      type: object
+      title: Realtime session configuration object
+      description: |-
+        A Realtime session configuration object.
+      properties:
+        type:
+          type: string
+          description: >-
+            The type of session to create. Always `realtime` for the Realtime API.
+          enum:
+          - realtime
+          x-stainless-const: true
+        id:
+          type: string
+          description: >-
+            Unique identifier for the session that looks like `sess_1234567890abcdef`.
+        object:
+          type: string
+          description: The object type. Always `realtime.session`.
+          enum:
+          - realtime.session
+          x-stainless-const: true
+        expires_at:
+          type: integer
+          format: unixtime
+          description: Expiration timestamp for the session, in seconds since epoch.
+        output_modalities:
+          type: array
+          description: >-
+            The set of modalities the model can respond with. It defaults to `["audio"]`, indicating that the model will respond with audio plus a transcript. `["text"]` can be used to make the model respond with text only. It is not possible to request both `text` and `audio` at the same time.
+          default:
+          - audio
+          items:
+            type: string
+            enum:
+            - text
+            - audio
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - gpt-realtime
+            - gpt-realtime-1.5
+            - gpt-realtime-2
+            - gpt-realtime-2.1
+            - gpt-realtime-2.1-mini
+            - gpt-realtime-2025-08-28
+            - gpt-4o-realtime-preview
+            - gpt-4o-realtime-preview-2024-10-01
+            - gpt-4o-realtime-preview-2024-12-17
+            - gpt-4o-realtime-preview-2025-06-03
+            - gpt-4o-mini-realtime-preview
+            - gpt-4o-mini-realtime-preview-2024-12-17
+            - gpt-realtime-mini
+            - gpt-realtime-mini-2025-10-06
+            - gpt-realtime-mini-2025-12-15
+            - gpt-audio-1.5
+            - gpt-audio-mini
+            - gpt-audio-mini-2025-10-06
+            - gpt-audio-mini-2025-12-15
+          description: |-
+            The Realtime model used for this session.
+        instructions:
+          type: string
+          description: >-
+            The default system instructions (i.e. system message) prepended to model calls. This field allows the client to guide the model on desired responses. The model can be instructed on response content and format, (e.g. "be extremely succinct", "act friendly", "here are examples of good responses") and on audio behavior (e.g. "talk quickly", "inject emotion into your voice", "laugh frequently"). The instructions are not guaranteed to be followed by the model, but they provide guidance to the model on the desired behavior.
+
+            Note that the server sets default instructions which will be used if this field is not set and are visible in the `session.created` event at the start of the session.
+        audio:
+          type: object
+          description: |-
+            Configuration for input and output audio.
+          properties:
+            input:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                  description: The format of the input audio.
+                transcription:
+                  description: >-
+                    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+                  $ref: "#/components/schemas/AudioTranscriptionResponse"
+                noise_reduction:
+                  type: object
+                  default: null
+                  description: >-
+                    Configuration for input audio noise reduction. This can be set to `null` to turn off. Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model. Filtering the audio can improve VAD and turn detection accuracy (reducing false positives) and model performance by improving perception of the input audio.
+                  properties:
+                    type:
+                      $ref: "#/components/schemas/NoiseReductionType"
+                turn_detection:
+                  $ref: "#/components/schemas/RealtimeTurnDetection"
+            output:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                  description: The format of the output audio.
+                voice:
+                  $ref: "#/components/schemas/VoiceIdsShared"
+                  default: alloy
+                  description: >-
+                    The voice the model uses to respond. Voice cannot be changed during the session once the model has responded with audio at least once. Current voice options are `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. We recommend `marin` and `cedar` for best quality.
+                speed:
+                  type: number
+                  default: 1
+                  maximum: 1.5
+                  minimum: 0.25
+                  description: >-
+                    The speed of the model's spoken response as a multiple of the original speed. 1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
+
+                    This parameter is a post-processing adjustment to the audio after it is generated, it's also possible to prompt the model to speak faster or slower.
+        include:
+          type: array
+          items:
+            type: string
+            enum:
+            - item.input_audio_transcription.logprobs
+          description: >-
+            Additional fields to include in server outputs.
+
+            `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+        tracing:
+          anyOf:
+          - title: Tracing Configuration
+            default: null
+            description: >-
+              Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once tracing is enabled for a session, the configuration cannot be modified.
+
+              `auto` will create a trace for the session with default values for the workflow name, group id, and metadata.
+            oneOf:
+            - type: string
+              title: auto
+              default: auto
+              description: >-
+                Enables tracing and sets default values for tracing configuration options. Always `auto`.
+              enum:
+              - auto
+              x-stainless-const: true
+            - type: object
+              title: Tracing Configuration
+              description: |-
+                Granular configuration for tracing.
+              properties:
+                workflow_name:
+                  type: string
+                  description: >-
+                    The name of the workflow to attach to this trace. This is used to name the trace in the Traces Dashboard.
+                group_id:
+                  type: string
+                  description: >-
+                    The group id to attach to this trace to enable filtering and grouping in the Traces Dashboard.
+                metadata:
+                  type: object
+                  description: |-
+                    The arbitrary metadata to attach to this trace to enable filtering in the Traces Dashboard.
+          - type: "null"
+        tools:
+          type: array
+          description: Tools available to the model.
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/RealtimeFunctionTool"
+            - $ref: "#/components/schemas/MCPTool"
+        tool_choice:
+          description: >-
+            How the model chooses tools. Provide one of the string modes or force a specific function/MCP tool.
+          oneOf:
+          - $ref: "#/components/schemas/ToolChoiceOptions"
+          - $ref: "#/components/schemas/ToolChoiceFunction"
+          - $ref: "#/components/schemas/ToolChoiceMCP"
+          default: auto
+        reasoning:
+          $ref: "#/components/schemas/RealtimeReasoning"
+        max_output_tokens:
+          oneOf:
+          - type: integer
+          - type: string
+            enum:
+            - inf
+            x-stainless-const: true
+          description: |-
+            Maximum number of output tokens for a single assistant response, inclusive of tool calls. Provide an integer between 1 and 4096 to limit output tokens, or `inf` for the maximum available tokens for a given model. Defaults to `inf`.
+        truncation:
+          $ref: "#/components/schemas/RealtimeTruncation"
+        prompt:
+          $ref: "#/components/schemas/Prompt"
+      required:
+      - type
+      - id
+      - object
+    RealtimeTranscriptionSessionCreateRequestGA:
+      type: object
+      title: Realtime transcription session configuration
+      description: Realtime transcription session object configuration.
+      properties:
+        type:
+          type: string
+          description: >-
+            The type of session to create. Always `transcription` for transcription sessions.
+          enum:
+          - transcription
+          x-stainless-const: true
+        audio:
+          type: object
+          description: |-
+            Configuration for input and output audio.
+          properties:
+            input:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                transcription:
+                  description: >-
+                    Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+                  $ref: "#/components/schemas/AudioTranscription"
+                noise_reduction:
+                  type: object
+                  default: null
+                  description: >-
+                    Configuration for input audio noise reduction. This can be set to `null` to turn off. Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model. Filtering the audio can improve VAD and turn detection accuracy (reducing false positives) and model performance by improving perception of the input audio.
+                  properties:
+                    type:
+                      $ref: "#/components/schemas/NoiseReductionType"
+                turn_detection:
+                  $ref: "#/components/schemas/RealtimeTurnDetection"
+        include:
+          type: array
+          items:
+            type: string
+            enum:
+            - item.input_audio_transcription.logprobs
+          description: >-
+            Additional fields to include in server outputs.
+
+            `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+      required:
+      - type
+    RealtimeTranscriptionSessionCreateResponseGA:
+      type: object
+      title: Realtime transcription session configuration object
+      description: |-
+        A Realtime transcription session configuration object.
+      properties:
+        type:
+          type: string
+          description: >-
+            The type of session. Always `transcription` for transcription sessions.
+          enum:
+          - transcription
+          x-stainless-const: true
+        id:
+          type: string
+          description: >-
+            Unique identifier for the session that looks like `sess_1234567890abcdef`.
+        object:
+          type: string
+          description: The object type. Always `realtime.transcription_session`.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: Expiration timestamp for the session, in seconds since epoch.
+        include:
+          type: array
+          items:
+            type: string
+            enum:
+            - item.input_audio_transcription.logprobs
+          description: >-
+            Additional fields to include in server outputs.
+
+            - `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+        audio:
+          type: object
+          description: |-
+            Configuration for input audio for the session.
+          properties:
+            input:
+              type: object
+              properties:
+                format:
+                  $ref: "#/components/schemas/RealtimeAudioFormats"
+                transcription:
+                  description: |-
+                    Configuration of the transcription model.
+                  $ref: "#/components/schemas/AudioTranscriptionResponse"
+                noise_reduction:
+                  type: object
+                  description: |-
+                    Configuration for input audio noise reduction.
+                  properties:
+                    type:
+                      $ref: "#/components/schemas/NoiseReductionType"
+                turn_detection:
+                  description: >-
+                    Configuration for turn detection. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
+                  anyOf:
+                  - type: object
+                    description: >-
+                      Configuration for turn detection. Can be set to `null` to turn off. Server VAD means that the model will detect the start and end of speech based on audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
+                    properties:
+                      type:
+                        type: string
+                        description: >-
+                          Type of turn detection, only `server_vad` is currently supported.
+                      threshold:
+                        type: number
+                        description: >-
+                          Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A higher threshold will require louder audio to activate the model, and thus might perform better in noisy environments.
+                      prefix_padding_ms:
+                        type: integer
+                        description: >-
+                          Amount of audio to include before the VAD detected speech (in milliseconds). Defaults to 300ms.
+                      silence_duration_ms:
+                        type: integer
+                        description: >-
+                          Duration of silence to detect speech stop (in milliseconds). Defaults to 500ms. With shorter values the model will respond more quickly, but may jump in on short pauses from the user.
+                  - type: "null"
+      required:
+      - type
+      - id
+      - object
+    RealtimeTranslationClientSecretCreateRequest:
+      type: object
+      title: Realtime translation client secret creation request
+      description: |-
+        Create a translation session and client secret for the Realtime API.
+      properties:
+        expires_after:
+          type: object
+          title: Client secret expiration
+          description: >-
+            Configuration for the client secret expiration. Expiration refers to the time after which a client secret will no longer be valid for creating sessions. The session itself may continue after that time once started. A secret can be used to create multiple sessions until it expires.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - created_at
+              description: >-
+                The anchor point for the client secret expiration, meaning that `seconds` will be added to the `created_at` time of the client secret to produce an expiration timestamp. Only `created_at` is currently supported.
+              default: created_at
+              x-stainless-const: true
+            seconds:
+              type: integer
+              format: int64
+              description: >-
+                The number of seconds from the anchor point to the expiration. Select a value between `10` and `7200` (2 hours). This default to 600 seconds (10 minutes) if not specified.
+              minimum: 10
+              maximum: 7200
+              default: 600
+        session:
+          $ref: "#/components/schemas/RealtimeTranslationSessionCreateRequest"
+      required:
+      - session
+    RealtimeTranslationClientSecretCreateResponse:
+      type: object
+      title: Realtime translation session and client secret
+      description: >-
+        Response from creating a translation session and client secret for the Realtime API.
+      properties:
+        value:
+          type: string
+          description: The generated client secret value.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: Expiration timestamp for the client secret, in seconds since epoch.
+        session:
+          $ref: "#/components/schemas/RealtimeTranslationSession"
+      required:
+      - value
+      - expires_at
+      - session
+    RealtimeTranslationSession:
+      type: object
+      title: Realtime translation session
+      description: >-
+        A Realtime translation session. Translation sessions continuously translate input audio into the configured output language.
+      properties:
+        id:
+          type: string
+          description: >-
+            Unique identifier for the session that looks like `sess_1234567890abcdef`.
+        type:
+          type: string
+          enum:
+          - translation
+          description: >-
+            The session type. Always `translation` for Realtime translation sessions.
+          x-stainless-const: true
+        expires_at:
+          type: integer
+          format: unixtime
+          description: Expiration timestamp for the session, in seconds since epoch.
+        model:
+          type: string
+          description: >-
+            The Realtime translation model used for this session. This field is set at session creation and cannot be changed with `session.update`.
+        audio:
+          type: object
+          description: |-
+            Configuration for translation input and output audio.
+          properties:
+            input:
+              type: object
+              properties:
+                transcription:
+                  anyOf:
+                  - type: object
+                    description: >-
+                      Optional source-language transcription. When configured, the server emits `session.input_transcript.delta` events. Translation itself still runs from the input audio stream.
+                    properties:
+                      model:
+                        type: string
+                        description: The transcription model used for source transcript deltas.
+                    required:
+                    - model
+                  - type: "null"
+                noise_reduction:
+                  anyOf:
+                  - type: object
+                    description: |-
+                      Optional input noise reduction.
+                    properties:
+                      type:
+                        $ref: "#/components/schemas/NoiseReductionType"
+                    required:
+                    - type
+                  - type: "null"
+            output:
+              type: object
+              properties:
+                language:
+                  type: string
+                  description: >-
+                    Target language for translated output audio and transcript deltas.
+      required:
+      - id
+      - type
+      - expires_at
+      - model
+      - audio
+    RealtimeTranslationSessionCreateRequest:
+      type: object
+      title: Realtime translation session configuration
+      description: >-
+        Realtime translation session configuration. Translation sessions stream source audio in and translated audio plus transcript deltas out continuously.
+      properties:
+        model:
+          type: string
+          description: |-
+            The Realtime translation model used for this session.
+        audio:
+          type: object
+          description: |-
+            Configuration for translation input and output audio.
+          properties:
+            input:
+              type: object
+              properties:
+                transcription:
+                  anyOf:
+                  - type: object
+                    description: >-
+                      Optional source-language transcription. When configured, the server emits `session.input_transcript.delta` events. Translation itself still runs from the input audio stream.
+                    properties:
+                      model:
+                        type: string
+                        description: The transcription model to use for source transcript deltas.
+                    required:
+                    - model
+                  - type: "null"
+                noise_reduction:
+                  anyOf:
+                  - type: object
+                    description: >-
+                      Optional input noise reduction. Set to `null` to disable it.
+                    properties:
+                      type:
+                        $ref: "#/components/schemas/NoiseReductionType"
+                    required:
+                    - type
+                  - type: "null"
+            output:
+              type: object
+              properties:
+                language:
+                  type: string
+                  description: >-
+                    Target language for translated output audio and transcript deltas.
+      required:
+      - model
+    RealtimeTruncation:
+      title: Realtime Truncation Controls
+      description: >-
+        When the number of tokens in a conversation exceeds the model's input token limit, the conversation be truncated, meaning messages (starting from the oldest) will not be included in the model's context. A 32k context model with 4,096 max output tokens can only include 28,224 tokens in the context before truncation occurs.
+
+        Clients can configure truncation behavior to truncate with a lower max token limit, which is an effective way to control token usage and cost.
+
+        Truncation will reduce the number of cached tokens on the next turn (busting the cache), since messages are dropped from the beginning of the context. However, clients can also configure truncation to retain messages up to a fraction of the maximum context size, which will reduce the need for future truncations and thus improve the cache rate.
+
+        Truncation can be disabled entirely, which means the server will never truncate but would instead return an error if the conversation exceeds the model's input token limit.
+      oneOf:
+      - type: string
+        description: The truncation strategy to use for the session. `auto` is the default truncation strategy. `disabled` will disable truncation and emit errors when the conversation exceeds the input token limit.
+        enum:
+        - auto
+        - disabled
+      - type: object
+        title: Retention ratio truncation
+        description: Retain a fraction of the conversation tokens when the conversation exceeds the input token limit. This allows you to amortize truncations across multiple turns, which can help improve cached token usage.
+        properties:
+          type:
+            type: string
+            enum:
+            - retention_ratio
+            description: Use retention ratio truncation.
+            x-stainless-const: true
+          retention_ratio:
+            type: number
+            description: >-
+              Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
+            minimum: 0
+            maximum: 1
+          token_limits:
+            type: object
+            description: Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
+            properties:
+              post_instructions:
+                type: integer
+                description: Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+                minimum: 0
+        required:
+        - type
+        - retention_ratio
+    RealtimeTurnDetection:
+      anyOf:
+      - title: Realtime Turn Detection
+        description: >-
+          Configuration for turn detection, ether Server VAD or Semantic VAD. This can be set to `null` to turn off, in which case the client must manually trigger model response.
+
+          Server VAD means that the model will detect the start and end of speech based on audio volume and respond at the end of user speech.
+
+          Semantic VAD is more advanced and uses a turn detection model (in conjunction with VAD) to semantically estimate whether the user has finished speaking, then dynamically sets a timeout based on this probability. For example, if user audio trails off with "uhhm", the model will score a low probability of turn end and wait longer for the user to continue speaking. This can be useful for more natural conversations, but may have a higher latency.
+
+          For `gpt-realtime-whisper` transcription sessions, turn detection must be set to `null`; VAD is not supported.
+        oneOf:
+        - type: object
+          title: Server VAD
+          description: Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              default: server_vad
+              const: server_vad
+              description: >-
+                Type of turn detection, `server_vad` to turn on simple Server VAD.
+            threshold:
+              type: number
+              description: >-
+                Used only for `server_vad` mode. Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A higher threshold will require louder audio to activate the model, and thus might perform better in noisy environments.
+            prefix_padding_ms:
+              type: integer
+              description: >-
+                Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in milliseconds). Defaults to 300ms.
+            silence_duration_ms:
+              type: integer
+              description: >-
+                Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults to 500ms. With shorter values the model will respond more quickly, but may jump in on short pauses from the user.
+            create_response:
+              type: boolean
+              default: true
+              description: >-
+                Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
+
+                If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
+            interrupt_response:
+              type: boolean
+              default: true
+              description: >-
+                Whether or not to automatically interrupt (cancel) any ongoing response with output to the default conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
+
+                If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
+            idle_timeout_ms:
+              anyOf:
+              - type: integer
+                minimum: 5000
+                maximum: 30000
+                description: >-
+                  Optional timeout after which a model response will be triggered automatically. This is useful for situations in which a long pause from the user is unexpected, such as a phone call. The model will effectively prompt the user to continue the conversation based on the current context.
+
+                  The timeout value will be applied after the last model response's audio has finished playing, i.e. it's set to the `response.done` time plus audio playback duration.
+
+                  An `input_audio_buffer.timeout_triggered` event (plus events associated with the Response) will be emitted when the timeout is reached. Idle timeout is currently only supported for `server_vad` mode.
+              - type: "null"
+        - type: object
+          title: Semantic VAD
+          description: Server-side semantic turn detection which uses a model to determine when the user has finished speaking.
+          required:
+          - type
+          properties:
+            type:
+              type: string
+              const: semantic_vad
+              description: >-
+                Type of turn detection, `semantic_vad` to turn on Semantic VAD.
+            eagerness:
+              type: string
+              default: auto
+              enum:
+              - low
+              - medium
+              - high
+              - auto
+              description: >-
+                Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
+            create_response:
+              type: boolean
+              default: true
+              description: >-
+                Whether or not to automatically generate a response when a VAD stop event occurs.
+            interrupt_response:
+              type: boolean
+              default: true
+              description: >-
+                Whether or not to automatically interrupt any ongoing response with output to the default conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
+        discriminator:
+          propertyName: type
+      - type: "null"
+    ResponsePromptVariables:
+      anyOf:
+      - type: object
+        title: Prompt Variables
+        description: |-
+          Optional map of values to substitute in for variables in your prompt. The substitution values can either be strings, or other Response input types like images or files.
+        x-oaiExpandable: true
+        additionalProperties:
+          x-oaiExpandable: true
+          oneOf:
+          - type: string
+          - $ref: "#/components/schemas/InputTextContent"
+          - $ref: "#/components/schemas/InputImageContent"
+          - $ref: "#/components/schemas/InputFileContent"
+      - type: "null"
+    ToolChoiceFunction:
+      type: object
+      title: Function tool
+      description: |-
+        Use this option to force the model to call a specific function.
+      properties:
+        type:
+          type: string
+          enum:
+          - function
+          description: For function calling, the type is always `function`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the function to call.
+      required:
+      - type
+      - name
+    ToolChoiceMCP:
+      type: object
+      title: MCP tool
+      description: >-
+        Use this option to force the model to call a specific tool on a remote MCP server.
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp
+          description: For MCP tools, the type is always `mcp`.
+          x-stainless-const: true
+        server_label:
+          type: string
+          description: |-
+            The label of the MCP server to use.
+        name:
+          anyOf:
+          - type: string
+            description: |-
+              The name of the tool to call on the server.
+          - type: "null"
+      required:
+      - type
+      - server_label
+    ToolChoiceOptions:
+      type: string
+      title: Tool choice mode
+      description: >-
+        Controls which (if any) tool is called by the model.
+
+        `none` means the model will not call any tool and instead generates a message.
+
+        `auto` means the model can pick between generating a message or calling one or more tools.
+
+        `required` means the model must call one or more tools.
+      enum:
+      - none
+      - auto
+      - required
+    VoiceIdsOrCustomVoice:
+      title: Voice
+      description: |-
+        A built-in voice name or a custom voice reference.
+      anyOf:
+      - $ref: "#/components/schemas/VoiceIdsShared"
+      - type: object
+        description: Custom voice reference.
+        additionalProperties: false
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            description: The custom voice ID, e.g. `voice_1234`.
+            example: voice_1234
+    VoiceIdsShared:
+      example: ash
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - alloy
+        - ash
+        - ballad
+        - coral
+        - echo
+        - sage
+        - shimmer
+        - verse
+        - marin
+        - cedar
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
