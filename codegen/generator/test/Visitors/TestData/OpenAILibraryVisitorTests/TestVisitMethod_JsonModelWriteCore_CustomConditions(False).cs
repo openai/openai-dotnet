@@ -4,7 +4,7 @@ if ((format != "J"))
     throw new global::System.FormatException($"The model {nameof(global::Samples.ChatCompletionOptions)} does not support writing '{format}' format.");
 }
 // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-if ((Optional.IsDefined(Model) && (this._additionalBinaryDataProperties?.ContainsKey("model") != true)))
+if (Optional.IsDefined(Model))
 {
     writer.WritePropertyName("model"u8);
     writer.WriteStringValue(Model);
