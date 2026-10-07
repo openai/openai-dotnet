@@ -112,7 +112,7 @@ public class AssistantsMockTests : ClientTestBase
         }
     }
 
-     [Test]
+    [Test]
     public async Task CreateThreadAndRunStreamingDoesNotBufferTheResponse()
     {
         bool? bufferResponse = null;
@@ -155,7 +155,7 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(bufferResponse, Is.False);
     }
 
-   [Test]
+    [Test]
     public void StreamingRunSurfacesErrorEventAsException()
     {
         // The service can emit an "error" event mid-stream (for example, when an
