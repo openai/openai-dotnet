@@ -4,13 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ResponsesMessageItemResourceStatus")]
-public enum MessageStatus
-{
-    InProgress,
-    Completed,
-    Incomplete
-}
+// - Converted to extensible enum.
+[CodeGenType("MessageStatus")]
+public readonly partial struct MessageStatus { }

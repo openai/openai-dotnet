@@ -111,7 +111,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToComputerCallActionKind();
+                    kind = new ComputerCallActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

@@ -4,14 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("WebSearchToolCallItemResourceStatus")]
-public enum WebSearchCallStatus
-{
-    InProgress,
-    Searching,
-    Completed,
-    Failed
-}
+// - Converted to extensible enum.
+[CodeGenType("WebSearchCallStatus")]
+public readonly partial struct WebSearchCallStatus { }

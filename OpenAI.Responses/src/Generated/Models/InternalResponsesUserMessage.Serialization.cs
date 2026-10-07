@@ -128,7 +128,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             MessageStatus? status = default;
-            InternalResponsesMessageRole internalRole = default;
+            MessageRole role = default;
             IList<ResponseContentPart> internalContent = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -144,16 +144,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    status = prop.Value.GetString().ToMessageStatus();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
+                    role = new MessageRole(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -173,7 +169,7 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 status,
-                internalRole,
+                role,
                 internalContent);
         }
 

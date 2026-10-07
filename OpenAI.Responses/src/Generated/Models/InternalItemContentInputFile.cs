@@ -9,12 +9,12 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputFile : ResponseContentPart
     {
-        public InternalItemContentInputFile() : this(InternalItemContentType.InputFile, default, null, null, null, null)
+        public InternalItemContentInputFile() : this(ResponseContentPartKind.InputFile, default, null, null, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputFile(InternalItemContentType internalType, in JsonPatch patch, string fileId, Uri fileUrl, string filename, string internalFileData) : base(internalType, patch)
+        internal InternalItemContentInputFile(ResponseContentPartKind kind, in JsonPatch patch, string fileId, Uri fileUrl, string filename, string internalFileData) : base(kind, patch)
         {
             FileId = fileId;
             FileUrl = fileUrl;

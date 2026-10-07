@@ -4,21 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
+// - Converted to extensible enum.
 [CodeGenType("AnnotationType")]
-public enum ResponseMessageAnnotationKind
+public readonly partial struct ResponseMessageAnnotationKind
 {
-    [CodeGenMember("FileCitation")]
-    FileCitation,
-
     [CodeGenMember("UrlCitation")]
-    UriCitation,
-
-    [CodeGenMember("FilePath")]
-    FilePath,
-
-    [CodeGenMember("ContainerFileCitation")]
-    ContainerFileCitation
+    public static ResponseMessageAnnotationKind UriCitation { get; } = new ResponseMessageAnnotationKind(UrlCitationValue);
 }
