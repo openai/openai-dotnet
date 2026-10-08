@@ -179,6 +179,7 @@ namespace OpenAI.Chat {
         [Obsolete("This property is obsolete. Please use Tools instead.")]
         public IList<ChatFunction> Functions { get; }
         public bool? IncludeLogProbabilities { get; set; }
+        public bool? IncludeUsageInStreaming { get; set; }
         public IDictionary<int, int> LogitBiases { get; }
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
