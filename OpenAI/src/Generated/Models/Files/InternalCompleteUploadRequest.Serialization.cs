@@ -154,7 +154,7 @@ namespace OpenAI.Files
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalCompleteUploadRequest(partIds, md5, additionalBinaryDataProperties);
+            return new InternalCompleteUploadRequest(partIds ?? new ChangeTrackingList<string>(), md5, additionalBinaryDataProperties);
         }
     }
 }

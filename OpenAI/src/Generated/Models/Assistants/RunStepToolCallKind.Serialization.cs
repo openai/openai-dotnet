@@ -8,6 +8,7 @@ namespace OpenAI.Assistants
 {
     internal static partial class RunStepToolCallKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this RunStepToolCallKind value) => value switch
         {
             RunStepToolCallKind.CodeInterpreter => "code_interpreter",
@@ -15,7 +16,9 @@ namespace OpenAI.Assistants
             RunStepToolCallKind.Function => "function",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepToolCallKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static RunStepToolCallKind ToRunStepToolCallKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "code_interpreter"))
@@ -32,5 +35,6 @@ namespace OpenAI.Assistants
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepToolCallKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

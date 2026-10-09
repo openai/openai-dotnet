@@ -714,7 +714,7 @@ namespace OpenAI.Responses
                 createdAt,
                 error,
                 incompleteStatusDetails,
-                outputItems,
+                outputItems ?? new ChangeTrackingList<ResponseItem>(),
                 instructions,
                 usage,
                 parallelToolCallsEnabled,

@@ -19,14 +19,17 @@ namespace OpenAI.Conversations
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
         {
             Items = items.ToList();
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -35,12 +38,15 @@ namespace OpenAI.Conversations
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseItem> Items { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

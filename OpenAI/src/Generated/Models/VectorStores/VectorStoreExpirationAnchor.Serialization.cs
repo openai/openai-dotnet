@@ -8,12 +8,15 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreExpirationAnchorExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this VectorStoreExpirationAnchor value) => value switch
         {
             VectorStoreExpirationAnchor.LastActiveAt => "last_active_at",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static VectorStoreExpirationAnchor ToVectorStoreExpirationAnchor(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "last_active_at"))
@@ -22,5 +25,6 @@ namespace OpenAI.VectorStores
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

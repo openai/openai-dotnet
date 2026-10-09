@@ -197,7 +197,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
+            return new InternalFileSearchToolCallItemParam(kind, patch, queries ?? new ChangeTrackingList<string>(), results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -272,6 +272,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<FileSearchCallResult> ActiveResults()
         {
             if (!Optional.IsCollectionDefined(Results))
@@ -288,5 +289,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
                     throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -73,6 +75,7 @@ namespace OpenAI.Assistants
 
         InternalDotNetAssistantResponseFormatJsonSchema IJsonModel<InternalDotNetAssistantResponseFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalDotNetAssistantResponseFormatJsonSchema)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -83,6 +86,7 @@ namespace OpenAI.Assistants
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalDotNetAssistantResponseFormatJsonSchema(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalDotNetAssistantResponseFormatJsonSchema DeserializeInternalDotNetAssistantResponseFormatJsonSchema(JsonElement element, ModelReaderWriterOptions options)
         {

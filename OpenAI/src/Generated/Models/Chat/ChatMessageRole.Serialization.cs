@@ -8,6 +8,7 @@ namespace OpenAI.Chat
 {
     internal static partial class ChatMessageRoleExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ChatMessageRole value) => value switch
         {
             ChatMessageRole.System => "system",
@@ -18,6 +19,7 @@ namespace OpenAI.Chat
             ChatMessageRole.Function => "function",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatMessageRole value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public static ChatMessageRole ToChatMessageRole(this string value)
         {

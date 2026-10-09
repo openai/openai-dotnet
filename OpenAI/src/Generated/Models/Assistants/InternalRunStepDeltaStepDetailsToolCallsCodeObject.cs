@@ -14,12 +14,14 @@ namespace OpenAI.Assistants
             Index = index;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDeltaStepDetailsToolCallsCodeObject(RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Id = id;
             CodeInterpreter = codeInterpreter;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int Index { get; }
 

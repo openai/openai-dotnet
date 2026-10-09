@@ -186,7 +186,7 @@ namespace OpenAI.VectorStores
             }
             return new InternalListVectorStoreFilesResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<VectorStoreFile>(),
                 firstId,
                 lastId,
                 hasMore,

@@ -8,6 +8,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.VectorStores
 {
     internal partial class VectorStoreClientGetVectorStoresAsyncCollectionResultOfT : AsyncCollectionResult<VectorStore>
@@ -78,3 +79,4 @@ namespace OpenAI.VectorStores
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

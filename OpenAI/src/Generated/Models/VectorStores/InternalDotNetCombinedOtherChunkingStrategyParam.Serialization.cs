@@ -12,6 +12,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalDotNetCombinedOtherChunkingStrategyParam : FileChunkingStrategy, IJsonModel<InternalDotNetCombinedOtherChunkingStrategyParam>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCombinedOtherChunkingStrategyParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.VectorStores
                     throw new FormatException($"The model {nameof(InternalDotNetCombinedOtherChunkingStrategyParam)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -64,6 +66,7 @@ namespace OpenAI.VectorStores
 
         InternalDotNetCombinedOtherChunkingStrategyParam IJsonModel<InternalDotNetCombinedOtherChunkingStrategyParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalDotNetCombinedOtherChunkingStrategyParam)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCombinedOtherChunkingStrategyParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -74,6 +77,7 @@ namespace OpenAI.VectorStores
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalDotNetCombinedOtherChunkingStrategyParam(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalDotNetCombinedOtherChunkingStrategyParam DeserializeInternalDotNetCombinedOtherChunkingStrategyParam(JsonElement element, ModelReaderWriterOptions options)
         {

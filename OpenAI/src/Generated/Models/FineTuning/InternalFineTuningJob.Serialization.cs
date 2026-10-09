@@ -486,7 +486,7 @@ namespace OpenAI.FineTuning
                 baseModel,
                 @object,
                 organizationId,
-                resultFileIds,
+                resultFileIds ?? new ChangeTrackingList<string>(),
                 status,
                 billableTrainedTokenCount,
                 trainingFileId,

@@ -196,7 +196,7 @@ namespace OpenAI.Responses
                 status,
                 callId,
                 action,
-                pendingSafetyChecks);
+                pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

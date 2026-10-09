@@ -18,6 +18,7 @@ namespace OpenAI.Conversations
             Include = new ChangeTrackingList<IncludedConversationItemProperty>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalConversationItemCollectionOptions(string conversationId, int? limit, InternalConversationItemCollectionOrder? order, string after, IList<IncludedConversationItemProperty> include, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -28,6 +29,7 @@ namespace OpenAI.Conversations
             Include = include ?? new ChangeTrackingList<IncludedConversationItemProperty>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ConversationId { get; set; }
 
@@ -37,7 +39,9 @@ namespace OpenAI.Conversations
 
         public string After { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<IncludedConversationItemProperty> Include { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

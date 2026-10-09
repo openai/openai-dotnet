@@ -194,7 +194,7 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionMessageList(
                 @object,
-                data0,
+                data0 ?? new ChangeTrackingList<ChatCompletionMessageListDatum>(),
                 firstId,
                 lastId,
                 hasMore,
@@ -273,6 +273,7 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ChatCompletionMessageListDatum> ActiveData()
         {
             if (!Optional.IsCollectionDefined(Data))
@@ -289,5 +290,6 @@ namespace OpenAI.Chat
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

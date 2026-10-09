@@ -209,7 +209,7 @@ namespace OpenAI.Evals
                 name,
                 model,
                 samplingParams,
-                input,
+                input ?? new ChangeTrackingList<InternalEvalItem>(),
                 range ?? new ChangeTrackingList<float>(),
                 passThreshold);
         }

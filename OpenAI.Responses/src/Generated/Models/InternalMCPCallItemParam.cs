@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMCPCallItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, string name, string arguments, string output, string error) : base(kind, patch)
         {
             ServerLabel = serverLabel;
@@ -25,6 +26,7 @@ namespace OpenAI.Responses
             Error = error;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ServerLabel { get; set; }
 

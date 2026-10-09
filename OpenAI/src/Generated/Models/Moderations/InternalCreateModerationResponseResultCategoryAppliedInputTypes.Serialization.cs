@@ -540,19 +540,19 @@ namespace OpenAI.Moderations
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalCreateModerationResponseResultCategoryAppliedInputTypes(
-                hate,
-                hateThreatening,
-                harassment,
-                harassmentThreatening,
-                illicit,
-                illicitViolent,
-                selfHarm,
-                selfHarmIntent,
-                selfHarmInstructions,
-                sexual,
-                sexualMinors,
-                violence,
-                violenceGraphic,
+                hate ?? new ChangeTrackingList<string>(),
+                hateThreatening ?? new ChangeTrackingList<string>(),
+                harassment ?? new ChangeTrackingList<string>(),
+                harassmentThreatening ?? new ChangeTrackingList<string>(),
+                illicit ?? new ChangeTrackingList<string>(),
+                illicitViolent ?? new ChangeTrackingList<string>(),
+                selfHarm ?? new ChangeTrackingList<string>(),
+                selfHarmIntent ?? new ChangeTrackingList<string>(),
+                selfHarmInstructions ?? new ChangeTrackingList<string>(),
+                sexual ?? new ChangeTrackingList<string>(),
+                sexualMinors ?? new ChangeTrackingList<string>(),
+                violence ?? new ChangeTrackingList<string>(),
+                violenceGraphic ?? new ChangeTrackingList<string>(),
                 additionalBinaryDataProperties);
         }
     }

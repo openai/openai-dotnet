@@ -21,10 +21,14 @@ namespace OpenAI.Chat
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount, int audioTokenCount, int reasoningTokenCount, int rejectedPredictionTokenCount, in JsonPatch patch)
         {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             AcceptedPredictionTokenCount = acceptedPredictionTokenCount;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             AudioTokenCount = audioTokenCount;
             ReasoningTokenCount = reasoningTokenCount;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             RejectedPredictionTokenCount = rejectedPredictionTokenCount;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

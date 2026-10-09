@@ -277,10 +277,10 @@ namespace OpenAI.Responses
             }
             return new InternalLocalShellExecAction(
                 kind,
-                command,
+                command ?? new ChangeTrackingList<string>(),
                 timeoutMs,
                 workingDirectory,
-                env,
+                env ?? new ChangeTrackingDictionary<string, string>(),
                 user,
                 patch);
         }

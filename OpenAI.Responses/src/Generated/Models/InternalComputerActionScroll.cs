@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerActionScroll(ComputerCallActionKind kind, in JsonPatch patch, int x, int y, int scrollX, int scrollY) : base(kind, patch)
         {
             X = x;
@@ -25,6 +26,7 @@ namespace OpenAI.Responses
             ScrollY = scrollY;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int X { get; set; }
 

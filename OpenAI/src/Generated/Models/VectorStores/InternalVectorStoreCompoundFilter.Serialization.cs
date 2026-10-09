@@ -161,7 +161,7 @@ namespace OpenAI.VectorStores
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalVectorStoreCompoundFilter(kind, filters, additionalBinaryDataProperties);
+            return new InternalVectorStoreCompoundFilter(kind, filters ?? new ChangeTrackingList<BinaryData>(), additionalBinaryDataProperties);
         }
     }
 }

@@ -157,7 +157,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateRateLimitsUpdated(kind, patch, eventId, rateLimitDetails);
+            return new RealtimeServerUpdateRateLimitsUpdated(kind, patch, eventId, rateLimitDetails ?? new ChangeTrackingList<RealtimeRateLimitDetails>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
