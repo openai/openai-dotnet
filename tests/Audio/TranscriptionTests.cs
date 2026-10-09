@@ -359,14 +359,14 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             using FileStream inputStream = File.OpenRead(path);
-            Assert.ThrowsAsync<NotSupportedException>(async () =>
+            await Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
                 await client.TranscribeAudioStreamingAsync(inputStream, filename);
             });
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            Assert.ThrowsAsync<NotSupportedException>(async () =>
+            await Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
                 await client.TranscribeAudioStreamingAsync(path);
             });
