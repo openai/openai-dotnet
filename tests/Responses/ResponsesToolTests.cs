@@ -100,6 +100,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FunctionToolStreamingWorks()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -119,8 +120,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         FunctionCallResponseItem completedFunctionToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(options))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate argumentsDeltaUpdate)
             {
                 Assert.That(argumentsDeltaUpdate.Delta, Is.Not.Null);
@@ -237,6 +240,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CustomToolStreamingWorks()
     {
         const string toolName = "code_exec";
@@ -264,8 +268,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         CustomToolCallItem completedCustomToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(options))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
             {
                 Assert.That(inputDeltaUpdate.InputDelta, Is.Not.Null);
@@ -401,6 +407,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task MCPToolStreamingWorks()
     {
         string serverLabel = "microsoft-learn";
@@ -423,7 +430,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponsesClient client = GetProxiedResponsesClient();
 
-        AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
+        var responseUpdates = await client.CreateResponseStreamingAsync(options);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
         int mcpCallArgumentsDoneUpdateCount = 0;
@@ -436,8 +443,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         StringBuilder argumentsBuilder = new StringBuilder();
 
-        await foreach (StreamingResponseUpdate update in responseUpdates)
+        await foreach (var responseUpdate in responseUpdates)
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseMcpCallArgumentsDeltaUpdate mcpCallArgumentsDeltaUpdate)
             {
                 mcpCallArgumentsDeltaUpdateCount++;
@@ -749,6 +758,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FileSearchCallStreaming()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -793,9 +803,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string messageItemId = null;
         FileCitationMessageAnnotation fileCitationAnnotation = null;
 
-        await foreach (StreamingResponseUpdate update
+        await foreach (var responseUpdate
             in await client.CreateResponseStreamingAsync(responseOptions))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseFileSearchCallInProgressUpdate fileSearchCallInProgressUpdate)
             {
                 Assert.That(fileSearchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
@@ -1037,6 +1049,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CodeInterpreterToolStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1056,9 +1069,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         bool gotFinishedCodeInterpreterItem = false;
         StringBuilder codeBuilder = new StringBuilder();
 
-        await foreach (StreamingResponseUpdate update
+        await foreach (var responseUpdate
             in await client.CreateResponseStreamingAsync(responseOptions))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
         }
 
@@ -1071,6 +1086,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -1104,9 +1120,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             bool gotFinishedCodeInterpreterItem = false;
             StringBuilder codeBuilder = new StringBuilder();
 
-            await foreach (StreamingResponseUpdate update
+            await foreach (var responseUpdate
                 in await client.CreateResponseStreamingAsync(responseOptions))
             {
+                StreamingResponseUpdate update = responseUpdate.Data;
+
                 ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
             }
 
@@ -1281,6 +1299,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task ImageGenToolStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1310,9 +1329,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         bool gotCompletedImageGenItem = false;
         bool gotCompletedResponseItem = false;
 
-        await foreach (StreamingResponseUpdate update
+        await foreach (var responseUpdate
             in await client.CreateResponseStreamingAsync(responseOptions))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseImageGenerationCallPartialImageUpdate imageGenCallInPartialUpdate)
             {
                 Assert.That(imageGenCallInPartialUpdate.ItemId, Is.Not.Null.And.Not.Empty);
@@ -1673,6 +1694,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task WebSearchCallStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1702,8 +1724,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int completedCount = 0;
         bool gotFinishedSearchItem = false;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(createResponseOptions))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(createResponseOptions))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
             {
                 Assert.That(searchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);

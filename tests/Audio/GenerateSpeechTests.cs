@@ -85,6 +85,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingSpeechWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_TTS);
@@ -92,9 +93,11 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
         bool gotDelta = false;
         bool gotDone = false;
 
-        await foreach (StreamingSpeechUpdate update
+        await foreach (var speechUpdate
             in await client.GenerateSpeechStreamingAsync("Hello, world! This is a streaming test.", GeneratedSpeechVoice.Alloy))
         {
+            StreamingSpeechUpdate update = speechUpdate.Data;
+
             if (update is StreamingSpeechAudioDeltaUpdate deltaUpdate)
             {
                 Assert.That(deltaUpdate.AudioBytes, Is.Not.Null);

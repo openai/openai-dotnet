@@ -28,9 +28,8 @@ namespace OpenAI.Audio {
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncStreamingResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null);
-        public virtual Task<AsyncStreamingResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<StreamingSpeechUpdate>>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult GetVoiceConsent(string consentId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVoiceConsentAsync(string consentId, RequestOptions options = null);
         public virtual CollectionResult GetVoiceConsents(string after = null, int? limit = null, RequestOptions options = null);
@@ -45,11 +44,9 @@ namespace OpenAI.Audio {
         public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioTranscriptionOptions options = null);
         public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null);
-        public virtual AsyncStreamingResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncStreamingResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<AsyncStreamingResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<AsyncStreamingResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<StreamingAudioTranscriptionUpdate>>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<StreamingAudioTranscriptionUpdate>>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioTranslationOptions options = null);

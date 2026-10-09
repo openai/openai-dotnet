@@ -16,7 +16,7 @@ internal static class SseStreamingResult
 {
     private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
-    public static AsyncStreamingResult<T> Create<T>(
+    public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
@@ -35,7 +35,7 @@ internal static class SseStreamingResult
             additionalDisposalActions);
     }
 
-    public static AsyncStreamingResult<T> Create<T>(
+    public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
@@ -54,7 +54,7 @@ internal static class SseStreamingResult
                 additionalDisposalActions);
     }
 
-    public static AsyncStreamingResult<T> Create<T>(
+    public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken,
@@ -73,7 +73,7 @@ internal static class SseStreamingResult
             additionalDisposalActions);
     }
 
-    public static AsyncStreamingResult<T> Create<T>(
+    public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken,
@@ -82,13 +82,13 @@ internal static class SseStreamingResult
         Argument.AssertNotNull(response, nameof(response));
         Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
 
-        return AsyncStreamingResult.Create<T>(
+        return AsyncStreamingResult.Create<SseItem<T>>(
             response,
             (stream, producerCancellationToken) => EnumerateAsync(stream, eventDeserializerFunc, additionalDisposalActions, producerCancellationToken),
             cancellationToken);
     }
 
-    private static async IAsyncEnumerable<T> EnumerateAsync<T>(
+    private static async IAsyncEnumerable<SseItem<T>> EnumerateAsync<T>(
         Stream stream,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         IEnumerable<Action>? additionalDisposalActions,
@@ -108,7 +108,11 @@ internal static class SseStreamingResult
                 foreach (T update in eventDeserializerFunc(item))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    yield return update;
+                    yield return new SseItem<T>(update, item.EventType)
+                    {
+                        EventId = item.EventId,
+                        ReconnectionInterval = item.ReconnectionInterval,
+                    };
                 }
             }
         }
