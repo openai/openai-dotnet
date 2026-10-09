@@ -1,3 +1,4 @@
+#pragma warning disable OPENAI001
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
@@ -7,6 +8,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.ServerSentEvents;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -233,6 +235,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingIncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
@@ -241,14 +244,16 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         List<AudioTokenLogProbabilityDetails> streamedDeltaLogProbs = [];
 
-        await foreach (StreamingAudioTranscriptionUpdate update
-            in client.TranscribeAudioStreamingAsync(
+        await foreach (var transcriptionUpdate
+            in await client.TranscribeAudioStreamingAsync(
                 path,
                 new AudioTranscriptionOptions()
                 {
                     Includes = AudioTranscriptionIncludes.Logprobs,
                 }))
         {
+            StreamingAudioTranscriptionUpdate update = transcriptionUpdate.Data;
+
             if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
             {
                 Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Is.Not.Null);
@@ -294,6 +299,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -304,22 +310,24 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         FileStream inputStream = null;
 
-        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingResult<SseItem<StreamingAudioTranscriptionUpdate>> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             inputStream = File.OpenRead(path);
-            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(inputStream, filename);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            streamingUpdates = client.TranscribeAudioStreamingAsync(path);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(path);
         }
 
         StringBuilder deltaBuilder = new();
 
-        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+        await foreach (var transcriptionUpdate in streamingUpdates)
         {
+            StreamingAudioTranscriptionUpdate update = transcriptionUpdate.Data;
+
             if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
             {
                 deltaBuilder.Append(deltaUpdate.Delta);
@@ -339,9 +347,10 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
-    public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
+    public async Task StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
@@ -350,16 +359,16 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             using FileStream inputStream = File.OpenRead(path);
-            Assert.Throws<NotSupportedException>(() =>
+            await Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
-                _ = client.TranscribeAudioStreamingAsync(inputStream, filename);
+                await client.TranscribeAudioStreamingAsync(inputStream, filename);
             });
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            Assert.Throws<NotSupportedException>(() =>
+            await Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
-                _ = client.TranscribeAudioStreamingAsync(path);
+                await client.TranscribeAudioStreamingAsync(path);
             });
         }
     }
@@ -501,6 +510,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingDiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -516,23 +526,25 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
-        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingResult<SseItem<StreamingAudioTranscriptionUpdate>> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             inputStream = File.OpenRead(path);
-            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename, options);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(inputStream, filename, options);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            streamingUpdates = client.TranscribeAudioStreamingAsync(path, options);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(path, options);
         }
 
         string doneText = null;
         List<StreamingAudioTranscriptionTextSegmentUpdate> segments = [];
 
-        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+        await foreach (var transcriptionUpdate in streamingUpdates)
         {
+            StreamingAudioTranscriptionUpdate update = transcriptionUpdate.Data;
+
             if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
             {
                 Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);

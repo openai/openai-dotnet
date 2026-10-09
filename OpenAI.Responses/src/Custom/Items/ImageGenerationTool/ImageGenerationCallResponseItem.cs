@@ -6,6 +6,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ImageGenToolCallItemResource")]
 public partial class ImageGenerationCallResponseItem
 {
+
     // CUSTOM: Renamed.
     [CodeGenMember("OutputFormat")]
     public ImageGenerationToolOutputFileFormat? OutputFileFormat { get; set; }
