@@ -37,7 +37,7 @@ internal class OpenTelemetrySource
 
         if ((_isOTelEnabled) && (_useLatestSemanticConventions) && (loggingOptions?.EnableLogging != false))
         {
-            _exceptionLogger = loggingOptions?.LoggerFactory?.CreateLogger(loggerCategory);
+            _exceptionLogger = OpenTelemetryExceptionLogger.Create(loggingOptions?.LoggerFactory, loggerCategory);
         }
     }
 

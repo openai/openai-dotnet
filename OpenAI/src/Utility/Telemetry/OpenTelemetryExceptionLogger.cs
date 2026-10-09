@@ -8,6 +8,18 @@ internal static class OpenTelemetryExceptionLogger
 {
     private static readonly EventId s_exceptionEvent = new(1, "gen_ai.client.operation.exception");
 
+    public static ILogger Create(ILoggerFactory factory, string categoryName)
+    {
+        try
+        {
+            return factory?.CreateLogger(categoryName);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
     public static bool IsEnabled(ILogger logger)
     {
         try

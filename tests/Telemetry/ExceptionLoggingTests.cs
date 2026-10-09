@@ -139,6 +139,38 @@ public class ExceptionLoggingTests
         Assert.That(source.StartResponsesScope(new CreateResponseOptions { Model = "model" }), Is.Null);
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public void LoggerCreationFailureDoesNotBreakClientConstruction(bool responses)
+    {
+        using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
+        using var factory = new ThrowingLoggerFactory("create");
+
+        if (responses)
+        {
+            var pipeline = ClientPipeline.Create(new ResponsesClientOptions());
+            var options = new ResponsesClientOptions
+            {
+                Endpoint = s_endpoint,
+                ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = factory },
+            };
+
+            Assert.DoesNotThrow(() => new SuppliedResponsesClient(pipeline, options));
+        }
+        else
+        {
+            var pipeline = ClientPipeline.Create(new OpenAIClientOptions());
+            var options = new OpenAIClientOptions
+            {
+                Endpoint = s_endpoint,
+                ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = factory },
+            };
+
+            Assert.DoesNotThrow(() => new SuppliedChatClient(pipeline, options));
+        }
+    }
+
     [Test]
     public void LoggerEnablementFailureDoesNotEscape()
     {
@@ -651,7 +683,10 @@ public class ExceptionLoggingTests
         {
         }
 
-        public ILogger CreateLogger(string categoryName) => new ThrowingLogger(phase);
+        public ILogger CreateLogger(string categoryName)
+            => phase == "create"
+                ? throw new InvalidOperationException("logger creation failure")
+                : new ThrowingLogger(phase);
 
         public void Dispose()
         {
