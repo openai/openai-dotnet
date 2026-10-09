@@ -635,6 +635,224 @@ public partial class AudioClient
 
     #endregion
 
+    #region Multipart content type overloads
+
+    /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioAsync(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<AudioTranscription> TranscribeAudio(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudio(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null)
+        => TranscribeAudioAsync(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<AudioTranscription> TranscribeAudio(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null)
+        => TranscribeAudio(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Transcribes audio with diarization and an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioDiarizedAsync(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Transcribes audio with diarization and an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioDiarized(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Transcribes audio with diarization and an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null)
+        => TranscribeAudioDiarizedAsync(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Transcribes audio with diarization and an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null)
+        => TranscribeAudioDiarized(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Streams an audio transcription with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioStreamingAsync(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Streams an audio transcription with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioStreamingAsync(
+            audioFilePath,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Streams an audio transcription with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioStreaming(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Streams an audio transcription with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranscriptionOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranscribeAudioStreaming(
+            audioFilePath,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranslationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranslateAudioAsync(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<AudioTranslation> TranslateAudio(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType contentType,
+        AudioTranslationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => TranslateAudio(
+            audio,
+            audioFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranslationOptions options = null)
+        => TranslateAudioAsync(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<AudioTranslation> TranslateAudio(
+        string audioFilePath,
+        AudioFileContentType contentType,
+        AudioTranslationOptions options = null)
+        => TranslateAudio(
+            audioFilePath,
+            WithContentType(options, contentType));
+
+    #endregion
+
+    private static AudioTranscriptionOptions WithContentType(
+        AudioTranscriptionOptions options,
+        AudioFileContentType contentType)
+    {
+        AudioTranscriptionOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.FileContentType = contentType;
+        return copiedOptions;
+    }
+
+    private static AudioTranslationOptions WithContentType(
+        AudioTranslationOptions options,
+        AudioFileContentType contentType)
+    {
+        AudioTranslationOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.FileContentType = contentType;
+        return copiedOptions;
+    }
+
     private void CreateSpeechGenerationOptions(string text, GeneratedSpeechVoice voice, ref SpeechGenerationOptions options)
     {
         options.Input = text;

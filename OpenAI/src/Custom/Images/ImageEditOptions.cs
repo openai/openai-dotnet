@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
@@ -18,6 +19,8 @@ public partial class ImageEditOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("Image")]
     internal BinaryData Image { get; set; }
+
+    internal ImageFileContentType? ImageContentType { get; set; }
 
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("Mask")]
@@ -83,11 +86,16 @@ public partial class ImageEditOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(
+        Stream image,
+        string imageFilename,
+        Stream mask,
+        string maskFilename,
+        ImageFileContentType? imageContentType = null)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename);
+        content.Add(image, "image", imageFilename, (imageContentType ?? ImageContentType)?.ToString());
 
         content.Add(Prompt, "prompt");
 
@@ -157,5 +165,21 @@ public partial class ImageEditOptions
         }
 
         return content;
+    }
+
+    internal ImageEditOptions GetClone()
+    {
+        ImageEditOptions copiedOptions = (ImageEditOptions)MemberwiseClone();
+
+        if (SerializedAdditionalRawData is not null)
+        {
+            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
+            {
+                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
+            }
+        }
+
+        return copiedOptions;
     }
 }

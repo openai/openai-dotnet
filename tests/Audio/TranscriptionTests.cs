@@ -51,6 +51,20 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task TranscriptionWithExplicitContentTypeAndUnicodeFilenameWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
+        using FileStream inputStream = File.OpenRead(Path.Join("Assets", "audio_hello_world.mp3"));
+
+        AudioTranscription transcription = await client.TranscribeAudioAsync(
+            inputStream,
+            "音声.mp3",
+            AudioFileContentType.Mpeg);
+
+        Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
+    }
+
+    [RecordedTest]
     [TestCase(AudioTimestampGranularities.Default)]
     [TestCase(AudioTimestampGranularities.Word)]
     [TestCase(AudioTimestampGranularities.Segment)]

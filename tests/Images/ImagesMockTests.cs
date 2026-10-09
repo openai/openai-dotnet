@@ -6,6 +6,8 @@ using System;
 using System.ClientModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -152,6 +154,102 @@ public class ImagesMockTests : ClientTestBase
 
         Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
+    }
+
+    [Test]
+    public async Task GenerateImageEditSendsExplicitImageContentType()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        ImageEditOptions options = new();
+
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
+            await client.GenerateImageEditAsync(
+                image,
+                "ファイル.png",
+                ImageFileContentType.Png,
+                "prompt",
+                mask,
+                "маска.png",
+                options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: image/png"));
+
+        requestBody = null;
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
+            await client.GenerateImageEditAsync(
+                image,
+                "image.custom",
+                "image/x-future",
+                "prompt",
+                mask,
+                "mask.png",
+                options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: image/x-future"));
+
+        requestBody = null;
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
+            await client.GenerateImageEditAsync(image, "image.png", "prompt", mask, "mask.png", options);
+        }
+
+        Assert.That(requestBody, Does.Not.Contain("Content-Type: image/png"));
+    }
+
+    [Test]
+    public async Task GenerateImageEditProtocolApiSupportsExplicitContentType()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+            })
+            {
+                ExpectSyncPipeline = false
+            }
+        };
+        ImageClient client = new("gpt-image-2", s_fakeCredential, clientOptions);
+        await using Stream image = new MemoryStream([0x01]);
+        using var imagePart = new StreamContent(image);
+        imagePart.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+        using var form = new MultipartFormDataContent();
+        form.Add(imagePart, "image", "ファイル.png");
+        form.Add(new StringContent("Change the background to white"), "prompt");
+        form.Add(new StringContent("gpt-image-2"), "model");
+        string multipartContentType = form.Headers.ContentType.ToString();
+        await using Stream body = await form.ReadAsStreamAsync();
+        using BinaryContent content = BinaryContent.Create(body);
+
+        ClientResult result = await client.GenerateImageEditsAsync(content, multipartContentType);
+
+        Assert.That(result.GetRawResponse().Status, Is.EqualTo(200));
+        Assert.That(requestBody, Does.Contain("Content-Type: image/png"));
     }
 
     [Test]

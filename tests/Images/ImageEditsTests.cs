@@ -52,6 +52,23 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     }
 
     [RecordedTest]
+    public async Task GenerateImageEditWithExplicitContentTypeAndUnicodeFilenameWorks()
+    {
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
+        using FileStream imageFile = File.OpenRead(Path.Join("Assets", "images_empty_room_with_mask.png"));
+
+        GeneratedImage image = await client.GenerateImageEditAsync(
+            imageFile,
+            "画像.png",
+            ImageFileContentType.Png,
+            CatPrompt,
+            new ImageEditOptions { Size = GeneratedImageSize.W1024xH1024 });
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+    }
+
+    [RecordedTest]
     public void GenerateImageEditFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient(TestModel.Images, new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
