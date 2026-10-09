@@ -469,42 +469,6 @@ public class ImagesMockTests : ClientTestBase
     }
 
     [Test]
-    public async Task GenerateImageVariationSendsExplicitContentType()
-    {
-        string requestBody = null;
-        OpenAIClientOptions clientOptions = new()
-        {
-            Transport = new MockPipelineTransport(message =>
-            {
-                using MemoryStream stream = new();
-                message.Request.Content.WriteTo(stream);
-                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
-            })
-            {
-                ExpectSyncPipeline = !IsAsync
-            }
-        };
-        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
-        ImageVariationOptions options = new();
-
-        using (Stream image = new MemoryStream([0x01]))
-        {
-            await client.GenerateImageVariationAsync(image, "ファイル.webp", ImageFileContentType.Webp, options);
-        }
-
-        Assert.That(requestBody, Does.Contain("Content-Type: image/webp"));
-
-        requestBody = null;
-        using (Stream image = new MemoryStream([0x01]))
-        {
-            await client.GenerateImageVariationAsync(image, "image.webp", options);
-        }
-
-        Assert.That(requestBody, Does.Not.Contain("Content-Type: image/webp"));
-    }
-
-    [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationsDeserializesCreatedAt(ImageSourceKind imageSourceKind)
     {

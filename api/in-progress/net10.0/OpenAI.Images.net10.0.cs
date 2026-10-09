@@ -228,31 +228,15 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateImagesStreamingAsync(BinaryContent content, RequestOptions options = null);
-        [Experimental("OPENAI001")]
-        public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageFileContentType contentType, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("OPENAI001")]
-        public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageFileContentType contentType, ImageVariationOptions options = null);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null);
-        [Experimental("OPENAI001")]
-        public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageFileContentType contentType, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("OPENAI001")]
-        public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageFileContentType contentType, ImageVariationOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageVariationOptions options = null);
         public virtual ClientResult GenerateImageVariations(BinaryContent content, string contentType, RequestOptions options = null);
-        [Experimental("OPENAI001")]
-        public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, ImageFileContentType contentType, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("OPENAI001")]
-        public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, ImageFileContentType contentType, int imageCount, ImageVariationOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, int imageCount, ImageVariationOptions options = null);
         public virtual Task<ClientResult> GenerateImageVariationsAsync(BinaryContent content, string contentType, RequestOptions options = null);
-        [Experimental("OPENAI001")]
-        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, ImageFileContentType contentType, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("OPENAI001")]
-        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, ImageFileContentType contentType, int imageCount, ImageVariationOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
     [Experimental("SCME0002")]

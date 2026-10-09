@@ -1126,110 +1126,6 @@ public partial class ImageClient
             imageCount,
             WithContentType(options, imageContentType));
 
-    /// <summary> Generates an image variation with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
-        Stream image,
-        string imageFilename,
-        ImageFileContentType contentType,
-        ImageVariationOptions options = null,
-        CancellationToken cancellationToken = default)
-        => GenerateImageVariationAsync(
-            image,
-            imageFilename,
-            WithContentType(options, contentType),
-            cancellationToken);
-
-    /// <summary> Generates an image variation with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual ClientResult<GeneratedImage> GenerateImageVariation(
-        Stream image,
-        string imageFilename,
-        ImageFileContentType contentType,
-        ImageVariationOptions options = null,
-        CancellationToken cancellationToken = default)
-        => GenerateImageVariation(
-            image,
-            imageFilename,
-            WithContentType(options, contentType),
-            cancellationToken);
-
-    /// <summary> Generates an image variation with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
-        string imageFilePath,
-        ImageFileContentType contentType,
-        ImageVariationOptions options = null)
-        => GenerateImageVariationAsync(
-            imageFilePath,
-            WithContentType(options, contentType));
-
-    /// <summary> Generates an image variation with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual ClientResult<GeneratedImage> GenerateImageVariation(
-        string imageFilePath,
-        ImageFileContentType contentType,
-        ImageVariationOptions options = null)
-        => GenerateImageVariation(
-            imageFilePath,
-            WithContentType(options, contentType));
-
-    /// <summary> Generates image variations with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
-        Stream image,
-        string imageFilename,
-        ImageFileContentType contentType,
-        int imageCount,
-        ImageVariationOptions options = null,
-        CancellationToken cancellationToken = default)
-        => GenerateImageVariationsAsync(
-            image,
-            imageFilename,
-            imageCount,
-            WithContentType(options, contentType),
-            cancellationToken);
-
-    /// <summary> Generates image variations with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
-        Stream image,
-        string imageFilename,
-        ImageFileContentType contentType,
-        int imageCount,
-        ImageVariationOptions options = null,
-        CancellationToken cancellationToken = default)
-        => GenerateImageVariations(
-            image,
-            imageFilename,
-            imageCount,
-            WithContentType(options, contentType),
-            cancellationToken);
-
-    /// <summary> Generates image variations with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
-        string imageFilePath,
-        ImageFileContentType contentType,
-        int imageCount,
-        ImageVariationOptions options = null)
-        => GenerateImageVariationsAsync(
-            imageFilePath,
-            imageCount,
-            WithContentType(options, contentType));
-
-    /// <summary> Generates image variations with an explicit image media type. </summary>
-    [Experimental("OPENAI001")]
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
-        string imageFilePath,
-        ImageFileContentType contentType,
-        int imageCount,
-        ImageVariationOptions options = null)
-        => GenerateImageVariations(
-            imageFilePath,
-            imageCount,
-            WithContentType(options, contentType));
-
     #endregion
 
     private static ImageEditOptions WithContentType(
@@ -1238,15 +1134,6 @@ public partial class ImageClient
     {
         ImageEditOptions copiedOptions = options is null ? new() : options.GetClone();
         copiedOptions.ImageContentType = imageContentType;
-        return copiedOptions;
-    }
-
-    private static ImageVariationOptions WithContentType(
-        ImageVariationOptions options,
-        ImageFileContentType contentType)
-    {
-        ImageVariationOptions copiedOptions = options is null ? new() : options.GetClone();
-        copiedOptions.ImageContentType = contentType;
         return copiedOptions;
     }
 

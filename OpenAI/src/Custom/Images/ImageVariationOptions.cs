@@ -1,6 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace OpenAI.Images;
@@ -18,8 +17,6 @@ public partial class ImageVariationOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("Image")]
     internal BinaryData Image { get; set; }
-
-    internal ImageFileContentType? ImageContentType { get; set; }
 
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("N")]
@@ -43,14 +40,11 @@ public partial class ImageVariationOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultiPartFormDataBinaryContent ToMultipartContent(
-        Stream image,
-        string imageFilename,
-        ImageFileContentType? contentType = null)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename, (contentType ?? ImageContentType)?.ToSerialString());
+        content.Add(image, "image", imageFilename);
 
         if (EndUserId is not null)
         {
@@ -78,21 +72,5 @@ public partial class ImageVariationOptions
         }
 
         return content;
-    }
-
-    internal ImageVariationOptions GetClone()
-    {
-        ImageVariationOptions copiedOptions = (ImageVariationOptions)MemberwiseClone();
-
-        if (SerializedAdditionalRawData is not null)
-        {
-            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
-            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
-            {
-                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
-            }
-        }
-
-        return copiedOptions;
     }
 }
