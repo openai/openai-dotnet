@@ -346,7 +346,7 @@ public class ExceptionLoggingTests
         }
         else
         {
-            var exception = Assert.ThrowsAsync<ClientResultException>(Execute);
+            var exception = await Assert.ThrowsAsync<ClientResultException>(Execute);
             Assert.That(exception.Status, Is.EqualTo(status));
         }
 
@@ -389,7 +389,7 @@ public class ExceptionLoggingTests
     [TestCase("stream", true, false)]
     [TestCase("stream", false, true)]
     [TestCase("stream", true, true)]
-    public void ClientFailuresLogOnceAfterRetries(string api, bool useAsync, bool suppliedPipeline)
+    public async Task ClientFailuresLogOnceAfterRetries(string api, bool useAsync, bool suppliedPipeline)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -420,7 +420,7 @@ public class ExceptionLoggingTests
 
             if (useAsync)
             {
-                Assert.ThrowsAsync<AggregateException>(async () => await client.CompleteChatAsync([new UserChatMessage("input")]));
+                await Assert.ThrowsAsync<AggregateException>(async () => await client.CompleteChatAsync([new UserChatMessage("input")]));
             }
             else
             {
@@ -445,7 +445,7 @@ public class ExceptionLoggingTests
             {
                 if (useAsync)
                 {
-                    Assert.ThrowsAsync<AggregateException>(async () =>
+                    await Assert.ThrowsAsync<AggregateException>(async () =>
                     {
                         await foreach (var update in client.CreateResponseStreamingAsync(request))
                         {
@@ -459,7 +459,7 @@ public class ExceptionLoggingTests
             }
             else if (useAsync)
             {
-                Assert.ThrowsAsync<AggregateException>(async () => await client.CreateResponseAsync(request));
+                await Assert.ThrowsAsync<AggregateException>(async () => await client.CreateResponseAsync(request));
             }
             else
             {
@@ -531,7 +531,7 @@ public class ExceptionLoggingTests
 
             if (failRead)
             {
-                Assert.ThrowsAsync<IOException>(Consume);
+                await Assert.ThrowsAsync<IOException>(Consume);
             }
             else
             {
@@ -607,7 +607,7 @@ public class ExceptionLoggingTests
 
         if (useAsync)
         {
-            Assert.ThrowsAsync<IOException>(async () => await retained.ContentStream.ReadExactlyAsync(buffer.AsMemory()));
+            await Assert.ThrowsAsync<IOException>(async () => await retained.ContentStream.ReadExactlyAsync(buffer.AsMemory()));
         }
         else
         {

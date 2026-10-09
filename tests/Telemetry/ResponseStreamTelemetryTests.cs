@@ -72,11 +72,11 @@ public class ResponseStreamTelemetryTests
 
         if (ending == "read-error")
         {
-            Assert.ThrowsAsync<IOException>(Read);
+            await Assert.ThrowsAsync<IOException>(Read);
         }
         else if (ending == "cancel")
         {
-            Assert.ThrowsAsync<OperationCanceledException>(Read);
+            await Assert.ThrowsAsync<OperationCanceledException>(Read);
         }
         else if (ending == "eof")
         {
@@ -85,7 +85,7 @@ public class ResponseStreamTelemetryTests
 
         if (ending == "dispose-error")
         {
-            Assert.ThrowsAsync<IOException>(Dispose);
+            await Assert.ThrowsAsync<IOException>(Dispose);
         }
         else
         {

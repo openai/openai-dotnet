@@ -546,7 +546,7 @@ public class ResponsesTelemetryTests
             if (cancel)
             {
                 cancellation.Cancel();
-                Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
+                await Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
             }
             await enumerator.DisposeAsync();
             await enumerator.DisposeAsync();
@@ -752,7 +752,7 @@ public class ResponsesTelemetryTests
 
     [TestCase(false)]
     [TestCase(true)]
-    public void RawStreamingSendFailureRecordsOneErrorAndRestoresAmbientActivity(bool useAsync)
+    public async Task RawStreamingSendFailureRecordsOneErrorAndRestoresAmbientActivity(bool useAsync)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -766,7 +766,7 @@ public class ResponsesTelemetryTests
 
         if (useAsync)
         {
-            Assert.ThrowsAsync<IOException>(async () =>
+            await Assert.ThrowsAsync<IOException>(async () =>
             {
                 await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
                 {
@@ -988,7 +988,7 @@ public class ResponsesTelemetryTests
         await stream.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.That(Activity.Current, Is.SameAs(parent));
         cancellation.Cancel();
-        Assert.ThrowsAsync<TaskCanceledException>(async () => await pendingMove);
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await pendingMove);
         await enumerator.DisposeAsync();
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities.Single().Status, Is.EqualTo(ActivityStatusCode.Error));

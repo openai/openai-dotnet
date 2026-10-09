@@ -474,7 +474,7 @@ public class LatestSpanTelemetryTests
         }
         else
         {
-            Assert.ThrowsAsync<IOException>(Consume);
+            await Assert.ThrowsAsync<IOException>(Consume);
         }
 
         var activity = activities.Activities.Single();
