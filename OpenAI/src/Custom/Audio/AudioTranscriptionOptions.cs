@@ -70,7 +70,7 @@ public partial class AudioTranscriptionOptions
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(audio, "file", audioFilename, (contentType ?? FileContentType)?.ToSerialString());
+        content.Add(audio, "file", audioFilename, (contentType ?? FileContentType)?.ToString());
         content.Add(Model.ToString(), "model");
 
         if (Language is not null)

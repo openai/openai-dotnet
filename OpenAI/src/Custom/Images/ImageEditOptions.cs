@@ -95,7 +95,7 @@ public partial class ImageEditOptions
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename, (imageContentType ?? ImageContentType)?.ToSerialString());
+        content.Add(image, "image", imageFilename, (imageContentType ?? ImageContentType)?.ToString());
 
         content.Add(Prompt, "prompt");
 

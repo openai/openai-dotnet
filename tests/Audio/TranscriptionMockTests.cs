@@ -179,6 +179,14 @@ public partial class TranscriptionMockTests : ClientTestBase
         requestBody = null;
         using (Stream audio = new MemoryStream([0x01]))
         {
+            await client.TranscribeAudioAsync(audio, "audio.custom", "audio/x-future", options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: audio/x-future"));
+
+        requestBody = null;
+        using (Stream audio = new MemoryStream([0x01]))
+        {
             await client.TranscribeAudioAsync(audio, "audio.mp3", options);
         }
 

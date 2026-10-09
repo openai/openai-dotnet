@@ -127,13 +127,24 @@ namespace OpenAI.Audio {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
-    public enum AudioFileContentType {
-        Flac = 0,
-        Mpeg = 1,
-        Mp4 = 2,
-        Ogg = 3,
-        Wav = 4,
-        Webm = 5
+    public readonly partial struct AudioFileContentType : IEquatable<AudioFileContentType> {
+        public AudioFileContentType(string value);
+        public static AudioFileContentType Flac { get; }
+        public static AudioFileContentType Mp4 { get; }
+        public static AudioFileContentType Mpeg { get; }
+        public static AudioFileContentType Ogg { get; }
+        public static AudioFileContentType Wav { get; }
+        public static AudioFileContentType Webm { get; }
+        public readonly bool Equals(AudioFileContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AudioFileContentType left, AudioFileContentType right);
+        public static implicit operator AudioFileContentType(string value);
+        public static implicit operator AudioFileContentType?(string value);
+        public static bool operator !=(AudioFileContentType left, AudioFileContentType right);
+        public override readonly string ToString();
     }
     [Flags]
     public enum AudioTimestampGranularities {

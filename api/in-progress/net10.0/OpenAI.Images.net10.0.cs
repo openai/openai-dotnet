@@ -261,10 +261,21 @@ namespace OpenAI.Images {
         public GeneratedImageSize? Size { get; set; }
     }
     [Experimental("OPENAI001")]
-    public enum ImageFileContentType {
-        Png = 0,
-        Jpeg = 1,
-        Webp = 2
+    public readonly partial struct ImageFileContentType : IEquatable<ImageFileContentType> {
+        public ImageFileContentType(string value);
+        public static ImageFileContentType Jpeg { get; }
+        public static ImageFileContentType Png { get; }
+        public static ImageFileContentType Webp { get; }
+        public readonly bool Equals(ImageFileContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageFileContentType left, ImageFileContentType right);
+        public static implicit operator ImageFileContentType(string value);
+        public static implicit operator ImageFileContentType?(string value);
+        public static bool operator !=(ImageFileContentType left, ImageFileContentType right);
+        public override readonly string ToString();
     }
     public class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>, IPersistableModel<ImageGenerationOptions> {
         [Experimental("OPENAI001")]

@@ -27,7 +27,7 @@ public partial class AudioTranslationOptions
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(audio, "file", audioFilename, (contentType ?? FileContentType)?.ToSerialString());
+        content.Add(audio, "file", audioFilename, (contentType ?? FileContentType)?.ToString());
         content.Add(Model.ToString(), "model");
 
         if (Prompt is not null)

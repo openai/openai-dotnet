@@ -195,6 +195,22 @@ public class ImagesMockTests : ClientTestBase
         using (Stream image = new MemoryStream([0x01]))
         using (Stream mask = new MemoryStream([0x02]))
         {
+            await client.GenerateImageEditAsync(
+                image,
+                "image.custom",
+                "image/x-future",
+                "prompt",
+                mask,
+                "mask.png",
+                options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: image/x-future"));
+
+        requestBody = null;
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
             await client.GenerateImageEditAsync(image, "image.png", "prompt", mask, "mask.png", options);
         }
 
