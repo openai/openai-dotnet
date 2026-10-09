@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalModifyThreadRequestToolResourcesCodeInterpreter)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(FileIds))
+            if (Optional.IsCollectionDefined(FileIds) && _additionalBinaryDataProperties?.ContainsKey("file_ids") != true)
             {
                 writer.WritePropertyName("file_ids"u8);
                 writer.WriteStartArray();

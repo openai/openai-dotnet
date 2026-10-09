@@ -59,12 +59,12 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model))
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(Input))
+            if (Optional.IsDefined(Input) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
                 writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
@@ -76,12 +76,12 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(PreviousResponseId))
+            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
             {
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (Optional.IsCollectionDefined(Tools))
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -91,27 +91,27 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Text))
+            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteObjectValue(Text, options);
             }
-            if (Optional.IsDefined(Reasoning))
+            if (Optional.IsDefined(Reasoning) && _additionalBinaryDataProperties?.ContainsKey("reasoning") != true)
             {
                 writer.WritePropertyName("reasoning"u8);
                 writer.WriteObjectValue(Reasoning, options);
             }
-            if (Optional.IsDefined(Truncation))
+            if (Optional.IsDefined(Truncation) && _additionalBinaryDataProperties?.ContainsKey("truncation") != true)
             {
                 writer.WritePropertyName("truncation"u8);
                 writer.WriteStringValue(Truncation.Value.ToString());
             }
-            if (Optional.IsDefined(Instructions))
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsDefined(Conversation))
+            if (Optional.IsDefined(Conversation) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
             {
                 writer.WritePropertyName("conversation"u8);
 #if NET6_0_OR_GREATER
@@ -123,7 +123,7 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(ToolChoice))
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
                 writer.WritePropertyName("tool_choice"u8);
 #if NET6_0_OR_GREATER
@@ -135,7 +135,7 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(ParallelToolCalls))
+            if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);

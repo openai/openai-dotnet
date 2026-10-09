@@ -63,14 +63,17 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalSubmitToolOutputsRunRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("tool_outputs"u8);
-            writer.WriteStartArray();
-            foreach (ToolOutput item in ToolOutputs)
+            if (_additionalBinaryDataProperties?.ContainsKey("tool_outputs") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("tool_outputs"u8);
+                writer.WriteStartArray();
+                foreach (ToolOutput item in ToolOutputs)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            if (Optional.IsDefined(Stream))
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);

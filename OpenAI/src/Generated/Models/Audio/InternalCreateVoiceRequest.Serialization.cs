@@ -66,12 +66,21 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalCreateVoiceRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("audio_sample"u8);
-            writer.WriteObjectValue(AudioSample, options);
-            writer.WritePropertyName("consent"u8);
-            writer.WriteStringValue(Consent);
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("audio_sample") != true)
+            {
+                writer.WritePropertyName("audio_sample"u8);
+                writer.WriteObjectValue(AudioSample, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("consent") != true)
+            {
+                writer.WritePropertyName("consent"u8);
+                writer.WriteStringValue(Consent);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -59,12 +59,12 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(ToolOutput)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ToolCallId))
+            if (Optional.IsDefined(ToolCallId) && _additionalBinaryDataProperties?.ContainsKey("tool_call_id") != true)
             {
                 writer.WritePropertyName("tool_call_id"u8);
                 writer.WriteStringValue(ToolCallId);
             }
-            if (Optional.IsDefined(Output))
+            if (Optional.IsDefined(Output) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(Output);

@@ -59,12 +59,12 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRunOutputItemSampleOutput)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Role))
+            if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role);
             }
-            if (Optional.IsDefined(Content))
+            if (Optional.IsDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStringValue(Content);

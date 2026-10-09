@@ -66,24 +66,27 @@ namespace OpenAI.Videos
             {
                 throw new FormatException($"The model {nameof(InternalCreateVideoBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model))
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());
             }
-            writer.WritePropertyName("prompt"u8);
-            writer.WriteStringValue(Prompt);
-            if (Optional.IsDefined(InputReference))
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
+            {
+                writer.WritePropertyName("prompt"u8);
+                writer.WriteStringValue(Prompt);
+            }
+            if (Optional.IsDefined(InputReference) && _additionalBinaryDataProperties?.ContainsKey("input_reference") != true)
             {
                 writer.WritePropertyName("input_reference"u8);
                 writer.WriteObjectValue(InputReference, options);
             }
-            if (Optional.IsDefined(Seconds))
+            if (Optional.IsDefined(Seconds) && _additionalBinaryDataProperties?.ContainsKey("seconds") != true)
             {
                 writer.WritePropertyName("seconds"u8);
                 writer.WriteStringValue(Seconds.Value.ToString());
             }
-            if (Optional.IsDefined(Size))
+            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());

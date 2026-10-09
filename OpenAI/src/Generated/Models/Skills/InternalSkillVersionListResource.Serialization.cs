@@ -71,35 +71,50 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalSkillVersionListResource)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (InternalSkillVersionResource item in Data)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            writer.WriteEndArray();
-            if (Optional.IsDefined(FirstId))
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
-                writer.WritePropertyName("first_id"u8);
-                writer.WriteStringValue(FirstId);
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (InternalSkillVersionResource item in Data)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
-                writer.WriteNull("first_id"u8);
+                if (Optional.IsDefined(FirstId))
+                {
+                    writer.WritePropertyName("first_id"u8);
+                    writer.WriteStringValue(FirstId);
+                }
+                else
+                {
+                    writer.WriteNull("first_id"u8);
+                }
             }
-            if (Optional.IsDefined(LastId))
+            if (_additionalBinaryDataProperties?.ContainsKey("last_id") != true)
             {
-                writer.WritePropertyName("last_id"u8);
-                writer.WriteStringValue(LastId);
+                if (Optional.IsDefined(LastId))
+                {
+                    writer.WritePropertyName("last_id"u8);
+                    writer.WriteStringValue(LastId);
+                }
+                else
+                {
+                    writer.WriteNull("last_id"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
             {
-                writer.WriteNull("last_id"u8);
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
             }
-            writer.WritePropertyName("has_more"u8);
-            writer.WriteBooleanValue(HasMore);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

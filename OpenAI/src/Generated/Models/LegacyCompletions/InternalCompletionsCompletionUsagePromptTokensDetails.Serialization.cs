@@ -59,12 +59,12 @@ namespace OpenAI.LegacyCompletions
             {
                 throw new FormatException($"The model {nameof(InternalCompletionsCompletionUsagePromptTokensDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(AudioTokens))
+            if (Optional.IsDefined(AudioTokens) && _additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
             {
                 writer.WritePropertyName("audio_tokens"u8);
                 writer.WriteNumberValue(AudioTokens.Value);
             }
-            if (Optional.IsDefined(CachedTokens))
+            if (Optional.IsDefined(CachedTokens) && _additionalBinaryDataProperties?.ContainsKey("cached_tokens") != true)
             {
                 writer.WritePropertyName("cached_tokens"u8);
                 writer.WriteNumberValue(CachedTokens.Value);

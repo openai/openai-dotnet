@@ -59,17 +59,17 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalTranscriptTextDoneEventLogprobs)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Token))
+            if (Optional.IsDefined(Token) && _additionalBinaryDataProperties?.ContainsKey("token") != true)
             {
                 writer.WritePropertyName("token"u8);
                 writer.WriteStringValue(Token);
             }
-            if (Optional.IsDefined(Logprob))
+            if (Optional.IsDefined(Logprob) && _additionalBinaryDataProperties?.ContainsKey("logprob") != true)
             {
                 writer.WritePropertyName("logprob"u8);
                 writer.WriteNumberValue(Logprob.Value);
             }
-            if (Optional.IsCollectionDefined(Bytes))
+            if (Optional.IsCollectionDefined(Bytes) && _additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteStartArray();

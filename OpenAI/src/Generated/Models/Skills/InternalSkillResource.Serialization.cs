@@ -71,20 +71,41 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalSkillResource)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("description"u8);
-            writer.WriteStringValue(Description);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedOn, "U");
-            writer.WritePropertyName("default_version"u8);
-            writer.WriteStringValue(DefaultVersion);
-            writer.WritePropertyName("latest_version"u8);
-            writer.WriteStringValue(LatestVersion);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("description") != true)
+            {
+                writer.WritePropertyName("description"u8);
+                writer.WriteStringValue(Description);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedOn, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("default_version") != true)
+            {
+                writer.WritePropertyName("default_version"u8);
+                writer.WriteStringValue(DefaultVersion);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("latest_version") != true)
+            {
+                writer.WritePropertyName("latest_version"u8);
+                writer.WriteStringValue(LatestVersion);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

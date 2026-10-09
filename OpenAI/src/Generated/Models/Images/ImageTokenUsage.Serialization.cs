@@ -63,19 +63,31 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("input_tokens"u8);
-            writer.WriteNumberValue(InputTokenCount);
-            writer.WritePropertyName("total_tokens"u8);
-            writer.WriteNumberValue(TotalTokenCount);
-            writer.WritePropertyName("output_tokens"u8);
-            writer.WriteNumberValue(OutputTokenCount);
-            if (Optional.IsDefined(OutputTokenDetails))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
+            {
+                writer.WritePropertyName("input_tokens"u8);
+                writer.WriteNumberValue(InputTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            {
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
+            {
+                writer.WritePropertyName("output_tokens"u8);
+                writer.WriteNumberValue(OutputTokenCount);
+            }
+            if (Optional.IsDefined(OutputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("output_tokens_details") != true)
             {
                 writer.WritePropertyName("output_tokens_details"u8);
                 writer.WriteObjectValue(OutputTokenDetails, options);
             }
-            writer.WritePropertyName("input_tokens_details"u8);
-            writer.WriteObjectValue(InputTokenDetails, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens_details") != true)
+            {
+                writer.WritePropertyName("input_tokens_details"u8);
+                writer.WriteObjectValue(InputTokenDetails, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

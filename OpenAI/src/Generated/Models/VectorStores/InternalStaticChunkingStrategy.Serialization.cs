@@ -63,10 +63,16 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalStaticChunkingStrategy)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("max_chunk_size_tokens"u8);
-            writer.WriteNumberValue(MaxChunkSizeTokens);
-            writer.WritePropertyName("chunk_overlap_tokens"u8);
-            writer.WriteNumberValue(ChunkOverlapTokens);
+            if (_additionalBinaryDataProperties?.ContainsKey("max_chunk_size_tokens") != true)
+            {
+                writer.WritePropertyName("max_chunk_size_tokens"u8);
+                writer.WriteNumberValue(MaxChunkSizeTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("chunk_overlap_tokens") != true)
+            {
+                writer.WritePropertyName("chunk_overlap_tokens"u8);
+                writer.WriteNumberValue(ChunkOverlapTokens);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

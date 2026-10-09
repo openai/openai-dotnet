@@ -59,12 +59,12 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreFileContentResponseDatum)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Kind))
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind);
             }
-            if (Optional.IsDefined(Text))
+            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);

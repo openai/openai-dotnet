@@ -69,10 +69,16 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalFileExpirationAfter)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("anchor"u8);
-            writer.WriteStringValue(Anchor);
-            writer.WritePropertyName("seconds"u8);
-            writer.WriteNumberValue(Seconds);
+            if (_additionalBinaryDataProperties?.ContainsKey("anchor") != true)
+            {
+                writer.WritePropertyName("anchor"u8);
+                writer.WriteStringValue(Anchor);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("seconds") != true)
+            {
+                writer.WritePropertyName("seconds"u8);
+                writer.WriteNumberValue(Seconds);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

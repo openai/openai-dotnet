@@ -64,8 +64,11 @@ namespace OpenAI.Audio
                 throw new FormatException($"The model {nameof(StreamingSpeechAudioDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("usage"u8);
-            writer.WriteObjectValue(Usage, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
+            }
         }
 
         StreamingSpeechAudioDoneUpdate IJsonModel<StreamingSpeechAudioDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingSpeechAudioDoneUpdate)JsonModelCreateCore(ref reader, options);

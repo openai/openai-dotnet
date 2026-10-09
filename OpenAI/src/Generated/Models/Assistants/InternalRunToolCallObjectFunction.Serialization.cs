@@ -63,10 +63,16 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunToolCallObjectFunction)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("arguments"u8);
-            writer.WriteStringValue(Arguments);
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            {
+                writer.WritePropertyName("arguments"u8);
+                writer.WriteStringValue(Arguments);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

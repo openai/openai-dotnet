@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(FileSearchToolResources)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(VectorStoreIds))
+            if (Optional.IsCollectionDefined(VectorStoreIds) && _additionalBinaryDataProperties?.ContainsKey("vector_store_ids") != true)
             {
                 writer.WritePropertyName("vector_store_ids"u8);
                 writer.WriteStartArray();
@@ -74,7 +74,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(NewVectorStores))
+            if (Optional.IsCollectionDefined(NewVectorStores) && _additionalBinaryDataProperties?.ContainsKey("vector_stores") != true)
             {
                 writer.WritePropertyName("vector_stores"u8);
                 SerializeNewVectorStores(writer, options);

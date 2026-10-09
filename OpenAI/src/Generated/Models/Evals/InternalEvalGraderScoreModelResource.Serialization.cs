@@ -65,11 +65,17 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalGraderScoreModelResource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            if (Optional.IsDefined(SamplingParams))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (Optional.IsDefined(SamplingParams) && _additionalBinaryDataProperties?.ContainsKey("sampling_params") != true)
             {
                 writer.WritePropertyName("sampling_params"u8);
 #if NET6_0_OR_GREATER
@@ -81,14 +87,17 @@ namespace OpenAI.Evals
                 }
 #endif
             }
-            writer.WritePropertyName("input"u8);
-            writer.WriteStartArray();
-            foreach (InternalEvalItem item in Input)
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("input"u8);
+                writer.WriteStartArray();
+                foreach (InternalEvalItem item in Input)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            if (Optional.IsCollectionDefined(Range))
+            if (Optional.IsCollectionDefined(Range) && _additionalBinaryDataProperties?.ContainsKey("range") != true)
             {
                 writer.WritePropertyName("range"u8);
                 writer.WriteStartArray();
@@ -98,7 +107,7 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(PassThreshold))
+            if (Optional.IsDefined(PassThreshold) && _additionalBinaryDataProperties?.ContainsKey("pass_threshold") != true)
             {
                 writer.WritePropertyName("pass_threshold"u8);
                 writer.WriteNumberValue(PassThreshold.Value);

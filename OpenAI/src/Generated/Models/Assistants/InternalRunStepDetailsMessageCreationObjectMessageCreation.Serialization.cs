@@ -63,8 +63,11 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsMessageCreationObjectMessageCreation)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("message_id"u8);
-            writer.WriteStringValue(MessageId);
+            if (_additionalBinaryDataProperties?.ContainsKey("message_id") != true)
+            {
+                writer.WritePropertyName("message_id"u8);
+                writer.WriteStringValue(MessageId);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

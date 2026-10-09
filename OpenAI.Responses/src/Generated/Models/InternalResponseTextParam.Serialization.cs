@@ -59,12 +59,12 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalResponseTextParam)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Format))
+            if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(Format, options);
             }
-            if (Optional.IsDefined(Verbosity))
+            if (Optional.IsDefined(Verbosity) && _additionalBinaryDataProperties?.ContainsKey("verbosity") != true)
             {
                 writer.WritePropertyName("verbosity"u8);
                 writer.WriteStringValue(Verbosity.Value.ToString());

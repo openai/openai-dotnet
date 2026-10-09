@@ -63,27 +63,30 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalJsonlRunDataSourceParamsSourceContent)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("item"u8);
-            writer.WriteStartObject();
-            foreach (var item in Item)
+            if (_additionalBinaryDataProperties?.ContainsKey("item") != true)
             {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
+                writer.WritePropertyName("item"u8);
+                writer.WriteStartObject();
+                foreach (var item in Item)
                 {
-                    writer.WriteNullValue();
-                    continue;
-                }
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                writer.WriteEndObject();
             }
-            writer.WriteEndObject();
-            if (Optional.IsCollectionDefined(Sample))
+            if (Optional.IsCollectionDefined(Sample) && _additionalBinaryDataProperties?.ContainsKey("sample") != true)
             {
                 writer.WritePropertyName("sample"u8);
                 writer.WriteStartObject();

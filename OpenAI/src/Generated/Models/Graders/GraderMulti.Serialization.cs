@@ -64,19 +64,28 @@ namespace OpenAI.Graders
                 throw new FormatException($"The model {nameof(GraderMulti)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("graders"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Graders);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Graders))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("graders") != true)
+            {
+                writer.WritePropertyName("graders"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Graders);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Graders))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            writer.WritePropertyName("calculate_output"u8);
-            writer.WriteStringValue(CalculateOutput);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("calculate_output") != true)
+            {
+                writer.WritePropertyName("calculate_output"u8);
+                writer.WriteStringValue(CalculateOutput);
+            }
         }
 
         GraderMulti IJsonModel<GraderMulti>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GraderMulti)JsonModelCreateCore(ref reader, options);

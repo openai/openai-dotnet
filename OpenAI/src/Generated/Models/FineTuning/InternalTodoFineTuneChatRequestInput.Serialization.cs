@@ -60,7 +60,7 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(Messages))
+            if (Optional.IsCollectionDefined(Messages) && _additionalBinaryDataProperties?.ContainsKey("messages") != true)
             {
                 writer.WritePropertyName("messages"u8);
                 writer.WriteStartArray();
@@ -82,7 +82,7 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Tools))
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -92,12 +92,12 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ParallelToolCalls))
+            if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);
             }
-            if (Optional.IsCollectionDefined(Functions))
+            if (Optional.IsCollectionDefined(Functions) && _additionalBinaryDataProperties?.ContainsKey("functions") != true)
             {
                 writer.WritePropertyName("functions"u8);
                 writer.WriteStartArray();

@@ -63,8 +63,11 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoresErrorResponse)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("error"u8);
-            writer.WriteObjectValue(Error, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
+            {
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue(Error, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

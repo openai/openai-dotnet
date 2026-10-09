@@ -65,16 +65,31 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalGraderTextSimilarityParams)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("input"u8);
-            writer.WriteStringValue(Input);
-            writer.WritePropertyName("reference"u8);
-            writer.WriteStringValue(Reference);
-            writer.WritePropertyName("evaluation_metric"u8);
-            writer.WriteStringValue(EvaluationMetric.ToString());
-            writer.WritePropertyName("pass_threshold"u8);
-            writer.WriteNumberValue(PassThreshold);
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
+                writer.WriteStringValue(Input);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("reference") != true)
+            {
+                writer.WritePropertyName("reference"u8);
+                writer.WriteStringValue(Reference);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("evaluation_metric") != true)
+            {
+                writer.WritePropertyName("evaluation_metric"u8);
+                writer.WriteStringValue(EvaluationMetric.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("pass_threshold") != true)
+            {
+                writer.WritePropertyName("pass_threshold"u8);
+                writer.WriteNumberValue(PassThreshold);
+            }
         }
 
         InternalEvalGraderTextSimilarityParams IJsonModel<InternalEvalGraderTextSimilarityParams>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalGraderTextSimilarityParams)JsonModelCreateCore(ref reader, options);

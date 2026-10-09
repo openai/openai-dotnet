@@ -63,14 +63,26 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalCreateUploadRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("filename"u8);
-            writer.WriteStringValue(Filename);
-            writer.WritePropertyName("purpose"u8);
-            writer.WriteStringValue(Purpose.ToString());
-            writer.WritePropertyName("bytes"u8);
-            writer.WriteNumberValue(Bytes);
-            writer.WritePropertyName("mime_type"u8);
-            writer.WriteStringValue(MimeType);
+            if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
+            {
+                writer.WritePropertyName("purpose"u8);
+                writer.WriteStringValue(Purpose.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
+            {
+                writer.WritePropertyName("bytes"u8);
+                writer.WriteNumberValue(Bytes);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("mime_type") != true)
+            {
+                writer.WritePropertyName("mime_type"u8);
+                writer.WriteStringValue(MimeType);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

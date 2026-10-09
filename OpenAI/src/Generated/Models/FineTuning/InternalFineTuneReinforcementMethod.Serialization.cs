@@ -64,16 +64,19 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalFineTuneReinforcementMethod)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("grader"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Grader);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Grader))
+            if (_additionalBinaryDataProperties?.ContainsKey("grader") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("grader"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Grader);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Grader))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(Hyperparameters))
+            }
+            if (Optional.IsDefined(Hyperparameters) && _additionalBinaryDataProperties?.ContainsKey("hyperparameters") != true)
             {
                 writer.WritePropertyName("hyperparameters"u8);
                 writer.WriteObjectValue(Hyperparameters, options);

@@ -63,15 +63,18 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(ValidateGraderRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("grader"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Grader);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Grader))
+            if (_additionalBinaryDataProperties?.ContainsKey("grader") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("grader"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Grader);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Grader))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

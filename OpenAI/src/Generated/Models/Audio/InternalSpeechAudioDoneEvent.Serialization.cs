@@ -63,10 +63,16 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEvent)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
-            writer.WritePropertyName("usage"u8);
-            writer.WriteObjectValue(Usage, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

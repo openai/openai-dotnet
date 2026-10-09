@@ -66,8 +66,11 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalMessageContentRefusalObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("refusal"u8);
-            writer.WriteStringValue(InternalRefusal);
+            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            {
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStringValue(InternalRefusal);
+            }
         }
 
         InternalMessageContentRefusalObject IJsonModel<InternalMessageContentRefusalObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageContentRefusalObject)JsonModelCreateCore(ref reader, options);

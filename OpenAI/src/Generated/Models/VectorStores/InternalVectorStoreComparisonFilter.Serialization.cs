@@ -63,19 +63,28 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreComparisonFilter)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToString());
-            writer.WritePropertyName("key"u8);
-            writer.WriteStringValue(Key);
-            writer.WritePropertyName("value"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Value);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Value))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("key") != true)
+            {
+                writer.WritePropertyName("key"u8);
+                writer.WriteStringValue(Key);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("value") != true)
+            {
+                writer.WritePropertyName("value"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Value);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,16 +63,19 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(RunGraderRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("grader"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Grader);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Grader))
+            if (_additionalBinaryDataProperties?.ContainsKey("grader") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("grader"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Grader);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Grader))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(Item))
+            }
+            if (Optional.IsDefined(Item) && _additionalBinaryDataProperties?.ContainsKey("item") != true)
             {
                 writer.WritePropertyName("item"u8);
 #if NET6_0_OR_GREATER
@@ -84,8 +87,11 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            writer.WritePropertyName("model_sample"u8);
-            writer.WriteStringValue(ModelSample);
+            if (_additionalBinaryDataProperties?.ContainsKey("model_sample") != true)
+            {
+                writer.WritePropertyName("model_sample"u8);
+                writer.WriteStringValue(ModelSample);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

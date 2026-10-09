@@ -71,93 +71,141 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunStep)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("assistant_id"u8);
-            writer.WriteStringValue(AssistantId);
-            writer.WritePropertyName("thread_id"u8);
-            writer.WriteStringValue(ThreadId);
-            writer.WritePropertyName("run_id"u8);
-            writer.WriteStringValue(RunId);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
+            {
+                writer.WritePropertyName("assistant_id"u8);
+                writer.WriteStringValue(AssistantId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("thread_id") != true)
+            {
+                writer.WritePropertyName("thread_id"u8);
+                writer.WriteStringValue(ThreadId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("run_id") != true)
+            {
+                writer.WritePropertyName("run_id"u8);
+                writer.WriteStringValue(RunId);
+            }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToSerialString());
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToString());
-            writer.WritePropertyName("step_details"u8);
-            writer.WriteObjectValue(Details, options);
-            if (Optional.IsDefined(LastError))
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
-                writer.WritePropertyName("last_error"u8);
-                writer.WriteObjectValue(LastError, options);
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("step_details") != true)
             {
-                writer.WriteNull("last_error"u8);
+                writer.WritePropertyName("step_details"u8);
+                writer.WriteObjectValue(Details, options);
             }
-            if (Optional.IsDefined(ExpiredAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
-                writer.WritePropertyName("expired_at"u8);
-                writer.WriteNumberValue(ExpiredAt.Value, "U");
+                if (Optional.IsDefined(LastError))
+                {
+                    writer.WritePropertyName("last_error"u8);
+                    writer.WriteObjectValue(LastError, options);
+                }
+                else
+                {
+                    writer.WriteNull("last_error"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("expired_at") != true)
             {
-                writer.WriteNull("expired_at"u8);
+                if (Optional.IsDefined(ExpiredAt))
+                {
+                    writer.WritePropertyName("expired_at"u8);
+                    writer.WriteNumberValue(ExpiredAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("expired_at"u8);
+                }
             }
-            if (Optional.IsDefined(CancelledAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
             {
-                writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteNumberValue(CancelledAt.Value, "U");
+                if (Optional.IsDefined(CancelledAt))
+                {
+                    writer.WritePropertyName("cancelled_at"u8);
+                    writer.WriteNumberValue(CancelledAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("cancelled_at"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
             {
-                writer.WriteNull("cancelled_at"u8);
+                if (Optional.IsDefined(FailedAt))
+                {
+                    writer.WritePropertyName("failed_at"u8);
+                    writer.WriteNumberValue(FailedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("failed_at"u8);
+                }
             }
-            if (Optional.IsDefined(FailedAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
-                writer.WritePropertyName("failed_at"u8);
-                writer.WriteNumberValue(FailedAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("failed_at"u8);
-            }
-            if (Optional.IsDefined(CompletedAt))
-            {
-                writer.WritePropertyName("completed_at"u8);
-                writer.WriteNumberValue(CompletedAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("completed_at"u8);
+                if (Optional.IsDefined(CompletedAt))
+                {
+                    writer.WritePropertyName("completed_at"u8);
+                    writer.WriteNumberValue(CompletedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("completed_at"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
-            writer.WritePropertyName("metadata"u8);
-            writer.WriteStartObject();
-            foreach (var item in Metadata)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WriteNullValue();
-                    continue;
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item.Value);
                 }
-                writer.WriteStringValue(item.Value);
+                writer.WriteEndObject();
             }
-            writer.WriteEndObject();
-            if (Optional.IsDefined(Usage))
+            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
-            }
-            else
-            {
-                writer.WriteNull("usage"u8);
+                if (Optional.IsDefined(Usage))
+                {
+                    writer.WritePropertyName("usage"u8);
+                    writer.WriteObjectValue(Usage, options);
+                }
+                else
+                {
+                    writer.WriteNull("usage"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

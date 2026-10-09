@@ -63,19 +63,22 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalCompleteUploadRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("part_ids"u8);
-            writer.WriteStartArray();
-            foreach (string item in PartIds)
+            if (_additionalBinaryDataProperties?.ContainsKey("part_ids") != true)
             {
-                if (item == null)
+                writer.WritePropertyName("part_ids"u8);
+                writer.WriteStartArray();
+                foreach (string item in PartIds)
                 {
-                    writer.WriteNullValue();
-                    continue;
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
                 }
-                writer.WriteStringValue(item);
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            if (Optional.IsDefined(Md5))
+            if (Optional.IsDefined(Md5) && _additionalBinaryDataProperties?.ContainsKey("md5") != true)
             {
                 writer.WritePropertyName("md5"u8);
                 writer.WriteStringValue(Md5);

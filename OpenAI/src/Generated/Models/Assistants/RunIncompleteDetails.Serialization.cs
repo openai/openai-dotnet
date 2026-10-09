@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunIncompleteDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Reason))
+            if (Optional.IsDefined(Reason) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
             {
                 writer.WritePropertyName("reason"u8);
                 writer.WriteStringValue(Reason.Value.ToString());

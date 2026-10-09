@@ -67,7 +67,7 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(ValidateGraderResponse)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Grader))
+            if (Optional.IsDefined(Grader) && _additionalBinaryDataProperties?.ContainsKey("grader") != true)
             {
                 writer.WritePropertyName("grader"u8);
 #if NET6_0_OR_GREATER

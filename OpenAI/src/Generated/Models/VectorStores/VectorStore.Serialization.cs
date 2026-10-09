@@ -71,55 +71,82 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStore)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("usage_bytes"u8);
-            writer.WriteNumberValue(UsageBytes);
-            writer.WritePropertyName("file_counts"u8);
-            writer.WriteObjectValue(FileCounts, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
+            {
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(UsageBytes);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("file_counts") != true)
+            {
+                writer.WritePropertyName("file_counts"u8);
+                writer.WriteObjectValue(FileCounts, options);
+            }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToSerialString());
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToSerialString());
+            }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(ExpirationPolicy))
+            if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
                 writer.WritePropertyName("expires_after"u8);
                 writer.WriteObjectValue(ExpirationPolicy, options);
             }
-            if (Optional.IsDefined(ExpiresAt))
+            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
                 writer.WriteNumberValue(ExpiresAt.Value, "U");
             }
-            if (Optional.IsDefined(LastActiveAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("last_active_at") != true)
             {
-                writer.WritePropertyName("last_active_at"u8);
-                writer.WriteNumberValue(LastActiveAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("last_active_at"u8);
+                if (Optional.IsDefined(LastActiveAt))
+                {
+                    writer.WritePropertyName("last_active_at"u8);
+                    writer.WriteNumberValue(LastActiveAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("last_active_at"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
-            writer.WritePropertyName("metadata"u8);
-            writer.WriteStartObject();
-            foreach (var item in Metadata)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WriteNullValue();
-                    continue;
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item.Value);
                 }
-                writer.WriteStringValue(item.Value);
+                writer.WriteEndObject();
             }
-            writer.WriteEndObject();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

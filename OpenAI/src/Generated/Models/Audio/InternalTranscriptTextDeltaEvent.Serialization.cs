@@ -63,11 +63,17 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalTranscriptTextDeltaEvent)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
-            writer.WritePropertyName("delta"u8);
-            writer.WriteStringValue(Delta);
-            if (Optional.IsCollectionDefined(Logprobs))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("delta") != true)
+            {
+                writer.WritePropertyName("delta"u8);
+                writer.WriteStringValue(Delta);
+            }
+            if (Optional.IsCollectionDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
@@ -77,7 +83,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(SegmentId))
+            if (Optional.IsDefined(SegmentId) && _additionalBinaryDataProperties?.ContainsKey("segment_id") != true)
             {
                 writer.WritePropertyName("segment_id"u8);
                 writer.WriteStringValue(SegmentId);

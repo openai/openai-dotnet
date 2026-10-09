@@ -73,9 +73,12 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("created"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            if (Optional.IsCollectionDefined(Items))
+            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
+            {
+                writer.WritePropertyName("created"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (Optional.IsCollectionDefined(Items) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
@@ -86,34 +89,34 @@ namespace OpenAI.Images
                 writer.WriteEndArray();
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Background))
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(OutputFileFormat))
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
                 writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Size))
+            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Quality))
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
                 writer.WriteStringValue(Quality.Value.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Usage))
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);

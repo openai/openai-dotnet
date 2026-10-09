@@ -65,14 +65,26 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalGraderStringCheckParams)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("input"u8);
-            writer.WriteStringValue(Input);
-            writer.WritePropertyName("reference"u8);
-            writer.WriteStringValue(Reference);
-            writer.WritePropertyName("operation"u8);
-            writer.WriteStringValue(Operation.ToString());
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
+                writer.WriteStringValue(Input);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("reference") != true)
+            {
+                writer.WritePropertyName("reference"u8);
+                writer.WriteStringValue(Reference);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("operation") != true)
+            {
+                writer.WritePropertyName("operation"u8);
+                writer.WriteStringValue(Operation.ToString());
+            }
         }
 
         InternalEvalGraderStringCheckParams IJsonModel<InternalEvalGraderStringCheckParams>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalGraderStringCheckParams)JsonModelCreateCore(ref reader, options);

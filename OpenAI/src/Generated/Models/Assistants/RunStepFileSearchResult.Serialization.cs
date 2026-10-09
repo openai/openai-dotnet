@@ -63,14 +63,23 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunStepFileSearchResult)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("file_id"u8);
-            writer.WriteStringValue(FileId);
-            writer.WritePropertyName("file_name"u8);
-            writer.WriteStringValue(FileName);
-            writer.WritePropertyName("score"u8);
-            writer.WriteNumberValue(Score);
+            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("file_name") != true)
+            {
+                writer.WritePropertyName("file_name"u8);
+                writer.WriteStringValue(FileName);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("score") != true)
+            {
+                writer.WritePropertyName("score"u8);
+                writer.WriteNumberValue(Score);
+            }
             // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(Content))
+            if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();

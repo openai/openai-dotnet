@@ -63,21 +63,33 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalApiError)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("code"u8);
-            writer.WriteStringValue(Code);
-            writer.WritePropertyName("message"u8);
-            writer.WriteStringValue(Message);
-            if (Optional.IsDefined(Param))
+            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                writer.WritePropertyName("code"u8);
+                writer.WriteStringValue(Code);
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
-                writer.WriteNull("param"u8);
+                writer.WritePropertyName("message"u8);
+                writer.WriteStringValue(Message);
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
+            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
+            {
+                if (Optional.IsDefined(Param))
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

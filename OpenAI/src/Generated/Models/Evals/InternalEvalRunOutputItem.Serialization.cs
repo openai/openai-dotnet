@@ -71,62 +71,57 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRunOutputItem)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("run_id"u8);
-            writer.WriteStringValue(RunId);
-            writer.WritePropertyName("eval_id"u8);
-            writer.WriteStringValue(EvalId);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedOn, "U");
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status);
-            writer.WritePropertyName("datasource_item_id"u8);
-            writer.WriteNumberValue(DatasourceItemId);
-            writer.WritePropertyName("datasource_item"u8);
-            writer.WriteStartObject();
-            foreach (var item in DatasourceItem)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
-                }
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(item.Value);
-#else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            writer.WriteEndObject();
-            writer.WritePropertyName("results"u8);
-            writer.WriteStartArray();
-            foreach (IDictionary<string, BinaryData> item in Results)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                if (item == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
-                }
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("run_id") != true)
+            {
+                writer.WritePropertyName("run_id"u8);
+                writer.WriteStringValue(RunId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("eval_id") != true)
+            {
+                writer.WritePropertyName("eval_id"u8);
+                writer.WriteStringValue(EvalId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedOn, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("datasource_item_id") != true)
+            {
+                writer.WritePropertyName("datasource_item_id"u8);
+                writer.WriteNumberValue(DatasourceItemId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("datasource_item") != true)
+            {
+                writer.WritePropertyName("datasource_item"u8);
                 writer.WriteStartObject();
-                foreach (var item0 in item)
+                foreach (var item in DatasourceItem)
                 {
-                    writer.WritePropertyName(item0.Key);
-                    if (item0.Value == null)
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item0.Value);
+                    writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item0.Value))
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
                         JsonSerializer.Serialize(writer, document.RootElement);
                     }
@@ -134,9 +129,44 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndObject();
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("sample"u8);
-            writer.WriteObjectValue(Sample, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("results") != true)
+            {
+                writer.WritePropertyName("results"u8);
+                writer.WriteStartArray();
+                foreach (IDictionary<string, BinaryData> item in Results)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStartObject();
+                    foreach (var item0 in item)
+                    {
+                        writer.WritePropertyName(item0.Key);
+                        if (item0.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+#if NET6_0_OR_GREATER
+                        writer.WriteRawValue(item0.Value);
+#else
+                        using (JsonDocument document = JsonDocument.Parse(item0.Value))
+                        {
+                            JsonSerializer.Serialize(writer, document.RootElement);
+                        }
+#endif
+                    }
+                    writer.WriteEndObject();
+                }
+                writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("sample") != true)
+            {
+                writer.WritePropertyName("sample"u8);
+                writer.WriteObjectValue(Sample, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

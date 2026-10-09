@@ -40,9 +40,18 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
         new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
+    private readonly Dictionary<TypeProvider, ModelProvider> _serializationProviderOwners = [];
 
     protected override TypeProvider VisitType(TypeProvider type)
     {
+        if (type is ModelProvider model)
+        {
+            foreach (TypeProvider serializationProvider in model.SerializationProviders)
+            {
+                _serializationProviderOwners[serializationProvider] = model;
+            }
+        }
+
         var additionalPropertiesField = type.Fields.FirstOrDefault(f => f.Name == AdditionalPropertiesFieldName);
         if (type is ModelProvider { BaseModelProvider: null } && additionalPropertiesField != null)
         {
@@ -184,8 +193,13 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         return method;
     }
 
-    private static bool HasAdditionalPropertiesField(TypeProvider type)
+    private bool HasAdditionalPropertiesField(TypeProvider type)
     {
+        if (_serializationProviderOwners.TryGetValue(type, out ModelProvider? model))
+        {
+            type = model;
+        }
+
         for (TypeProvider? current = type; current is not null; current = (current as ModelProvider)?.BaseModelProvider)
         {
             if (current.Fields.Any(field => field.Name == AdditionalPropertiesFieldName))

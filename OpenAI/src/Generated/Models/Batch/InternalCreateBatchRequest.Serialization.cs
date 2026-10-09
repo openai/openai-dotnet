@@ -63,13 +63,22 @@ namespace OpenAI.Batch
             {
                 throw new FormatException($"The model {nameof(InternalCreateBatchRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("input_file_id"u8);
-            writer.WriteStringValue(InputFileId);
-            writer.WritePropertyName("endpoint"u8);
-            writer.WriteStringValue(Endpoint.ToString());
-            writer.WritePropertyName("completion_window"u8);
-            writer.WriteStringValue(CompletionWindow);
-            if (Optional.IsCollectionDefined(Metadata))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_file_id") != true)
+            {
+                writer.WritePropertyName("input_file_id"u8);
+                writer.WriteStringValue(InputFileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("endpoint") != true)
+            {
+                writer.WritePropertyName("endpoint"u8);
+                writer.WriteStringValue(Endpoint.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("completion_window") != true)
+            {
+                writer.WritePropertyName("completion_window"u8);
+                writer.WriteStringValue(CompletionWindow);
+            }
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();

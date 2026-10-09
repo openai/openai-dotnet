@@ -59,7 +59,7 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileBatchRequest)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(FileIds))
+            if (Optional.IsCollectionDefined(FileIds) && _additionalBinaryDataProperties?.ContainsKey("file_ids") != true)
             {
                 writer.WritePropertyName("file_ids"u8);
                 writer.WriteStartArray();
@@ -74,7 +74,7 @@ namespace OpenAI.VectorStores
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Files))
+            if (Optional.IsCollectionDefined(Files) && _additionalBinaryDataProperties?.ContainsKey("files") != true)
             {
                 writer.WritePropertyName("files"u8);
                 writer.WriteStartArray();
@@ -84,12 +84,12 @@ namespace OpenAI.VectorStores
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ChunkingStrategy))
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
-            if (Optional.IsCollectionDefined(Attributes))
+            if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
                 writer.WritePropertyName("attributes"u8);
                 writer.WriteStartObject();

@@ -71,181 +71,256 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(ThreadRun)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("thread_id"u8);
-            writer.WriteStringValue(ThreadId);
-            writer.WritePropertyName("assistant_id"u8);
-            writer.WriteStringValue(AssistantId);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToString());
-            if (Optional.IsDefined(LastError))
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                writer.WritePropertyName("last_error"u8);
-                writer.WriteObjectValue(LastError, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WriteNull("last_error"u8);
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(ExpiresAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
-                writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("thread_id") != true)
             {
-                writer.WriteNull("expires_at"u8);
+                writer.WritePropertyName("thread_id"u8);
+                writer.WriteStringValue(ThreadId);
             }
-            if (Optional.IsDefined(StartedAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
             {
-                writer.WritePropertyName("started_at"u8);
-                writer.WriteNumberValue(StartedAt.Value, "U");
+                writer.WritePropertyName("assistant_id"u8);
+                writer.WriteStringValue(AssistantId);
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
-                writer.WriteNull("started_at"u8);
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
             }
-            if (Optional.IsDefined(CancelledAt))
+            if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
-                writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteNumberValue(CancelledAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("cancelled_at"u8);
-            }
-            if (Optional.IsDefined(FailedAt))
-            {
-                writer.WritePropertyName("failed_at"u8);
-                writer.WriteNumberValue(FailedAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("failed_at"u8);
-            }
-            if (Optional.IsDefined(CompletedAt))
-            {
-                writer.WritePropertyName("completed_at"u8);
-                writer.WriteNumberValue(CompletedAt.Value, "U");
-            }
-            else
-            {
-                writer.WriteNull("completed_at"u8);
-            }
-            if (Optional.IsDefined(IncompleteDetails))
-            {
-                writer.WritePropertyName("incomplete_details"u8);
-                writer.WriteObjectValue(IncompleteDetails, options);
-            }
-            else
-            {
-                writer.WriteNull("incomplete_details"u8);
-            }
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            writer.WritePropertyName("instructions"u8);
-            writer.WriteStringValue(Instructions);
-            // Plugin customization: remove options.Format != "W" check
-            writer.WritePropertyName("tools"u8);
-            writer.WriteStartArray();
-            foreach (ToolDefinition item in Tools)
-            {
-                writer.WriteObjectValue(item, options);
-            }
-            writer.WriteEndArray();
-            // Plugin customization: remove options.Format != "W" check
-            writer.WritePropertyName("metadata"u8);
-            writer.WriteStartObject();
-            foreach (var item in Metadata)
-            {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
+                if (Optional.IsDefined(LastError))
                 {
-                    writer.WriteNullValue();
-                    continue;
+                    writer.WritePropertyName("last_error"u8);
+                    writer.WriteObjectValue(LastError, options);
                 }
-                writer.WriteStringValue(item.Value);
+                else
+                {
+                    writer.WriteNull("last_error"u8);
+                }
             }
-            writer.WriteEndObject();
-            if (Optional.IsDefined(Usage))
+            if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
+                if (Optional.IsDefined(ExpiresAt))
+                {
+                    writer.WritePropertyName("expires_at"u8);
+                    writer.WriteNumberValue(ExpiresAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("expires_at"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("started_at") != true)
             {
-                writer.WriteNull("usage"u8);
+                if (Optional.IsDefined(StartedAt))
+                {
+                    writer.WritePropertyName("started_at"u8);
+                    writer.WriteNumberValue(StartedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("started_at"u8);
+                }
             }
-            if (Optional.IsDefined(Temperature))
+            if (_additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
+            {
+                if (Optional.IsDefined(CancelledAt))
+                {
+                    writer.WritePropertyName("cancelled_at"u8);
+                    writer.WriteNumberValue(CancelledAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("cancelled_at"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
+            {
+                if (Optional.IsDefined(FailedAt))
+                {
+                    writer.WritePropertyName("failed_at"u8);
+                    writer.WriteNumberValue(FailedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("failed_at"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
+            {
+                if (Optional.IsDefined(CompletedAt))
+                {
+                    writer.WritePropertyName("completed_at"u8);
+                    writer.WriteNumberValue(CompletedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("completed_at"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("incomplete_details") != true)
+            {
+                if (Optional.IsDefined(IncompleteDetails))
+                {
+                    writer.WritePropertyName("incomplete_details"u8);
+                    writer.WriteObjectValue(IncompleteDetails, options);
+                }
+                else
+                {
+                    writer.WriteNull("incomplete_details"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            {
+                writer.WritePropertyName("tools"u8);
+                writer.WriteStartArray();
+                foreach (ToolDefinition item in Tools)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
+                {
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                if (Optional.IsDefined(Usage))
+                {
+                    writer.WritePropertyName("usage"u8);
+                    writer.WriteObjectValue(Usage, options);
+                }
+                else
+                {
+                    writer.WriteNull("usage"u8);
+                }
+            }
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(NucleusSamplingFactor))
+            if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
-            if (Optional.IsDefined(MaxInputTokenCount))
+            if (_additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
             {
-                writer.WritePropertyName("max_prompt_tokens"u8);
-                writer.WriteNumberValue(MaxInputTokenCount.Value);
+                if (Optional.IsDefined(MaxInputTokenCount))
+                {
+                    writer.WritePropertyName("max_prompt_tokens"u8);
+                    writer.WriteNumberValue(MaxInputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_prompt_tokens"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
             {
-                writer.WriteNull("max_prompt_tokens"u8);
+                if (Optional.IsDefined(MaxOutputTokenCount))
+                {
+                    writer.WritePropertyName("max_completion_tokens"u8);
+                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_completion_tokens"u8);
+                }
             }
-            if (Optional.IsDefined(MaxOutputTokenCount))
+            if (_additionalBinaryDataProperties?.ContainsKey("truncation_strategy") != true)
             {
-                writer.WritePropertyName("max_completion_tokens"u8);
-                writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                if (Optional.IsDefined(TruncationStrategy))
+                {
+                    writer.WritePropertyName("truncation_strategy"u8);
+                    writer.WriteObjectValue(TruncationStrategy, options);
+                }
+                else
+                {
+                    writer.WriteNull("truncation_strategy"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
-                writer.WriteNull("max_completion_tokens"u8);
+                if (Optional.IsDefined(ToolConstraint))
+                {
+                    writer.WritePropertyName("tool_choice"u8);
+                    writer.WriteObjectValue(ToolConstraint, options);
+                }
+                else
+                {
+                    writer.WriteNull("tool_choice"u8);
+                }
             }
-            if (Optional.IsDefined(TruncationStrategy))
+            if (_additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
-                writer.WritePropertyName("truncation_strategy"u8);
-                writer.WriteObjectValue(TruncationStrategy, options);
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
-                writer.WriteNull("truncation_strategy"u8);
+                if (Optional.IsDefined(ResponseFormat))
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteObjectValue(ResponseFormat, options);
+                }
+                else
+                {
+                    writer.WriteNull("response_format"u8);
+                }
             }
-            if (Optional.IsDefined(ToolConstraint))
+            if (_additionalBinaryDataProperties?.ContainsKey("required_action") != true)
             {
-                writer.WritePropertyName("tool_choice"u8);
-                writer.WriteObjectValue(ToolConstraint, options);
-            }
-            else
-            {
-                writer.WriteNull("tool_choice"u8);
-            }
-            writer.WritePropertyName("parallel_tool_calls"u8);
-            writer.WriteBooleanValue(AllowParallelToolCalls.Value);
-            if (Optional.IsDefined(ResponseFormat))
-            {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteObjectValue(ResponseFormat, options);
-            }
-            else
-            {
-                writer.WriteNull("response_format"u8);
-            }
-            if (Optional.IsDefined(_internalRequiredAction))
-            {
-                writer.WritePropertyName("required_action"u8);
-                writer.WriteObjectValue(_internalRequiredAction, options);
-            }
-            else
-            {
-                writer.WriteNull("required_action"u8);
+                if (Optional.IsDefined(_internalRequiredAction))
+                {
+                    writer.WritePropertyName("required_action"u8);
+                    writer.WriteObjectValue(_internalRequiredAction, options);
+                }
+                else
+                {
+                    writer.WriteNull("required_action"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

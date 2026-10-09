@@ -71,12 +71,21 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(FileFromStoreRemovalResult)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(FileId);
-            writer.WritePropertyName("deleted"u8);
-            writer.WriteBooleanValue(Removed);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Removed);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

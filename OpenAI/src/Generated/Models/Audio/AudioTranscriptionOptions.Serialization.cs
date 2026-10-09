@@ -63,38 +63,44 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("file"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(File);
-#else
-            using (JsonDocument document = JsonDocument.Parse(File))
+            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("file"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(File);
+#else
+                using (JsonDocument document = JsonDocument.Parse(File))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model.ToString());
-            if (Optional.IsDefined(Language))
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
+            if (Optional.IsDefined(Language) && _additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
                 writer.WritePropertyName("language"u8);
                 writer.WriteStringValue(Language);
             }
-            if (Optional.IsDefined(Prompt))
+            if (Optional.IsDefined(Prompt) && _additionalBinaryDataProperties?.ContainsKey("prompt") != true)
             {
                 writer.WritePropertyName("prompt"u8);
                 writer.WriteStringValue(Prompt);
             }
-            if (Optional.IsDefined(ResponseFormat))
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Temperature))
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsCollectionDefined(InternalInclude))
+            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include") != true)
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
@@ -104,7 +110,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(InternalTimestampGranularities))
+            if (Optional.IsCollectionDefined(InternalTimestampGranularities) && _additionalBinaryDataProperties?.ContainsKey("timestamp_granularities") != true)
             {
                 writer.WritePropertyName("timestamp_granularities"u8);
                 writer.WriteStartArray();
@@ -126,19 +132,19 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Stream))
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(ChunkingStrategy))
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsCollectionDefined(KnownSpeakerNames))
+            if (Optional.IsCollectionDefined(KnownSpeakerNames) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_names") != true)
             {
                 writer.WritePropertyName("known_speaker_names"u8);
                 writer.WriteStartArray();
@@ -154,7 +160,7 @@ namespace OpenAI.Audio
                 writer.WriteEndArray();
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris))
+            if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
             {
                 writer.WritePropertyName("known_speaker_references"u8);
                 writer.WriteStartArray();

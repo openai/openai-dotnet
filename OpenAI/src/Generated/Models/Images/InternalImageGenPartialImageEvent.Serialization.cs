@@ -63,22 +63,46 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(InternalImageGenPartialImageEvent)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
-            writer.WritePropertyName("b64_json"u8);
-            writer.WriteBase64StringValue(B64Json, "D");
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedOn, "U");
-            writer.WritePropertyName("size"u8);
-            writer.WriteStringValue(Size.ToString());
-            writer.WritePropertyName("quality"u8);
-            writer.WriteStringValue(Quality.ToString());
-            writer.WritePropertyName("background"u8);
-            writer.WriteStringValue(Background.ToString());
-            writer.WritePropertyName("output_format"u8);
-            writer.WriteStringValue(OutputFormat.ToString());
-            writer.WritePropertyName("partial_image_index"u8);
-            writer.WriteNumberValue(PartialImageIndex);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
+            {
+                writer.WritePropertyName("b64_json"u8);
+                writer.WriteBase64StringValue(B64Json, "D");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedOn, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
+            {
+                writer.WritePropertyName("size"u8);
+                writer.WriteStringValue(Size.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFormat.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("partial_image_index") != true)
+            {
+                writer.WritePropertyName("partial_image_index"u8);
+                writer.WriteNumberValue(PartialImageIndex);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

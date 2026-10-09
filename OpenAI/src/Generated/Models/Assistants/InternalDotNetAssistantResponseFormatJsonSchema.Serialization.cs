@@ -66,8 +66,11 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("json_schema"u8);
-            writer.WriteObjectValue(JsonSchema, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("json_schema") != true)
+            {
+                writer.WritePropertyName("json_schema"u8);
+                writer.WriteObjectValue(JsonSchema, options);
+            }
         }
 
         InternalDotNetAssistantResponseFormatJsonSchema IJsonModel<InternalDotNetAssistantResponseFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalDotNetAssistantResponseFormatJsonSchema)JsonModelCreateCore(ref reader, options);

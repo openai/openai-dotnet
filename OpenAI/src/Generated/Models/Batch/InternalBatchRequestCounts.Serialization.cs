@@ -63,12 +63,21 @@ namespace OpenAI.Batch
             {
                 throw new FormatException($"The model {nameof(InternalBatchRequestCounts)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("total"u8);
-            writer.WriteNumberValue(Total);
-            writer.WritePropertyName("completed"u8);
-            writer.WriteNumberValue(Completed);
-            writer.WritePropertyName("failed"u8);
-            writer.WriteNumberValue(Failed);
+            if (_additionalBinaryDataProperties?.ContainsKey("total") != true)
+            {
+                writer.WritePropertyName("total"u8);
+                writer.WriteNumberValue(Total);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("completed") != true)
+            {
+                writer.WritePropertyName("completed"u8);
+                writer.WriteNumberValue(Completed);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("failed") != true)
+            {
+                writer.WritePropertyName("failed"u8);
+                writer.WriteNumberValue(Failed);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

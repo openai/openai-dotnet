@@ -65,8 +65,11 @@ namespace OpenAI.Internal
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("json_schema"u8);
-            writer.WriteObjectValue(JsonSchema, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("json_schema") != true)
+            {
+                writer.WritePropertyName("json_schema"u8);
+                writer.WriteObjectValue(JsonSchema, options);
+            }
         }
 
         InternalResponseFormatJsonSchema IJsonModel<InternalResponseFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseFormatJsonSchema)JsonModelCreateCore(ref reader, options);

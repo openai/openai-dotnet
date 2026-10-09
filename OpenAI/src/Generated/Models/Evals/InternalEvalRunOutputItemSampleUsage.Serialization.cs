@@ -63,14 +63,26 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRunOutputItemSampleUsage)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("total_tokens"u8);
-            writer.WriteNumberValue(TotalTokens);
-            writer.WritePropertyName("completion_tokens"u8);
-            writer.WriteNumberValue(CompletionTokens);
-            writer.WritePropertyName("prompt_tokens"u8);
-            writer.WriteNumberValue(PromptTokens);
-            writer.WritePropertyName("cached_tokens"u8);
-            writer.WriteNumberValue(CachedTokens);
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            {
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("completion_tokens") != true)
+            {
+                writer.WritePropertyName("completion_tokens"u8);
+                writer.WriteNumberValue(CompletionTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt_tokens") != true)
+            {
+                writer.WritePropertyName("prompt_tokens"u8);
+                writer.WriteNumberValue(PromptTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("cached_tokens") != true)
+            {
+                writer.WritePropertyName("cached_tokens"u8);
+                writer.WriteNumberValue(CachedTokens);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,12 +63,12 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalCreateEvalRunRequest)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Name))
+            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsCollectionDefined(Metadata))
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -84,8 +84,11 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndObject();
             }
-            writer.WritePropertyName("data_source"u8);
-            writer.WriteObjectValue(DataSource, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("data_source") != true)
+            {
+                writer.WritePropertyName("data_source"u8);
+                writer.WriteObjectValue(DataSource, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

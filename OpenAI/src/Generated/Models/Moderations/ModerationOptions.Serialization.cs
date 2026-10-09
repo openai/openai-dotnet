@@ -59,16 +59,19 @@ namespace OpenAI.Moderations
             {
                 throw new FormatException($"The model {nameof(ModerationOptions)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Input);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Input))
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("input"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Input);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Input))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(Model))
+            }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());

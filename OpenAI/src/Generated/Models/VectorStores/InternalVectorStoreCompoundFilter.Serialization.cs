@@ -63,27 +63,33 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreCompoundFilter)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToString());
-            writer.WritePropertyName("filters"u8);
-            writer.WriteStartArray();
-            foreach (BinaryData item in Filters)
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
-                if (item == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
-                }
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(item);
-#else
-                using (JsonDocument document = JsonDocument.Parse(item))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
             }
-            writer.WriteEndArray();
+            if (_additionalBinaryDataProperties?.ContainsKey("filters") != true)
+            {
+                writer.WritePropertyName("filters"u8);
+                writer.WriteStartArray();
+                foreach (BinaryData item in Filters)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                writer.WriteEndArray();
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

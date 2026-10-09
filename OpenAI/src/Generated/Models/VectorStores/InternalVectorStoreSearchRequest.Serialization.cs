@@ -63,26 +63,29 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("query"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Query);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Query))
+            if (_additionalBinaryDataProperties?.ContainsKey("query") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                writer.WritePropertyName("query"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Query);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Query))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(RewriteQuery))
+            }
+            if (Optional.IsDefined(RewriteQuery) && _additionalBinaryDataProperties?.ContainsKey("rewrite_query") != true)
             {
                 writer.WritePropertyName("rewrite_query"u8);
                 writer.WriteBooleanValue(RewriteQuery.Value);
             }
-            if (Optional.IsDefined(MaxNumResults))
+            if (Optional.IsDefined(MaxNumResults) && _additionalBinaryDataProperties?.ContainsKey("max_num_results") != true)
             {
                 writer.WritePropertyName("max_num_results"u8);
                 writer.WriteNumberValue(MaxNumResults.Value);
             }
-            if (Optional.IsDefined(Filters))
+            if (Optional.IsDefined(Filters) && _additionalBinaryDataProperties?.ContainsKey("filters") != true)
             {
                 writer.WritePropertyName("filters"u8);
 #if NET6_0_OR_GREATER
@@ -94,7 +97,7 @@ namespace OpenAI.VectorStores
                 }
 #endif
             }
-            if (Optional.IsDefined(RankingOptions))
+            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
             {
                 writer.WritePropertyName("ranking_options"u8);
                 writer.WriteObjectValue(RankingOptions, options);

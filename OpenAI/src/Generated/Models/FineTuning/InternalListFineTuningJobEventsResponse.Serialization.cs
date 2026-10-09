@@ -71,17 +71,26 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalListFineTuningJobEventsResponse)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (FineTuningEvent item in Data)
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (FineTuningEvent item in Data)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("has_more"u8);
-            writer.WriteBooleanValue(HasMore);
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

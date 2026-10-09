@@ -63,8 +63,11 @@ namespace OpenAI.Moderations
                 throw new FormatException($"The model {nameof(ModerationInputPart)} does not support writing '{format}' format.");
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToSerialString());
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

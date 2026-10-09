@@ -59,7 +59,7 @@ namespace OpenAI.LegacyCompletions
             {
                 throw new FormatException($"The model {nameof(InternalLegacyChatCompletionStreamOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(IncludeUsage))
+            if (Optional.IsDefined(IncludeUsage) && _additionalBinaryDataProperties?.ContainsKey("include_usage") != true)
             {
                 writer.WritePropertyName("include_usage"u8);
                 writer.WriteBooleanValue(IncludeUsage.Value);

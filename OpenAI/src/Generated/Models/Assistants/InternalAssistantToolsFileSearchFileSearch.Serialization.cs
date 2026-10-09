@@ -59,12 +59,12 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalAssistantToolsFileSearchFileSearch)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(InternalMaxNumResults))
+            if (Optional.IsDefined(InternalMaxNumResults) && _additionalBinaryDataProperties?.ContainsKey("max_num_results") != true)
             {
                 writer.WritePropertyName("max_num_results"u8);
                 writer.WriteNumberValue(InternalMaxNumResults.Value);
             }
-            if (Optional.IsDefined(RankingOptions))
+            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
             {
                 writer.WritePropertyName("ranking_options"u8);
                 writer.WriteObjectValue(RankingOptions, options);

@@ -64,42 +64,45 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalRunStoredCompletionsDataContentSource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(Metadata))
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                if (Optional.IsCollectionDefined(Metadata))
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
                     }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
-            else
-            {
-                writer.WriteNull("metadata"u8);
-            }
-            if (Optional.IsDefined(Model))
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(CreatedAfter))
+            if (Optional.IsDefined(CreatedAfter) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
             {
                 writer.WritePropertyName("created_after"u8);
                 writer.WriteNumberValue(CreatedAfter.Value);
             }
-            if (Optional.IsDefined(CreatedBefore))
+            if (Optional.IsDefined(CreatedBefore) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
             {
                 writer.WritePropertyName("created_before"u8);
                 writer.WriteNumberValue(CreatedBefore.Value);
             }
-            if (Optional.IsDefined(Limit))
+            if (Optional.IsDefined(Limit) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
             {
                 writer.WritePropertyName("limit"u8);
                 writer.WriteNumberValue(Limit.Value);

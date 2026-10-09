@@ -63,8 +63,11 @@ namespace OpenAI.Moderations
             {
                 throw new FormatException($"The model {nameof(InternalModerationImagePartImageUrl)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("url"u8);
-            writer.WriteStringValue(Url.AbsoluteUri);
+            if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
+            {
+                writer.WritePropertyName("url"u8);
+                writer.WriteStringValue(Url.AbsoluteUri);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

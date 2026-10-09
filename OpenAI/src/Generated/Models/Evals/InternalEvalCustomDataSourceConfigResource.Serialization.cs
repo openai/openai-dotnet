@@ -64,26 +64,29 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalCustomDataSourceConfigResource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("schema"u8);
-            writer.WriteStartObject();
-            foreach (var item in Schema)
+            if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
+                writer.WritePropertyName("schema"u8);
+                writer.WriteStartObject();
+                foreach (var item in Schema)
                 {
-                    writer.WriteNullValue();
-                    continue;
-                }
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                writer.WriteEndObject();
             }
-            writer.WriteEndObject();
         }
 
         InternalEvalCustomDataSourceConfigResource IJsonModel<InternalEvalCustomDataSourceConfigResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalCustomDataSourceConfigResource)JsonModelCreateCore(ref reader, options);

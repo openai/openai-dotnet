@@ -60,17 +60,17 @@ namespace OpenAI.Audio
                 throw new FormatException($"The model {nameof(AudioTranscriptionCustomServerVadChunkingStrategy)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(PrefixPadding))
+            if (Optional.IsDefined(PrefixPadding) && _additionalBinaryDataProperties?.ContainsKey("prefix_padding_ms") != true)
             {
                 writer.WritePropertyName("prefix_padding_ms"u8);
                 writer.WriteNumberValue(Convert.ToInt64(Math.Round(PrefixPadding.Value.TotalMilliseconds)));
             }
-            if (Optional.IsDefined(SilenceDuration))
+            if (Optional.IsDefined(SilenceDuration) && _additionalBinaryDataProperties?.ContainsKey("silence_duration_ms") != true)
             {
                 writer.WritePropertyName("silence_duration_ms"u8);
                 writer.WriteNumberValue(Convert.ToInt64(Math.Round(SilenceDuration.Value.TotalMilliseconds)));
             }
-            if (Optional.IsDefined(DetectionThreshold))
+            if (Optional.IsDefined(DetectionThreshold) && _additionalBinaryDataProperties?.ContainsKey("threshold") != true)
             {
                 writer.WritePropertyName("threshold"u8);
                 writer.WriteNumberValue(DetectionThreshold.Value);

@@ -63,18 +63,24 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalItem)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("role"u8);
-            writer.WriteStringValue(Role.ToString());
-            writer.WritePropertyName("content"u8);
-#if NET6_0_OR_GREATER
-            writer.WriteRawValue(Content);
-#else
-            using (JsonDocument document = JsonDocument.Parse(Content))
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
-                JsonSerializer.Serialize(writer, document.RootElement);
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToString());
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                writer.WritePropertyName("content"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Content);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Content))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(Kind))
+            }
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.Value.ToString());

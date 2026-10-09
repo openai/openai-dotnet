@@ -63,8 +63,11 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeOutputImageObjectImage)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("file_id"u8);
-            writer.WriteStringValue(FileId);
+            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -69,12 +69,21 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(TranscribedWord)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("word"u8);
-            writer.WriteStringValue(Word);
-            writer.WritePropertyName("start"u8);
-            writer.WriteNumberValue(StartTime.TotalSeconds);
-            writer.WritePropertyName("end"u8);
-            writer.WriteNumberValue(EndTime.TotalSeconds);
+            if (_additionalBinaryDataProperties?.ContainsKey("word") != true)
+            {
+                writer.WritePropertyName("word"u8);
+                writer.WriteStringValue(Word);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
+            {
+                writer.WritePropertyName("start"u8);
+                writer.WriteNumberValue(StartTime.TotalSeconds);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
+            {
+                writer.WritePropertyName("end"u8);
+                writer.WriteNumberValue(EndTime.TotalSeconds);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,10 +63,16 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageInputTokenUsageDetails)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("text_tokens"u8);
-            writer.WriteNumberValue(TextTokenCount);
-            writer.WritePropertyName("image_tokens"u8);
-            writer.WriteNumberValue(ImageTokenCount);
+            if (_additionalBinaryDataProperties?.ContainsKey("text_tokens") != true)
+            {
+                writer.WritePropertyName("text_tokens"u8);
+                writer.WriteNumberValue(TextTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("image_tokens") != true)
+            {
+                writer.WritePropertyName("image_tokens"u8);
+                writer.WriteNumberValue(ImageTokenCount);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

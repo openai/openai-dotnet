@@ -71,18 +71,36 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileBatch)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(BatchId);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("vector_store_id"u8);
-            writer.WriteStringValue(VectorStoreId);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToString());
-            writer.WritePropertyName("file_counts"u8);
-            writer.WriteObjectValue(FileCounts, options);
-            writer.WritePropertyName("object"u8);
-            writer.WriteObjectValue<object>(Object, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(BatchId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("vector_store_id") != true)
+            {
+                writer.WritePropertyName("vector_store_id"u8);
+                writer.WriteStringValue(VectorStoreId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("file_counts") != true)
+            {
+                writer.WritePropertyName("file_counts"u8);
+                writer.WriteObjectValue(FileCounts, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteObjectValue<object>(Object, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -59,22 +59,22 @@ namespace OpenAI.LegacyCompletions
             {
                 throw new FormatException($"The model {nameof(InternalCompletionsCompletionUsageCompletionTokensDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(AcceptedPredictionTokens))
+            if (Optional.IsDefined(AcceptedPredictionTokens) && _additionalBinaryDataProperties?.ContainsKey("accepted_prediction_tokens") != true)
             {
                 writer.WritePropertyName("accepted_prediction_tokens"u8);
                 writer.WriteNumberValue(AcceptedPredictionTokens.Value);
             }
-            if (Optional.IsDefined(AudioTokens))
+            if (Optional.IsDefined(AudioTokens) && _additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
             {
                 writer.WritePropertyName("audio_tokens"u8);
                 writer.WriteNumberValue(AudioTokens.Value);
             }
-            if (Optional.IsDefined(ReasoningTokens))
+            if (Optional.IsDefined(ReasoningTokens) && _additionalBinaryDataProperties?.ContainsKey("reasoning_tokens") != true)
             {
                 writer.WritePropertyName("reasoning_tokens"u8);
                 writer.WriteNumberValue(ReasoningTokens.Value);
             }
-            if (Optional.IsDefined(RejectedPredictionTokens))
+            if (Optional.IsDefined(RejectedPredictionTokens) && _additionalBinaryDataProperties?.ContainsKey("rejected_prediction_tokens") != true)
             {
                 writer.WritePropertyName("rejected_prediction_tokens"u8);
                 writer.WriteNumberValue(RejectedPredictionTokens.Value);

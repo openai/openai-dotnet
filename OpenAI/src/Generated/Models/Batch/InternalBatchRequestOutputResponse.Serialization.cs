@@ -59,17 +59,17 @@ namespace OpenAI.Batch
             {
                 throw new FormatException($"The model {nameof(InternalBatchRequestOutputResponse)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(StatusCode))
+            if (Optional.IsDefined(StatusCode) && _additionalBinaryDataProperties?.ContainsKey("status_code") != true)
             {
                 writer.WritePropertyName("status_code"u8);
                 writer.WriteNumberValue(StatusCode.Value);
             }
-            if (Optional.IsDefined(RequestId))
+            if (Optional.IsDefined(RequestId) && _additionalBinaryDataProperties?.ContainsKey("request_id") != true)
             {
                 writer.WritePropertyName("request_id"u8);
                 writer.WriteStringValue(RequestId);
             }
-            if (Optional.IsCollectionDefined(Body))
+            if (Optional.IsCollectionDefined(Body) && _additionalBinaryDataProperties?.ContainsKey("body") != true)
             {
                 writer.WritePropertyName("body"u8);
                 writer.WriteStartObject();

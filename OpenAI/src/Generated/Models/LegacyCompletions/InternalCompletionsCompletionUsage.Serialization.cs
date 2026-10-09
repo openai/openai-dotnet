@@ -63,18 +63,27 @@ namespace OpenAI.LegacyCompletions
             {
                 throw new FormatException($"The model {nameof(InternalCompletionsCompletionUsage)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("completion_tokens"u8);
-            writer.WriteNumberValue(CompletionTokens);
-            writer.WritePropertyName("prompt_tokens"u8);
-            writer.WriteNumberValue(PromptTokens);
-            writer.WritePropertyName("total_tokens"u8);
-            writer.WriteNumberValue(TotalTokens);
-            if (Optional.IsDefined(CompletionTokensDetails))
+            if (_additionalBinaryDataProperties?.ContainsKey("completion_tokens") != true)
+            {
+                writer.WritePropertyName("completion_tokens"u8);
+                writer.WriteNumberValue(CompletionTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt_tokens") != true)
+            {
+                writer.WritePropertyName("prompt_tokens"u8);
+                writer.WriteNumberValue(PromptTokens);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            {
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokens);
+            }
+            if (Optional.IsDefined(CompletionTokensDetails) && _additionalBinaryDataProperties?.ContainsKey("completion_tokens_details") != true)
             {
                 writer.WritePropertyName("completion_tokens_details"u8);
                 writer.WriteObjectValue(CompletionTokensDetails, options);
             }
-            if (Optional.IsDefined(PromptTokensDetails))
+            if (Optional.IsDefined(PromptTokensDetails) && _additionalBinaryDataProperties?.ContainsKey("prompt_tokens_details") != true)
             {
                 writer.WritePropertyName("prompt_tokens_details"u8);
                 writer.WriteObjectValue(PromptTokensDetails, options);

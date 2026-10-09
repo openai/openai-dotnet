@@ -71,25 +71,37 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreFileContentResponse)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (InternalVectorStoreFileContentResponseDatum item in Data)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("has_more"u8);
-            writer.WriteBooleanValue(HasMore);
-            if (Optional.IsDefined(NextPage))
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
-                writer.WritePropertyName("next_page"u8);
-                writer.WriteStringValue(NextPage);
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (InternalVectorStoreFileContentResponseDatum item in Data)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
             {
-                writer.WriteNull("next_page"u8);
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("next_page") != true)
+            {
+                if (Optional.IsDefined(NextPage))
+                {
+                    writer.WritePropertyName("next_page"u8);
+                    writer.WriteStringValue(NextPage);
+                }
+                else
+                {
+                    writer.WriteNull("next_page"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

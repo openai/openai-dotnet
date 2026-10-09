@@ -66,8 +66,11 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalAddUploadPartRequest)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("data"u8);
-            writer.WriteObjectValue(Data, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
+            {
+                writer.WritePropertyName("data"u8);
+                writer.WriteObjectValue(Data, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

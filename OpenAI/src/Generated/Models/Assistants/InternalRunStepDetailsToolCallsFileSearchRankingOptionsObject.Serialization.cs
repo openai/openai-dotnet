@@ -63,10 +63,16 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("ranker"u8);
-            writer.WriteStringValue(Ranker.ToString());
-            writer.WritePropertyName("score_threshold"u8);
-            writer.WriteNumberValue(ScoreThreshold);
+            if (_additionalBinaryDataProperties?.ContainsKey("ranker") != true)
+            {
+                writer.WritePropertyName("ranker"u8);
+                writer.WriteStringValue(Ranker.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("score_threshold") != true)
+            {
+                writer.WritePropertyName("score_threshold"u8);
+                writer.WriteNumberValue(ScoreThreshold);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

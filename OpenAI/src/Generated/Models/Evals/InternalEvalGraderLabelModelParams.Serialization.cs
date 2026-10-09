@@ -65,53 +65,68 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalGraderLabelModelParams)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            writer.WritePropertyName("input"u8);
-            writer.WriteStartArray();
-            foreach (BinaryData item in Input)
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                if (item == null)
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
+                writer.WriteStartArray();
+                foreach (BinaryData item in Input)
                 {
-                    writer.WriteNullValue();
-                    continue;
-                }
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(item);
+                    writer.WriteRawValue(item);
 #else
-                using (JsonDocument document = JsonDocument.Parse(item))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    using (JsonDocument document = JsonDocument.Parse(item))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
-            }
-            writer.WriteEndArray();
-            writer.WritePropertyName("labels"u8);
-            writer.WriteStartArray();
-            foreach (string item in Labels)
-            {
-                if (item == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
                 }
-                writer.WriteStringValue(item);
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("passing_labels"u8);
-            writer.WriteStartArray();
-            foreach (string item in PassingLabels)
+            if (_additionalBinaryDataProperties?.ContainsKey("labels") != true)
             {
-                if (item == null)
+                writer.WritePropertyName("labels"u8);
+                writer.WriteStartArray();
+                foreach (string item in Labels)
                 {
-                    writer.WriteNullValue();
-                    continue;
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
                 }
-                writer.WriteStringValue(item);
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
+            if (_additionalBinaryDataProperties?.ContainsKey("passing_labels") != true)
+            {
+                writer.WritePropertyName("passing_labels"u8);
+                writer.WriteStartArray();
+                foreach (string item in PassingLabels)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
+                }
+                writer.WriteEndArray();
+            }
         }
 
         InternalEvalGraderLabelModelParams IJsonModel<InternalEvalGraderLabelModelParams>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalGraderLabelModelParams)JsonModelCreateCore(ref reader, options);

@@ -63,10 +63,16 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalCompletionsRunDataSourceParamsInputMessages2)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
-            writer.WritePropertyName("item_reference"u8);
-            writer.WriteStringValue(ItemReference);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("item_reference") != true)
+            {
+                writer.WritePropertyName("item_reference"u8);
+                writer.WriteStringValue(ItemReference);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

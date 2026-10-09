@@ -71,49 +71,70 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEval)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("data_source_config"u8);
-            writer.WriteObjectValue(DataSourceConfig, options);
-            if (Optional.IsCollectionDefined(TestingCriteria))
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WritePropertyName("testing_criteria"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalGraderResource item in TestingCriteria)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                writer.WriteNull("testing_criteria"u8);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedOn, "U");
-            if (Optional.IsCollectionDefined(Metadata))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("data_source_config") != true)
+            {
+                writer.WritePropertyName("data_source_config"u8);
+                writer.WriteObjectValue(DataSourceConfig, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("testing_criteria") != true)
+            {
+                if (Optional.IsCollectionDefined(TestingCriteria))
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
+                    writer.WritePropertyName("testing_criteria"u8);
+                    writer.WriteStartArray();
+                    foreach (InternalEvalGraderResource item in TestingCriteria)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        writer.WriteObjectValue(item, options);
                     }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("testing_criteria"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
-                writer.WriteNull("metadata"u8);
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedOn, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                if (Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

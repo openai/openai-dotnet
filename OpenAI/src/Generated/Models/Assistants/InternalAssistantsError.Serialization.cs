@@ -63,28 +63,40 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalAssistantsError)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Code))
+            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("code"u8);
-                writer.WriteStringValue(Code);
+                if (Optional.IsDefined(Code))
+                {
+                    writer.WritePropertyName("code"u8);
+                    writer.WriteStringValue(Code);
+                }
+                else
+                {
+                    writer.WriteNull("code"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
-                writer.WriteNull("code"u8);
+                writer.WritePropertyName("message"u8);
+                writer.WriteStringValue(Message);
             }
-            writer.WritePropertyName("message"u8);
-            writer.WriteStringValue(Message);
-            if (Optional.IsDefined(Param))
+            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                if (Optional.IsDefined(Param))
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
-                writer.WriteNull("param"u8);
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaObjectDelta)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(StepDetails))
+            if (Optional.IsDefined(StepDetails) && _additionalBinaryDataProperties?.ContainsKey("step_details") != true)
             {
                 writer.WritePropertyName("step_details"u8);
                 writer.WriteObjectValue(StepDetails, options);

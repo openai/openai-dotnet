@@ -71,62 +71,104 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRun)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("eval_id"u8);
-            writer.WriteStringValue(EvalId);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status);
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedOn, "U");
-            writer.WritePropertyName("report_url"u8);
-            writer.WriteStringValue(ReportUrl);
-            writer.WritePropertyName("result_counts"u8);
-            writer.WriteObjectValue(ResultCounts, options);
-            writer.WritePropertyName("per_model_usage"u8);
-            writer.WriteStartArray();
-            foreach (InternalEvalRunPerModelUsage item in PerModelUsage)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("per_testing_criteria_results"u8);
-            writer.WriteStartArray();
-            foreach (InternalEvalRunPerTestingCriteriaResult item in PerTestingCriteriaResults)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("data_source"u8);
-            writer.WriteObjectValue(DataSource, options);
-            if (Optional.IsCollectionDefined(Metadata))
+            if (_additionalBinaryDataProperties?.ContainsKey("eval_id") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                writer.WritePropertyName("eval_id"u8);
+                writer.WriteStringValue(EvalId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedOn, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("report_url") != true)
+            {
+                writer.WritePropertyName("report_url"u8);
+                writer.WriteStringValue(ReportUrl);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("result_counts") != true)
+            {
+                writer.WritePropertyName("result_counts"u8);
+                writer.WriteObjectValue(ResultCounts, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("per_model_usage") != true)
+            {
+                writer.WritePropertyName("per_model_usage"u8);
+                writer.WriteStartArray();
+                foreach (InternalEvalRunPerModelUsage item in PerModelUsage)
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteObjectValue(item, options);
                 }
-                writer.WriteEndObject();
+                writer.WriteEndArray();
             }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("per_testing_criteria_results") != true)
             {
-                writer.WriteNull("metadata"u8);
+                writer.WritePropertyName("per_testing_criteria_results"u8);
+                writer.WriteStartArray();
+                foreach (InternalEvalRunPerTestingCriteriaResult item in PerTestingCriteriaResults)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            writer.WritePropertyName("error"u8);
-            writer.WriteObjectValue(Error, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("data_source") != true)
+            {
+                writer.WritePropertyName("data_source"u8);
+                writer.WriteObjectValue(DataSource, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                if (Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
+            {
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue(Error, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

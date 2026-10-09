@@ -71,27 +71,36 @@ namespace OpenAI.Batch
             {
                 throw new FormatException($"The model {nameof(InternalListBatchesResponse)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (BatchJob item in Data)
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (BatchJob item in Data)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
-            writer.WriteEndArray();
-            if (Optional.IsDefined(FirstId))
+            if (Optional.IsDefined(FirstId) && _additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
                 writer.WritePropertyName("first_id"u8);
                 writer.WriteStringValue(FirstId);
             }
-            if (Optional.IsDefined(LastId))
+            if (Optional.IsDefined(LastId) && _additionalBinaryDataProperties?.ContainsKey("last_id") != true)
             {
                 writer.WritePropertyName("last_id"u8);
                 writer.WriteStringValue(LastId);
             }
-            writer.WritePropertyName("has_more"u8);
-            writer.WriteBooleanValue(HasMore);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

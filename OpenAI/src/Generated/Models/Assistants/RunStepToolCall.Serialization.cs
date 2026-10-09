@@ -59,11 +59,17 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(RunStepToolCall)} does not support writing '{format}' format.");
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToSerialString());
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

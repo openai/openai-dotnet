@@ -64,11 +64,34 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigResource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(Metadata))
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName("metadata"u8);
+                if (Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
+            {
+                writer.WritePropertyName("schema"u8);
                 writer.WriteStartObject();
-                foreach (var item in Metadata)
+                foreach (var item in Schema)
                 {
                     writer.WritePropertyName(item.Key);
                     if (item.Value == null)
@@ -76,34 +99,17 @@ namespace OpenAI.Evals
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item.Value);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
                 }
                 writer.WriteEndObject();
             }
-            else
-            {
-                writer.WriteNull("metadata"u8);
-            }
-            writer.WritePropertyName("schema"u8);
-            writer.WriteStartObject();
-            foreach (var item in Schema)
-            {
-                writer.WritePropertyName(item.Key);
-                if (item.Value == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
-                }
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(item.Value);
-#else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            writer.WriteEndObject();
         }
 
         InternalEvalStoredCompletionsDataSourceConfigResource IJsonModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalStoredCompletionsDataSourceConfigResource)JsonModelCreateCore(ref reader, options);

@@ -69,31 +69,61 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(TranscribedSegment)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("id"u8);
-            writer.WriteNumberValue(Id);
-            writer.WritePropertyName("seek"u8);
-            writer.WriteNumberValue(SeekOffset);
-            writer.WritePropertyName("start"u8);
-            writer.WriteNumberValue(StartTime.TotalSeconds);
-            writer.WritePropertyName("end"u8);
-            writer.WriteNumberValue(EndTime.TotalSeconds);
-            writer.WritePropertyName("text"u8);
-            writer.WriteStringValue(Text);
-            writer.WritePropertyName("tokens"u8);
-            writer.WriteStartArray();
-            foreach (int item in TokenIds.Span)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                writer.WriteNumberValue(item);
+                writer.WritePropertyName("id"u8);
+                writer.WriteNumberValue(Id);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("temperature"u8);
-            writer.WriteNumberValue(Temperature);
-            writer.WritePropertyName("avg_logprob"u8);
-            writer.WriteNumberValue(AverageLogProbability);
-            writer.WritePropertyName("compression_ratio"u8);
-            writer.WriteNumberValue(CompressionRatio);
-            writer.WritePropertyName("no_speech_prob"u8);
-            writer.WriteNumberValue(NoSpeechProbability);
+            if (_additionalBinaryDataProperties?.ContainsKey("seek") != true)
+            {
+                writer.WritePropertyName("seek"u8);
+                writer.WriteNumberValue(SeekOffset);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
+            {
+                writer.WritePropertyName("start"u8);
+                writer.WriteNumberValue(StartTime.TotalSeconds);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
+            {
+                writer.WritePropertyName("end"u8);
+                writer.WriteNumberValue(EndTime.TotalSeconds);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+            {
+                writer.WritePropertyName("text"u8);
+                writer.WriteStringValue(Text);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("tokens") != true)
+            {
+                writer.WritePropertyName("tokens"u8);
+                writer.WriteStartArray();
+                foreach (int item in TokenIds.Span)
+                {
+                    writer.WriteNumberValue(item);
+                }
+                writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            {
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("avg_logprob") != true)
+            {
+                writer.WritePropertyName("avg_logprob"u8);
+                writer.WriteNumberValue(AverageLogProbability);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("compression_ratio") != true)
+            {
+                writer.WritePropertyName("compression_ratio"u8);
+                writer.WriteNumberValue(CompressionRatio);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("no_speech_prob") != true)
+            {
+                writer.WritePropertyName("no_speech_prob"u8);
+                writer.WriteNumberValue(NoSpeechProbability);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
