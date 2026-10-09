@@ -447,26 +447,16 @@ public partial class AudioClient
 
         EnsureModelSupportsStreaming();
 
-        FileStream inputStream = File.OpenRead(audioFilePath);
+        using FileStream inputStream = File.OpenRead(audioFilePath);
+        using MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options, stream: true)
+                .ToMultipartContent(inputStream, audioFilePath);
 
-        try
-        {
-            MultiPartFormDataBinaryContent content
-                = CreatePerCallTranscriptionOptions(options, stream: true)
-                    .ToMultipartContent(inputStream, audioFilePath);
-
-            ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-            return SseStreamingResult.Create(
-                result.GetRawResponse(),
-                StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-                cancellationToken,
-                additionalDisposalActions: [() => inputStream?.Dispose()]);
-        }
-        catch
-        {
-            inputStream?.Dispose();
-            throw;
-        }
+        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingResult.Create(
+            result.GetRawResponse(),
+            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+            cancellationToken);
 #pragma warning restore OPENAI001
     }
 

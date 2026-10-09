@@ -374,7 +374,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    [AsyncOnly]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task DiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -511,6 +510,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingDiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
