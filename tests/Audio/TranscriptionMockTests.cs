@@ -1,4 +1,5 @@
-﻿using Microsoft.ClientModel.TestFramework;
+﻿#pragma warning disable OPENAI001
+using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Audio;
@@ -161,6 +162,30 @@ public partial class TranscriptionMockTests : ClientTestBase
         };
 
         Assert.Throws<InvalidOperationException>(() => client.TranscribeAudio(path, options));
+    }
+
+    [Test]
+    [AsyncOnly]
+    public async Task TranscribeAudioStreamingFromFileDisposesInputBeforeEnumeration()
+    {
+        string path = Path.GetTempFileName();
+
+        try
+        {
+            await File.WriteAllBytesAsync(path, [0x01, 0x02, 0x03, 0x04, 0x05]);
+
+            OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, "data: [DONE]\n\n");
+            AudioClient client = new("model", s_fakeCredential, clientOptions);
+
+            await using var streamingResult = await client.TranscribeAudioStreamingAsync(path);
+            using FileStream exclusiveStream = new(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+            Assert.That(exclusiveStream.CanRead, Is.True);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     [Test]
