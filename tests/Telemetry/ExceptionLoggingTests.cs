@@ -139,6 +139,43 @@ public class ExceptionLoggingTests
         Assert.That(source.StartResponsesScope(new CreateResponseOptions { Model = "model" }), Is.Null);
     }
 
+    [Test]
+    public void LoggerEnablementFailureDoesNotEscape()
+    {
+        using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
+        using var factory = new ThrowingLoggerFactory("is-enabled");
+        var source = new OpenTelemetrySource(s_endpoint, new ClientLoggingOptions { LoggerFactory = factory });
+
+        Assert.That(source.StartResponsesScope(new CreateResponseOptions { Model = "model" }), Is.Null);
+    }
+
+    [TestCase("is-enabled")]
+    [TestCase("log")]
+    public void LoggerFailuresDoNotReplaceOperationException(string phase)
+    {
+        using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
+        using var activities = new TestActivityListener("OpenAI.ResponsesClient");
+        using var factory = new ThrowingLoggerFactory(phase);
+        var operationException = new IOException("operation failure");
+        var client = new ResponsesClient(new ApiKeyCredential("not-a-key"), new ResponsesClientOptions
+        {
+            Endpoint = s_endpoint,
+            Transport = new MockPipelineTransport(_ => throw operationException),
+            RetryPolicy = new ClientRetryPolicy(0),
+            ClientLoggingOptions = new ClientLoggingOptions
+            {
+                LoggerFactory = factory,
+                EnableMessageLogging = false,
+            },
+        });
+
+        Assert.That(
+            () => client.CreateResponse(new CreateResponseOptions { Model = "model" }),
+            Throws.Exception.SameAs(operationException));
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void TopLevelClientPreservesOperationLoggingConfiguration(bool responses)
@@ -606,6 +643,35 @@ public class ExceptionLoggingTests
 
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => ValueTask.FromException<int>(new IOException("sensitive read"));
+    }
+
+    private sealed class ThrowingLoggerFactory(string phase) : ILoggerFactory
+    {
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName) => new ThrowingLogger(phase);
+
+        public void Dispose()
+        {
+        }
+
+        private sealed class ThrowingLogger(string phase) : ILogger
+        {
+            public IDisposable BeginScope<TState>(TState state) => null;
+
+            public bool IsEnabled(LogLevel logLevel)
+                => phase == "is-enabled" ? throw new InvalidOperationException("logger enablement failure") : true;
+
+            public void Log<TState>(
+                LogLevel logLevel,
+                EventId eventId,
+                TState state,
+                Exception exception,
+                Func<TState, Exception, string> formatter)
+                => throw new InvalidOperationException("logger emission failure");
+        }
     }
 
     private static void AssertPrivate(ExportedLog record, Type exceptionType)

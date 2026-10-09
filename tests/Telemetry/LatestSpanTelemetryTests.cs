@@ -415,7 +415,8 @@ public class LatestSpanTelemetryTests
         Assert.That(activity.GetTagItem("gen_ai.usage.input_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.input_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(state == "raw" ? 0 : 1));
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0,
+            Is.EqualTo(((state == "raw") && (!latest)) ? 0 : 1));
 
         if ((latest) && ((state == "created") || (state == "queued")))
         {

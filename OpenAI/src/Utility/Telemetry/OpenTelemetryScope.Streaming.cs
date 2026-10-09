@@ -229,8 +229,15 @@ internal partial class OpenTelemetryScope
                 {
                     if (_responseStream is null)
                     {
-                        _completed = true;
-                        _scope.Dispose();
+                        if (_scope._useLatestSemanticConventions)
+                        {
+                            CompleteRawResponse(null);
+                        }
+                        else
+                        {
+                            _completed = true;
+                            _scope.Dispose();
+                        }
                     }
                 }
                 else

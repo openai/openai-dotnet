@@ -288,7 +288,7 @@ internal partial class OpenTelemetryScope : IDisposable
     {
         return activitySource.HasListeners() || duration.Enabled
             || (useLatestSemanticConventions ? inferenceTokens.Enabled : tokens.Enabled)
-            || ((useLatestSemanticConventions) && (exceptionLogger?.IsEnabled(LogLevel.Warning) == true));
+            || ((useLatestSemanticConventions) && (OpenTelemetryExceptionLogger.IsEnabled(exceptionLogger)));
     }
 
     private void Start(string providerAttributeKey, string openAiApiType = null, bool? streaming = null)

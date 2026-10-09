@@ -226,6 +226,30 @@ public class ResponseStreamTelemetryTests
         Assert.That(durations[0].tags["error.type"], Is.EqualTo("incomplete_stream"));
     }
 
+    [Test]
+    public void NullRawContentStreamCompletesAtHandoff(
+        [Values] bool latest,
+        [Values] bool trace)
+    {
+        using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
+        using var activities = trace ? new TestActivityListener(SourceName) : null;
+        using var metrics = new TestMeterListener(SourceName);
+        using var parent = new Activity("parent").Start();
+        using var response = new NullContentStreamResponse();
+        var lifecycle = new OpenTelemetrySource(new Uri("https://example.invalid"))
+            .StartResponsesStreamingScope(new CreateResponseOptions { Model = "model" });
+        lifecycle.OnResponse(response);
+        lifecycle.Complete(SseCompletionKind.RawResponse);
+
+        Assert.That(Activity.Current, Is.SameAs(parent));
+        Assert.That(activities?.Activities.Count ?? 0, Is.EqualTo(trace ? 1 : 0));
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(latest ? 1 : 0));
+        Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.input_tokens"), Is.Null);
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk"), Is.Null);
+    }
+
     private sealed class ProbeStream(string ending) : MemoryStream(new byte[] { 1, 2, 3 })
     {
         public int Reads { get; private set; }
@@ -303,6 +327,17 @@ public class ResponseStreamTelemetryTests
             }
 
             base.Dispose(disposing);
+        }
+    }
+
+    private sealed class NullContentStreamResponse() : MockPipelineResponse(200, "OK")
+    {
+        public override Stream ContentStream
+        {
+            get => null;
+            set
+            {
+            }
         }
     }
 }
