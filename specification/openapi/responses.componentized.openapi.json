@@ -98,17 +98,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "code_interpreter_call.outputs",
-                    "computer_call_output.output.image_url",
-                    "file_search_call.results",
-                    "message.input_image.image_url",
-                    "message.output_text.logprobs",
-                    "reasoning.encrypted_content",
-                    "web_search_call.action.sources",
-                    "web_search_call.results"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Include_array_item_enum"
                 }
               },
               {
@@ -166,113 +156,7 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "chatgpt-4o-latest",
-                  "codex-mini-latest",
-                  "computer-use-preview",
-                  "computer-use-preview-2025-03-11",
-                  "gpt-3.5-turbo",
-                  "gpt-3.5-turbo-0125",
-                  "gpt-3.5-turbo-0301",
-                  "gpt-3.5-turbo-0613",
-                  "gpt-3.5-turbo-1106",
-                  "gpt-3.5-turbo-16k",
-                  "gpt-3.5-turbo-16k-0613",
-                  "gpt-4",
-                  "gpt-4-0125-preview",
-                  "gpt-4-0314",
-                  "gpt-4-0613",
-                  "gpt-4-1106-preview",
-                  "gpt-4-32k",
-                  "gpt-4-32k-0314",
-                  "gpt-4-32k-0613",
-                  "gpt-4-turbo",
-                  "gpt-4-turbo-2024-04-09",
-                  "gpt-4-turbo-preview",
-                  "gpt-4-vision-preview",
-                  "gpt-4.1",
-                  "gpt-4.1-2025-04-14",
-                  "gpt-4.1-mini",
-                  "gpt-4.1-mini-2025-04-14",
-                  "gpt-4.1-nano",
-                  "gpt-4.1-nano-2025-04-14",
-                  "gpt-4o",
-                  "gpt-4o-2024-05-13",
-                  "gpt-4o-2024-08-06",
-                  "gpt-4o-2024-11-20",
-                  "gpt-4o-audio-preview",
-                  "gpt-4o-audio-preview-2024-10-01",
-                  "gpt-4o-audio-preview-2024-12-17",
-                  "gpt-4o-audio-preview-2025-06-03",
-                  "gpt-4o-mini",
-                  "gpt-4o-mini-2024-07-18",
-                  "gpt-4o-mini-audio-preview",
-                  "gpt-4o-mini-audio-preview-2024-12-17",
-                  "gpt-4o-mini-search-preview",
-                  "gpt-4o-mini-search-preview-2025-03-11",
-                  "gpt-4o-search-preview",
-                  "gpt-4o-search-preview-2025-03-11",
-                  "gpt-5",
-                  "gpt-5-2025-08-07",
-                  "gpt-5-chat-latest",
-                  "gpt-5-codex",
-                  "gpt-5-mini",
-                  "gpt-5-mini-2025-08-07",
-                  "gpt-5-nano",
-                  "gpt-5-nano-2025-08-07",
-                  "gpt-5-pro",
-                  "gpt-5-pro-2025-10-06",
-                  "gpt-5.1",
-                  "gpt-5.1-2025-11-13",
-                  "gpt-5.1-chat-latest",
-                  "gpt-5.1-codex",
-                  "gpt-5.1-codex-max",
-                  "gpt-5.2",
-                  "gpt-5.2-2025-12-11",
-                  "gpt-5.2-chat-latest",
-                  "gpt-5.2-pro",
-                  "gpt-5.2-pro-2025-12-11",
-                  "gpt-5.3-chat-latest",
-                  "gpt-5.4",
-                  "gpt-5.4-mini",
-                  "gpt-5.4-mini-2026-03-17",
-                  "gpt-5.4-nano",
-                  "gpt-5.4-nano-2026-03-17",
-                  "gpt-5.5",
-                  "gpt-5.5-2026-04-23",
-                  "gpt-5.5-pro",
-                  "gpt-5.5-pro-2026-04-23",
-                  "gpt-5.6-cyber",
-                  "gpt-5.6-luna",
-                  "gpt-5.6-sol",
-                  "gpt-5.6-terra",
-                  "gpt-6-astra",
-                  "gpt-audio-mini",
-                  "gpt-audio-mini-2025-12-15",
-                  "gpt-daybreak-blue-latest",
-                  "gpt-daybreak-red-latest",
-                  "o1",
-                  "o1-2024-12-17",
-                  "o1-mini",
-                  "o1-mini-2024-09-12",
-                  "o1-preview",
-                  "o1-preview-2024-09-12",
-                  "o1-pro",
-                  "o1-pro-2025-03-19",
-                  "o3",
-                  "o3-2025-04-16",
-                  "o3-deep-research",
-                  "o3-deep-research-2025-06-26",
-                  "o3-mini",
-                  "o3-mini-2025-01-31",
-                  "o3-pro",
-                  "o3-pro-2025-06-10",
-                  "o4-mini",
-                  "o4-mini-2025-04-16",
-                  "o4-mini-deep-research",
-                  "o4-mini-deep-research-2025-06-26"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Model_enum"
               }
             ]
           },
@@ -332,11 +216,7 @@
           "prompt_cache_retention": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "24h",
-                  "in_memory"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_PromptCacheRetention_enum"
               },
               {
                 "type": "null"
@@ -368,16 +248,7 @@
           "service_tier": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "default",
-                  "fast",
-                  "flex",
-                  "priority",
-                  "scale",
-                  "ultrafast"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_ServiceTier_enum"
               },
               {
                 "type": "null"
@@ -468,11 +339,7 @@
           "truncation": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "disabled"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Truncation_enum"
               },
               {
                 "type": "null"
@@ -528,6 +395,19 @@
             "type": "string"
           }
         }
+      },
+      "createResponse_request_object_Include_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "code_interpreter_call.outputs",
+          "computer_call_output.output.image_url",
+          "file_search_call.results",
+          "message.input_image.image_url",
+          "message.output_text.logprobs",
+          "reasoning.encrypted_content",
+          "web_search_call.action.sources",
+          "web_search_call.results"
+        ]
       },
       "createResponse_request_object_Input_union": {
         "oneOf": [
@@ -803,11 +683,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -817,6 +693,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter": {
         "type": "object",
@@ -839,11 +722,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -899,13 +778,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -916,6 +789,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -1000,6 +882,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfComputer": {
         "type": "object",
         "required": [
@@ -1036,16 +925,19 @@
             "type": "integer"
           },
           "environment": {
-            "type": "string",
-            "enum": [
-              "browser",
-              "linux",
-              "mac",
-              "ubuntu",
-              "windows"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum": {
+        "type": "string",
+        "enum": [
+          "browser",
+          "linux",
+          "mac",
+          "ubuntu",
+          "windows"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom": {
         "type": "object",
@@ -1068,11 +960,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -1094,6 +982,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -1130,13 +1025,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -1201,11 +1099,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object"
           },
           "ranker": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "default-2024-11-15"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum"
           },
           "score_threshold": {
             "type": "number"
@@ -1226,6 +1120,13 @@
             "type": "number"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "default-2024-11-15"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction": {
         "type": "object",
@@ -1270,11 +1171,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 }
               },
               {
@@ -1314,6 +1211,13 @@
         "type": "object",
         "additionalProperties": {}
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -1331,29 +1235,15 @@
             ]
           },
           "action": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "edit",
-              "generate"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum"
           },
           "background": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "opaque",
-              "transparent"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum"
           },
           "input_fidelity": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum"
               },
               {
                 "type": "null"
@@ -1369,27 +1259,12 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "gpt-image-1",
-                  "gpt-image-1-mini",
-                  "gpt-image-1.5",
-                  "gpt-image-2",
-                  "gpt-image-2-2026-04-21",
-                  "gpt-image-2.5-flare",
-                  "gpt-image-2.5-flare-2026-09-08",
-                  "gpt-image-2.5-sunburst",
-                  "gpt-image-2.5-sunburst-2026-09-08"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum"
               }
             ]
           },
           "moderation": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
             "type": "integer",
@@ -1397,12 +1272,7 @@
             "minimum": 0
           },
           "output_format": {
-            "type": "string",
-            "enum": [
-              "jpeg",
-              "png",
-              "webp"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
             "type": "integer",
@@ -1410,15 +1280,7 @@
             "minimum": 0
           },
           "quality": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "max",
-              "medium",
-              "xhigh"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"
           },
           "size": {
             "anyOf": [
@@ -1426,17 +1288,34 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "1024x1024",
-                  "1024x1536",
-                  "1536x1024",
-                  "auto"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum"
               }
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "edit",
+          "generate"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "opaque",
+          "transparent"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object": {
         "type": "object",
@@ -1450,6 +1329,55 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum": {
+        "type": "string",
+        "enum": [
+          "gpt-image-1",
+          "gpt-image-1-mini",
+          "gpt-image-1.5",
+          "gpt-image-2",
+          "gpt-image-2-2026-04-21",
+          "gpt-image-2.5-flare",
+          "gpt-image-2.5-flare-2026-09-08",
+          "gpt-image-2.5-sunburst",
+          "gpt-image-2.5-sunburst-2026-09-08"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "low"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum": {
+        "type": "string",
+        "enum": [
+          "jpeg",
+          "png",
+          "webp"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "max",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum": {
+        "type": "string",
+        "enum": [
+          "1024x1024",
+          "1024x1536",
+          "1536x1024",
+          "auto"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfLocalShell": {
         "type": "object",
@@ -1486,11 +1414,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -1513,18 +1437,7 @@
             "type": "string"
           },
           "connector_id": {
-            "type": "string",
-            "deprecated": true,
-            "enum": [
-              "connector_dropbox",
-              "connector_gmail",
-              "connector_googlecalendar",
-              "connector_googledrive",
-              "connector_microsoftteams",
-              "connector_outlookcalendar",
-              "connector_outlookemail",
-              "connector_sharepoint"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum"
           },
           "defer_loading": {
             "type": "boolean"
@@ -1562,6 +1475,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union": {
         "oneOf": [
           {
@@ -1591,6 +1511,20 @@
         },
         "additionalProperties": false
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum": {
+        "type": "string",
+        "deprecated": true,
+        "enum": [
+          "connector_dropbox",
+          "connector_gmail",
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_microsoftteams",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_sharepoint"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary": {
         "type": "object",
         "additionalProperties": {
@@ -1603,11 +1537,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object"
           },
           {
-            "type": "string",
-            "enum": [
-              "always",
-              "never"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum"
           }
         ]
       },
@@ -1654,6 +1584,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum": {
+        "type": "string",
+        "enum": [
+          "always",
+          "never"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace": {
         "type": "object",
@@ -1724,11 +1661,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -1750,6 +1683,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -1786,13 +1726,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -1832,11 +1775,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -1893,6 +1832,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -1933,11 +1879,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -1957,6 +1899,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject": {
         "discriminator": {
@@ -2001,13 +1950,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -2025,6 +1968,15 @@
             "maxItems": 200
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -2296,11 +2248,7 @@
             ]
           },
           "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum"
           },
           "parameters": {
             "anyOf": [
@@ -2313,6 +2261,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum": {
+        "type": "string",
+        "enum": [
+          "client",
+          "server"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object": {
         "type": "object",
@@ -2345,12 +2300,7 @@
             ]
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -2381,6 +2331,14 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object": {
         "type": "object",
@@ -2448,20 +2406,11 @@
           "search_content_types": {
             "type": "array",
             "items": {
-              "type": "string",
-              "enum": [
-                "image",
-                "text"
-              ]
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum"
             }
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -2474,6 +2423,21 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "image",
+          "text"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject": {
         "discriminator": {
@@ -2566,11 +2530,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Status_enum"
           },
           "caller": {
             "anyOf": [
@@ -2682,6 +2642,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
@@ -2753,11 +2720,7 @@
             "minLength": 1
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Status_enum"
           },
           "caller": {
             "anyOf": [
@@ -2791,6 +2754,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Caller_discriminatedObject": {
         "discriminator": {
@@ -2890,14 +2860,7 @@
             ]
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed",
-              "in_progress",
-              "incomplete",
-              "interpreting"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Status_enum"
           }
         }
       },
@@ -2954,6 +2917,16 @@
             "type": "string"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "in_progress",
+          "incomplete",
+          "interpreting"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompaction": {
         "type": "object",
@@ -3037,12 +3010,7 @@
             }
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Status_enum"
           },
           "action": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject"
@@ -3085,6 +3053,14 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject": {
         "discriminator": {
@@ -3147,14 +3123,7 @@
             ]
           },
           "button": {
-            "type": "string",
-            "enum": [
-              "back",
-              "forward",
-              "left",
-              "right",
-              "wheel"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick_Button_enum"
           },
           "x": {
             "type": "integer"
@@ -3176,6 +3145,16 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick_Button_enum": {
+        "type": "string",
+        "enum": [
+          "back",
+          "forward",
+          "left",
+          "right",
+          "wheel"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick": {
         "type": "object",
@@ -3468,14 +3447,7 @@
             ]
           },
           "button": {
-            "type": "string",
-            "enum": [
-              "back",
-              "forward",
-              "left",
-              "right",
-              "wheel"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfClick_Button_enum"
           },
           "x": {
             "type": "integer"
@@ -3497,6 +3469,16 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfClick_Button_enum": {
+        "type": "string",
+        "enum": [
+          "back",
+          "forward",
+          "left",
+          "right",
+          "wheel"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfDoubleClick": {
         "type": "object",
@@ -3776,12 +3758,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -3855,6 +3832,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate": {
         "type": "object",
         "required": [
@@ -3888,16 +3873,7 @@
           "effort": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low",
-                  "max",
-                  "medium",
-                  "minimal",
-                  "none",
-                  "xhigh"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object_Effort_enum"
               },
               {
                 "type": "null"
@@ -3905,6 +3881,18 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object_Effort_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "max",
+          "medium",
+          "minimal",
+          "none",
+          "xhigh"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall": {
         "type": "object",
@@ -4082,12 +4070,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_Detail_enum"
           },
           "file_data": {
             "type": "string"
@@ -4113,6 +4096,14 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -4142,13 +4133,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "original"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
           },
           "file_id": {
             "anyOf": [
@@ -4175,6 +4160,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "original"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -4301,14 +4295,7 @@
             }
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed",
-              "in_progress",
-              "incomplete",
-              "searching"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Status_enum"
           },
           "results": {
             "anyOf": [
@@ -4324,6 +4311,16 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "in_progress",
+          "incomplete",
+          "searching"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object": {
         "type": "object",
@@ -4422,12 +4419,7 @@
             "type": "string"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum"
           }
         }
       },
@@ -4479,6 +4471,14 @@
             "type": "string"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput": {
         "type": "object",
@@ -4556,12 +4556,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -4618,12 +4613,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_Detail_enum"
           },
           "file_data": {
             "anyOf": [
@@ -4679,6 +4669,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object": {
         "type": "object",
         "required": [
@@ -4708,13 +4706,7 @@
           "detail": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "high",
-                  "low",
-                  "original"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
               },
               {
                 "type": "null"
@@ -4754,6 +4746,15 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "original"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -4863,6 +4864,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall": {
         "type": "object",
         "required": [
@@ -4892,23 +4901,12 @@
             ]
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed",
-              "generating",
-              "in_progress"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Status_enum"
           },
           "action": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "edit",
-                  "generate"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Action_enum"
               },
               {
                 "type": "null"
@@ -4918,12 +4916,7 @@
           "background": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "opaque",
-                  "transparent"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Background_enum"
               },
               {
                 "type": "null"
@@ -4933,12 +4926,7 @@
           "output_format": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "jpeg",
-                  "png",
-                  "webp"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_OutputFormat_enum"
               },
               {
                 "type": "null"
@@ -4948,15 +4936,7 @@
           "quality": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "high",
-                  "low",
-                  "max",
-                  "medium",
-                  "xhigh"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Quality_enum"
               },
               {
                 "type": "null"
@@ -4981,12 +4961,7 @@
                     "type": "string"
                   },
                   {
-                    "type": "string",
-                    "enum": [
-                      "1024x1024",
-                      "1024x1536",
-                      "1536x1024"
-                    ]
+                    "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Size_enum"
                   }
                 ]
               },
@@ -4996,6 +4971,58 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "generating",
+          "in_progress"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Action_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "edit",
+          "generate"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Background_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "opaque",
+          "transparent"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_OutputFormat_enum": {
+        "type": "string",
+        "enum": [
+          "jpeg",
+          "png",
+          "webp"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Quality_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "max",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Size_enum": {
+        "type": "string",
+        "enum": [
+          "1024x1024",
+          "1024x1536",
+          "1536x1024"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfItemReference": {
         "type": "object",
@@ -5041,12 +5068,7 @@
             "type": "string"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Status_enum"
           }
         }
       },
@@ -5124,6 +5146,14 @@
           "type": "string"
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput": {
         "type": "object",
         "required": [
@@ -5148,12 +5178,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -5161,6 +5186,14 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalRequest": {
         "type": "object",
@@ -5294,14 +5327,7 @@
             ]
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "calling",
-              "completed",
-              "failed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Status_enum"
           }
         }
       },
@@ -5385,6 +5411,16 @@
           },
           "content": {}
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "calling",
+          "completed",
+          "failed",
+          "in_progress",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools": {
         "type": "object",
@@ -5487,13 +5523,7 @@
             }
           },
           "role": {
-            "type": "string",
-            "enum": [
-              "assistant",
-              "developer",
-              "system",
-              "user"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Role_enum"
           },
           "id": {
             "type": "string"
@@ -5501,11 +5531,7 @@
           "phase": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "commentary",
-                  "final_answer"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Phase_enum"
               },
               {
                 "type": "null"
@@ -5513,12 +5539,7 @@
             ]
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Status_enum"
           }
         }
       },
@@ -5564,12 +5585,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_Detail_enum"
           },
           "file_data": {
             "type": "string"
@@ -5595,6 +5611,14 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -5624,13 +5648,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "original"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
           },
           "file_id": {
             "anyOf": [
@@ -5657,6 +5675,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "original"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -5946,6 +5973,30 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Role_enum": {
+        "type": "string",
+        "enum": [
+          "assistant",
+          "developer",
+          "system",
+          "user"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Phase_enum": {
+        "type": "string",
+        "enum": [
+          "commentary",
+          "final_answer"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgram": {
         "type": "object",
         "required": [
@@ -6009,13 +6060,16 @@
             "maxLength": 10485760
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput_Status_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning": {
         "type": "object",
@@ -6057,12 +6111,7 @@
             ]
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "in_progress",
-              "incomplete"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Status_enum"
           }
         }
       },
@@ -6128,6 +6177,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall": {
         "type": "object",
         "required": [
@@ -6183,12 +6240,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Status_enum"
               },
               {
                 "type": "null"
@@ -6357,6 +6409,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput": {
         "type": "object",
         "required": [
@@ -6415,12 +6475,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -6550,6 +6605,14 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall": {
         "type": "object",
         "required": [
@@ -6579,11 +6642,7 @@
             ]
           },
           "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall_Execution_enum"
           },
           "id": {
             "anyOf": [
@@ -6598,12 +6657,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall_Status_enum"
               },
               {
                 "type": "null"
@@ -6616,6 +6670,21 @@
         "type": "object",
         "required": [],
         "properties": {}
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall_Execution_enum": {
+        "type": "string",
+        "enum": [
+          "client",
+          "server"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput": {
         "type": "object",
@@ -6649,11 +6718,7 @@
             ]
           },
           "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Execution_enum"
           },
           "id": {
             "anyOf": [
@@ -6668,12 +6733,7 @@
           "status": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "completed",
-                  "in_progress",
-                  "incomplete"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -6772,11 +6832,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -6786,6 +6842,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter": {
         "type": "object",
@@ -6808,11 +6871,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -6868,13 +6927,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -6885,6 +6938,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -6969,6 +7031,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfComputer": {
         "type": "object",
         "required": [
@@ -7005,16 +7074,19 @@
             "type": "integer"
           },
           "environment": {
-            "type": "string",
-            "enum": [
-              "browser",
-              "linux",
-              "mac",
-              "ubuntu",
-              "windows"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum": {
+        "type": "string",
+        "enum": [
+          "browser",
+          "linux",
+          "mac",
+          "ubuntu",
+          "windows"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom": {
         "type": "object",
@@ -7037,11 +7109,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -7063,6 +7131,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -7099,13 +7174,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -7170,11 +7248,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object"
           },
           "ranker": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "default-2024-11-15"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum"
           },
           "score_threshold": {
             "type": "number"
@@ -7195,6 +7269,13 @@
             "type": "number"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "default-2024-11-15"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction": {
         "type": "object",
@@ -7239,11 +7320,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 }
               },
               {
@@ -7283,6 +7360,13 @@
         "type": "object",
         "additionalProperties": {}
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -7300,29 +7384,15 @@
             ]
           },
           "action": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "edit",
-              "generate"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum"
           },
           "background": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "opaque",
-              "transparent"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum"
           },
           "input_fidelity": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum"
               },
               {
                 "type": "null"
@@ -7338,27 +7408,12 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "gpt-image-1",
-                  "gpt-image-1-mini",
-                  "gpt-image-1.5",
-                  "gpt-image-2",
-                  "gpt-image-2-2026-04-21",
-                  "gpt-image-2.5-flare",
-                  "gpt-image-2.5-flare-2026-09-08",
-                  "gpt-image-2.5-sunburst",
-                  "gpt-image-2.5-sunburst-2026-09-08"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum"
               }
             ]
           },
           "moderation": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
             "type": "integer",
@@ -7366,12 +7421,7 @@
             "minimum": 0
           },
           "output_format": {
-            "type": "string",
-            "enum": [
-              "jpeg",
-              "png",
-              "webp"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
             "type": "integer",
@@ -7379,15 +7429,7 @@
             "minimum": 0
           },
           "quality": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "max",
-              "medium",
-              "xhigh"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"
           },
           "size": {
             "anyOf": [
@@ -7395,17 +7437,34 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "1024x1024",
-                  "1024x1536",
-                  "1536x1024",
-                  "auto"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum"
               }
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "edit",
+          "generate"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "opaque",
+          "transparent"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object": {
         "type": "object",
@@ -7419,6 +7478,55 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum": {
+        "type": "string",
+        "enum": [
+          "gpt-image-1",
+          "gpt-image-1-mini",
+          "gpt-image-1.5",
+          "gpt-image-2",
+          "gpt-image-2-2026-04-21",
+          "gpt-image-2.5-flare",
+          "gpt-image-2.5-flare-2026-09-08",
+          "gpt-image-2.5-sunburst",
+          "gpt-image-2.5-sunburst-2026-09-08"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "low"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum": {
+        "type": "string",
+        "enum": [
+          "jpeg",
+          "png",
+          "webp"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "max",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum": {
+        "type": "string",
+        "enum": [
+          "1024x1024",
+          "1024x1536",
+          "1536x1024",
+          "auto"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfLocalShell": {
         "type": "object",
@@ -7455,11 +7563,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -7482,18 +7586,7 @@
             "type": "string"
           },
           "connector_id": {
-            "type": "string",
-            "deprecated": true,
-            "enum": [
-              "connector_dropbox",
-              "connector_gmail",
-              "connector_googlecalendar",
-              "connector_googledrive",
-              "connector_microsoftteams",
-              "connector_outlookcalendar",
-              "connector_outlookemail",
-              "connector_sharepoint"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum"
           },
           "defer_loading": {
             "type": "boolean"
@@ -7531,6 +7624,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union": {
         "oneOf": [
           {
@@ -7560,6 +7660,20 @@
         },
         "additionalProperties": false
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum": {
+        "type": "string",
+        "deprecated": true,
+        "enum": [
+          "connector_dropbox",
+          "connector_gmail",
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_microsoftteams",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_sharepoint"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary": {
         "type": "object",
         "additionalProperties": {
@@ -7572,11 +7686,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object"
           },
           {
-            "type": "string",
-            "enum": [
-              "always",
-              "never"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum"
           }
         ]
       },
@@ -7623,6 +7733,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum": {
+        "type": "string",
+        "enum": [
+          "always",
+          "never"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace": {
         "type": "object",
@@ -7693,11 +7810,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -7719,6 +7832,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -7755,13 +7875,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -7801,11 +7924,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -7862,6 +7981,13 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -7902,11 +8028,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -7926,6 +8048,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject": {
         "discriminator": {
@@ -7970,13 +8099,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -7994,6 +8117,15 @@
             "maxItems": 200
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -8265,11 +8397,7 @@
             ]
           },
           "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum"
           },
           "parameters": {
             "anyOf": [
@@ -8282,6 +8410,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum": {
+        "type": "string",
+        "enum": [
+          "client",
+          "server"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object": {
         "type": "object",
@@ -8314,12 +8449,7 @@
             ]
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -8350,6 +8480,14 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object": {
         "type": "object",
@@ -8417,20 +8555,11 @@
           "search_content_types": {
             "type": "array",
             "items": {
-              "type": "string",
-              "enum": [
-                "image",
-                "text"
-              ]
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum"
             }
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -8443,6 +8572,21 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "image",
+          "text"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject": {
         "discriminator": {
@@ -8511,6 +8655,21 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Execution_enum": {
+        "type": "string",
+        "enum": [
+          "client",
+          "server"
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall": {
         "type": "object",
         "required": [
@@ -8533,14 +8692,7 @@
             "type": "string"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "completed",
-              "failed",
-              "in_progress",
-              "incomplete",
-              "searching"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Status_enum"
           }
         }
       },
@@ -8676,11 +8828,130 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed",
+          "in_progress",
+          "incomplete",
+          "searching"
+        ]
+      },
       "createResponse_request_object_Metadata_dictionary": {
         "type": "object",
         "additionalProperties": {
           "type": "string"
         }
+      },
+      "createResponse_request_object_Model_enum": {
+        "type": "string",
+        "enum": [
+          "chatgpt-4o-latest",
+          "codex-mini-latest",
+          "computer-use-preview",
+          "computer-use-preview-2025-03-11",
+          "gpt-3.5-turbo",
+          "gpt-3.5-turbo-0125",
+          "gpt-3.5-turbo-0301",
+          "gpt-3.5-turbo-0613",
+          "gpt-3.5-turbo-1106",
+          "gpt-3.5-turbo-16k",
+          "gpt-3.5-turbo-16k-0613",
+          "gpt-4",
+          "gpt-4-0125-preview",
+          "gpt-4-0314",
+          "gpt-4-0613",
+          "gpt-4-1106-preview",
+          "gpt-4-32k",
+          "gpt-4-32k-0314",
+          "gpt-4-32k-0613",
+          "gpt-4-turbo",
+          "gpt-4-turbo-2024-04-09",
+          "gpt-4-turbo-preview",
+          "gpt-4-vision-preview",
+          "gpt-4.1",
+          "gpt-4.1-2025-04-14",
+          "gpt-4.1-mini",
+          "gpt-4.1-mini-2025-04-14",
+          "gpt-4.1-nano",
+          "gpt-4.1-nano-2025-04-14",
+          "gpt-4o",
+          "gpt-4o-2024-05-13",
+          "gpt-4o-2024-08-06",
+          "gpt-4o-2024-11-20",
+          "gpt-4o-audio-preview",
+          "gpt-4o-audio-preview-2024-10-01",
+          "gpt-4o-audio-preview-2024-12-17",
+          "gpt-4o-audio-preview-2025-06-03",
+          "gpt-4o-mini",
+          "gpt-4o-mini-2024-07-18",
+          "gpt-4o-mini-audio-preview",
+          "gpt-4o-mini-audio-preview-2024-12-17",
+          "gpt-4o-mini-search-preview",
+          "gpt-4o-mini-search-preview-2025-03-11",
+          "gpt-4o-search-preview",
+          "gpt-4o-search-preview-2025-03-11",
+          "gpt-5",
+          "gpt-5-2025-08-07",
+          "gpt-5-chat-latest",
+          "gpt-5-codex",
+          "gpt-5-mini",
+          "gpt-5-mini-2025-08-07",
+          "gpt-5-nano",
+          "gpt-5-nano-2025-08-07",
+          "gpt-5-pro",
+          "gpt-5-pro-2025-10-06",
+          "gpt-5.1",
+          "gpt-5.1-2025-11-13",
+          "gpt-5.1-chat-latest",
+          "gpt-5.1-codex",
+          "gpt-5.1-codex-max",
+          "gpt-5.2",
+          "gpt-5.2-2025-12-11",
+          "gpt-5.2-chat-latest",
+          "gpt-5.2-pro",
+          "gpt-5.2-pro-2025-12-11",
+          "gpt-5.3-chat-latest",
+          "gpt-5.4",
+          "gpt-5.4-mini",
+          "gpt-5.4-mini-2026-03-17",
+          "gpt-5.4-nano",
+          "gpt-5.4-nano-2026-03-17",
+          "gpt-5.5",
+          "gpt-5.5-2026-04-23",
+          "gpt-5.5-pro",
+          "gpt-5.5-pro-2026-04-23",
+          "gpt-5.6-cyber",
+          "gpt-5.6-luna",
+          "gpt-5.6-sol",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-audio-mini",
+          "gpt-audio-mini-2025-12-15",
+          "gpt-daybreak-blue-latest",
+          "gpt-daybreak-red-latest",
+          "o1",
+          "o1-2024-12-17",
+          "o1-mini",
+          "o1-mini-2024-09-12",
+          "o1-preview",
+          "o1-preview-2024-09-12",
+          "o1-pro",
+          "o1-pro-2025-03-19",
+          "o3",
+          "o3-2025-04-16",
+          "o3-deep-research",
+          "o3-deep-research-2025-06-26",
+          "o3-mini",
+          "o3-mini-2025-01-31",
+          "o3-pro",
+          "o3-pro-2025-06-10",
+          "o4-mini",
+          "o4-mini-2025-04-16",
+          "o4-mini-deep-research",
+          "o4-mini-deep-research-2025-06-26"
+        ]
       },
       "createResponse_request_object_Moderation_object": {
         "type": "object",
@@ -8736,13 +9007,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "block",
-              "score"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Moderation_object_Policy_object_Input_object_Mode_enum"
           }
         }
+      },
+      "createResponse_request_object_Moderation_object_Policy_object_Input_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "block",
+          "score"
+        ]
       },
       "createResponse_request_object_Moderation_object_Policy_object_Output_object": {
         "type": "object",
@@ -8751,13 +9025,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "block",
-              "score"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Moderation_object_Policy_object_Output_object_Mode_enum"
           }
         }
+      },
+      "createResponse_request_object_Moderation_object_Policy_object_Output_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "block",
+          "score"
+        ]
       },
       "createResponse_request_object_Prompt_object": {
         "type": "object",
@@ -8840,12 +9117,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_Detail_enum"
           },
           "file_data": {
             "type": "string"
@@ -8871,6 +9143,14 @@
             "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -8900,13 +9180,7 @@
             ]
           },
           "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "original"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_Detail_enum"
           },
           "file_id": {
             "anyOf": [
@@ -8933,6 +9207,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
           }
         }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_Detail_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "original"
+        ]
       },
       "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
         "type": "object",
@@ -8998,11 +9281,7 @@
             ]
           },
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit",
-              "implicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_PromptCacheOptions_object_Mode_enum"
           },
           "prewarm": {
             "type": "boolean"
@@ -9015,18 +9294,27 @@
           }
         }
       },
+      "createResponse_request_object_PromptCacheOptions_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit",
+          "implicit"
+        ]
+      },
+      "createResponse_request_object_PromptCacheRetention_enum": {
+        "type": "string",
+        "enum": [
+          "24h",
+          "in_memory"
+        ]
+      },
       "createResponse_request_object_Reasoning_object": {
         "type": "object",
         "properties": {
           "context": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "all_turns",
-                  "auto",
-                  "current_turn"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object_Context_enum"
               },
               {
                 "type": "null"
@@ -9036,16 +9324,7 @@
           "effort": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low",
-                  "max",
-                  "medium",
-                  "minimal",
-                  "none",
-                  "xhigh"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object_Effort_enum"
               },
               {
                 "type": "null"
@@ -9055,13 +9334,7 @@
           "generate_summary": {
             "anyOf": [
               {
-                "type": "string",
-                "deprecated": true,
-                "enum": [
-                  "auto",
-                  "concise",
-                  "detailed"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object_GenerateSummary_enum"
               },
               {
                 "type": "null"
@@ -9074,23 +9347,14 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "pro",
-                  "standard"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object_Mode_enum"
               }
             ]
           },
           "summary": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "auto",
-                  "concise",
-                  "detailed"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object_Summary_enum"
               },
               {
                 "type": "null"
@@ -9098,6 +9362,62 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Reasoning_object_Context_enum": {
+        "type": "string",
+        "enum": [
+          "all_turns",
+          "auto",
+          "current_turn"
+        ]
+      },
+      "createResponse_request_object_Reasoning_object_Effort_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "max",
+          "medium",
+          "minimal",
+          "none",
+          "xhigh"
+        ]
+      },
+      "createResponse_request_object_Reasoning_object_GenerateSummary_enum": {
+        "type": "string",
+        "deprecated": true,
+        "enum": [
+          "auto",
+          "concise",
+          "detailed"
+        ]
+      },
+      "createResponse_request_object_Reasoning_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "pro",
+          "standard"
+        ]
+      },
+      "createResponse_request_object_Reasoning_object_Summary_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "concise",
+          "detailed"
+        ]
+      },
+      "createResponse_request_object_ServiceTier_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "default",
+          "fast",
+          "flex",
+          "priority",
+          "scale",
+          "ultrafast"
+        ]
       },
       "createResponse_request_object_StreamOptions_object": {
         "type": "object",
@@ -9116,12 +9436,7 @@
           "verbosity": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low",
-                  "medium"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Text_object_Verbosity_enum"
               },
               {
                 "type": "null"
@@ -9218,19 +9533,30 @@
           }
         }
       },
+      "createResponse_request_object_Text_object_Verbosity_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
+      },
       "createResponse_request_object_ToolChoice_union": {
         "oneOf": [
           {
-            "type": "string",
-            "enum": [
-              "auto",
-              "none",
-              "required"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_enum"
           },
           {
             "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject"
           }
+        ]
+      },
+      "createResponse_request_object_ToolChoice_union_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "none",
+          "required"
         ]
       },
       "createResponse_request_object_ToolChoice_union_discriminatedObject": {
@@ -9313,11 +9639,7 @@
             ]
           },
           "mode": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "required"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools_Mode_enum"
           },
           "tools": {
             "type": "array",
@@ -9326,6 +9648,13 @@
             }
           }
         }
+      },
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "required"
+        ]
       },
       "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools_Tools_array_item_dictionary": {
         "type": "object",
@@ -9625,11 +9954,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -9639,6 +9964,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter": {
         "type": "object",
@@ -9661,11 +9993,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -9721,13 +10049,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -9738,6 +10060,15 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -9822,6 +10153,13 @@
           }
         }
       },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputer": {
         "type": "object",
         "required": [
@@ -9858,16 +10196,19 @@
             "type": "integer"
           },
           "environment": {
-            "type": "string",
-            "enum": [
-              "browser",
-              "linux",
-              "mac",
-              "ubuntu",
-              "windows"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview_Environment_enum": {
+        "type": "string",
+        "enum": [
+          "browser",
+          "linux",
+          "mac",
+          "ubuntu",
+          "windows"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom": {
         "type": "object",
@@ -9890,11 +10231,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -9916,6 +10253,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -9952,13 +10296,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -10023,11 +10370,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object"
           },
           "ranker": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "default-2024-11-15"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum"
           },
           "score_threshold": {
             "type": "number"
@@ -10048,6 +10391,13 @@
             "type": "number"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_Ranker_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "default-2024-11-15"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction": {
         "type": "object",
@@ -10092,11 +10442,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 }
               },
               {
@@ -10136,6 +10482,13 @@
         "type": "object",
         "additionalProperties": {}
       },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -10153,29 +10506,15 @@
             ]
           },
           "action": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "edit",
-              "generate"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum"
           },
           "background": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "opaque",
-              "transparent"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum"
           },
           "input_fidelity": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum"
               },
               {
                 "type": "null"
@@ -10191,27 +10530,12 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "gpt-image-1",
-                  "gpt-image-1-mini",
-                  "gpt-image-1.5",
-                  "gpt-image-2",
-                  "gpt-image-2-2026-04-21",
-                  "gpt-image-2.5-flare",
-                  "gpt-image-2.5-flare-2026-09-08",
-                  "gpt-image-2.5-sunburst",
-                  "gpt-image-2.5-sunburst-2026-09-08"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum"
               }
             ]
           },
           "moderation": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "low"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
             "type": "integer",
@@ -10219,12 +10543,7 @@
             "minimum": 0
           },
           "output_format": {
-            "type": "string",
-            "enum": [
-              "jpeg",
-              "png",
-              "webp"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
             "type": "integer",
@@ -10232,15 +10551,7 @@
             "minimum": 0
           },
           "quality": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "max",
-              "medium",
-              "xhigh"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"
           },
           "size": {
             "anyOf": [
@@ -10248,17 +10559,34 @@
                 "type": "string"
               },
               {
-                "type": "string",
-                "enum": [
-                  "1024x1024",
-                  "1024x1536",
-                  "1536x1024",
-                  "auto"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum"
               }
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Action_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "edit",
+          "generate"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "opaque",
+          "transparent"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputFidelity_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object": {
         "type": "object",
@@ -10272,6 +10600,55 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Model_enum": {
+        "type": "string",
+        "enum": [
+          "gpt-image-1",
+          "gpt-image-1-mini",
+          "gpt-image-1.5",
+          "gpt-image-2",
+          "gpt-image-2-2026-04-21",
+          "gpt-image-2.5-flare",
+          "gpt-image-2.5-flare-2026-09-08",
+          "gpt-image-2.5-sunburst",
+          "gpt-image-2.5-sunburst-2026-09-08"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "low"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum": {
+        "type": "string",
+        "enum": [
+          "jpeg",
+          "png",
+          "webp"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "high",
+          "low",
+          "max",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Size_enum": {
+        "type": "string",
+        "enum": [
+          "1024x1024",
+          "1024x1536",
+          "1536x1024",
+          "auto"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell": {
         "type": "object",
@@ -10308,11 +10685,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -10335,18 +10708,7 @@
             "type": "string"
           },
           "connector_id": {
-            "type": "string",
-            "deprecated": true,
-            "enum": [
-              "connector_dropbox",
-              "connector_gmail",
-              "connector_googlecalendar",
-              "connector_googledrive",
-              "connector_microsoftteams",
-              "connector_outlookcalendar",
-              "connector_outlookemail",
-              "connector_sharepoint"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum"
           },
           "defer_loading": {
             "type": "boolean"
@@ -10384,6 +10746,13 @@
           }
         }
       },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union": {
         "oneOf": [
           {
@@ -10413,6 +10782,20 @@
         },
         "additionalProperties": false
       },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_ConnectorId_enum": {
+        "type": "string",
+        "deprecated": true,
+        "enum": [
+          "connector_dropbox",
+          "connector_gmail",
+          "connector_googlecalendar",
+          "connector_googledrive",
+          "connector_microsoftteams",
+          "connector_outlookcalendar",
+          "connector_outlookemail",
+          "connector_sharepoint"
+        ]
+      },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary": {
         "type": "object",
         "additionalProperties": {
@@ -10425,11 +10808,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object"
           },
           {
-            "type": "string",
-            "enum": [
-              "always",
-              "never"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum"
           }
         ]
       },
@@ -10476,6 +10855,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_enum": {
+        "type": "string",
+        "enum": [
+          "always",
+          "never"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace": {
         "type": "object",
@@ -10546,11 +10932,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -10572,6 +10954,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
@@ -10608,13 +10997,16 @@
             "type": "string"
           },
           "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar_Syntax_enum": {
+        "type": "string",
+        "enum": [
+          "lark",
+          "regex"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText": {
         "type": "object",
@@ -10654,11 +11046,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -10715,6 +11103,13 @@
           }
         }
       },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
+      },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary": {
         "type": "object",
         "additionalProperties": {}
@@ -10755,11 +11150,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
+                  "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
                 },
                 "minItems": 1
               },
@@ -10779,6 +11170,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "programmatic"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject": {
         "discriminator": {
@@ -10823,13 +11221,7 @@
           "memory_limit": {
             "anyOf": [
               {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum"
               },
               {
                 "type": "null"
@@ -10847,6 +11239,15 @@
             "maxItems": 200
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_MemoryLimit_enum": {
+        "type": "string",
+        "enum": [
+          "16g",
+          "1g",
+          "4g",
+          "64g"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
@@ -11118,11 +11519,7 @@
             ]
           },
           "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum"
           },
           "parameters": {
             "anyOf": [
@@ -11135,6 +11532,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Execution_enum": {
+        "type": "string",
+        "enum": [
+          "client",
+          "server"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object": {
         "type": "object",
@@ -11167,12 +11571,7 @@
             ]
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -11203,6 +11602,14 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object": {
         "type": "object",
@@ -11270,20 +11677,11 @@
           "search_content_types": {
             "type": "array",
             "items": {
-              "type": "string",
-              "enum": [
-                "image",
-                "text"
-              ]
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum"
             }
           },
           "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum"
           },
           "user_location": {
             "anyOf": [
@@ -11296,6 +11694,21 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContentTypes_array_item_enum": {
+        "type": "string",
+        "enum": [
+          "image",
+          "text"
+        ]
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_SearchContextSize_enum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "low",
+          "medium"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject": {
         "discriminator": {
@@ -11363,6 +11776,13 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Truncation_enum": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "disabled"
+        ]
       }
     },
     "securitySchemes": {

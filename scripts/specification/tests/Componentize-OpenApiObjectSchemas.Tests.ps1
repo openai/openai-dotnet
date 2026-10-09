@@ -23,6 +23,7 @@ $componentizeScriptPath = Join-Path $scriptDirectory "Componentize-OpenApiObject
 # exercised without file I/O. The script's invocation guard must prevent its CLI
 # entry point from running during this load; the first test locks that contract.
 . $componentizeScriptPath
+. (Join-Path $scriptDirectory "_OpenApiComponentDeduplication.Helpers.ps1")
 . (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
@@ -150,6 +151,70 @@ try {
         Assert-True (-not ($candidates.Pointer -ccontains "#/components/schemas/ExistingRoot")) "Existing component root was rediscovered."
     }
 
+    Invoke-Test "multi-value string enums become deduplicatable enum components" {
+        Assert-True (Test-IsInlineOpenApiStringEnumSchema `
+            -Value ([ordered]@{ type = "string"; enum = @("direct", "programmatic") }) `
+            -Context Schema) "Multi-value string enum was not eligible."
+        Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema `
+            -Value ([ordered]@{ type = "string"; enum = @("direct") }) `
+            -Context Schema)) "Singleton string enum was eligible."
+        Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema `
+            -Value ([ordered]@{ type = "string"; enum = @("direct", 1) }) `
+            -Context Schema)) "Mixed-value enum was eligible."
+
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+        $enum = [ordered]@{ type = "string"; enum = @("direct", "programmatic") }
+        $root.properties["customTool"] = [ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                allowedCallers = [ordered]@{
+                    type = "array"
+                    items = $enum
+                    minItems = 1
+                }
+            }
+        }
+        $root.properties["functionTool"] = [ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                allowedCallers = [ordered]@{
+                    type = "array"
+                    items = Copy-JsonValue -Value $enum
+                }
+            }
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $enumCandidates = @($result.Candidates | Where-Object Kind -eq "StringEnum")
+        $expectedNames = @(
+            "createWidget_request_object_CustomTool_object_AllowedCallers_array_item_enum",
+            "createWidget_request_object_FunctionTool_object_AllowedCallers_array_item_enum"
+        )
+        Assert-Equal 2 $result.DiscoveredStringEnumSchemaCount "String enum discovery count was incorrect."
+        Assert-Sequence $expectedNames @($enumCandidates.Name) "String enum component names were incorrect."
+        foreach ($name in $expectedNames) {
+            Assert-Sequence @("direct", "programmatic") @($result.Document.components.schemas[$name].enum) "Enum values changed for '$name'."
+        }
+        $customTool = $result.Document.components.schemas["createWidget_request_object_CustomTool_object"]
+        $functionTool = $result.Document.components.schemas["createWidget_request_object_FunctionTool_object"]
+        Assert-Equal `
+            "#/components/schemas/$($expectedNames[0])" `
+            $customTool.properties.allowedCallers.items.'$ref' `
+            "Custom-tool enum item was not replaced with a ref."
+        Assert-Equal `
+            "#/components/schemas/$($expectedNames[1])" `
+            $functionTool.properties.allowedCallers.items.'$ref' `
+            "Function-tool enum item was not replaced with a ref."
+
+        $mapPlan = New-OpenApiComponentDefaultMapPlan -Document $result.Document
+        $enumGroup = @($mapPlan.DefaultMap.groups | Where-Object {
+            @($_.members) -ccontains $expectedNames[0]
+        })[0]
+        Assert-Sequence $expectedNames @($enumGroup.members) "Equivalent enum components did not form one default group."
+    }
+
     # The golden locks one-component-per-occurrence semantics, deterministic
     # names, nested reference chains, relocation, and existing component order.
     Invoke-Test "compact fixture matches its componentized golden" {
@@ -159,6 +224,7 @@ try {
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         Assert-Equal 7 $result.DiscoveredObjectSchemaCount "Discovery statistic was incorrect."
         Assert-Equal 1 $result.DiscoveredOneOfSchemaCount "oneOf discovery statistic was incorrect."
+        Assert-Equal 0 $result.DiscoveredStringEnumSchemaCount "String enum discovery statistic was incorrect."
         Assert-Equal 8 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
         Assert-Equal 8 $result.GeneratedComponentCount "Generated statistic was incorrect."
         Assert-Equal 8 $result.RelocationCount "Relocation statistic was incorrect."

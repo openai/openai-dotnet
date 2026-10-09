@@ -1,18 +1,21 @@
 <#
 .SYNOPSIS
-    Moves inline object and direct oneOf schemas into OpenAPI components.
+    Moves inline object, direct oneOf, and multi-value string enum schemas into
+    OpenAPI components.
 
 .DESCRIPTION
-    Finds every inline Schema Object that owns a direct nonempty oneOf or has the
-    exact scalar type "object", creates one components.schemas entry per occurrence,
-    and replaces each inline definition with a local $ref. A direct oneOf owner
-    takes precedence when a schema satisfies both predicates. Nested candidates
-    become separate components referenced by their containing component.
+    Finds every inline Schema Object that owns a direct nonempty oneOf, has the
+    exact scalar type "object", or directly declares a multi-value string enum;
+    creates one components.schemas entry per occurrence; and replaces each inline
+    definition with a local $ref. A direct oneOf owner takes precedence when a
+    schema satisfies multiple predicates. Nested candidates become separate
+    components referenced by their containing component. Singleton string enums
+    remain inline so discriminator selectors retain their direct finite values.
 
     Component names use typed underscore-delimited segments. Operation ids and
     structural roles are lower-initial, API property/schema tokens are
     PascalCase, and discriminator leaves use their actual property and accepted
-    value. Object, dictionary, union, discriminated-object, array-item,
+    value. Object, dictionary, union, discriminated-object, enum, array-item,
     dictionary-value, and tuple-item roles are explicit. Repeated anonymous
     sibling roles receive one-based shape ordinals before numeric collision
     suffixes beginning with `_1`.
@@ -90,6 +93,40 @@ function Test-IsInlineOpenApiObjectSchema {
     $type = Get-JsonPropertyValue -Object $Value -Name "type"
     return $type -is [string] -and
         [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
+}
+
+# Multi-value string enums are reusable scalar schema definitions. Singleton
+# enums remain direct because they commonly carry discriminator identities that
+# downstream validation intentionally reads without resolving references.
+function Test-IsInlineOpenApiStringEnumSchema {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context
+    )
+
+    if (-not [string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -or
+        -not (Test-JsonObjectValue -Value $Value)) {
+        return $false
+    }
+    $type = Get-JsonPropertyValue -Object $Value -Name "type"
+    if ($type -isnot [string] -or
+        -not [string]::Equals($type, "string", [System.StringComparison]::Ordinal)) {
+        return $false
+    }
+    $enum = Get-JsonPropertyValue -Object $Value -Name "enum"
+    if (-not (Test-JsonArrayValue -Value $enum) -or $enum.Count -lt 2) {
+        return $false
+    }
+    foreach ($value in $enum) {
+        if ($value -isnot [string]) {
+            return $false
+        }
+    }
+    return $true
 }
 
 # A composition candidate is the complete Schema Object that owns oneOf, not the
@@ -240,7 +277,8 @@ function Get-OpenApiObjectSchemaTypeEnumValue {
 }
 
 # Performs one schema-aware, parent-first discovery pass and records every direct
-# oneOf owner or exact object-schema occurrence before any document is rewritten.
+# oneOf owner, exact object schema, or multi-value string enum occurrence before
+# any document is rewritten.
 # Direct oneOf takes precedence when a Schema Object satisfies both predicates,
 # so one source occurrence always produces exactly one component candidate.
 # Discovery and rewriting are kept separate so all source pointers remain valid
@@ -330,6 +368,9 @@ function Add-InlineOpenApiSchemaCandidates {
         elseif (Test-IsInlineOpenApiObjectSchema -Value $Value -Context $Context) {
             $candidateKind = "Object"
         }
+        elseif (Test-IsInlineOpenApiStringEnumSchema -Value $Value -Context $Context) {
+            $candidateKind = "StringEnum"
+        }
     }
     $isCandidate = $null -ne $candidateKind
     $childCandidateDepth = $CandidateDepth
@@ -403,6 +444,163 @@ function Add-InlineOpenApiSchemaCandidates {
     }
 }
 
+function Add-OpenApiDiscriminatorPropertyPointers {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Pointer,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.HashSet[string]]$Pointers,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Discriminator property discovery exceeds the supported depth of $MaximumDepth at '$Pointer'."
+    }
+    if ($null -eq $Value) {
+        return
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            "Schema"
+        }
+        else {
+            $Context
+        }
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            Add-OpenApiDiscriminatorPropertyPointers `
+                -Value $Value[$index] `
+                -Context $itemContext `
+                -Pointer "$Pointer/$index" `
+                -Pointers $Pointers `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        return
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return
+    }
+
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
+        $discriminator = Get-JsonPropertyValue -Object $Value -Name "discriminator"
+        $oneOf = Get-JsonPropertyValue -Object $Value -Name "oneOf"
+        if ((Test-JsonObjectValue -Value $discriminator) -and
+            (Test-JsonArrayValue -Value $oneOf)) {
+            $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+            if ($propertyName -is [string] -and -not [string]::IsNullOrWhiteSpace($propertyName)) {
+                $propertyToken = ConvertTo-JsonPointerToken -Token $propertyName
+                for ($index = 0; $index -lt $oneOf.Count; $index++) {
+                    $branch = $oneOf[$index]
+                    $targetPointer = "$Pointer/oneOf/$index"
+                    if ((Test-JsonObjectValue -Value $branch) -and
+                        (Test-JsonProperty -Object $branch -Name '$ref')) {
+                        $reference = Get-JsonPropertyValue -Object $branch -Name '$ref'
+                        if ($reference -is [string] -and
+                            $reference.StartsWith("#", [System.StringComparison]::Ordinal)) {
+                            $targetPointer = Get-CanonicalJsonPointer -Pointer $reference
+                        }
+                    }
+                    $null = $Pointers.Add("$targetPointer/properties/$propertyToken")
+                }
+                $mapping = Get-JsonPropertyValue -Object $discriminator -Name "mapping"
+                if (Test-JsonObjectValue -Value $mapping) {
+                    foreach ($property in (Get-JsonProperties -Value $mapping)) {
+                        if ($property.Value -is [string] -and
+                            $property.Value.StartsWith("#", [System.StringComparison]::Ordinal)) {
+                            $targetPointer = Get-CanonicalJsonPointer -Pointer $property.Value
+                            $null = $Pointers.Add("$targetPointer/properties/$propertyToken")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        Add-OpenApiDiscriminatorPropertyPointers `
+            -Value $property.Value `
+            -Context $childContext `
+            -Pointer "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -Pointers $Pointers `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+    }
+}
+
+function Get-OpenApiDiscriminatorPropertyPointers {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document
+    )
+
+    $pointers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    Add-OpenApiDiscriminatorPropertyPointers `
+        -Value $Document `
+        -Context OpenApi `
+        -Pointer "#" `
+        -Pointers $pointers
+    return ,$pointers
+}
+
+# Discriminator planning reads finite selector values directly from each branch.
+# Keep that one schema inline even when it is otherwise an eligible string enum.
+function Test-IsOpenApiDiscriminatorPropertyCandidate {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Candidate,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, object]]$CandidateByPointer
+    )
+
+    if (-not [string]::Equals($Candidate.Kind, "StringEnum", [System.StringComparison]::Ordinal) -or
+        $Candidate.ParentCandidatePointer -isnot [string] -or
+        -not $CandidateByPointer.ContainsKey($Candidate.ParentCandidatePointer)) {
+        return $false
+    }
+    $branchCandidate = $CandidateByPointer[$Candidate.ParentCandidatePointer]
+    if ($branchCandidate.ParentCandidatePointer -isnot [string] -or
+        -not $CandidateByPointer.ContainsKey($branchCandidate.ParentCandidatePointer)) {
+        return $false
+    }
+    $unionCandidate = $CandidateByPointer[$branchCandidate.ParentCandidatePointer]
+    if (-not [string]::Equals($unionCandidate.Kind, "OneOf", [System.StringComparison]::Ordinal) -or
+        $null -eq (Get-OpenApiDirectOneOfAlternativePosition `
+            -ParentCandidate $unionCandidate `
+            -Candidate $branchCandidate)) {
+        return $false
+    }
+    $discriminator = Get-JsonPropertyValue -Object $unionCandidate.Schema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $discriminator)) {
+        return $false
+    }
+    $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+    if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
+        return $false
+    }
+    $expectedPointer = "$($branchCandidate.Pointer)/properties/$(ConvertTo-JsonPointerToken -Token $propertyName)"
+    return [string]::Equals($Candidate.Pointer, $expectedPointer, [System.StringComparison]::Ordinal)
+}
+
 # Returns a snapshot array rather than the mutable List used during recursion.
 # Callers can safely annotate candidate objects with generated names afterward.
 function Get-InlineOpenApiSchemaCandidates {
@@ -417,7 +615,20 @@ function Get-InlineOpenApiSchemaCandidates {
         -Context OpenApi `
         -Pointer "#" `
         -Candidates $candidates
-    [object[]]$candidateArray = [object[]]$candidates.ToArray()
+    [object[]]$discoveredCandidates = [object[]]$candidates.ToArray()
+    $discriminatorPropertyPointers = Get-OpenApiDiscriminatorPropertyPointers -Document $Document
+    $candidateByPointer = [System.Collections.Generic.Dictionary[string, object]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($candidate in $discoveredCandidates) {
+        $candidateByPointer[$candidate.Pointer] = $candidate
+    }
+    [object[]]$candidateArray = @($discoveredCandidates | Where-Object {
+        -not $discriminatorPropertyPointers.Contains($_.Pointer) -and
+            -not (Test-IsOpenApiDiscriminatorPropertyCandidate `
+                -Candidate $_ `
+                -CandidateByPointer $candidateByPointer)
+    })
 
     foreach ($candidate in $candidateArray) {
         if ($candidate.InheritedIdPointer -is [string] -and
@@ -438,7 +649,7 @@ function Get-InlineOpenApiSchemaCandidates {
 
 # Preserve the previous discovery helper as an object-only compatibility view.
 # The componentizer itself uses Get-InlineOpenApiSchemaCandidates so direct oneOf
-# owners and object candidates participate in one ordered naming pass.
+# owners, objects, and string enums participate in one ordered naming pass.
 function Get-InlineOpenApiObjectSchemaCandidates {
     param(
         [Parameter(Mandatory = $true)]
@@ -669,6 +880,9 @@ function Get-OpenApiCandidatePrimaryRole {
             return "union"
         }
         return "discriminatedObject"
+    }
+    if ([string]::Equals($Candidate.Kind, "StringEnum", [System.StringComparison]::Ordinal)) {
+        return "enum"
     }
     if (Test-IsOpenApiPureDictionarySchema -Schema $Candidate.Schema) {
         return "dictionary"
@@ -1239,6 +1453,7 @@ function ConvertTo-ComponentizedOpenApiDocument {
             DiscoveredSchemaCount = 0
             DiscoveredObjectSchemaCount = 0
             DiscoveredOneOfSchemaCount = 0
+            DiscoveredStringEnumSchemaCount = 0
             GeneratedComponentCount = 0
             RelocationCount = 0
             DiscriminatorCount = $mappingResult.DiscriminatorCount
@@ -1338,7 +1553,7 @@ function ConvertTo-ComponentizedOpenApiDocument {
     $result = $mappingResult.Document
 
     # These checks define the stage contract: all local references resolve, no
-    # inline object/direct-oneOf candidates remain, and every generated root is used.
+    # eligible inline candidates remain, and every generated root is used.
     Assert-OpenApiReferencesResolve -Document $result
     Assert-AdditionalOpenApiReferencesResolve -Document $result
     [object[]]$remainingCandidates = @(Get-InlineOpenApiSchemaCandidates -Document $result)
@@ -1351,11 +1566,13 @@ function ConvertTo-ComponentizedOpenApiDocument {
 
     $objectCandidateCount = @($candidates | Where-Object Kind -eq "Object").Count
     $oneOfCandidateCount = @($candidates | Where-Object Kind -eq "OneOf").Count
+    $stringEnumCandidateCount = @($candidates | Where-Object Kind -eq "StringEnum").Count
     return [PSCustomObject]@{
         Document = $result
         DiscoveredSchemaCount = $candidates.Count
         DiscoveredObjectSchemaCount = $objectCandidateCount
         DiscoveredOneOfSchemaCount = $oneOfCandidateCount
+        DiscoveredStringEnumSchemaCount = $stringEnumCandidateCount
         GeneratedComponentCount = $candidates.Count
         RelocationCount = $relocations.Count
         DiscriminatorCount = $mappingResult.DiscriminatorCount
@@ -1451,6 +1668,7 @@ function Invoke-OpenApiObjectSchemaComponentizer {
     Write-Host "Inline schemas discovered: $($result.DiscoveredSchemaCount)"
     Write-Host "Inline object schemas discovered: $($result.DiscoveredObjectSchemaCount)"
     Write-Host "Inline oneOf schemas discovered: $($result.DiscoveredOneOfSchemaCount)"
+    Write-Host "Inline string enum schemas discovered: $($result.DiscoveredStringEnumSchemaCount)"
     Write-Host "Schema components generated: $($result.GeneratedComponentCount)"
     Write-Host "JSON Pointer prefixes relocated: $($result.RelocationCount)"
     Write-Host "Discriminators validated: $($result.DiscriminatorCount)"
