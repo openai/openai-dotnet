@@ -6,6 +6,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.ServerSentEvents;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -64,7 +65,10 @@ public partial class ResponsesSmokeTests
     public async Task StreamingResponseCanProcessUnknownEvent()
     {
         const string unknownEventKind = "response.unknown";
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent($$"""
+        BinaryData responseContent = BinaryData.FromString($$"""
+            event: response.output_text.delta
+            id: event_1
+            retry: 1000
             data: {"type":"response.output_text.delta","sequence_number":0,"item_id":"item_1","output_index":0,"content_index":0,"delta":"Hello"}
 
             data: {"type":"{{unknownEventKind}}","sequence_number":1}
@@ -73,6 +77,7 @@ public partial class ResponsesSmokeTests
 
             data: [DONE]
             """);
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent(BinaryContent.Create(responseContent));
         ResponsesClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
@@ -87,16 +92,19 @@ public partial class ResponsesSmokeTests
             StreamingEnabled = true,
         };
 
-        List<StreamingResponseUpdate> receivedUpdates = [];
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(createOptions))
+        List<SseItem<StreamingResponseUpdate>> receivedUpdates = [];
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(createOptions))
         {
-            receivedUpdates.Add(update);
+            receivedUpdates.Add(responseUpdate);
         }
 
         Assert.That(receivedUpdates, Has.Count.EqualTo(3));
-        Assert.That(receivedUpdates[0], Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
-        Assert.That(receivedUpdates[1].Kind, Is.EqualTo(new StreamingResponseUpdateKind(unknownEventKind)));
-        Assert.That(receivedUpdates[2], Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
+        Assert.That(receivedUpdates[0].Data, Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
+        Assert.That(receivedUpdates[0].EventType, Is.EqualTo("response.output_text.delta"));
+        Assert.That(receivedUpdates[0].EventId, Is.EqualTo("event_1"));
+        Assert.That(receivedUpdates[0].ReconnectionInterval, Is.EqualTo(TimeSpan.FromSeconds(1)));
+        Assert.That(receivedUpdates[1].Data.Kind, Is.EqualTo(new StreamingResponseUpdateKind(unknownEventKind)));
+        Assert.That(receivedUpdates[2].Data, Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
     }
 
     [Test]

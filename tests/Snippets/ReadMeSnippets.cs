@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -527,7 +528,7 @@ public class ReadMeSnippets
     public async Task ResponsesStreaming()
     {
         var clientMock = new Mock<ResponsesClient>();
-        var streamingResultMock = new Mock<AsyncStreamingResult<StreamingResponseUpdate>>();
+        var streamingResultMock = new Mock<AsyncStreamingResult<SseItem<StreamingResponseUpdate>>>();
 
         clientMock
             .Setup(c => c.CreateResponseAsync(
@@ -536,9 +537,9 @@ public class ReadMeSnippets
             .ReturnsAsync(ClientResult.FromValue(new ResponseResult(), new MockPipelineResponse()));
 
         streamingResultMock
-            .As<IAsyncEnumerable<StreamingResponseUpdate>>()
+            .As<IAsyncEnumerable<SseItem<StreamingResponseUpdate>>>()
             .Setup(r => r.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-            .Returns(AsyncEnumerable.Empty<StreamingResponseUpdate>().GetAsyncEnumerator());
+            .Returns(AsyncEnumerable.Empty<SseItem<StreamingResponseUpdate>>().GetAsyncEnumerator());
 
         clientMock
             .Setup(c => c.CreateResponseStreamingAsync(
@@ -578,9 +579,11 @@ public class ReadMeSnippets
 
         streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
-        await foreach (StreamingResponseUpdate update
+        await foreach (var responseUpdate
             in await client.CreateResponseStreamingAsync(streamingOptions))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
                 && itemUpdate.Item is ReasoningResponseItem reasoningItem)
             {

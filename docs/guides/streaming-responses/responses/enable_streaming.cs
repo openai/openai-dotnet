@@ -11,7 +11,7 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-await using var responses = await client.CreateResponseStreamingAsync(
+var responses = client.CreateResponseStreamingAsync(
     "gpt-5.2",
     "Say 'double bubble bath' ten times fast."
 );

@@ -69,6 +69,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -78,8 +79,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             Console.WriteLine(ModelReaderWriter.Write(update));
 
             switch (update)
@@ -111,6 +114,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(true)]
     [TestCase(false)]
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
@@ -136,8 +140,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(options))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             Console.WriteLine(ModelReaderWriter.Write(update));
 
             switch (update)
@@ -356,6 +362,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task ReasoningStreamingWorks()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -380,8 +387,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<string> reasoningTextDeltas = [];
         string finalOutput = null;
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(options))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
             {
                 partsAdded++;
@@ -439,6 +448,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
@@ -454,8 +464,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        await foreach (var responseUpdate in await client.CreateResponseStreamingAsync(options))
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             Console.WriteLine(ModelReaderWriter.Write(update));
         }
     }
@@ -883,6 +895,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CanStreamBackgroundResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -893,13 +906,15 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        AsyncStreamingResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
+        var updates = await client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
 
-        await foreach (StreamingResponseUpdate update in updates)
+        await foreach (var responseUpdate in updates)
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseQueuedUpdate queuedUpdate)
             {
                 // Confirm that the response has been queued and break.
@@ -926,13 +941,15 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true
         };
 
-        AsyncStreamingResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
+        var continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;
 
-        await foreach (StreamingResponseUpdate update in continuedUpdates)
+        await foreach (var responseUpdate in continuedUpdates)
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (firstContinuedSequenceNumber is null)
             {
                 firstContinuedSequenceNumber = update.SequenceNumber;

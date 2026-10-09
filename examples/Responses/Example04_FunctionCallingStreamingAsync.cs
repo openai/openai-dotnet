@@ -36,10 +36,12 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
+            var responseUpdates = await client.CreateResponseStreamingAsync(options);
 
-            await foreach (StreamingResponseUpdate update in responseUpdates)
+            await foreach (var responseUpdate in responseUpdates)
             {
+                StreamingResponseUpdate update = responseUpdate.Data;
+
                 if (update is StreamingResponseOutputItemAddedUpdate outputItemAddedUpdated)
                 {
                     if (outputItemAddedUpdated.Item is MessageResponseItem message && message.Role == MessageRole.Assistant)
