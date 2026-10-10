@@ -9,7 +9,6 @@ using System.Net.ServerSentEvents;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace OpenAI.Responses;
 
 // CUSTOM:
