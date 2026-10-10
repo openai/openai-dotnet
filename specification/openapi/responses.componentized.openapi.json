@@ -75,8 +75,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_ContextManagement_array_item_object"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -237,8 +236,7 @@
           "safety_identifier": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64
+                "type": "string"
               },
               {
                 "type": "null"
@@ -684,8 +682,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -723,8 +720,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -772,8 +768,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -833,15 +828,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -854,17 +847,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -961,8 +950,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -1415,8 +1403,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -1470,8 +1457,7 @@
             "format": "uri"
           },
           "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
+            "type": "string"
           }
         }
       },
@@ -1611,15 +1597,13 @@
             "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "tools": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -1662,8 +1646,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -1765,10 +1748,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "allowed_callers": {
             "anyOf": [
@@ -1776,8 +1756,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -1880,8 +1859,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -1944,8 +1922,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -1964,8 +1941,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -2012,15 +1988,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -2033,17 +2007,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2132,9 +2102,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
+            "type": "string"
           },
           "media_type": {
             "type": "string",
@@ -2158,9 +2126,7 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "version": {
             "type": "string"
@@ -2201,8 +2167,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -2522,9 +2487,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "operation": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject"
@@ -2590,12 +2553,10 @@
             ]
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2613,8 +2574,7 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2633,12 +2593,10 @@
             ]
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2694,9 +2652,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2715,9 +2671,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Status_enum"
@@ -2745,8 +2699,7 @@
           "output": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               },
               {
                 "type": "null"
@@ -2807,9 +2760,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -2942,8 +2893,7 @@
             ]
           },
           "encrypted_content": {
-            "type": "string",
-            "maxLength": 104857600
+            "type": "string"
           },
           "id": {
             "anyOf": [
@@ -3725,9 +3675,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "output": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject"
@@ -4264,9 +4212,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -4357,8 +4303,7 @@
         },
         "maxProperties": 16,
         "propertyNames": {
-          "type": "string",
-          "maxLength": 64
+          "type": "string"
         }
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object_Attributes_dictionary_value_union": {
@@ -4370,8 +4315,7 @@
             "type": "number"
           },
           {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           }
         ]
       },
@@ -4499,9 +4443,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4531,9 +4473,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 128,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4543,10 +4483,7 @@
           "namespace": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9_-]+$"
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4574,8 +4511,7 @@
             }
           },
           {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         ]
       },
@@ -4618,8 +4554,7 @@
           "file_data": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 73400320
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4727,8 +4662,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "format": "uri",
-                "maxLength": 20971520
+                "format": "uri"
               },
               {
                 "type": "null"
@@ -4784,8 +4718,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "prompt_cache_breakpoint": {
             "anyOf": [
@@ -4858,9 +4791,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -6014,17 +5945,13 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "code": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "fingerprint": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "id": {
             "type": "string"
@@ -6048,16 +5975,13 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "id": {
             "type": "string"
           },
           "result": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput_Status_enum"
@@ -6203,9 +6127,7 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Action_object"
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -6328,9 +6250,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -6385,8 +6305,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -6432,9 +6351,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "output": {
             "type": "array",
@@ -6496,12 +6413,10 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject"
           },
           "stderr": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "stdout": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         }
       },
@@ -6599,9 +6514,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -6632,9 +6545,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -6708,9 +6619,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -6833,8 +6742,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -6872,8 +6780,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -6921,8 +6828,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -6982,15 +6888,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -7003,17 +6907,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -7110,8 +7010,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -7564,8 +7463,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -7619,8 +7517,7 @@
             "format": "uri"
           },
           "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
+            "type": "string"
           }
         }
       },
@@ -7760,15 +7657,13 @@
             "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "tools": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -7811,8 +7706,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -7914,10 +7808,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "allowed_callers": {
             "anyOf": [
@@ -7925,8 +7816,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -8029,8 +7919,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -8093,8 +7982,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -8113,8 +8001,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -8161,15 +8048,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -8182,17 +8067,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -8281,9 +8162,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
+            "type": "string"
           },
           "media_type": {
             "type": "string",
@@ -8307,9 +8186,7 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "version": {
             "type": "string"
@@ -8350,8 +8227,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -9955,8 +9831,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -9994,8 +9869,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -10043,8 +9917,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -10104,15 +9977,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -10125,17 +9996,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -10232,8 +10099,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -10686,8 +10552,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -10741,8 +10606,7 @@
             "format": "uri"
           },
           "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
+            "type": "string"
           }
         }
       },
@@ -10882,15 +10746,13 @@
             "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "tools": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -10933,8 +10795,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -11036,10 +10897,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "allowed_callers": {
             "anyOf": [
@@ -11047,8 +10905,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -11151,8 +11008,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_AllowedCallers_array_item_enum"
-                },
-                "minItems": 1
+                }
               },
               {
                 "type": "null"
@@ -11215,8 +11071,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "maxItems": 50
+            }
           },
           "memory_limit": {
             "anyOf": [
@@ -11235,8 +11090,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject"
-            },
-            "maxItems": 200
+            }
           }
         }
       },
@@ -11283,15 +11137,13 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1
+            }
           },
           "domain_secrets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
-            },
-            "minItems": 1
+            }
           }
         }
       },
@@ -11304,17 +11156,13 @@
         ],
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         }
       },
@@ -11403,9 +11251,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
+            "type": "string"
           },
           "media_type": {
             "type": "string",
@@ -11429,9 +11275,7 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "version": {
             "type": "string"
@@ -11472,8 +11316,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
-            },
-            "maxItems": 200
+            }
           }
         }
       },

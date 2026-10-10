@@ -362,8 +362,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256
+                "type": "string"
               },
               {
                 "type": "null"
@@ -373,8 +372,7 @@
           "description": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -387,8 +385,7 @@
           "instructions": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256000
+                "type": "string"
               },
               {
                 "type": "null"
@@ -397,7 +394,6 @@
           },
           "tools": {
             "type": "array",
-            "maxItems": 128,
             "items": {
               "oneOf": [
                 {
@@ -422,7 +418,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -434,7 +429,6 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
@@ -741,7 +735,6 @@
           },
           "languages": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -795,7 +788,6 @@
           },
           "languages": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -2718,8 +2710,7 @@
                     "type": "array",
                     "items": {
                       "$ref": "#/components/schemas/ChatCompletionRequestAssistantMessageContentPart"
-                    },
-                    "minItems": 1
+                    }
                   }
                 ]
               },
@@ -2821,8 +2812,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestMessageContentPartText"
-                },
-                "minItems": 1
+                }
               }
             ]
           },
@@ -3054,8 +3044,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestSystemMessageContentPart"
-                },
-                "minItems": 1
+                }
               }
             ]
           },
@@ -3099,8 +3088,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestToolMessageContentPart"
-                },
-                "minItems": 1
+                }
               }
             ]
           },
@@ -3133,8 +3121,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestUserMessageContentPart"
-                },
-                "minItems": 1
+                }
               }
             ]
           },
@@ -3568,7 +3555,6 @@
             "anyOf": [
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 }
@@ -4422,8 +4408,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4433,8 +4418,7 @@
           "description": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4444,8 +4428,7 @@
           "instructions": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256000
+                "type": "string"
               },
               {
                 "type": "null"
@@ -4457,7 +4440,6 @@
           },
           "tools": {
             "type": "array",
-            "maxItems": 128,
             "items": {
               "oneOf": [
                 {
@@ -4482,7 +4464,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -4494,20 +4475,17 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
                       },
                       "vector_stores": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "object",
                           "properties": {
                             "file_ids": {
                               "type": "array",
-                              "maxItems": 100000000,
                               "items": {
                                 "type": "string"
                               }
@@ -4683,7 +4661,6 @@
             "properties": {
               "messages": {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestMessage"
                 }
@@ -4890,8 +4867,6 @@
               "functions": {
                 "deprecated": true,
                 "type": "array",
-                "minItems": 1,
-                "maxItems": 128,
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionFunctions"
                 }
@@ -5165,17 +5140,14 @@
               },
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "type": "integer"
                 }
               },
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "type": "integer"
                   }
@@ -5467,27 +5439,20 @@
               },
               {
                 "type": "array",
-                "minItems": 1,
-                "maxItems": 2048,
                 "items": {
                   "type": "string"
                 }
               },
               {
                 "type": "array",
-                "minItems": 1,
-                "maxItems": 2048,
                 "items": {
                   "type": "integer"
                 }
               },
               {
                 "type": "array",
-                "minItems": 1,
-                "maxItems": 2048,
                 "items": {
                   "type": "array",
-                  "minItems": 1,
                   "items": {
                     "type": "integer"
                   }
@@ -6165,8 +6130,6 @@
           },
           "suffix": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
             "nullable": true
           },
           "validation_file": {
@@ -6243,9 +6206,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 255
+            "type": "string"
           }
         },
         "required": [
@@ -6274,7 +6235,6 @@
               },
               {
                 "type": "array",
-                "maxItems": 16,
                 "items": {
                   "type": "string",
                   "format": "binary"
@@ -6625,8 +6585,7 @@
                       "$ref": "#/components/schemas/MessageRequestContentTextObject"
                     }
                   ]
-                },
-                "minItems": 1
+                }
               }
             ]
           },
@@ -7213,7 +7172,6 @@
                 "anyOf": [
                   {
                     "type": "array",
-                    "minItems": 1,
                     "items": {
                       "$ref": "#/components/schemas/ContextManagementParam"
                     }
@@ -7277,7 +7235,6 @@
           "tools": {
             "nullable": true,
             "type": "array",
-            "maxItems": 20,
             "items": {
               "oneOf": [
                 {
@@ -7374,12 +7331,10 @@
             ]
           },
           "input": {
-            "type": "string",
-            "maxLength": 4096
+            "type": "string"
           },
           "instructions": {
-            "type": "string",
-            "maxLength": 4096
+            "type": "string"
           },
           "voice": {
             "$ref": "#/components/schemas/VoiceIdsOrCustomVoice"
@@ -7525,7 +7480,6 @@
           "tools": {
             "nullable": true,
             "type": "array",
-            "maxItems": 20,
             "items": {
               "oneOf": [
                 {
@@ -7548,7 +7502,6 @@
                 "properties": {
                   "file_ids": {
                     "type": "array",
-                    "maxItems": 20,
                     "items": {
                       "type": "string"
                     }
@@ -7560,7 +7513,6 @@
                 "properties": {
                   "vector_store_ids": {
                     "type": "array",
-                    "maxItems": 1,
                     "items": {
                       "type": "string"
                     }
@@ -7651,7 +7603,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -7663,20 +7614,17 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
                       },
                       "vector_stores": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "object",
                           "properties": {
                             "file_ids": {
                               "type": "array",
-                              "maxItems": 100000000,
                               "items": {
                                 "type": "string"
                               }
@@ -7798,7 +7746,6 @@
           },
           "languages": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -7866,14 +7813,12 @@
           },
           "known_speaker_names": {
             "type": "array",
-            "maxItems": 4,
             "items": {
               "type": "string"
             }
           },
           "known_speaker_references": {
             "type": "array",
-            "maxItems": 4,
             "items": {
               "type": "string"
             }
@@ -8147,16 +8092,12 @@
         "properties": {
           "file_ids": {
             "type": "array",
-            "minItems": 1,
-            "maxItems": 2000,
             "items": {
               "type": "string"
             }
           },
           "files": {
             "type": "array",
-            "minItems": 1,
-            "maxItems": 2000,
             "items": {
               "$ref": "#/components/schemas/CreateVectorStoreFileRequest"
             }
@@ -8205,7 +8146,6 @@
         "properties": {
           "file_ids": {
             "type": "array",
-            "maxItems": 500,
             "items": {
               "type": "string"
             }
@@ -8808,8 +8748,6 @@
           },
           "images": {
             "type": "array",
-            "minItems": 1,
-            "maxItems": 16,
             "items": {
               "$ref": "#/components/schemas/ImageRefParam"
             }
@@ -8818,9 +8756,7 @@
             "$ref": "#/components/schemas/ImageRefParam"
           },
           "prompt": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 32000
+            "type": "string"
           },
           "n": {
             "anyOf": [
@@ -10739,7 +10675,6 @@
             "anyOf": [
               {
                 "type": "array",
-                "maxItems": 5,
                 "items": {
                   "oneOf": [
                     {
@@ -12157,8 +12092,7 @@
         "properties": {
           "image_url": {
             "type": "string",
-            "format": "uri",
-            "maxLength": 20971520
+            "format": "uri"
           },
           "file_id": {
             "type": "string"
@@ -13435,8 +13369,7 @@
         "type": "object",
         "properties": {
           "model": {
-            "$ref": "#/components/schemas/ModelIdsLive",
-            "minLength": 1
+            "$ref": "#/components/schemas/ModelIdsLive"
           },
           "instructions": {
             "$ref": "#/components/schemas/instructions"
@@ -13470,9 +13403,7 @@
         "type": "object",
         "properties": {
           "target_uri": {
-            "$ref": "#/components/schemas/target_uri",
-            "minLength": 1,
-            "pattern": "\\S"
+            "$ref": "#/components/schemas/target_uri"
           }
         },
         "required": [
@@ -13827,8 +13758,7 @@
             ]
           },
           "sdp": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         },
         "required": [
@@ -14147,8 +14077,7 @@
             ]
           },
           "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
+            "type": "string"
           },
           "authorization": {
             "type": "string"
@@ -14193,7 +14122,6 @@
             "anyOf": [
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 }
@@ -15167,8 +15095,7 @@
       "ModelIdsLive": {
         "anyOf": [
           {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           {
             "type": "string",
@@ -15355,8 +15282,7 @@
           "safety_identifier": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64
+                "type": "string"
               },
               {
                 "type": "null"
@@ -15410,8 +15336,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256
+                "type": "string"
               },
               {
                 "type": "null"
@@ -15421,8 +15346,7 @@
           "description": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -15432,8 +15356,7 @@
           "instructions": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256000
+                "type": "string"
               },
               {
                 "type": "null"
@@ -15442,7 +15365,6 @@
           },
           "tools": {
             "type": "array",
-            "maxItems": 128,
             "items": {
               "oneOf": [
                 {
@@ -15467,7 +15389,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -15479,7 +15400,6 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
@@ -15572,7 +15492,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -15584,7 +15503,6 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
@@ -16256,8 +16174,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ChatCompletionRequestMessageContentPartText"
-                },
-                "minItems": 1
+                }
               }
             ]
           }
@@ -17714,8 +17631,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19653,8 +19569,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19678,8 +19593,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19700,8 +19614,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19722,8 +19635,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19752,8 +19664,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19774,8 +19685,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19792,8 +19702,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19827,8 +19736,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19848,8 +19756,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -19869,8 +19776,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -23734,8 +23640,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -23756,8 +23661,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -23774,8 +23678,7 @@
         "type": "object",
         "properties": {
           "event_id": {
-            "type": "string",
-            "maxLength": 512
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -26636,7 +26539,6 @@
       },
       "ResponseSteerInputItemList": {
         "type": "array",
-        "minItems": 1,
         "items": {
           "$ref": "#/components/schemas/ResponseSteerInputItem"
         }
@@ -26673,7 +26575,6 @@
           },
           "required_input": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "$ref": "#/components/schemas/ResponseSteerRequiredInput"
             }
@@ -27323,10 +27224,7 @@
                 ]
               },
               "stream_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 256,
-                "pattern": "^[A-Za-z0-9_.-]+$"
+                "type": "string"
               }
             },
             "required": [
@@ -28870,7 +28768,6 @@
           },
           "tools": {
             "type": "array",
-            "maxItems": 20,
             "items": {
               "oneOf": [
                 {
@@ -30196,8 +30093,6 @@
           },
           {
             "type": "array",
-            "minItems": 1,
-            "maxItems": 4,
             "items": {
               "type": "string"
             }
@@ -30311,7 +30206,6 @@
                     "properties": {
                       "file_ids": {
                         "type": "array",
-                        "maxItems": 20,
                         "items": {
                           "type": "string"
                         }
@@ -30323,7 +30217,6 @@
                     "properties": {
                       "vector_store_ids": {
                         "type": "array",
-                        "maxItems": 1,
                         "items": {
                           "type": "string"
                         }
@@ -30381,9 +30274,7 @@
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "minItems": 1,
-            "maxItems": 10
+            }
           }
         },
         "required": [
@@ -30958,9 +30849,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 255
+            "type": "string"
           }
         },
         "required": [
@@ -32425,14 +32314,12 @@
             "type": "object",
             "maxProperties": 16,
             "propertyNames": {
-              "type": "string",
-              "maxLength": 64
+              "type": "string"
             },
             "additionalProperties": {
               "oneOf": [
                 {
-                  "type": "string",
-                  "maxLength": 512
+                  "type": "string"
                 },
                 {
                   "type": "number"
@@ -32750,8 +32637,7 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "minItems": 1
+                  "type": "string"
                 }
               }
             ]
@@ -32863,8 +32749,7 @@
           "search_query": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minItems": 1
+              "type": "string"
             }
           },
           "data": {
@@ -34191,8 +34076,7 @@
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "pattern": "^alert_[0-9a-f]{32}$"
+                "type": "string"
               }
             }
           }
@@ -34278,8 +34162,7 @@
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "pattern": "^alert_[0-9a-f]{32}$"
+                "type": "string"
               }
             }
           }
@@ -34494,9 +34377,7 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "version": {
             "type": "string"
@@ -34523,9 +34404,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -34578,17 +34457,13 @@
       "ContainerNetworkPolicyDomainSecretParam": {
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -34610,15 +34485,13 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           },
           "domain_secrets": {
             "items": {
               "$ref": "#/components/schemas/ContainerNetworkPolicyDomainSecretParam"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -35261,9 +35134,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -36057,8 +35928,7 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "maxItems": 50
+            "type": "array"
           },
           "memory_limit": {
             "anyOf": [
@@ -36136,8 +36006,7 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "maxItems": 50
+            "type": "array"
           },
           "memory_limit": {
             "anyOf": [
@@ -36176,8 +36045,7 @@
                 "propertyName": "type"
               }
             },
-            "type": "array",
-            "maxItems": 200
+            "type": "array"
           }
         },
         "type": "object",
@@ -36216,8 +36084,7 @@
             "items": {
               "$ref": "#/components/schemas/LocalSkillParam"
             },
-            "type": "array",
-            "maxItems": 200
+            "type": "array"
           }
         },
         "type": "object",
@@ -36280,8 +36147,7 @@
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -36376,8 +36242,7 @@
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -36399,10 +36264,7 @@
       "FunctionToolParam": {
         "properties": {
           "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "description": {
             "anyOf": [
@@ -36463,8 +36325,7 @@
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -36487,8 +36348,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "description": {
             "type": "string"
@@ -36507,8 +36367,7 @@
                 "propertyName": "type"
               }
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -36672,8 +36531,7 @@
                 "items": {
                   "$ref": "#/components/schemas/CallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -37499,9 +37357,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -37552,8 +37408,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "prompt_cache_breakpoint": {
             "anyOf": [
@@ -37584,7 +37439,6 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 20971520,
                 "format": "uri"
               },
               {
@@ -37667,8 +37521,7 @@
           "file_data": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 73400320
+                "type": "string"
               },
               {
                 "type": "null"
@@ -37720,9 +37573,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -37738,8 +37589,7 @@
           "output": {
             "oneOf": [
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               },
               {
                 "items": {
@@ -37765,9 +37615,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 128,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -37777,10 +37625,7 @@
           "namespace": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9_-]+$"
+                "type": "string"
               },
               {
                 "type": "null"
@@ -37925,9 +37770,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -37978,9 +37821,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -38076,8 +37917,7 @@
             ]
           },
           "encrypted_content": {
-            "type": "string",
-            "maxLength": 104857600
+            "type": "string"
           }
         },
         "type": "object",
@@ -38141,9 +37981,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -38250,12 +38088,10 @@
       "FunctionShellCallOutputContentParam": {
         "properties": {
           "stdout": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "stderr": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "outcome": {
             "$ref": "#/components/schemas/FunctionShellCallOutputOutcomeParam"
@@ -38281,9 +38117,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -38351,12 +38185,10 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -38375,8 +38207,7 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -38394,12 +38225,10 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -38444,9 +38273,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -38499,9 +38326,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -38519,8 +38344,7 @@
           "output": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               },
               {
                 "type": "null"
@@ -38589,17 +38413,13 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "code": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "fingerprint": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -38630,13 +38450,10 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "result": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/ProgramOutputItemStatus"
@@ -38788,9 +38605,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 128
+            "type": "string"
           }
         },
         "required": [
@@ -39019,10 +38834,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           }
         },
         "required": [
@@ -39040,16 +38852,10 @@
             ]
           },
           "server_label": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           }
         },
         "required": [
@@ -39263,9 +39069,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiveInitialInputTextContentPartParam"
-            },
-            "minItems": 1,
-            "maxItems": 1
+            }
           }
         },
         "required": [
@@ -39312,9 +39116,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiveInitialInputTextContentPartParam"
-            },
-            "minItems": 1,
-            "maxItems": 1
+            }
           }
         },
         "required": [
@@ -39406,9 +39208,7 @@
                   "$ref": "#/components/schemas/LiveInitialOutputTextContentPartParam"
                 }
               ]
-            },
-            "minItems": 1,
-            "maxItems": 1
+            }
           }
         },
         "required": [
@@ -39436,21 +39236,16 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/LiveInitialItem"
-        },
-        "maxItems": 128
+        }
       },
       "LiveAllowedServerEventParam": {
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 256
+            "type": "string"
           },
           "response_event": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 256
+            "type": "string"
           }
         },
         "required": [
@@ -39472,12 +39267,8 @@
               {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 256,
-                  "pattern": "^(?:error|info|[a-z][a-z0-9_-]*(?:\\.[a-z0-9_-]+)+)$"
-                },
-                "maxItems": 256
+                  "type": "string"
+                }
               }
             ]
           },
@@ -39493,8 +39284,7 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/LiveAllowedServerEventParam"
-                },
-                "maxItems": 256
+                }
               }
             ]
           }
@@ -40263,8 +40053,7 @@
                 "items": {
                   "$ref": "#/components/schemas/InputItem"
                 },
-                "type": "array",
-                "maxItems": 20
+                "type": "array"
               },
               {
                 "type": "null"
@@ -41286,7 +41075,6 @@
         "properties": {
           "image_url": {
             "type": "string",
-            "maxLength": 20971520,
             "format": "uri"
           },
           "file_id": {
@@ -41310,9 +41098,7 @@
             "$ref": "#/components/schemas/VideoModel"
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           },
           "input_reference": {
             "oneOf": [
@@ -41343,9 +41129,7 @@
             "$ref": "#/components/schemas/VideoModel"
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           },
           "input_reference": {
             "$ref": "#/components/schemas/ImageRefParam-2"
@@ -41369,9 +41153,7 @@
             "format": "binary"
           },
           "name": {
-            "type": "string",
-            "maxLength": 80,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -41439,9 +41221,7 @@
             ]
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -41456,9 +41236,7 @@
             "$ref": "#/components/schemas/VideoReferenceInputParam"
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -41481,9 +41259,7 @@
             ]
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           },
           "seconds": {
             "$ref": "#/components/schemas/VideoSeconds"
@@ -41502,9 +41278,7 @@
             "$ref": "#/components/schemas/VideoReferenceInputParam"
           },
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           },
           "seconds": {
             "$ref": "#/components/schemas/VideoSeconds"
@@ -41550,9 +41324,7 @@
       "CreateVideoRemixBody": {
         "properties": {
           "prompt": {
-            "type": "string",
-            "maxLength": 32000,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -41598,15 +41370,13 @@
               {
                 "oneOf": [
                   {
-                    "type": "string",
-                    "maxLength": 10485760
+                    "type": "string"
                   },
                   {
                     "items": {
                       "$ref": "#/components/schemas/InputItem"
                     },
-                    "type": "array",
-                    "maxItems": 131072
+                    "type": "array"
                   }
                 ]
               },
@@ -41754,15 +41524,13 @@
               {
                 "oneOf": [
                   {
-                    "type": "string",
-                    "maxLength": 10485760
+                    "type": "string"
                   },
                   {
                     "items": {
                       "$ref": "#/components/schemas/InputItem"
                     },
-                    "type": "array",
-                    "maxItems": 131072
+                    "type": "array"
                   }
                 ]
               },
@@ -41794,8 +41562,7 @@
           "prompt_cache_key": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64
+                "type": "string"
               },
               {
                 "type": "null"
@@ -42061,8 +41828,7 @@
                   "type": "string",
                   "format": "binary"
                 },
-                "type": "array",
-                "maxItems": 500
+                "type": "array"
               },
               {
                 "type": "string",
@@ -42204,8 +41970,7 @@
                   "type": "string",
                   "format": "binary"
                 },
-                "type": "array",
-                "maxItems": 500
+                "type": "array"
               },
               {
                 "type": "string",
@@ -42488,8 +42253,7 @@
             "additionalProperties": {
               "oneOf": [
                 {
-                  "type": "string",
-                  "maxLength": 10485760
+                  "type": "string"
                 },
                 {
                   "type": "integer"
@@ -42606,8 +42370,7 @@
             "$ref": "#/components/schemas/WorkflowParam"
           },
           "user": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "expires_after": {
             "$ref": "#/components/schemas/ExpiresAfterParam"
@@ -43495,16 +43258,13 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "file_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "size_bytes": {
             "type": "integer",
@@ -43531,12 +43291,10 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "size_bytes": {
             "type": "integer",
@@ -43579,20 +43337,16 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "version": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -43614,12 +43368,10 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -43656,12 +43408,10 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -43688,8 +43438,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -43707,25 +43456,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedEnvironmentFileResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "skills": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedSkillResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "plugins": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedPluginResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           }
         },
         "required": [
@@ -43743,23 +43486,19 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "code": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "message": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "param": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -43805,12 +43544,10 @@
             ]
           },
           "environment_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "size_bytes": {
             "type": "integer",
@@ -43836,16 +43573,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EnvironmentFileResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "next": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -43869,14 +43603,10 @@
             ]
           },
           "file_id": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 256
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4096
+            "type": "string"
           }
         },
         "required": [
@@ -43896,14 +43626,10 @@
             ]
           },
           "data": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 6990508
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 4096
+            "type": "string"
           }
         },
         "required": [
@@ -43946,8 +43672,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -43966,8 +43691,7 @@
             ]
           },
           "encrypted_content": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44004,22 +43728,19 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "$ref": "#/components/schemas/SubagentObjectResource"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "instructions": {
             "type": [
@@ -44028,13 +43749,10 @@
             ],
             "items": {
               "$ref": "#/components/schemas/AgentContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "parent_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/SubagentStatusResource"
@@ -44081,8 +43799,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44101,8 +43818,7 @@
             ]
           },
           "image_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44121,8 +43837,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44180,12 +43895,10 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "role": {
             "$ref": "#/components/schemas/SessionMessageRoleResource"
@@ -44194,9 +43907,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/MessageContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "status": {
             "$ref": "#/components/schemas/OutputItemStatusResource"
@@ -44233,8 +43944,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44253,20 +43963,16 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "summary": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SummaryTextResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "status": {
             "anyOf": [
@@ -44307,20 +44013,16 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "call_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "arguments": {},
           "status": {
@@ -44348,8 +44050,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44368,8 +44069,7 @@
             ]
           },
           "image_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44398,16 +44098,13 @@
       "FunctionCallOutputResource": {
         "oneOf": [
           {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InputContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           }
         ]
       },
@@ -44415,12 +44112,10 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -44429,8 +44124,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
@@ -44449,8 +44143,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -44468,12 +44161,10 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -44482,20 +44173,16 @@
             ]
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "content": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AgentContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           }
         },
         "required": [
@@ -44518,20 +44205,16 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "server_label": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "arguments": {},
           "status": {
@@ -44580,8 +44263,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "queries": {
             "type": [
@@ -44589,11 +44271,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -44616,8 +44295,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -44639,15 +44317,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "pattern": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -44707,12 +44383,10 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/OutputItemStatusResource"
@@ -44747,23 +44421,19 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "command": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "cwd": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
@@ -44772,8 +44442,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "exit_code": {
             "type": [
@@ -44813,23 +44482,19 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44852,41 +44517,34 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "content": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AgentContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "model": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "reasoning_effort": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -44911,31 +44569,25 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "content": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AgentContentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           }
         },
         "required": [
@@ -44959,23 +44611,19 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -44998,28 +44646,22 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_ids": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -45042,23 +44684,19 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/FunctionCallStatusResource"
           },
           "sender_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "recipient_agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -45149,23 +44787,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SessionTurnItemResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -45226,8 +44860,7 @@
             "$ref": "#/components/schemas/SessionTurnErrorCodeResource"
           },
           "message": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -45297,26 +44930,22 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "$ref": "#/components/schemas/TurnObjectResource"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "agent_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "subagent_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "status": {
             "$ref": "#/components/schemas/TurnStatusResource"
@@ -45388,23 +45017,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TurnResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -45497,8 +45122,7 @@
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           }
@@ -45570,19 +45194,16 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "parameters": {
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
@@ -45643,18 +45264,15 @@
             ]
           },
           "server_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "headers": {
             "type": "object",
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           }
@@ -45676,30 +45294,22 @@
             ]
           },
           "command": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "args": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "cwd": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "env_vars": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -45745,15 +45355,13 @@
             ]
           },
           "server_label": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "credential_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "transport": {
             "$ref": "#/components/schemas/PersistedMcpTransportResource"
@@ -45762,8 +45370,7 @@
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
@@ -45773,11 +45380,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "required": {
             "type": "boolean"
@@ -45821,29 +45425,25 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "region": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "city": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "timezone": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -45875,11 +45475,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "location": {
             "anyOf": [
@@ -45956,8 +45553,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -45977,24 +45573,20 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "metadata": {
             "type": "object",
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
           "model": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "reasoning": {
             "$ref": "#/components/schemas/ReasoningResource"
@@ -46009,16 +45601,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "tools": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PersistedAgentToolResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "multi_agent": {
             "$ref": "#/components/schemas/MultiAgentConfigResource"
@@ -46054,23 +45643,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AgentResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -46159,9 +45744,7 @@
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -46244,22 +45827,16 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "parameters": {
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -46319,9 +45896,7 @@
             ]
           },
           "server_url": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "headers": {
             "type": [
@@ -46329,14 +45904,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -46358,9 +45929,7 @@
             ]
           },
           "command": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "args": {
             "type": [
@@ -46368,17 +45937,11 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "cwd": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "env_vars": {
             "type": [
@@ -46386,12 +45949,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -46435,17 +45994,13 @@
             ]
           },
           "server_label": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "credential_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "transport": {
             "$ref": "#/components/schemas/PersistedMcpTransportConfigParam"
@@ -46457,9 +46012,7 @@
             ],
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -46470,12 +46023,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "required": {
             "type": "boolean"
@@ -46521,33 +46070,25 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "region": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "city": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "timezone": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           }
         },
         "additionalProperties": false
@@ -46587,12 +46128,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "location": {
             "anyOf": [
@@ -46666,14 +46203,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 512
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 64
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 16
@@ -46682,14 +46215,10 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 128
+            ]
           },
           "model": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "reasoning": {
             "anyOf": [
@@ -46725,9 +46254,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "tools": {
             "type": [
@@ -46736,9 +46263,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/PersistedAgentToolConfigParam"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "multi_agent": {
             "anyOf": [
@@ -46760,9 +46285,7 @@
         "type": "object",
         "properties": {
           "model": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "reasoning": {
             "anyOf": [
@@ -46798,9 +46321,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "multi_agent": {
             "anyOf": [
@@ -46818,14 +46339,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 512
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 64
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 16
@@ -46834,9 +46351,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 128
+            ]
           },
           "tools": {
             "type": [
@@ -46845,9 +46360,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/PersistedAgentToolConfigParam"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           }
         },
         "additionalProperties": false
@@ -46856,8 +46369,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -46882,32 +46394,20 @@
           "python": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "system": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "npm": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -46934,11 +46434,8 @@
           "allowed_domains": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -46957,15 +46454,13 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "version": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -46985,12 +46480,10 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -47027,12 +46520,10 @@
             ]
           },
           "file_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -47052,8 +46543,7 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "size_bytes": {
             "type": "integer",
@@ -47089,15 +46579,13 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "object": {
             "type": "string",
@@ -47122,35 +46610,26 @@
           "capability_directories": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "skills": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedTemplateSkillResource"
-            },
-            "minItems": 0,
-            "maxItems": 200
+            }
           },
           "plugins": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedPluginResource"
-            },
-            "minItems": 0,
-            "maxItems": 32
+            }
           },
           "files": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedTemplateFileResource"
-            },
-            "minItems": 0,
-            "maxItems": 50
+            }
           }
         },
         "required": [
@@ -47181,23 +46660,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EnvironmentTemplateResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -47221,12 +46696,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "system": {
             "type": [
@@ -47234,12 +46705,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "npm": {
             "type": [
@@ -47247,12 +46714,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "additionalProperties": false
@@ -47261,17 +46724,13 @@
         "type": "object",
         "properties": {
           "command": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 65536
+            "type": "string"
           },
           "cwd": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 4096
+            ]
           }
         },
         "required": [
@@ -47299,12 +46758,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -47322,17 +46777,13 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64
+            "type": "string"
           },
           "version": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           }
         },
         "required": [
@@ -47357,9 +46808,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 70254592
+            "type": "string"
           }
         },
         "required": [
@@ -47392,14 +46841,10 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "source": {
             "$ref": "#/components/schemas/InlineCapabilitySourceParam"
@@ -47440,14 +46885,10 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "source": {
             "$ref": "#/components/schemas/InlineCapabilitySourceParam"
@@ -47494,9 +46935,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/SetupCommandParam"
-            },
-            "minItems": 0,
-            "maxItems": 16
+            }
           },
           "network": {
             "anyOf": [
@@ -47514,14 +46953,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -47532,12 +46967,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "skills": {
             "type": [
@@ -47546,9 +46977,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedSkillParam"
-            },
-            "minItems": 0,
-            "maxItems": 200
+            }
           },
           "plugins": {
             "type": [
@@ -47557,9 +46986,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedPluginParam"
-            },
-            "minItems": 0,
-            "maxItems": 32
+            }
           },
           "files": {
             "type": [
@@ -47568,17 +46995,13 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedEnvironmentFileParam"
-            },
-            "minItems": 0,
-            "maxItems": 50
+            }
           },
           "name": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 1,
-            "maxLength": 256
+            ]
           }
         },
         "additionalProperties": false
@@ -47590,9 +47013,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 1,
-            "maxLength": 256
+            ]
           },
           "packages": {
             "anyOf": [
@@ -47611,9 +47032,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/SetupCommandParam"
-            },
-            "minItems": 0,
-            "maxItems": 16
+            }
           },
           "network": {
             "anyOf": [
@@ -47631,14 +47050,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -47649,12 +47064,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "skills": {
             "type": [
@@ -47663,9 +47074,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedSkillParam"
-            },
-            "minItems": 0,
-            "maxItems": 200
+            }
           },
           "plugins": {
             "type": [
@@ -47674,9 +47083,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedPluginParam"
-            },
-            "minItems": 0,
-            "maxItems": 32
+            }
           },
           "files": {
             "type": [
@@ -47685,9 +47092,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedEnvironmentFileParam"
-            },
-            "minItems": 0,
-            "maxItems": 50
+            }
           }
         },
         "additionalProperties": false
@@ -47696,8 +47101,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -47735,16 +47139,13 @@
             ]
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "call_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "arguments": {}
         },
@@ -47767,8 +47168,7 @@
             ]
           },
           "environment_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -47804,19 +47204,16 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "parameters": {
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
@@ -47862,8 +47259,7 @@
             ]
           },
           "server_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -47882,30 +47278,22 @@
             ]
           },
           "command": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "args": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "cwd": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "env_vars": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -47944,15 +47332,13 @@
             ]
           },
           "server_label": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "credential_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "transport": {
             "$ref": "#/components/schemas/McpTransportResource"
@@ -47961,8 +47347,7 @@
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
@@ -47972,11 +47357,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "required": {
             "type": "boolean"
@@ -48018,11 +47400,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "location": {
             "anyOf": [
@@ -48073,19 +47452,16 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "model": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "reasoning": {
             "$ref": "#/components/schemas/ReasoningResource"
@@ -48100,16 +47476,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "tools": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AgentToolResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "multi_agent": {
             "$ref": "#/components/schemas/MultiAgentConfigResource"
@@ -48153,8 +47526,7 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "packages": {
             "$ref": "#/components/schemas/EnvironmentPackagesResource"
@@ -48165,35 +47537,26 @@
           "capability_directories": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "skills": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedSkillResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "plugins": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedPluginResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "files": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HostedEnvironmentFileResource"
-            },
-            "minItems": 0,
-            "maxItems": 50
+            }
           }
         },
         "required": [
@@ -48218,25 +47581,19 @@
             ]
           },
           "remote_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "workspace_directory": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "capability_directories": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -48275,18 +47632,15 @@
           "metadata": {
             "type": "object",
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -48309,16 +47663,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SessionRequiredActionResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "error": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "agent": {
             "$ref": "#/components/schemas/SessionAgentResource"
@@ -48329,11 +47680,8 @@
           "vault_ids": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 0,
-            "maxItems": 2000
+              "type": "string"
+            }
           },
           "usage": {
             "anyOf": [
@@ -48375,23 +47723,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SessionResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -48416,22 +47760,16 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "description": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "parameters": {
             "type": "object",
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -48491,17 +47829,13 @@
             ]
           },
           "server_url": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "authorization": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "headers": {
             "type": [
@@ -48509,14 +47843,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -48538,9 +47868,7 @@
             ]
           },
           "command": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "args": {
             "type": [
@@ -48548,17 +47876,11 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "cwd": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "env": {
             "type": [
@@ -48566,14 +47888,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -48584,12 +47902,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -48626,17 +47940,13 @@
             ]
           },
           "server_label": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "credential_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "transport": {
             "$ref": "#/components/schemas/McpTransportConfigParam"
@@ -48648,9 +47958,7 @@
             ],
             "additionalProperties": {},
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -48661,12 +47969,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "required": {
             "type": "boolean"
@@ -48724,12 +48028,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "location": {
             "anyOf": [
@@ -48780,9 +48080,7 @@
         "type": "object",
         "properties": {
           "model": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "reasoning": {
             "anyOf": [
@@ -48818,9 +48116,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "multi_agent": {
             "anyOf": [
@@ -48839,9 +48135,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/AgentToolConfigParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         },
         "additionalProperties": false
@@ -48887,9 +48181,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/SetupCommandParam"
-            },
-            "minItems": 0,
-            "maxItems": 16
+            }
           },
           "network": {
             "anyOf": [
@@ -48907,14 +48199,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -48925,12 +48213,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "skills": {
             "type": [
@@ -48939,9 +48223,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedSkillParam"
-            },
-            "minItems": 0,
-            "maxItems": 200
+            }
           },
           "plugins": {
             "type": [
@@ -48950,9 +48232,7 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedPluginParam"
-            },
-            "minItems": 0,
-            "maxItems": 32
+            }
           },
           "files": {
             "type": [
@@ -48961,14 +48241,10 @@
             ],
             "items": {
               "$ref": "#/components/schemas/HostedEnvironmentFileParam"
-            },
-            "minItems": 0,
-            "maxItems": 50
+            }
           },
           "environment_template_id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 64
+            "type": "string"
           }
         },
         "required": [
@@ -48986,9 +48262,7 @@
             ]
           },
           "workspace_directory": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "capability_directories": {
             "type": [
@@ -48996,12 +48270,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -49041,9 +48311,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -49062,9 +48330,7 @@
             ]
           },
           "image_url": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -49109,9 +48375,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InputContentParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         },
         "required": [
@@ -49123,17 +48387,13 @@
       "CreateSessionInputParam": {
         "oneOf": [
           {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           },
           {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InputMessageParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         ]
       },
@@ -49146,14 +48406,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 512
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 64
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 16
@@ -49162,9 +48418,7 @@
             "$ref": "#/components/schemas/SessionAgentConfigParam"
           },
           "agent_id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 64
+            "type": "string"
           },
           "environment": {
             "$ref": "#/components/schemas/EnvironmentParam"
@@ -49175,12 +48429,8 @@
               "null"
             ],
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 0,
-            "maxItems": 16384
+              "type": "string"
+            }
           },
           "input": {
             "anyOf": [
@@ -49205,26 +48455,22 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "code": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "message": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "param": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           }
         },
         "required": [
@@ -49245,12 +48491,10 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "error": {
             "$ref": "#/components/schemas/SessionErrorResource"
@@ -49278,16 +48522,13 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "code": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "message": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -49301,12 +48542,10 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "type": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/SessionEnvironmentStatusResource"
@@ -49340,19 +48579,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment": {
             "$ref": "#/components/schemas/SessionEnvironmentStateResource"
@@ -49377,23 +48613,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "reset_count": {
             "type": "integer",
@@ -49421,23 +48653,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -49446,8 +48674,7 @@
             "maximum": 4294967295
           },
           "delta": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -49471,8 +48698,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session": {
             "$ref": "#/components/schemas/SessionResource"
@@ -49495,16 +48721,13 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn": {
             "$ref": "#/components/schemas/TurnResource"
@@ -49529,16 +48752,13 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn": {
             "$ref": "#/components/schemas/TurnResource"
@@ -49563,16 +48783,13 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn": {
             "$ref": "#/components/schemas/TurnResource"
@@ -49608,16 +48825,13 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn": {
             "$ref": "#/components/schemas/TurnResource"
@@ -49653,16 +48867,13 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn": {
             "$ref": "#/components/schemas/TurnResource"
@@ -49698,19 +48909,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "output_index": {
             "type": [
@@ -49745,8 +48953,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session": {
             "$ref": "#/components/schemas/SessionResource"
@@ -49769,8 +48976,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session": {
             "$ref": "#/components/schemas/SessionResource"
@@ -49793,8 +48999,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session": {
             "$ref": "#/components/schemas/SessionResource"
@@ -49817,8 +49022,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session": {
             "$ref": "#/components/schemas/SessionResource"
@@ -49841,19 +49045,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment": {
             "$ref": "#/components/schemas/SessionEnvironmentStateResource"
@@ -49878,19 +49079,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment": {
             "$ref": "#/components/schemas/SessionEnvironmentStateResource"
@@ -49915,19 +49113,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment": {
             "$ref": "#/components/schemas/SessionEnvironmentStateResource"
@@ -49952,19 +49147,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "environment": {
             "$ref": "#/components/schemas/SessionEnvironmentStateResource"
@@ -49989,8 +49181,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "subagent": {
             "$ref": "#/components/schemas/SubagentResource"
@@ -50013,8 +49204,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "subagent": {
             "$ref": "#/components/schemas/SubagentResource"
@@ -50037,8 +49227,7 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "subagent": {
             "$ref": "#/components/schemas/SubagentResource"
@@ -50061,12 +49250,10 @@
             ]
           },
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "role": {
             "type": "string",
@@ -50081,9 +49268,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/OutputTextResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "phase": {
             "anyOf": [
@@ -50174,19 +49359,16 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "output_index": {
             "type": "integer",
@@ -50218,23 +49400,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50274,23 +49452,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50330,23 +49504,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50361,8 +49531,7 @@
             "maximum": 4294967295
           },
           "delta": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -50387,23 +49556,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50418,8 +49583,7 @@
             "maximum": 4294967295
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -50444,23 +49608,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50500,23 +49660,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50567,23 +49723,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50598,8 +49750,7 @@
             "maximum": 4294967295
           },
           "delta": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -50624,23 +49775,19 @@
             ]
           },
           "event_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "item_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "output_index": {
             "type": "integer",
@@ -50655,8 +49802,7 @@
             "maximum": 4294967295
           },
           "text": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -50824,9 +49970,7 @@
         "type": "object",
         "properties": {
           "model": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "reasoning": {
             "$ref": "#/components/schemas/UpdateSessionReasoningParam"
@@ -50856,14 +50000,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 512
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 64
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 16
@@ -50875,8 +50015,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -50899,8 +50038,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -50909,20 +50047,16 @@
             ]
           },
           "session_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "environment_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "path": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "size_bytes": {
             "type": "integer",
@@ -50959,23 +50093,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SessionArtifactResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -50994,8 +50124,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -51027,9 +50156,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InputMessageParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         },
         "required": [
@@ -51056,17 +50183,13 @@
       "FunctionCallOutputParam": {
         "oneOf": [
           {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InputContentParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         ]
       },
@@ -51080,14 +50203,10 @@
             ]
           },
           "turn_id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "call_id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "success": {
             "type": "boolean"
@@ -51106,9 +50225,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           }
         },
         "required": [
@@ -51147,9 +50264,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SessionInputParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         },
         "required": [
@@ -51173,9 +50288,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VaultStatusParam"
-            },
-            "minItems": 0,
-            "maxItems": 16384
+            }
           }
         ]
       },
@@ -51183,8 +50296,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -51196,18 +50308,15 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "metadata": {
             "type": "object",
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 0
+              "type": "string"
             },
             "minProperties": 0
           },
@@ -51238,23 +50347,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VaultResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -51273,9 +50378,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           },
           "metadata": {
             "type": [
@@ -51283,14 +50386,10 @@
               "null"
             ],
             "additionalProperties": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
+              "type": "string"
             },
             "propertyNames": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "type": "string"
             },
             "minProperties": 0,
             "maxProperties": 1024
@@ -51302,8 +50401,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -51392,26 +50490,22 @@
         "type": "object",
         "properties": {
           "token_endpoint": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "client_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "resource": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "scope": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "token_endpoint_auth": {
             "$ref": "#/components/schemas/McpOauthTokenEndpointAuthResource"
@@ -51436,15 +50530,13 @@
             ]
           },
           "mcp_server_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "expires_at": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "refresh": {
             "anyOf": [
@@ -51475,8 +50567,7 @@
             ]
           },
           "mcp_server_url": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           }
         },
         "required": [
@@ -51512,11 +50603,8 @@
           "allowed_hosts": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0
-            },
-            "minItems": 1,
-            "maxItems": 16
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -51552,8 +50640,7 @@
             ]
           },
           "secret_name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "networking": {
             "$ref": "#/components/schemas/VaultCredentialNetworkingResource"
@@ -51591,8 +50678,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -51601,12 +50687,10 @@
             ]
           },
           "vault_id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "auth": {
             "$ref": "#/components/schemas/VaultCredentialAuthResource"
@@ -51644,23 +50728,19 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VaultCredentialResource"
-            },
-            "minItems": 0,
-            "maxItems": 2000
+            }
           },
           "first_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "last_id": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0
+            ]
           },
           "has_more": {
             "type": "boolean"
@@ -51700,9 +50780,7 @@
             ]
           },
           "client_secret": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -51721,9 +50799,7 @@
             ]
           },
           "client_secret": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -51757,35 +50833,25 @@
         "type": "object",
         "properties": {
           "token_endpoint": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "client_id": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "resource": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "scope": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "refresh_token": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "token_endpoint_auth": {
             "$ref": "#/components/schemas/CreateMcpOauthTokenEndpointAuthParam"
@@ -51809,22 +50875,16 @@
             ]
           },
           "mcp_server_url": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "access_token": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "expires_at": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "refresh": {
             "anyOf": [
@@ -51854,14 +50914,10 @@
             ]
           },
           "mcp_server_url": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           },
           "token": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -51898,12 +50954,8 @@
           "allowed_hosts": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1048576
-            },
-            "minItems": 1,
-            "maxItems": 16
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -51939,14 +50991,10 @@
             ]
           },
           "secret_name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           },
           "secret_value": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           },
           "networking": {
             "$ref": "#/components/schemas/VaultCredentialNetworkingParam"
@@ -51985,9 +51033,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           },
           "auth": {
             "$ref": "#/components/schemas/CreateVaultCredentialAuthParam"
@@ -52012,9 +51058,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           }
         },
         "required": [
@@ -52035,9 +51079,7 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           }
         },
         "required": [
@@ -52069,17 +51111,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "scope": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "token_endpoint_auth": {
             "anyOf": [
@@ -52107,17 +51145,13 @@
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "expires_at": {
             "type": [
               "string",
               "null"
-            ],
-            "minLength": 0,
-            "maxLength": 1048576
+            ]
           },
           "refresh": {
             "anyOf": [
@@ -52145,9 +51179,7 @@
             ]
           },
           "token": {
-            "type": "string",
-            "minLength": 0,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -52166,9 +51198,7 @@
             ]
           },
           "secret_value": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1048576
+            "type": "string"
           }
         },
         "required": [
@@ -52214,8 +51244,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "minLength": 0
+            "type": "string"
           },
           "object": {
             "type": "string",
@@ -52360,21 +51389,16 @@
       "PublicCreateEndpointBody": {
         "properties": {
           "name": {
-            "type": "string",
-            "maxLength": 256,
-            "minLength": 1
+            "type": "string"
           },
           "url": {
-            "type": "string",
-            "maxLength": 2048,
-            "pattern": "^https://"
+            "type": "string"
           },
           "event_types": {
             "items": {
               "$ref": "#/components/schemas/ProjectEventTypeEnum"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -52444,21 +51468,16 @@
       "PublicUpdateEndpointBody": {
         "properties": {
           "name": {
-            "type": "string",
-            "maxLength": 256,
-            "minLength": 1
+            "type": "string"
           },
           "url": {
-            "type": "string",
-            "maxLength": 2048,
-            "pattern": "^https://"
+            "type": "string"
           },
           "event_types": {
             "items": {
               "$ref": "#/components/schemas/ProjectEventTypeEnum"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -52687,8 +51706,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiveInitialItem"
-            },
-            "maxItems": 128
+            }
           },
           "audio": {
             "$ref": "#/components/schemas/LiveInitialSessionAudioParam"
@@ -52730,8 +51748,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52785,8 +51802,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52814,8 +51830,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52829,8 +51844,7 @@
             ]
           },
           "audio": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         },
         "required": [
@@ -52844,8 +51858,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52869,8 +51882,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52894,8 +51906,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52911,8 +51922,7 @@
           "delegation_id": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52935,8 +51945,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52952,8 +51961,7 @@
           "delegation_id": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52976,8 +51984,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -52993,8 +52000,7 @@
           "delegation_id": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -53017,8 +52023,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -53046,8 +52051,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -53071,8 +52075,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -53123,8 +52126,7 @@
           "event_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 512
+                "type": "string"
               },
               {
                 "type": "null"
@@ -53166,8 +52168,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LiveInitialItem"
-            },
-            "maxItems": 128
+            }
           },
           "audio": {
             "$ref": "#/components/schemas/LiveInitialSessionAudioParam"
@@ -53814,10 +52815,7 @@
             "type": "string"
           },
           "event": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1,
-            "pattern": "^[0-9A-D*#]$"
+            "type": "string"
           }
         },
         "required": [
@@ -53839,10 +52837,7 @@
             "type": "string"
           },
           "event": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1,
-            "pattern": "^[0-9A-D*#]$"
+            "type": "string"
           }
         },
         "required": [
@@ -54065,8 +53060,7 @@
                 "type": "array"
               },
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               }
             ]
           },
@@ -54169,15 +53163,13 @@
               {
                 "oneOf": [
                   {
-                    "type": "string",
-                    "maxLength": 10485760
+                    "type": "string"
                   },
                   {
                     "items": {
                       "$ref": "#/components/schemas/BetaInputItem"
                     },
-                    "type": "array",
-                    "maxItems": 131072
+                    "type": "array"
                   }
                 ]
               },
@@ -54782,8 +53774,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -54963,8 +53954,7 @@
             ]
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "description": {
             "type": "string"
@@ -54983,8 +53973,7 @@
                 "propertyName": "type"
               }
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -55034,8 +54023,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -55095,10 +54083,7 @@
       "BetaFunctionToolParam": {
         "properties": {
           "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
+            "type": "string"
           },
           "description": {
             "anyOf": [
@@ -55159,8 +54144,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -55211,8 +54195,7 @@
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 },
-                "type": "array",
-                "minItems": 1
+                "type": "array"
               },
               {
                 "type": "null"
@@ -55255,8 +54238,7 @@
             "items": {
               "$ref": "#/components/schemas/BetaLocalSkillParam"
             },
-            "type": "array",
-            "maxItems": 200
+            "type": "array"
           }
         },
         "type": "object",
@@ -55295,8 +54277,7 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "maxItems": 50
+            "type": "array"
           },
           "memory_limit": {
             "anyOf": [
@@ -55335,8 +54316,7 @@
                 "propertyName": "type"
               }
             },
-            "type": "array",
-            "maxItems": 200
+            "type": "array"
           }
         },
         "type": "object",
@@ -55385,9 +54365,7 @@
             ]
           },
           "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -55406,9 +54384,7 @@
             ]
           },
           "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "version": {
             "type": "string"
@@ -55432,15 +54408,13 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           },
           "domain_secrets": {
             "items": {
               "$ref": "#/components/schemas/BetaContainerNetworkPolicyDomainSecretParam"
             },
-            "type": "array",
-            "minItems": 1
+            "type": "array"
           }
         },
         "type": "object",
@@ -55452,17 +54426,13 @@
       "BetaContainerNetworkPolicyDomainSecretParam": {
         "properties": {
           "domain": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "name": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -55682,7 +54652,6 @@
             "anyOf": [
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 }
@@ -55710,8 +54679,7 @@
             "items": {
               "type": "string"
             },
-            "type": "array",
-            "maxItems": 50
+            "type": "array"
           },
           "memory_limit": {
             "anyOf": [
@@ -55773,8 +54741,7 @@
             ]
           },
           "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
+            "type": "string"
           },
           "authorization": {
             "type": "string"
@@ -55819,7 +54786,6 @@
             "anyOf": [
               {
                 "type": "array",
-                "minItems": 1,
                 "items": {
                   "$ref": "#/components/schemas/BetaCallableToolAllowedCaller"
                 }
@@ -56345,13 +55311,10 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "result": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "status": {
             "$ref": "#/components/schemas/BetaProgramOutputItemStatus"
@@ -56406,17 +55369,13 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "code": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "fingerprint": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -56935,9 +55894,7 @@
             ]
           },
           "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -57325,9 +56282,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -57345,8 +56300,7 @@
           "output": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               },
               {
                 "type": "null"
@@ -57397,9 +56351,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -57451,12 +56403,10 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -57475,8 +56425,7 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           }
         },
         "type": "object",
@@ -57494,12 +56443,10 @@
             ]
           },
           "path": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "diff": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -57539,9 +56486,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -57604,12 +56549,10 @@
       "BetaFunctionShellCallOutputContentParam": {
         "properties": {
           "stdout": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "stderr": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "outcome": {
             "$ref": "#/components/schemas/BetaFunctionShellCallOutputOutcomeParam"
@@ -57690,9 +56633,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "caller": {
             "anyOf": [
@@ -58228,8 +57169,7 @@
             ]
           },
           "encrypted_content": {
-            "type": "string",
-            "maxLength": 104857600
+            "type": "string"
           }
         },
         "type": "object",
@@ -58448,9 +57388,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -58522,9 +57460,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -58583,9 +57519,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -58620,8 +57554,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "annotations": {
             "items": {
@@ -58779,9 +57712,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -58875,8 +57806,7 @@
             ]
           },
           "encrypted_content": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           }
         },
         "type": "object",
@@ -58897,7 +57827,6 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 20971520,
                 "format": "uri"
               },
               {
@@ -58973,8 +57902,7 @@
             ]
           },
           "text": {
-            "type": "string",
-            "maxLength": 10485760
+            "type": "string"
           },
           "prompt_cache_breakpoint": {
             "anyOf": [
@@ -59018,9 +57946,7 @@
           "call_id": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -59036,8 +57962,7 @@
           "output": {
             "oneOf": [
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               },
               {
                 "items": {
@@ -59063,9 +57988,7 @@
           "name": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 128,
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -59075,10 +57998,7 @@
           "namespace": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9_-]+$"
+                "type": "string"
               },
               {
                 "type": "null"
@@ -59143,8 +58063,7 @@
           "file_data": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 73400320
+                "type": "string"
               },
               {
                 "type": "null"
@@ -59429,9 +58348,7 @@
             ]
           },
           "call_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
+            "type": "string"
           },
           "type": {
             "type": "string",
@@ -59981,14 +58898,12 @@
             "type": "object",
             "maxProperties": 16,
             "propertyNames": {
-              "type": "string",
-              "maxLength": 64
+              "type": "string"
             },
             "additionalProperties": {
               "oneOf": [
                 {
-                  "type": "string",
-                  "maxLength": 512
+                  "type": "string"
                 },
                 {
                   "type": "number"
@@ -60438,15 +59353,13 @@
               {
                 "oneOf": [
                   {
-                    "type": "string",
-                    "maxLength": 10485760
+                    "type": "string"
                   },
                   {
                     "items": {
                       "$ref": "#/components/schemas/BetaInputItem"
                     },
-                    "type": "array",
-                    "maxItems": 131072
+                    "type": "array"
                   }
                 ]
               },
@@ -60478,8 +59391,7 @@
           "prompt_cache_key": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64
+                "type": "string"
               },
               {
                 "type": "null"
@@ -63384,8 +62296,7 @@
           "safety_identifier": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 64
+                "type": "string"
               },
               {
                 "type": "null"
@@ -65777,7 +64688,6 @@
       },
       "BetaResponseSteerInputItemList": {
         "type": "array",
-        "minItems": 1,
         "items": {
           "$ref": "#/components/schemas/BetaResponseSteerInputItem"
         }
@@ -65851,8 +64761,7 @@
                 "type": "array"
               },
               {
-                "type": "string",
-                "maxLength": 10485760
+                "type": "string"
               }
             ]
           },
@@ -65906,7 +64815,6 @@
           },
           "required_input": {
             "type": "array",
-            "minItems": 1,
             "items": {
               "$ref": "#/components/schemas/BetaResponseSteerRequiredInput"
             }
@@ -67514,7 +66422,6 @@
           },
           "input": {
             "type": "array",
-            "maxItems": 16384,
             "items": {
               "$ref": "#/components/schemas/BetaInputItem"
             }
@@ -67538,10 +66445,7 @@
                 ]
               },
               "stream_id": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 256,
-                "pattern": "^[A-Za-z0-9_.-]+$"
+                "type": "string"
               }
             },
             "required": [
@@ -67678,7 +66582,6 @@
                 "anyOf": [
                   {
                     "type": "array",
-                    "minItems": 1,
                     "items": {
                       "$ref": "#/components/schemas/BetaContextManagementParam"
                     }

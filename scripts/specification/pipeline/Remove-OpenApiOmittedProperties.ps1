@@ -49,6 +49,26 @@ $script:OmittedPropertyNames = @(
     "title"
     "description"
     "default"
+    "minValue"
+    "maxValue"
+    "minLength"
+    "maxLength"
+    "minItems"
+    "maxItems"
+    "pattern"
+)
+
+$script:RetainedSchemaMapPropertyNames = @(
+    "title"
+    "description"
+    "default"
+    "minValue"
+    "maxValue"
+    "minLength"
+    "maxLength"
+    "minItems"
+    "maxItems"
+    "pattern"
 )
 
 function Test-IsOpenApiResponsesObjectBreadcrumb {
@@ -108,7 +128,7 @@ function Test-IsOmittedOpenApiProperty {
         return $true
     }
     if ([string]::Equals($ParentContext, "SchemaMap", [System.StringComparison]::Ordinal) -and
-        @("title", "description", "default") -ccontains $Name) {
+        $script:RetainedSchemaMapPropertyNames -ccontains $Name) {
         return $false
     }
     if ([string]::Equals($Name, "title", [System.StringComparison]::Ordinal) -and

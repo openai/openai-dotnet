@@ -102,8 +102,7 @@
                   "safety_identifier": {
                     "anyOf": [
                       {
-                        "type": "string",
-                        "maxLength": 64
+                        "type": "string"
                       },
                       {
                         "type": "null"
@@ -748,8 +747,7 @@
                               ]
                             },
                             "tunnel_id": {
-                              "type": "string",
-                              "pattern": "^tunnel_[a-z0-9]{32}$"
+                              "type": "string"
                             },
                             "authorization": {
                               "type": "string"
@@ -807,7 +805,6 @@
                               "anyOf": [
                                 {
                                   "type": "array",
-                                  "minItems": 1,
                                   "items": {
                                     "type": "string",
                                     "enum": [
@@ -912,8 +909,7 @@
                                       "items": {
                                         "type": "string"
                                       },
-                                      "type": "array",
-                                      "maxItems": 50
+                                      "type": "array"
                                     },
                                     "memory_limit": {
                                       "anyOf": [
@@ -959,24 +955,19 @@
                                               "items": {
                                                 "type": "string"
                                               },
-                                              "type": "array",
-                                              "minItems": 1
+                                              "type": "array"
                                             },
                                             "domain_secrets": {
                                               "items": {
                                                 "properties": {
                                                   "domain": {
-                                                    "type": "string",
-                                                    "minLength": 1
+                                                    "type": "string"
                                                   },
                                                   "name": {
-                                                    "type": "string",
-                                                    "minLength": 1
+                                                    "type": "string"
                                                   },
                                                   "value": {
-                                                    "type": "string",
-                                                    "maxLength": 10485760,
-                                                    "minLength": 1
+                                                    "type": "string"
                                                   }
                                                 },
                                                 "type": "object",
@@ -986,8 +977,7 @@
                                                   "value"
                                                 ]
                                               },
-                                              "type": "array",
-                                              "minItems": 1
+                                              "type": "array"
                                             }
                                           },
                                           "type": "object",
@@ -1013,7 +1003,6 @@
                               "anyOf": [
                                 {
                                   "type": "array",
-                                  "minItems": 1,
                                   "items": {
                                     "type": "string",
                                     "enum": [
@@ -1215,8 +1204,7 @@
                                           "items": {
                                             "type": "string"
                                           },
-                                          "type": "array",
-                                          "maxItems": 50
+                                          "type": "array"
                                         },
                                         "memory_limit": {
                                           "anyOf": [
@@ -1262,24 +1250,19 @@
                                                   "items": {
                                                     "type": "string"
                                                   },
-                                                  "type": "array",
-                                                  "minItems": 1
+                                                  "type": "array"
                                                 },
                                                 "domain_secrets": {
                                                   "items": {
                                                     "properties": {
                                                       "domain": {
-                                                        "type": "string",
-                                                        "minLength": 1
+                                                        "type": "string"
                                                       },
                                                       "name": {
-                                                        "type": "string",
-                                                        "minLength": 1
+                                                        "type": "string"
                                                       },
                                                       "value": {
-                                                        "type": "string",
-                                                        "maxLength": 10485760,
-                                                        "minLength": 1
+                                                        "type": "string"
                                                       }
                                                     },
                                                     "type": "object",
@@ -1289,8 +1272,7 @@
                                                       "value"
                                                     ]
                                                   },
-                                                  "type": "array",
-                                                  "minItems": 1
+                                                  "type": "array"
                                                 }
                                               },
                                               "type": "object",
@@ -1316,9 +1298,7 @@
                                                     ]
                                                   },
                                                   "skill_id": {
-                                                    "type": "string",
-                                                    "maxLength": 64,
-                                                    "minLength": 1
+                                                    "type": "string"
                                                   },
                                                   "version": {
                                                     "type": "string"
@@ -1359,9 +1339,7 @@
                                                         ]
                                                       },
                                                       "data": {
-                                                        "type": "string",
-                                                        "maxLength": 70254592,
-                                                        "minLength": 1
+                                                        "type": "string"
                                                       }
                                                     },
                                                     "type": "object",
@@ -1385,8 +1363,7 @@
                                               "propertyName": "type"
                                             }
                                           },
-                                          "type": "array",
-                                          "maxItems": 200
+                                          "type": "array"
                                         }
                                       },
                                       "type": "object",
@@ -1422,8 +1399,7 @@
                                               "path"
                                             ]
                                           },
-                                          "type": "array",
-                                          "maxItems": 200
+                                          "type": "array"
                                         }
                                       },
                                       "type": "object",
@@ -1469,8 +1445,7 @@
                                       "programmatic"
                                     ]
                                   },
-                                  "type": "array",
-                                  "minItems": 1
+                                  "type": "array"
                                 },
                                 {
                                   "type": "null"
@@ -1560,8 +1535,7 @@
                                       "programmatic"
                                     ]
                                   },
-                                  "type": "array",
-                                  "minItems": 1
+                                  "type": "array"
                                 },
                                 {
                                   "type": "null"
@@ -1584,8 +1558,7 @@
                               ]
                             },
                             "name": {
-                              "type": "string",
-                              "minLength": 1
+                              "type": "string"
                             },
                             "description": {
                               "type": "string"
@@ -1596,10 +1569,7 @@
                                   {
                                     "properties": {
                                       "name": {
-                                        "type": "string",
-                                        "maxLength": 128,
-                                        "minLength": 1,
-                                        "pattern": "^[a-zA-Z0-9_-]+$"
+                                        "type": "string"
                                       },
                                       "description": {
                                         "anyOf": [
@@ -1666,8 +1636,7 @@
                                                 "programmatic"
                                               ]
                                             },
-                                            "type": "array",
-                                            "minItems": 1
+                                            "type": "array"
                                           },
                                           {
                                             "type": "null"
@@ -1758,8 +1727,7 @@
                                                 "programmatic"
                                               ]
                                             },
-                                            "type": "array",
-                                            "minItems": 1
+                                            "type": "array"
                                           },
                                           {
                                             "type": "null"
@@ -1778,8 +1746,7 @@
                                   "propertyName": "type"
                                 }
                               },
-                              "type": "array",
-                              "minItems": 1
+                              "type": "array"
                             }
                           },
                           "type": "object",
@@ -1944,8 +1911,7 @@
                                       "programmatic"
                                     ]
                                   },
-                                  "type": "array",
-                                  "minItems": 1
+                                  "type": "array"
                                 },
                                 {
                                   "type": "null"
@@ -3019,14 +2985,12 @@
                                                     "type": "object",
                                                     "maxProperties": 16,
                                                     "propertyNames": {
-                                                      "type": "string",
-                                                      "maxLength": 64
+                                                      "type": "string"
                                                     },
                                                     "additionalProperties": {
                                                       "oneOf": [
                                                         {
-                                                          "type": "string",
-                                                          "maxLength": 512
+                                                          "type": "string"
                                                         },
                                                         {
                                                           "type": "number"
@@ -3704,9 +3668,7 @@
                                       ]
                                     },
                                     "call_id": {
-                                      "type": "string",
-                                      "maxLength": 64,
-                                      "minLength": 1
+                                      "type": "string"
                                     },
                                     "type": {
                                       "type": "string",
@@ -4035,9 +3997,7 @@
                                     "call_id": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 64,
-                                          "minLength": 1
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -4053,8 +4013,7 @@
                                     "output": {
                                       "oneOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 10485760
+                                          "type": "string"
                                         },
                                         {
                                           "items": {
@@ -4068,8 +4027,7 @@
                                                     ]
                                                   },
                                                   "text": {
-                                                    "type": "string",
-                                                    "maxLength": 10485760
+                                                    "type": "string"
                                                   },
                                                   "prompt_cache_breakpoint": {
                                                     "anyOf": [
@@ -4111,7 +4069,6 @@
                                                     "anyOf": [
                                                       {
                                                         "type": "string",
-                                                        "maxLength": 20971520,
                                                         "format": "uri"
                                                       },
                                                       {
@@ -4203,8 +4160,7 @@
                                                   "file_data": {
                                                     "anyOf": [
                                                       {
-                                                        "type": "string",
-                                                        "maxLength": 73400320
+                                                        "type": "string"
                                                       },
                                                       {
                                                         "type": "null"
@@ -4269,9 +4225,7 @@
                                     "name": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 128,
-                                          "minLength": 1
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -4281,10 +4235,7 @@
                                     "namespace": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 64,
-                                          "minLength": 1,
-                                          "pattern": "^[a-zA-Z0-9_-]+$"
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -4318,9 +4269,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -4376,9 +4325,7 @@
                                     "call_id": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 64,
-                                          "minLength": 1
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -4440,9 +4387,7 @@
                                     "call_id": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 64,
-                                          "minLength": 1
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -4805,8 +4750,7 @@
                                                 ]
                                               },
                                               "tunnel_id": {
-                                                "type": "string",
-                                                "pattern": "^tunnel_[a-z0-9]{32}$"
+                                                "type": "string"
                                               },
                                               "authorization": {
                                                 "type": "string"
@@ -4864,7 +4808,6 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "array",
-                                                    "minItems": 1,
                                                     "items": {
                                                       "type": "string",
                                                       "enum": [
@@ -4969,8 +4912,7 @@
                                                         "items": {
                                                           "type": "string"
                                                         },
-                                                        "type": "array",
-                                                        "maxItems": 50
+                                                        "type": "array"
                                                       },
                                                       "memory_limit": {
                                                         "anyOf": [
@@ -5016,24 +4958,19 @@
                                                                 "items": {
                                                                   "type": "string"
                                                                 },
-                                                                "type": "array",
-                                                                "minItems": 1
+                                                                "type": "array"
                                                               },
                                                               "domain_secrets": {
                                                                 "items": {
                                                                   "properties": {
                                                                     "domain": {
-                                                                      "type": "string",
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "name": {
-                                                                      "type": "string",
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "value": {
-                                                                      "type": "string",
-                                                                      "maxLength": 10485760,
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     }
                                                                   },
                                                                   "type": "object",
@@ -5043,8 +4980,7 @@
                                                                     "value"
                                                                   ]
                                                                 },
-                                                                "type": "array",
-                                                                "minItems": 1
+                                                                "type": "array"
                                                               }
                                                             },
                                                             "type": "object",
@@ -5070,7 +5006,6 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "array",
-                                                    "minItems": 1,
                                                     "items": {
                                                       "type": "string",
                                                       "enum": [
@@ -5272,8 +5207,7 @@
                                                             "items": {
                                                               "type": "string"
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 50
+                                                            "type": "array"
                                                           },
                                                           "memory_limit": {
                                                             "anyOf": [
@@ -5319,24 +5253,19 @@
                                                                     "items": {
                                                                       "type": "string"
                                                                     },
-                                                                    "type": "array",
-                                                                    "minItems": 1
+                                                                    "type": "array"
                                                                   },
                                                                   "domain_secrets": {
                                                                     "items": {
                                                                       "properties": {
                                                                         "domain": {
-                                                                          "type": "string",
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         },
                                                                         "name": {
-                                                                          "type": "string",
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         },
                                                                         "value": {
-                                                                          "type": "string",
-                                                                          "maxLength": 10485760,
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         }
                                                                       },
                                                                       "type": "object",
@@ -5346,8 +5275,7 @@
                                                                         "value"
                                                                       ]
                                                                     },
-                                                                    "type": "array",
-                                                                    "minItems": 1
+                                                                    "type": "array"
                                                                   }
                                                                 },
                                                                 "type": "object",
@@ -5373,9 +5301,7 @@
                                                                       ]
                                                                     },
                                                                     "skill_id": {
-                                                                      "type": "string",
-                                                                      "maxLength": 64,
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "version": {
                                                                       "type": "string"
@@ -5416,9 +5342,7 @@
                                                                           ]
                                                                         },
                                                                         "data": {
-                                                                          "type": "string",
-                                                                          "maxLength": 70254592,
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         }
                                                                       },
                                                                       "type": "object",
@@ -5442,8 +5366,7 @@
                                                                 "propertyName": "type"
                                                               }
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 200
+                                                            "type": "array"
                                                           }
                                                         },
                                                         "type": "object",
@@ -5479,8 +5402,7 @@
                                                                 "path"
                                                               ]
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 200
+                                                            "type": "array"
                                                           }
                                                         },
                                                         "type": "object",
@@ -5526,8 +5448,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -5617,8 +5538,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -5641,8 +5561,7 @@
                                                 ]
                                               },
                                               "name": {
-                                                "type": "string",
-                                                "minLength": 1
+                                                "type": "string"
                                               },
                                               "description": {
                                                 "type": "string"
@@ -5653,10 +5572,7 @@
                                                     {
                                                       "properties": {
                                                         "name": {
-                                                          "type": "string",
-                                                          "maxLength": 128,
-                                                          "minLength": 1,
-                                                          "pattern": "^[a-zA-Z0-9_-]+$"
+                                                          "type": "string"
                                                         },
                                                         "description": {
                                                           "anyOf": [
@@ -5723,8 +5639,7 @@
                                                                   "programmatic"
                                                                 ]
                                                               },
-                                                              "type": "array",
-                                                              "minItems": 1
+                                                              "type": "array"
                                                             },
                                                             {
                                                               "type": "null"
@@ -5815,8 +5730,7 @@
                                                                   "programmatic"
                                                                 ]
                                                               },
-                                                              "type": "array",
-                                                              "minItems": 1
+                                                              "type": "array"
                                                             },
                                                             {
                                                               "type": "null"
@@ -5835,8 +5749,7 @@
                                                     "propertyName": "type"
                                                   }
                                                 },
-                                                "type": "array",
-                                                "minItems": 1
+                                                "type": "array"
                                               }
                                             },
                                             "type": "object",
@@ -6001,8 +5914,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -6408,8 +6320,7 @@
                                                 ]
                                               },
                                               "tunnel_id": {
-                                                "type": "string",
-                                                "pattern": "^tunnel_[a-z0-9]{32}$"
+                                                "type": "string"
                                               },
                                               "authorization": {
                                                 "type": "string"
@@ -6467,7 +6378,6 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "array",
-                                                    "minItems": 1,
                                                     "items": {
                                                       "type": "string",
                                                       "enum": [
@@ -6572,8 +6482,7 @@
                                                         "items": {
                                                           "type": "string"
                                                         },
-                                                        "type": "array",
-                                                        "maxItems": 50
+                                                        "type": "array"
                                                       },
                                                       "memory_limit": {
                                                         "anyOf": [
@@ -6619,24 +6528,19 @@
                                                                 "items": {
                                                                   "type": "string"
                                                                 },
-                                                                "type": "array",
-                                                                "minItems": 1
+                                                                "type": "array"
                                                               },
                                                               "domain_secrets": {
                                                                 "items": {
                                                                   "properties": {
                                                                     "domain": {
-                                                                      "type": "string",
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "name": {
-                                                                      "type": "string",
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "value": {
-                                                                      "type": "string",
-                                                                      "maxLength": 10485760,
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     }
                                                                   },
                                                                   "type": "object",
@@ -6646,8 +6550,7 @@
                                                                     "value"
                                                                   ]
                                                                 },
-                                                                "type": "array",
-                                                                "minItems": 1
+                                                                "type": "array"
                                                               }
                                                             },
                                                             "type": "object",
@@ -6673,7 +6576,6 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "array",
-                                                    "minItems": 1,
                                                     "items": {
                                                       "type": "string",
                                                       "enum": [
@@ -6875,8 +6777,7 @@
                                                             "items": {
                                                               "type": "string"
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 50
+                                                            "type": "array"
                                                           },
                                                           "memory_limit": {
                                                             "anyOf": [
@@ -6922,24 +6823,19 @@
                                                                     "items": {
                                                                       "type": "string"
                                                                     },
-                                                                    "type": "array",
-                                                                    "minItems": 1
+                                                                    "type": "array"
                                                                   },
                                                                   "domain_secrets": {
                                                                     "items": {
                                                                       "properties": {
                                                                         "domain": {
-                                                                          "type": "string",
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         },
                                                                         "name": {
-                                                                          "type": "string",
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         },
                                                                         "value": {
-                                                                          "type": "string",
-                                                                          "maxLength": 10485760,
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         }
                                                                       },
                                                                       "type": "object",
@@ -6949,8 +6845,7 @@
                                                                         "value"
                                                                       ]
                                                                     },
-                                                                    "type": "array",
-                                                                    "minItems": 1
+                                                                    "type": "array"
                                                                   }
                                                                 },
                                                                 "type": "object",
@@ -6976,9 +6871,7 @@
                                                                       ]
                                                                     },
                                                                     "skill_id": {
-                                                                      "type": "string",
-                                                                      "maxLength": 64,
-                                                                      "minLength": 1
+                                                                      "type": "string"
                                                                     },
                                                                     "version": {
                                                                       "type": "string"
@@ -7019,9 +6912,7 @@
                                                                           ]
                                                                         },
                                                                         "data": {
-                                                                          "type": "string",
-                                                                          "maxLength": 70254592,
-                                                                          "minLength": 1
+                                                                          "type": "string"
                                                                         }
                                                                       },
                                                                       "type": "object",
@@ -7045,8 +6936,7 @@
                                                                 "propertyName": "type"
                                                               }
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 200
+                                                            "type": "array"
                                                           }
                                                         },
                                                         "type": "object",
@@ -7082,8 +6972,7 @@
                                                                 "path"
                                                               ]
                                                             },
-                                                            "type": "array",
-                                                            "maxItems": 200
+                                                            "type": "array"
                                                           }
                                                         },
                                                         "type": "object",
@@ -7129,8 +7018,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -7220,8 +7108,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -7244,8 +7131,7 @@
                                                 ]
                                               },
                                               "name": {
-                                                "type": "string",
-                                                "minLength": 1
+                                                "type": "string"
                                               },
                                               "description": {
                                                 "type": "string"
@@ -7256,10 +7142,7 @@
                                                     {
                                                       "properties": {
                                                         "name": {
-                                                          "type": "string",
-                                                          "maxLength": 128,
-                                                          "minLength": 1,
-                                                          "pattern": "^[a-zA-Z0-9_-]+$"
+                                                          "type": "string"
                                                         },
                                                         "description": {
                                                           "anyOf": [
@@ -7326,8 +7209,7 @@
                                                                   "programmatic"
                                                                 ]
                                                               },
-                                                              "type": "array",
-                                                              "minItems": 1
+                                                              "type": "array"
                                                             },
                                                             {
                                                               "type": "null"
@@ -7418,8 +7300,7 @@
                                                                   "programmatic"
                                                                 ]
                                                               },
-                                                              "type": "array",
-                                                              "minItems": 1
+                                                              "type": "array"
                                                             },
                                                             {
                                                               "type": "null"
@@ -7438,8 +7319,7 @@
                                                     "propertyName": "type"
                                                   }
                                                 },
-                                                "type": "array",
-                                                "minItems": 1
+                                                "type": "array"
                                               }
                                             },
                                             "type": "object",
@@ -7604,8 +7484,7 @@
                                                         "programmatic"
                                                       ]
                                                     },
-                                                    "type": "array",
-                                                    "minItems": 1
+                                                    "type": "array"
                                                   },
                                                   {
                                                     "type": "null"
@@ -7776,8 +7655,7 @@
                                       ]
                                     },
                                     "encrypted_content": {
-                                      "type": "string",
-                                      "maxLength": 104857600
+                                      "type": "string"
                                     }
                                   },
                                   "type": "object",
@@ -8160,9 +8038,7 @@
                                       ]
                                     },
                                     "call_id": {
-                                      "type": "string",
-                                      "maxLength": 64,
-                                      "minLength": 1
+                                      "type": "string"
                                     },
                                     "caller": {
                                       "anyOf": [
@@ -8191,9 +8067,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -8299,8 +8173,7 @@
                                                       "path"
                                                     ]
                                                   },
-                                                  "type": "array",
-                                                  "maxItems": 200
+                                                  "type": "array"
                                                 }
                                               },
                                               "type": "object",
@@ -8357,9 +8230,7 @@
                                       ]
                                     },
                                     "call_id": {
-                                      "type": "string",
-                                      "maxLength": 64,
-                                      "minLength": 1
+                                      "type": "string"
                                     },
                                     "caller": {
                                       "anyOf": [
@@ -8388,9 +8259,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -8419,12 +8288,10 @@
                                       "items": {
                                         "properties": {
                                           "stdout": {
-                                            "type": "string",
-                                            "maxLength": 10485760
+                                            "type": "string"
                                           },
                                           "stderr": {
-                                            "type": "string",
-                                            "maxLength": 10485760
+                                            "type": "string"
                                           },
                                           "outcome": {
                                             "oneOf": [
@@ -8527,9 +8394,7 @@
                                       ]
                                     },
                                     "call_id": {
-                                      "type": "string",
-                                      "maxLength": 64,
-                                      "minLength": 1
+                                      "type": "string"
                                     },
                                     "caller": {
                                       "anyOf": [
@@ -8558,9 +8423,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -8597,12 +8460,10 @@
                                               ]
                                             },
                                             "path": {
-                                              "type": "string",
-                                              "minLength": 1
+                                              "type": "string"
                                             },
                                             "diff": {
-                                              "type": "string",
-                                              "maxLength": 10485760
+                                              "type": "string"
                                             }
                                           },
                                           "type": "object",
@@ -8621,8 +8482,7 @@
                                               ]
                                             },
                                             "path": {
-                                              "type": "string",
-                                              "minLength": 1
+                                              "type": "string"
                                             }
                                           },
                                           "type": "object",
@@ -8640,12 +8500,10 @@
                                               ]
                                             },
                                             "path": {
-                                              "type": "string",
-                                              "minLength": 1
+                                              "type": "string"
                                             },
                                             "diff": {
-                                              "type": "string",
-                                              "maxLength": 10485760
+                                              "type": "string"
                                             }
                                           },
                                           "type": "object",
@@ -8688,9 +8546,7 @@
                                       ]
                                     },
                                     "call_id": {
-                                      "type": "string",
-                                      "maxLength": 64,
-                                      "minLength": 1
+                                      "type": "string"
                                     },
                                     "caller": {
                                       "anyOf": [
@@ -8719,9 +8575,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -8750,8 +8604,7 @@
                                     "output": {
                                       "anyOf": [
                                         {
-                                          "type": "string",
-                                          "maxLength": 10485760
+                                          "type": "string"
                                         },
                                         {
                                           "type": "null"
@@ -9086,9 +8939,7 @@
                                                   ]
                                                 },
                                                 "caller_id": {
-                                                  "type": "string",
-                                                  "maxLength": 64,
-                                                  "minLength": 1
+                                                  "type": "string"
                                                 }
                                               },
                                               "type": "object",
@@ -9418,17 +9269,13 @@
                                   ]
                                 },
                                 "call_id": {
-                                  "type": "string",
-                                  "maxLength": 64,
-                                  "minLength": 1
+                                  "type": "string"
                                 },
                                 "code": {
-                                  "type": "string",
-                                  "maxLength": 10485760
+                                  "type": "string"
                                 },
                                 "fingerprint": {
-                                  "type": "string",
-                                  "maxLength": 10485760
+                                  "type": "string"
                                 }
                               },
                               "type": "object",
@@ -9452,13 +9299,10 @@
                                   ]
                                 },
                                 "call_id": {
-                                  "type": "string",
-                                  "maxLength": 64,
-                                  "minLength": 1
+                                  "type": "string"
                                 },
                                 "result": {
-                                  "type": "string",
-                                  "maxLength": 10485760
+                                  "type": "string"
                                 },
                                 "status": {
                                   "type": "string",
@@ -9667,7 +9511,6 @@
                     "anyOf": [
                       {
                         "type": "array",
-                        "minItems": 1,
                         "items": {
                           "properties": {
                             "type": {
