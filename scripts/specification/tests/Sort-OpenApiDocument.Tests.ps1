@@ -115,10 +115,10 @@ try {
         Assert-Sequence @(
             "array",
             "boolean",
+            "ref",
             "object first",
             "object second",
             "string",
-            "ref",
             "type array",
             "composition"
         ) @(
@@ -141,6 +141,88 @@ try {
             }
         ) "Ordinary oneOf branch order was incorrect."
         Assert-Sequence @("null", "string") @($schema.oneOf[7].oneOf.type) "Nested oneOf was not sorted recursively."
+    }
+
+    Invoke-Test "ordinary oneOf preserves type order when an inline branch becomes a component reference" {
+        $inlineSource = New-TestOpenApiDocument -Schema ([ordered]@{
+            oneOf = @(
+                [ordered]@{ type = "string" },
+                [ordered]@{ type = "object" }
+            )
+        })
+        $referencedSource = New-TestOpenApiDocument -Schema ([ordered]@{
+            oneOf = @(
+                [ordered]@{ type = "string" },
+                [ordered]@{ '$ref' = "#/components/schemas/ObjectBranch" }
+            )
+        })
+        $referencedSource["components"] = [ordered]@{
+            schemas = [ordered]@{
+                ObjectBranch = [ordered]@{ type = "object" }
+            }
+        }
+
+        $inlineSchema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $inlineSource)
+        $referencedSchema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $referencedSource)
+        Assert-Sequence @("object", "string") @($inlineSchema.oneOf.type) "Inline branch type order was incorrect."
+        Assert-Equal "#/components/schemas/ObjectBranch" $referencedSchema.oneOf[0].'$ref' "Referenced object branch did not retain the inline object position."
+        Assert-Equal "string" $referencedSchema.oneOf[1].type "Referenced branch sorting did not preserve type order."
+    }
+
+    Invoke-Test "ordinary oneOf keeps typeless references in a stable tail" {
+        $source = New-TestOpenApiDocument -Schema ([ordered]@{
+            oneOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/First" },
+                [ordered]@{ type = "string" },
+                [ordered]@{ '$ref' = "#/components/schemas/Second" }
+            )
+        })
+        $source["components"] = [ordered]@{
+            schemas = [ordered]@{
+                First = [ordered]@{ oneOf = @([ordered]@{ type = "number" }) }
+                Second = [ordered]@{ properties = [ordered]@{} }
+            }
+        }
+
+        $schema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $source)
+        Assert-Equal "string" $schema.oneOf[0].type "Classifiable branch did not precede the typeless reference tail."
+        Assert-Sequence @(
+            "#/components/schemas/First",
+            "#/components/schemas/Second"
+        ) @($schema.oneOf[1..2].'$ref') "Typeless reference tail did not retain encounter order."
+    }
+
+    Invoke-Test "ordinary oneOf does not reclassify inherited discriminator references" {
+        $source = New-TestOpenApiDocument -Schema ([ordered]@{
+            oneOf = @(
+                [ordered]@{ type = "string" },
+                [ordered]@{ '$ref' = "#/components/schemas/Base" }
+            )
+        })
+        $source["components"] = [ordered]@{
+            schemas = [ordered]@{
+                Base = [ordered]@{
+                    type = "object"
+                    properties = [ordered]@{ kind = [ordered]@{ type = "string" } }
+                    discriminator = [ordered]@{
+                        propertyName = "kind"
+                        mapping = [ordered]@{ child = "#/components/schemas/Child" }
+                    }
+                }
+                Child = [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("child") }
+                    }
+                    allOf = @([ordered]@{ '$ref' = "#/components/schemas/Base" })
+                }
+            }
+        }
+
+        $schema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $source)
+        Assert-Equal "string" $schema.oneOf[0].type "String branch moved behind an inherited discriminator reference."
+        Assert-Equal "#/components/schemas/Base" $schema.oneOf[1].'$ref' "Inherited discriminator reference left the stable tail."
     }
 
     Invoke-Test "discriminated oneOf uses the smallest accepted ordinal value" {

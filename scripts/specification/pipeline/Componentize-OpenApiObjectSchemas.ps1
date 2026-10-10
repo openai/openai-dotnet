@@ -24,9 +24,9 @@
     After component names stabilize, every discriminator receives a canonical
     exhaustive mapping from accepted const/enum payload values to its branch
     component pointers. Structurally identical occurrences intentionally remain
-    separate components. Run Finalize-ResponsesOpenApi.ps1 afterward to validate
-    optional policy, regenerate the default component map, deduplicate, and
-    publish the final Responses artifact.
+    separate components. In the Responses workflow, run
+    Inherit-ResponsesOpenApi.ps1 with this output as its input before
+    finalization.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to componentize. When omitted, reads
@@ -39,6 +39,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Componentize-OpenApiObjectSchemas.ps1
+    ./scripts/specification/Inherit-ResponsesOpenApi.ps1 `
+        -InputPath ./specification/openapi/responses.componentized.openapi.json
     ./scripts/specification/Finalize-ResponsesOpenApi.ps1
 
 .EXAMPLE

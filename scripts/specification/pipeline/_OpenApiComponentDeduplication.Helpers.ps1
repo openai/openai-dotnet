@@ -78,8 +78,9 @@ function Get-OpenApiSchemaComponentPointerInfo {
 
 # Walks arbitrary schema JSON and yields every supported component-pointer use.
 # Ordinary refs, dynamic refs, recursive refs, and discriminator mapping values
-# all affect whole-tree identity. The small context state machine is important:
-# arbitrary strings elsewhere under `discriminator` are metadata, not pointers.
+# are all discovered for validation. Mapping values do not form structural
+# dependency edges; their targets are fingerprinted relative to the mapping
+# owner so a child may structurally inherit that owner without creating a cycle.
 function Get-OpenApiComponentPointerOccurrences {
     param(
         [Parameter(Mandatory = $true)]
@@ -254,6 +255,12 @@ function Get-OpenApiComponentTreeCanonicalValueText {
         [Parameter(Mandatory = $true)]
         [object]$State,
 
+        [Parameter(Mandatory = $true)]
+        [string]$ComponentName,
+
+        [Parameter()]
+        [string]$RelativeRootComponentName,
+
         [Parameter()]
         [ValidateSet("Default", "Discriminator", "Mapping")]
         [string]$Context = "Default",
@@ -278,6 +285,8 @@ function Get-OpenApiComponentTreeCanonicalValueText {
             $items.Add((Get-OpenApiComponentTreeCanonicalValueText `
                 -Value $item `
                 -State $State `
+                -ComponentName $ComponentName `
+                -RelativeRootComponentName $RelativeRootComponentName `
                 -Context Default `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth))
@@ -305,13 +314,48 @@ function Get-OpenApiComponentTreeCanonicalValueText {
 
         if ($null -ne $kind) {
             $pointerInfo = Get-OpenApiSchemaComponentPointerInfo -Pointer $propertyValue
-            if ($null -ne $pointerInfo -and $State.Schemas.ContainsKey($pointerInfo.ComponentName)) {
-            # Recursive identity lookup is safe because cycle-dependent
-            # components were excluded before canonicalization starts.
-                $identity = Get-OpenApiComponentTreeIdentity `
-                    -ComponentName $pointerInfo.ComponentName `
-                    -State $State
-                $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
+            if ([string]::Equals($kind, "DiscriminatorMapping", [System.StringComparison]::Ordinal)) {
+                if ($null -ne $pointerInfo -and $State.Schemas.ContainsKey($pointerInfo.ComponentName)) {
+                    $identity = Get-OpenApiRelativeComponentTreeIdentity `
+                        -ComponentName $pointerInfo.ComponentName `
+                        -RelativeRootComponentName $ComponentName `
+                        -State $State
+                    $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
+                }
+                else {
+                    $pointerText = if ($propertyValue.StartsWith("#", [System.StringComparison]::Ordinal)) {
+                        Get-CanonicalJsonPointer -Pointer $propertyValue
+                    }
+                    else {
+                        $propertyValue
+                    }
+                    $propertyText = "pointer:${kind}:$pointerText"
+                }
+            }
+            elseif ($null -ne $pointerInfo -and $State.Schemas.ContainsKey($pointerInfo.ComponentName)) {
+                if (-not [string]::IsNullOrWhiteSpace($RelativeRootComponentName) -and
+                    [string]::Equals($pointerInfo.ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal)) {
+                    $propertyText = "relative-root-pointer:${kind}:$($pointerInfo.Suffix)"
+                }
+                elseif (-not [string]::IsNullOrWhiteSpace($RelativeRootComponentName) -and
+                    (Test-OpenApiComponentCanReach `
+                        -Start $pointerInfo.ComponentName `
+                        -Target $RelativeRootComponentName `
+                        -Dependencies $State.Dependencies)) {
+                    $identity = Get-OpenApiRelativeComponentTreeIdentity `
+                        -ComponentName $pointerInfo.ComponentName `
+                        -RelativeRootComponentName $RelativeRootComponentName `
+                        -State $State
+                    $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
+                }
+                else {
+                    # Recursive identity lookup is safe because cycle-dependent
+                    # components were excluded before canonicalization starts.
+                    $identity = Get-OpenApiComponentTreeIdentity `
+                        -ComponentName $pointerInfo.ComponentName `
+                        -State $State
+                    $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
+                }
             }
             else {
                 # Non-component and external refs remain literal identity data.
@@ -338,6 +382,8 @@ function Get-OpenApiComponentTreeCanonicalValueText {
             $propertyText = Get-OpenApiComponentTreeCanonicalValueText `
                 -Value $propertyValue `
                 -State $State `
+                -ComponentName $ComponentName `
+                -RelativeRootComponentName $RelativeRootComponentName `
                 -Context $childContext `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
@@ -345,6 +391,58 @@ function Get-OpenApiComponentTreeCanonicalValueText {
         $parts.Add("$($propertyName.Length):$propertyName=$propertyText")
     }
     return "object:$($properties.Count):{" + ($parts -join ",") + "}"
+}
+
+function Get-OpenApiRelativeComponentTreeIdentity {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ComponentName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RelativeRootComponentName,
+
+        [Parameter(Mandatory = $true)]
+        [object]$State
+    )
+
+    if ([string]::Equals($ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal)) {
+        $canonicalText = "relative-root"
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonicalText)
+        return [PSCustomObject]@{
+            ComponentName = $ComponentName
+            RelativeRootComponentName = $RelativeRootComponentName
+            Fingerprint = "sha256:$([System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant())"
+            CanonicalText = $canonicalText
+        }
+    }
+
+    $key = "$($RelativeRootComponentName.Length):$RelativeRootComponentName$($ComponentName.Length):$ComponentName"
+    if ($State.RelativeIdentities.ContainsKey($key)) {
+        return $State.RelativeIdentities[$key]
+    }
+    if (-not $State.RelativeVisiting.Add($key)) {
+        throw "Relative component graph cycle was not anchored while fingerprinting '$ComponentName' against '$RelativeRootComponentName'."
+    }
+
+    try {
+        $canonicalText = Get-OpenApiComponentTreeCanonicalValueText `
+            -Value $State.Schemas[$ComponentName] `
+            -State $State `
+            -ComponentName $ComponentName `
+            -RelativeRootComponentName $RelativeRootComponentName
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonicalText)
+        $identity = [PSCustomObject]@{
+            ComponentName = $ComponentName
+            RelativeRootComponentName = $RelativeRootComponentName
+            Fingerprint = "sha256:$([System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant())"
+            CanonicalText = $canonicalText
+        }
+        $State.RelativeIdentities[$key] = $identity
+        return $identity
+    }
+    finally {
+        $null = $State.RelativeVisiting.Remove($key)
+    }
 }
 
 # Memoizes each acyclic component identity so shared descendants are hashed once.
@@ -372,7 +470,8 @@ function Get-OpenApiComponentTreeIdentity {
     try {
         $canonicalText = Get-OpenApiComponentTreeCanonicalValueText `
             -Value $State.Schemas[$ComponentName] `
-            -State $State
+            -State $State `
+            -ComponentName $ComponentName
         $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonicalText)
         $fingerprint = "sha256:$([System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant())"
         $identity = [PSCustomObject]@{
@@ -420,7 +519,8 @@ function Get-OpenApiComponentDeduplicationAnalysis {
             if (-not $schemas.ContainsKey($occurrence.ComponentName)) {
                 throw "$($occurrence.Kind) at '$($occurrence.Breadcrumb)' targets missing schema component '$($occurrence.ComponentName)'."
             }
-            if ($seen.Add($occurrence.ComponentName)) {
+            if (-not [string]::Equals($occurrence.Kind, "DiscriminatorMapping", [System.StringComparison]::Ordinal) -and
+                $seen.Add($occurrence.ComponentName)) {
                 $dependencyList.Add($occurrence.ComponentName)
             }
         }
@@ -475,6 +575,8 @@ function Get-OpenApiComponentDeduplicationAnalysis {
         CycleDependent = $cycleDependent
         Identities = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
         Visiting = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+        RelativeIdentities = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+        RelativeVisiting = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
     }
 
     # Use fingerprint plus canonical text as the key. The hash keeps persisted

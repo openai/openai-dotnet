@@ -36,8 +36,11 @@ $testNames = @(
     "Wrap-OpenApiSingletonTypeEnums.Tests.ps1"
     "Sort-OpenApiDocument.Tests.ps1"
     "Generate-ResponsesOpenApi.Tests.ps1"
+    "Inherit-ResponsesOpenApi.Tests.ps1"
     "Finalize-ResponsesOpenApi.Tests.ps1"
+    "ResponsesOpenApiPipeline.Tests.ps1"
     "Componentize-OpenApiObjectSchemas.Tests.ps1"
+    "Refactor-OpenApiDiscriminatedInheritance.Tests.ps1"
     "Generate-OpenApiComponentDefaultMap.Tests.ps1"
     "Deduplicate-OpenApiComponents.Tests.ps1"
 )

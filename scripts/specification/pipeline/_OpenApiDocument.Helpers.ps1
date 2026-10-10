@@ -999,15 +999,21 @@ function Get-OpenApiDiscriminatorMappingPlan {
             }
         }
     )
-    if ($compositionNames.Count -ne 1) {
-        throw "Discriminator at '$Breadcrumb/discriminator' must have exactly one direct oneOf, anyOf, or allOf sibling."
+    if ($compositionNames.Count -gt 1) {
+        throw "Discriminator at '$Breadcrumb/discriminator' may have at most one direct oneOf, anyOf, or allOf sibling."
     }
-    $compositionName = $compositionNames[0]
+    $compositionName = if ($compositionNames.Count -eq 1) {
+        $compositionNames[0]
+    }
+    else {
+        "mapping"
+    }
     $mapping = Get-JsonPropertyValue -Object $discriminator -Name "mapping"
 
-    if ([string]::Equals($compositionName, "allOf", [System.StringComparison]::Ordinal)) {
+    if ([string]::Equals($compositionName, "allOf", [System.StringComparison]::Ordinal) -or
+        [string]::Equals($compositionName, "mapping", [System.StringComparison]::Ordinal)) {
         if (-not (Test-JsonObjectValue -Value $mapping) -or @(Get-JsonProperties -Value $mapping).Count -eq 0) {
-            throw "allOf discriminator at '$Breadcrumb/discriminator' requires a nonempty explicit mapping."
+            throw "$compositionName discriminator at '$Breadcrumb/discriminator' requires a nonempty explicit mapping."
         }
         $canonicalMapping = [ordered]@{}
         $valuesByTarget = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
@@ -1035,7 +1041,7 @@ function Get-OpenApiDiscriminatorMappingPlan {
             foreach ($value in [string[]]$valuesByTarget[$targetPointer]) {
                 if (-not $canonicalMapping.Contains($value) -or
                     -not [string]::Equals($canonicalMapping[$value], $targetPointer, [System.StringComparison]::Ordinal)) {
-                    throw "allOf discriminator mapping at '$Breadcrumb/discriminator/mapping' does not map accepted value '$value' to '$targetPointer'."
+                    throw "$compositionName discriminator mapping at '$Breadcrumb/discriminator/mapping' does not map accepted value '$value' to '$targetPointer'."
                 }
             }
         }
@@ -3012,6 +3018,7 @@ function Write-OpenApiJsonFile {
 
     try {
         $json = ConvertTo-Json -InputObject $Document -Depth 100
+        $json = $json.Replace("`r`n", "`n").Replace("`r", "`n")
         $encoding = [System.Text.UTF8Encoding]::new($false)
         [System.IO.File]::WriteAllText($temporaryPath, "$json`n", $encoding)
         [System.IO.File]::Move($temporaryPath, $fullPath, $true)

@@ -5,14 +5,25 @@ Responses OpenAPI finalization uses two component maps:
 - `responses.component-default-map.json` is generated from scratch on every run.
 - `responses.component-policy-map.json` is optional, maintained manually, and never modified by tooling.
 
-Run the upstream pipeline and finalization separately:
+Run the three top-level phases in order:
 
 ```powershell
 ./scripts/specification/Generate-ResponsesOpenApi.ps1
+./scripts/specification/Inherit-ResponsesOpenApi.ps1
 ./scripts/specification/Finalize-ResponsesOpenApi.ps1
 ```
 
-Finalization validates policy, replaces the default map, applies both maps, and publishes `responses.openapi.json`.
+Each successful phase atomically publishes its result to
+`specification/openapi/responses.openapi.json`. Generation publishes the
+componentized document. Inheritance reads that alias by default, retains the
+discriminator-inherited and inherited-sorted artifacts, and republishes the
+inherited-sorted document. Finalization also reads the alias by default,
+validates policy, replaces the default map, applies both maps, retains the
+deduplicated document, and republishes it as the final alias.
+
+`Inherit-ResponsesOpenApi.ps1` and `Finalize-ResponsesOpenApi.ps1` accept
+`-InputPath` when a different input is needed. Their retained outputs and the
+published alias are always written beneath `-OutputDirectory`.
 
 ## Default map
 

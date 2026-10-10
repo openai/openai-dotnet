@@ -27,6 +27,53 @@ function New-AcyclicDeduplicationTestDocument {
     return $document
 }
 
+function New-EquivalentInheritanceFamiliesTestDocument {
+    $document = Read-TestJsonFixture -RelativePath "_Shared/minimal.openapi.json"
+    $document.paths["/test"].post.responses["200"].content["application/json"].schema = [ordered]@{
+        oneOf = @(
+            [ordered]@{ '$ref' = "#/components/schemas/Pet" },
+            [ordered]@{ '$ref' = "#/components/schemas/OtherPet" }
+        )
+    }
+    $document["components"] = [ordered]@{
+        schemas = [ordered]@{
+            Pet = [ordered]@{
+                type = "object"
+                properties = [ordered]@{ kind = [ordered]@{ type = "string" } }
+                discriminator = [ordered]@{
+                    propertyName = "kind"
+                    mapping = [ordered]@{ cat = "#/components/schemas/Cat" }
+                }
+            }
+            Cat = [ordered]@{
+                type = "object"
+                required = @("kind")
+                properties = [ordered]@{
+                    kind = [ordered]@{ type = "string"; enum = @("cat") }
+                }
+                allOf = @([ordered]@{ '$ref' = "#/components/schemas/Pet" })
+            }
+            OtherPet = [ordered]@{
+                type = "object"
+                properties = [ordered]@{ kind = [ordered]@{ type = "string" } }
+                discriminator = [ordered]@{
+                    propertyName = "kind"
+                    mapping = [ordered]@{ cat = "#/components/schemas/OtherCat" }
+                }
+            }
+            OtherCat = [ordered]@{
+                type = "object"
+                required = @("kind")
+                properties = [ordered]@{
+                    kind = [ordered]@{ type = "string"; enum = @("cat") }
+                }
+                allOf = @([ordered]@{ '$ref' = "#/components/schemas/OtherPet" })
+            }
+        }
+    }
+    return $document
+}
+
 function Get-IdentityGroupForMember {
     param([object]$Plan, [string]$Member)
 
@@ -62,6 +109,33 @@ try {
         Assert-Equal "#/components/schemas/LeafA" $properties.dynamicAlias.'$dynamicRef' "`$dynamicRef was not relocated."
         Assert-Equal "#/components/schemas/LeafA" $properties.recursiveAlias.'$recursiveRef' "`$recursiveRef was not relocated."
         Assert-Equal "#/components/schemas/ExactA" $properties.exact.'$ref' "Exact duplicate reference was not relocated."
+    }
+
+    Invoke-Test "equivalent inheritance families collapse bases and children together" {
+        $document = New-EquivalentInheritanceFamiliesTestDocument
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        Assert-Equal 2 $plan.DefaultMap.groups.Count "Equivalent inheritance family group count was incorrect."
+        Assert-Sequence @("Pet", "Cat") @($plan.DefaultMap.groups.id) "Inheritance family representatives were incorrect."
+        Assert-Sequence @(
+            @("Pet", "OtherPet"),
+            @("Cat", "OtherCat")
+        ) @($plan.DefaultMap.groups | ForEach-Object { ,@($_.members) }) "Inheritance family groups were incorrect."
+
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument `
+            -Document $document `
+            -DefaultMap $plan.DefaultMap
+        Assert-Equal 2 $result.ComponentCount "Deduplicated inheritance family component count was incorrect."
+        Assert-Equal 2 $result.RemovedComponentCount "Deduplicated inheritance family removal count was incorrect."
+        Assert-Sequence @("Pet", "Cat") @(
+            (Get-JsonProperties -Value $result.Document.components.schemas).Name
+        ) "Deduplicated inheritance family names were incorrect."
+        Assert-Equal "#/components/schemas/Cat" $result.Document.components.schemas.Pet.discriminator.mapping.cat "Base mapping did not relocate to the retained child."
+        Assert-Equal "#/components/schemas/Pet" $result.Document.components.schemas.Cat.allOf[0].'$ref' "Child inheritance did not relocate to the retained base."
+        Assert-Sequence @(
+            "#/components/schemas/Pet",
+            "#/components/schemas/Pet"
+        ) @($result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.oneOf.'$ref') "External family references did not relocate."
+        $null = Assert-OpenApiDiscriminatorMappings -Document $result.Document
     }
 
     Invoke-Test "override and nested partial members roll up to the parent representative" {

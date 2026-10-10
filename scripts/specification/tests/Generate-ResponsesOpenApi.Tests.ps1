@@ -154,6 +154,7 @@ try {
     Invoke-Test "dot-sourcing defines orchestration functions without running the pipeline" {
         Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiGeneration -ErrorAction SilentlyContinue)) "Generation function was not defined."
         Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
+        Assert-True ($null -ne (Get-Command Publish-ResponsesOpenApiArtifact -ErrorAction SilentlyContinue)) "Shared publisher was not defined."
         Assert-True (-not (Get-Command Invoke-ResponsesOpenApiGeneration).Parameters.ContainsKey("ResetDeduplicationMap")) "Generation still exposes map reset policy."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly generated output."
     }
@@ -208,6 +209,8 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json",
             "responses.componentized.openapi.json",
+            "responses.componentized.discriminator-inherited.openapi.json",
+            "responses.componentized.discriminator-inherited.sorted.openapi.json",
             "responses.component-default-map.json",
             "responses.component-policy-map.json",
             "responses.componentized.deduplicated.openapi.json",
@@ -226,6 +229,8 @@ try {
             [System.IO.Path]::GetFileName($paths.SingletonTypeWrapped),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Componentized),
+            [System.IO.Path]::GetFileName($paths.DiscriminatorInherited),
+            [System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted),
             [System.IO.Path]::GetFileName($paths.DefaultComponentMap),
             [System.IO.Path]::GetFileName($paths.PolicyComponentMap),
             [System.IO.Path]::GetFileName($paths.Deduplicated),
@@ -233,6 +238,8 @@ try {
         ) "Artifact names were incorrect."
         foreach ($path in @(
             $paths.Componentized,
+            $paths.DiscriminatorInherited,
+            $paths.DiscriminatorInheritedSorted,
             $paths.DefaultComponentMap,
             $paths.PolicyComponentMap,
             $paths.Deduplicated
@@ -246,7 +253,7 @@ try {
 
     # One compact end-to-end test owns stage ordering, intermediate persistence,
     # semantic handoffs, source immutability, and the componentization boundary.
-    Invoke-Test "pipeline persists every stage through componentization" {
+    Invoke-Test "pipeline persists every stage through componentization and publishes the alias" {
         $sourcePath = Join-Path $temporaryDirectory "openapi.json"
         $outputDirectory = Join-Path $temporaryDirectory "generated"
         Write-TestSpecification -Path $sourcePath
@@ -259,9 +266,10 @@ try {
         [System.IO.File]::WriteAllText($obsoleteDiscriminatedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         [System.IO.File]::WriteAllText($obsoletePreWrapSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         $expectedPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
-        foreach ($downstreamPath in @($expectedPaths.DefaultComponentMap, $expectedPaths.PolicyComponentMap, $expectedPaths.Deduplicated, $expectedPaths.Final)) {
+        foreach ($downstreamPath in @($expectedPaths.DiscriminatorInherited, $expectedPaths.DiscriminatorInheritedSorted, $expectedPaths.DefaultComponentMap, $expectedPaths.PolicyComponentMap, $expectedPaths.Deduplicated)) {
             [System.IO.File]::WriteAllText($downstreamPath, "downstream-sentinel", [System.Text.UTF8Encoding]::new($false))
         }
+        [System.IO.File]::WriteAllText($expectedPaths.Final, "stale-alias", [System.Text.UTF8Encoding]::new($false))
         $pwshPath = (Get-Process -Id $PID).Path
         & $pwshPath `
             -NoLogo `
@@ -288,14 +296,16 @@ try {
             $paths.OneOfFlattened,
             $paths.SingletonTypeWrapped,
             $paths.Sorted,
-            $paths.Componentized
+            $paths.Componentized,
+            $paths.Final
         )) {
             Assert-True ([System.IO.File]::Exists($artifactPath)) "Artifact was not created: $artifactPath"
         }
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($sourceBefore, [System.IO.File]::ReadAllBytes($sourcePath))) "Pipeline modified its source specification."
-        foreach ($downstreamPath in @($paths.DefaultComponentMap, $paths.PolicyComponentMap, $paths.Deduplicated, $paths.Final)) {
+        foreach ($downstreamPath in @($paths.DiscriminatorInherited, $paths.DiscriminatorInheritedSorted, $paths.DefaultComponentMap, $paths.PolicyComponentMap, $paths.Deduplicated)) {
             Assert-Equal "downstream-sentinel" ([System.IO.File]::ReadAllText($downstreamPath)) "Generation modified downstream artifact '$downstreamPath'."
         }
+        Assert-BytesEqual ([System.IO.File]::ReadAllBytes($paths.Componentized)) ([System.IO.File]::ReadAllBytes($paths.Final)) "Published alias differs from componentized output."
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteDiscriminatedPath)) "Pipeline retained an obsolete pre-split artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoletePreWrapSortedPath)) "Pipeline retained an obsolete pre-wrapper sorted artifact."
@@ -437,6 +447,8 @@ try {
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfAlpha") "Componentization omitted the alpha split variant."
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfBeta") "Componentization omitted the beta split variant."
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfGamma") "Componentization omitted the existing singleton variant."
+        $componentizedSplitWrapper = Get-JsonPropertyValue -Object $componentized.components.schemas -Name $splitWrapperName
+        Assert-True (Test-JsonProperty -Object $componentizedSplitWrapper -Name "oneOf") "Componentized discriminator wrapper did not retain oneOf for the inheritance phase."
         Assert-OpenApiReferencesResolve -Document $componentized
         Assert-AdditionalOpenApiReferencesResolve -Document $componentized
         $null = Assert-OpenApiDiscriminatorMappings -Document $componentized
@@ -449,13 +461,16 @@ try {
         $guardPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $guardOutputDirectory
         $null = [System.IO.Directory]::CreateDirectory($guardOutputDirectory)
         [System.IO.File]::WriteAllText($guardPaths.DefaultComponentMap, "preserve", [System.Text.UTF8Encoding]::new($false))
+        [System.IO.File]::WriteAllText($guardPaths.Final, "published", [System.Text.UTF8Encoding]::new($false))
         [byte[]]$guardBytes = [System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)
+        [byte[]]$publishedBytes = [System.IO.File]::ReadAllBytes($guardPaths.Final)
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath (Join-Path $temporaryDirectory "missing.json") `
                 -OutputDirectory $guardOutputDirectory
         } "*cannot find path*"
         Assert-BytesEqual $guardBytes ([System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)) "Early failure changed the existing default map."
+        Assert-BytesEqual $publishedBytes ([System.IO.File]::ReadAllBytes($guardPaths.Final)) "Early failure changed the published alias."
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath $temporaryDirectory `

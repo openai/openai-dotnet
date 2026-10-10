@@ -10,8 +10,8 @@
     relocated. Neither map is modified by this command.
 
 .PARAMETER InputPath
-    The componentized OpenAPI document. Defaults to
-    specification/openapi/responses.componentized.openapi.json.
+    The inherited and sorted OpenAPI document. Defaults to
+    specification/openapi/responses.componentized.discriminator-inherited.sorted.openapi.json.
 
 .PARAMETER DefaultMapPath
     The generated default map. Defaults to
@@ -60,7 +60,7 @@ foreach ($path in @($helperPath, $deduplicationHelperPath)) {
 }
 
 $script:ComponentDeduplicatorRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultComponentDeduplicatorInputPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
+$script:DefaultComponentDeduplicatorInputPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.componentized.discriminator-inherited.sorted.openapi.json"
 $script:DefaultComponentDeduplicatorDefaultMapPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.component-default-map.json"
 $script:DefaultComponentDeduplicatorPolicyMapPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.component-policy-map.json"
 $script:DefaultComponentDeduplicatorOutputPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.componentized.deduplicated.openapi.json"

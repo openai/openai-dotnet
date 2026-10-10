@@ -9,8 +9,8 @@
     map is never read; successful generation atomically replaces it.
 
 .PARAMETER InputPath
-    The componentized OpenAPI JSON document. Defaults to
-    specification/openapi/responses.componentized.openapi.json.
+    The inherited and sorted OpenAPI JSON document. Defaults to
+    specification/openapi/responses.componentized.discriminator-inherited.sorted.openapi.json.
 
 .PARAMETER DefaultMapPath
     The generated JSON map. Defaults to
@@ -58,7 +58,7 @@ foreach ($path in @($helperPath, $componentMapHelperPath)) {
 }
 
 $script:ComponentMapRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultComponentMapInputPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
+$script:DefaultComponentMapInputPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.componentized.discriminator-inherited.sorted.openapi.json"
 $script:DefaultComponentDefaultMapPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.component-default-map.json"
 $script:DefaultComponentPolicyMapPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.component-policy-map.json"
 

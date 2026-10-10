@@ -54,6 +54,86 @@ try {
         }
     }
 
+    Invoke-Test "equivalent inheritance families share structural identities without cycles" {
+        $document = Read-TestJsonFixture -RelativePath "_Shared/minimal.openapi.json"
+        $document["components"] = [ordered]@{
+            schemas = [ordered]@{
+                Pet = [ordered]@{
+                    type = "object"
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string" }
+                    }
+                    discriminator = [ordered]@{
+                        propertyName = "kind"
+                        mapping = [ordered]@{ cat = "#/components/schemas/Cat" }
+                    }
+                }
+                Cat = [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("cat") }
+                    }
+                    allOf = @([ordered]@{ '$ref' = "#/components/schemas/Pet" })
+                }
+                OtherPet = [ordered]@{
+                    type = "object"
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string" }
+                    }
+                    discriminator = [ordered]@{
+                        propertyName = "kind"
+                        mapping = [ordered]@{ cat = "#/components/schemas/OtherCat" }
+                    }
+                }
+                OtherCat = [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("cat") }
+                    }
+                    allOf = @([ordered]@{ '$ref' = "#/components/schemas/OtherPet" })
+                }
+            }
+        }
+
+        $analysis = Get-OpenApiComponentDeduplicationAnalysis -Document $document
+        Assert-Equal 0 $analysis.CycleDependentComponents.Count "Inheritance metadata created a structural cycle."
+        Assert-True ($analysis.Dependencies["Cat"] -ccontains "Pet") "Child allOf did not create a structural dependency."
+        Assert-True (-not ($analysis.Dependencies["Pet"] -ccontains "Cat")) "Base mapping created a structural dependency."
+        Assert-True (
+            [string]::Equals(
+                $analysis.Identities["Pet"].Fingerprint,
+                $analysis.Identities["OtherPet"].Fingerprint,
+                [System.StringComparison]::Ordinal
+            )
+        ) "Equivalent inheritance bases did not share a fingerprint."
+        Assert-True (
+            [string]::Equals(
+                $analysis.Identities["Cat"].Fingerprint,
+                $analysis.Identities["OtherCat"].Fingerprint,
+                [System.StringComparison]::Ordinal
+            )
+        ) "Equivalent inherited children did not share a fingerprint."
+
+        $document.components.schemas.OtherCat.properties["name"] = [ordered]@{ type = "string" }
+        $differentAnalysis = Get-OpenApiComponentDeduplicationAnalysis -Document $document
+        Assert-True (
+            -not [string]::Equals(
+                $differentAnalysis.Identities["Pet"].Fingerprint,
+                $differentAnalysis.Identities["OtherPet"].Fingerprint,
+                [System.StringComparison]::Ordinal
+            )
+        ) "Bases with structurally different mapped children shared a fingerprint."
+        Assert-True (
+            -not [string]::Equals(
+                $differentAnalysis.Identities["Cat"].Fingerprint,
+                $differentAnalysis.Identities["OtherCat"].Fingerprint,
+                [System.StringComparison]::Ordinal
+            )
+        ) "Structurally different inherited children shared a fingerprint."
+    }
+
     Invoke-Test "file generation discards prior default edits and is deterministic" {
         $inputPath = Join-Path $temporaryDirectory "source.componentized.openapi.json"
         $defaultPath = Join-Path $temporaryDirectory "responses.component-default-map.json"

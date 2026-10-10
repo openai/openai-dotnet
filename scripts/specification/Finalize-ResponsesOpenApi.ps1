@@ -1,19 +1,22 @@
 <#
 .SYNOPSIS
-    Finalizes the componentized /responses OpenAPI document.
+    Finalizes the inherited /responses OpenAPI document.
 
 .DESCRIPTION
-    Starts from responses.componentized.openapi.json in the target output
-    directory, validates the optional manually maintained policy component map,
-    regenerates the complete default component map, applies the resolved maps,
-    and atomically publishes the result as responses.openapi.json. Run
-    Generate-ResponsesOpenApi.ps1 first whenever an upstream transformation or
-    the source OpenAPI specification changes.
+    Reads responses.openapi.json by default, validates the optional manually
+    maintained policy component map, regenerates the complete default component
+    map, applies the resolved maps, and atomically republishes the deduplicated
+    result as responses.openapi.json. Run Generate-ResponsesOpenApi.ps1 and
+    Inherit-ResponsesOpenApi.ps1 first when upstream inputs change.
+
+.PARAMETER InputPath
+    The inherited and sorted Responses OpenAPI input. Defaults to
+    responses.openapi.json in OutputDirectory.
 
 .PARAMETER OutputDirectory
-    Directory containing responses.componentized.openapi.json and receiving the
-    generated default map, deduplicated document, and final published artifact.
-    Defaults to specification/openapi.
+    Directory containing the default responses.openapi.json input and receiving
+    the generated default map, deduplicated document, and published alias.
+    Defaults to specification/openapi. An explicit InputPath may be elsewhere.
 
 .EXAMPLE
     ./scripts/specification/Finalize-ResponsesOpenApi.ps1
@@ -27,6 +30,9 @@
 [CmdletBinding()]
 param(
     [Parameter()]
+    [string]$InputPath,
+
+    [Parameter()]
     [string]$OutputDirectory
 )
 
@@ -39,43 +45,23 @@ $script:RepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot 
 $script:PipelineDirectory = Join-Path $PSScriptRoot "pipeline"
 $script:DefaultOutputDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
 
-function Copy-OpenApiFileAtomically {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$SourcePath,
-
-        [Parameter(Mandatory = $true)]
-        [string]$DestinationPath
-    )
-
-    $resolvedSourcePath = (Resolve-Path -LiteralPath $SourcePath -ErrorAction Stop).ProviderPath
-    if (-not [System.IO.File]::Exists($resolvedSourcePath)) {
-        throw "The OpenAPI source path is not a file: $resolvedSourcePath"
-    }
-
-    $fullDestinationPath = [System.IO.Path]::GetFullPath($DestinationPath)
-    $destinationDirectory = [System.IO.Path]::GetDirectoryName($fullDestinationPath)
-    $null = [System.IO.Directory]::CreateDirectory($destinationDirectory)
-    $temporaryPath = Join-Path $destinationDirectory ".$([System.IO.Path]::GetFileName($fullDestinationPath)).$([Guid]::NewGuid().ToString('N')).tmp"
-
-    try {
-        [System.IO.File]::Copy($resolvedSourcePath, $temporaryPath, $true)
-        [System.IO.File]::Move($temporaryPath, $fullDestinationPath, $true)
-    }
-    finally {
-        if ([System.IO.File]::Exists($temporaryPath)) {
-            [System.IO.File]::Delete($temporaryPath)
-        }
-    }
-
-    return $fullDestinationPath
-}
-
 function Invoke-ResponsesOpenApiFinalization {
     param(
+        [Parameter()]
+        [string]$InputPath,
+
         [Parameter(Mandatory = $true)]
         [string]$OutputDirectory
     )
+
+    $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
+    if ([string]::IsNullOrWhiteSpace($InputPath)) {
+        $InputPath = $paths.Final
+    }
+    $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
+    if (-not [System.IO.File]::Exists($resolvedInputPath)) {
+        throw "The inherited Responses OpenAPI input path is not a file: $resolvedInputPath"
+    }
 
     $stageScriptNames = @(
         "Generate-OpenApiComponentDefaultMap.ps1"
@@ -90,23 +76,16 @@ function Invoke-ResponsesOpenApiFinalization {
         $stageScriptPaths[$stageScriptName] = $stageScriptPath
     }
 
-    $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
-    if (-not (Test-Path -LiteralPath $paths.Componentized)) {
-        throw "The componentized Responses OpenAPI input was not found: $($paths.Componentized)"
-    }
-    if (-not (Test-Path -LiteralPath $paths.Componentized -PathType Leaf)) {
-        throw "The componentized Responses OpenAPI input path is not a file: $($paths.Componentized)"
-    }
     if (Test-Path -LiteralPath $paths.PolicyComponentMap -PathType Container) {
         throw "The component policy map path is not a file: $($paths.PolicyComponentMap)"
     }
 
     $null = & $stageScriptPaths["Generate-OpenApiComponentDefaultMap.ps1"] `
-        -InputPath $paths.Componentized `
+        -InputPath $resolvedInputPath `
         -DefaultMapPath $paths.DefaultComponentMap `
         -PolicyMapPath $paths.PolicyComponentMap
     $null = & $stageScriptPaths["Deduplicate-OpenApiComponents.ps1"] `
-        -InputPath $paths.Componentized `
+        -InputPath $resolvedInputPath `
         -DefaultMapPath $paths.DefaultComponentMap `
         -PolicyMapPath $paths.PolicyComponentMap `
         -OutputPath $paths.Deduplicated
@@ -117,18 +96,13 @@ function Invoke-ResponsesOpenApiFinalization {
         }
     }
 
-    $null = Copy-OpenApiFileAtomically `
+    $null = Publish-ResponsesOpenApiArtifact `
         -SourcePath $paths.Deduplicated `
         -DestinationPath $paths.Final
-    [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($paths.Deduplicated)
-    [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
-    if (-not [System.Linq.Enumerable]::SequenceEqual($deduplicatedBytes, $finalBytes)) {
-        throw "The final responses.openapi.json file differs from the retained deduplicated output."
-    }
 
     Write-Host ""
     Write-Host "Responses OpenAPI finalization complete."
-    Write-Host "Componentized input: $($paths.Componentized)"
+    Write-Host "Input: $resolvedInputPath"
     Write-Host "Policy component map: $(if ([System.IO.File]::Exists($paths.PolicyComponentMap)) { $paths.PolicyComponentMap } else { '<none>' })"
     Write-Host "Default component map: $($paths.DefaultComponentMap)"
     Write-Host "Deduplicated output: $($paths.Deduplicated)"
@@ -144,5 +118,6 @@ if ($MyInvocation.InvocationName -ne ".") {
         $OutputDirectory = $script:DefaultOutputDirectory
     }
     $null = Invoke-ResponsesOpenApiFinalization `
+        -InputPath $InputPath `
         -OutputDirectory $OutputDirectory
 }

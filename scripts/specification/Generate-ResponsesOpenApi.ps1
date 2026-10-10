@@ -9,10 +9,9 @@
     Flatten allOf, Simplify string variants, Simplify recursive schemas, Split
     multi-value object type enums, Add oneOf discriminators, Normalize oneOf
     metadata, Flatten nested oneOf wrappers, Wrap remaining singleton object type
-    enums, Sort, and Componentize object schemas. Each stage is retained under
-    specification/openapi. Run Finalize-ResponsesOpenApi.ps1 afterward to
-    reconcile the persisted deduplication map, apply component deduplication,
-    and publish responses.openapi.json.
+    enums, Sort, and Componentize schemas. Each stage is retained under
+    specification/openapi. The componentized result is published to
+    responses.openapi.json. Run Inherit-ResponsesOpenApi.ps1 afterward.
 
     The generated files are:
     - responses.extracted.openapi.json
@@ -28,6 +27,7 @@
     - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json
     - responses.componentized.openapi.json
+    - responses.openapi.json
 
 .PARAMETER SpecificationPath
     Source OpenAPI specification. Defaults to specification/openapi/openapi.json.
@@ -35,7 +35,7 @@
 .PARAMETER OutputDirectory
     Directory receiving every retained pipeline artifact. Defaults to
     specification/openapi. Pass the same directory to
-    Finalize-ResponsesOpenApi.ps1.
+    Inherit-ResponsesOpenApi.ps1 and Finalize-ResponsesOpenApi.ps1.
 
 .EXAMPLE
     ./scripts/specification/Generate-ResponsesOpenApi.ps1
@@ -187,11 +187,15 @@ function Invoke-ResponsesOpenApiGeneration {
     if (-not [System.IO.File]::Exists($paths.Componentized)) {
         throw "The responses OpenAPI generation pipeline did not produce '$($paths.Componentized)'."
     }
+    $null = Publish-ResponsesOpenApiArtifact `
+        -SourcePath $paths.Componentized `
+        -DestinationPath $paths.Final
 
     Write-Host ""
     Write-Host "Responses OpenAPI generation through componentization complete."
     Write-Host "Sorted inline output: $($paths.Sorted)"
     Write-Host "Componentized output: $($paths.Componentized)"
+    Write-Host "Published output: $($paths.Final)"
 
     return $paths
 }

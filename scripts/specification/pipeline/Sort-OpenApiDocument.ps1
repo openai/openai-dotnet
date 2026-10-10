@@ -9,10 +9,12 @@
     oneOf-flattened, and singleton-type-wrapped output from the OpenAPI scripts,
     including inferred oneOf discriminators. It orders schema keys, property
     maps, required arrays, enum arrays, and oneOf branches. Ordinary oneOf
-    branches with a direct scalar type sort by that type before an encounter-
-    ordered unclassifiable tail. Discriminated oneOf branches sort by their
-    ordinal-smallest accepted discriminator value. Other non-enum arrays retain
-    encounter order. Local JSON Pointers are relocated when branch indexes move.
+    branches with a direct scalar type, including pure local references to
+    non-discriminated schemas of such a type, sort by that type before an
+    encounter-ordered unclassifiable tail. Discriminated oneOf branches sort by
+    their ordinal-smallest accepted discriminator value. Other non-enum arrays
+    retain encounter order. Local JSON Pointers are relocated when branch
+    indexes move.
 
 .PARAMETER InputPath
     The extracted OpenAPI JSON document to sort.
@@ -177,6 +179,63 @@ function Get-OpenApiSortedDiscriminatorBranchValues {
     return ,(Sort-OrdinalStrings -Values $values)
 }
 
+function Get-OpenApiOrdinaryOneOfBranchType {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Branch,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Branch)) {
+        return $null
+    }
+
+    $branchType = Get-JsonPropertyValue -Object $Branch -Name "type"
+    if ($branchType -is [string]) {
+        return $branchType
+    }
+
+    $branchProperties = @(Get-JsonProperties -Value $Branch)
+    if ($branchProperties.Count -ne 1 -or
+        -not [string]::Equals($branchProperties[0].Name, '$ref', [System.StringComparison]::Ordinal)) {
+        return $null
+    }
+
+    $reference = $branchProperties[0].Value
+    if ($reference -isnot [string] -or
+        -not $reference.StartsWith("#/", [System.StringComparison]::Ordinal)) {
+        return $null
+    }
+
+    try {
+        $targetSchema = Resolve-LocalJsonPointer `
+            -Document $Document `
+            -Pointer $reference `
+            -Context "ordinary oneOf branch at $Breadcrumb"
+    }
+    catch {
+        throw "Cannot sort ordinary oneOf branch at '$Breadcrumb': $($_.Exception.Message)"
+    }
+
+    if (-not (Test-JsonObjectValue -Value $targetSchema)) {
+        return $null
+    }
+    if (Test-JsonProperty -Object $targetSchema -Name "discriminator") {
+        return $null
+    }
+    $targetType = Get-JsonPropertyValue -Object $targetSchema -Name "type"
+    if ($targetType -is [string]) {
+        return $targetType
+    }
+    return $null
+}
+
 function Compare-OpenApiOneOfSortEntries {
     param(
         [Parameter(Mandatory = $true)]
@@ -271,8 +330,11 @@ function ConvertTo-SortedOpenApiOneOfBranches {
             $isClassifiable = $true
             $sortKey = $acceptedValues[0]
         }
-        elseif (Test-JsonObjectValue -Value $Branches[$index]) {
-            $branchType = Get-JsonPropertyValue -Object $Branches[$index] -Name "type"
+        else {
+            $branchType = Get-OpenApiOrdinaryOneOfBranchType `
+                -Document $Document `
+                -Branch $Branches[$index] `
+                -Breadcrumb $branchBreadcrumb
             if ($branchType -is [string]) {
                 $isClassifiable = $true
                 $sortKey = $branchType
