@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteStringValue(ToolName);
             }
 
             Patch.WriteTo(writer);
@@ -106,7 +106,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string name = default;
+            string toolName = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -116,12 +116,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("name"u8))
                 {
-                    name = prop.Value.GetString();
+                    toolName = prop.Value.GetString();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseCustomCustomToolChoice(kind, patch, name);
+            return new ResponseCustomCustomToolChoice(kind, patch, toolName);
         }
     }
 }

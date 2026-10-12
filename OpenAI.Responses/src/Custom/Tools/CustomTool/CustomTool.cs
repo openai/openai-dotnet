@@ -6,6 +6,7 @@ namespace OpenAI.Responses;
 [CodeGenType("CustomTool")]
 [CodeGenVisibility(nameof(DeferLoading), CodeGenVisibility.Internal)] // feat: tool search
 [CodeGenVisibility(nameof(AllowedCallers), CodeGenVisibility.Internal)] // feat: programmatic tool calling
+
 public partial class CustomTool
 {
 }
