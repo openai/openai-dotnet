@@ -95,6 +95,12 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(ImageGenToolInputImageMask.image_url, string);
 @@clientName(ImageGenToolInputImageMask.image_url, "ImageUri");
 
+// ------------ Tool Choice Objects ------------
+@@clientName(ToolChoiceObjectCustom.name, "ToolName");
+@@clientName(ToolChoiceObjectMCP.name, "ToolName");
+@@clientName(ToolChoiceObjectCustom.name, "ToolName");
+
+
 // ------------ Streaming ------------
 
 @@usage(ResponseStreamEvent, Usage.json);

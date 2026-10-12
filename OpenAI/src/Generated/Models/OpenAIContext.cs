@@ -1065,6 +1065,9 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ResponseContentPart))]
     [ModelReaderWriterBuildable(typeof(ResponseConversationOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseConversationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomAllowedToolsToolChoice is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseCustomAllowedToolsToolChoice))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomAllowedToolsToolChoice is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomApplyPatchToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomApplyPatchToolChoice))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomApplyPatchToolChoice is experimental and may change in future versions.

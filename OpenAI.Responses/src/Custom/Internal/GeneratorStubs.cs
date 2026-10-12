@@ -49,6 +49,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
 [CodeGenType("ResponseTextFormatConfigurationType")] internal readonly partial struct InternalResponsesTextFormatType {}
 [CodeGenType("DotNetResponseDefaultToolChoice")] public readonly partial struct ResponseDefaultToolChoice {}
+[CodeGenType("ToolChoiceAllowedMode")] public readonly partial struct InternalToolChoiceAllowedMode {}
 [CodeGenType("ToolChoiceObject")] public partial class ResponseCustomToolChoice {}
 [CodeGenType("ToolChoiceObjectComputer")] public partial class ResponseCustomComputerToolChoice {}
 [CodeGenType("ToolChoiceObjectFileSearch")] public partial class ResponseCustomFileSearchToolChoice {}
@@ -81,6 +82,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ToolChoiceObjectProgrammaticToolCalling")] public partial class ResponseCustomProgrammaticToolCallingToolChoice {}
 [CodeGenType("ToolChoiceObjectApplyPatch")] public partial class ResponseCustomApplyPatchToolChoice {}
 [CodeGenType("ToolChoiceObjectShell")] public partial class ResponseCustomShellToolChoice {}
+[CodeGenType("ToolChoiceObjectAllowedTools")] public partial class ResponseCustomAllowedToolsToolChoice { }
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
 [CodeGenType("ImageGenToolModel")] internal partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}
