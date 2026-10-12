@@ -11,20 +11,20 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomCustomToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomCustomToolChoice(string name) : base(InternalResponseCustomToolChoiceKind.Custom)
+        public ResponseCustomCustomToolChoice(string toolName) : base(InternalResponseCustomToolChoiceKind.Custom)
         {
-            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(toolName, nameof(toolName));
 
-            Name = name;
+            ToolName = toolName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomCustomToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string name) : base(kind, patch)
+        internal ResponseCustomCustomToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string toolName) : base(kind, patch)
         {
-            Name = name;
+            ToolName = toolName;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Name { get; set; }
+        public string ToolName { get; set; }
     }
 }

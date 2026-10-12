@@ -520,20 +520,10 @@ model Tool {
   type: ToolType;
 }
 
-@doc("""
-  Controls which (if any) tool is called by the model.
-  
-  `none` means the model will not call any tool and instead generates a message.
-  
-  `auto` means the model can pick between generating a message or calling one or
-  more tools.
-  
-  `required` means the model must call one or more tools.
-  """)
-union ToolChoiceOptions {
-  "none",
-  "auto",
-  "required",
+union ToolChoiceAllowedMode {
+  string,
+  auto: "auto",
+  required: "required"
 }
 
 union DotNetResponseDefaultToolChoice {
@@ -560,7 +550,8 @@ union ToolChoiceObjectType {
   custom: "custom",
   programmatic_tool_calling: "programmatic_tool_calling",
   apply_patch: "apply_patch",
-  shell: "shell"
+  shell: "shell",
+  allowed_tools: "allowed_tools"
 }
 @discriminator("type")
 model ToolChoiceObject {
@@ -599,6 +590,11 @@ model ToolChoiceObjectApplyPatch extends ToolChoiceObject {
 model ToolChoiceObjectShell extends ToolChoiceObject {
   type: ToolChoiceObjectType.shell;
 }
+model ToolChoiceObjectAllowedTools extends ToolChoiceObject {
+  type: ToolChoiceObjectType.allowed_tools;
+  mode: ToolChoiceAllowedMode;
+  tools: ToolChoiceObject[];
+}
 // Tool customization (apply_discriminator): Apply discriminated type base
 /** Use this option to force the model to call a specific function. */
 model ToolChoiceObjectFunction extends ToolChoiceObject {
@@ -611,8 +607,6 @@ model ToolChoiceObjectFunction extends ToolChoiceObject {
   name: string;
 }
 
-@access(Access.public)
-@usage(Usage.input | Usage.output)
 model DotNetResponseToolChoice {
   default_tool_choice?: DotNetResponseDefaultToolChoice;
   custom_tool_choice?: ToolChoiceObject;

@@ -103,6 +103,8 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
+                    case "allowed_tools":
+                        return ResponseCustomAllowedToolsToolChoice.DeserializeResponseCustomAllowedToolsToolChoice(element, data, options);
                     case "apply_patch":
                         return ResponseCustomApplyPatchToolChoice.DeserializeResponseCustomApplyPatchToolChoice(element, data, options);
                     case "code_interpreter":

@@ -21,6 +21,7 @@ namespace OpenAI.Responses
         private const string ProgrammaticToolCallingValue = "programmatic_tool_calling";
         private const string ApplyPatchValue = "apply_patch";
         private const string ShellValue = "shell";
+        private const string AllowedToolsValue = "allowed_tools";
 
         public InternalResponseCustomToolChoiceKind(string value)
         {
@@ -48,6 +49,8 @@ namespace OpenAI.Responses
         internal static InternalResponseCustomToolChoiceKind ApplyPatch { get; } = new InternalResponseCustomToolChoiceKind(ApplyPatchValue);
 
         internal static InternalResponseCustomToolChoiceKind Shell { get; } = new InternalResponseCustomToolChoiceKind(ShellValue);
+
+        internal static InternalResponseCustomToolChoiceKind AllowedTools { get; } = new InternalResponseCustomToolChoiceKind(AllowedToolsValue);
 
         public static bool operator ==(InternalResponseCustomToolChoiceKind left, InternalResponseCustomToolChoiceKind right) => left.Equals(right);
 

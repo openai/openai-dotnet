@@ -215,6 +215,12 @@ public partial class ResponsesSmokeTests
             @"{""type"":""shell""}");
 
         AssertChoiceEqual(
+            new ResponseCustomAllowedToolsToolChoice(
+                InternalToolChoiceAllowedMode.Required,
+                [new ResponseCustomFunctionToolChoice("foo")]),
+            @"{""type"":""allowed_tools"",""mode"":""required"",""tools"":[{""type"":""function"",""name"":""foo""}]}");
+
+        AssertChoiceEqual(
             new ResponseCustomCustomToolChoice("foo"),
             @"{""type"":""custom"",""name"":""foo""}");
 
