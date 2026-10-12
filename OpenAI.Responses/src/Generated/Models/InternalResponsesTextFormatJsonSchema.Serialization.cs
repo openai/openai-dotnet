@@ -151,7 +151,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("schema"u8))
                 {
-                    schema = BinaryData.FromString(prop.Value.GetRawText());
+                    schema = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))

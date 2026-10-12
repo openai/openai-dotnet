@@ -31,7 +31,7 @@ namespace OpenAI.VectorStores {
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string Name { get; }
         public VectorStoreStatus Status { get; }
-        public int UsageBytes { get; }
+        public long UsageBytes { get; }
         public static explicit operator VectorStore(ClientResult result);
     }
     public class VectorStoreClient {

@@ -9,7 +9,7 @@ namespace OpenAI.Realtime
     internal partial class InternalUnknownRealtimeConversationItemGA : RealtimeItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownRealtimeConversationItemGA(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeConversationItemGA(RealtimeItemKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

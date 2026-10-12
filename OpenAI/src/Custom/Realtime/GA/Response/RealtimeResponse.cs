@@ -13,11 +13,11 @@ public partial class RealtimeResponse
 
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]
-    public RealtimeResponseAudioOptions AudioOptions { get; }
+    public RealtimeResponseAudioOptions AudioOptions { get; set; }
 
     // CUSTOM:
     // - Renamed.
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("MaxOutputTokens")]
-    public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
+    public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
 }

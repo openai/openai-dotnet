@@ -5,6 +5,7 @@ namespace OpenAI.Moderations;
 
 // CUSTOM: Renamed.
 [CodeGenType("CreateModerationRequestInput")]
+[CodeGenVisibility(nameof(ModerationInputPart), CodeGenVisibility.Internal, typeof(ModerationInputPartKind))]
 public partial class ModerationInputPart
 {
     // CUSTOM: Renamed to Kind and removed setter.

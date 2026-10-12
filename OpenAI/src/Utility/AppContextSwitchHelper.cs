@@ -16,18 +16,24 @@ internal static class AppContextSwitchHelper
     public static bool GetConfigValue(string appContextSwitchName, string environmentVariableName)
     {
         // First check for the AppContext switch, giving it priority over the environment variable.
-        if (AppContext.TryGetSwitch(appContextSwitchName, out bool value))
+        bool isSwitchSet = AppContext.TryGetSwitch(appContextSwitchName, out bool switchValue);
+        string environmentValue = Environment.GetEnvironmentVariable(environmentVariableName);
+        return GetConfigValue(isSwitchSet, switchValue, environmentValue);
+    }
+
+    internal static bool GetConfigValue(bool isSwitchSet, bool switchValue, string environmentValue)
+    {
+        if (isSwitchSet)
         {
-            return value;
+            return switchValue;
         }
-        // AppContext switch wasn't used. Check the environment variable.
-        string envVar = Environment.GetEnvironmentVariable(environmentVariableName);
-        if (envVar != null && (envVar.Equals("true", StringComparison.OrdinalIgnoreCase) || envVar.Equals("1")))
+
+        if ((environmentValue != null)
+            && ((environmentValue.Equals("true", StringComparison.OrdinalIgnoreCase)) || (environmentValue.Equals("1"))))
         {
             return true;
         }
 
-        // Default to false.
         return false;
     }
 }

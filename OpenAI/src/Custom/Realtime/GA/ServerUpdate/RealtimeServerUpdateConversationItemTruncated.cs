@@ -17,5 +17,5 @@ public partial class RealtimeServerUpdateConversationItemTruncated
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioEndMs")]
-    public TimeSpan AudioEndTime { get; }
+    public TimeSpan AudioEndTime { get; set; }
 }

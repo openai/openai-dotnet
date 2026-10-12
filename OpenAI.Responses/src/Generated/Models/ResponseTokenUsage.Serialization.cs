@@ -175,10 +175,18 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("input_tokens_details"u8))
             {
+                if (InputTokenDetails == null)
+                {
+                    return false;
+                }
                 return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], out value);
             }
             if (local.StartsWith("output_tokens_details"u8))
             {
+                if (OutputTokenDetails == null)
+                {
+                    return false;
+                }
                 return OutputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], out value);
             }
             return false;
@@ -192,11 +200,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("input_tokens_details"u8))
             {
+                if (InputTokenDetails == null)
+                {
+                    return false;
+                }
                 InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("output_tokens_details"u8))
             {
+                if (OutputTokenDetails == null)
+                {
+                    return false;
+                }
                 OutputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], value);
                 return true;
             }

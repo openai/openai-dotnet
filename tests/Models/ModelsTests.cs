@@ -56,25 +56,23 @@ public class ModelsTests : OpenAIRecordedTestBase
     public void GetModelCanParseServiceError()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetModelAsync("fake_id"));
-
-        Assert.That(ex.Status, Is.EqualTo(404));
+        Assert.That(
+            async () => await client.GetModelAsync("fake_id"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(404));
     }
 
     [RecordedTest]
     public void DeleteModelCanParseServiceError()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteModelAsync("fake_id"));
-
         // If the model exists but the user doesn't own it, the service returns 403.
         // If the model doesn't exist at all, the service returns 404.
         // The service has changed the behavior in the past.
-        Assert.That((ex.Status == 403 || ex.Status == 404), Is.True);
+        Assert.That(
+            async () => await client.DeleteModelAsync("fake_id"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).AnyOf(403, 404));
     }
 
     [RecordedTest]

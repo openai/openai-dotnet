@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeInputImageMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputImageMessageContentPart>
     {
-        internal RealtimeInputImageMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputImage, default, null, default)
+        public RealtimeInputImageMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputImage, default, null, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateResponseFunctionCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDelta>
     {
-        internal RealtimeServerUpdateResponseFunctionCallArgumentsDelta() : this(InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDelta, default, null, null, null, default, null, null)
+        public RealtimeServerUpdateResponseFunctionCallArgumentsDelta() : this(RealtimeServerUpdateKind.ResponseFunctionCallArgumentsDelta, default, null, null, null, default, null, null)
         {
         }
 
@@ -127,7 +127,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -141,7 +141,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))

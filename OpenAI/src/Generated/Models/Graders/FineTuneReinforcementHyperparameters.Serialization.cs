@@ -194,7 +194,7 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    batchSize = BinaryData.FromString(prop.Value.GetRawText());
+                    batchSize = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("learning_rate_multiplier"u8))
@@ -203,7 +203,7 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
+                    learningRateMultiplier = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("n_epochs"u8))
@@ -212,7 +212,7 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    nEpochs = BinaryData.FromString(prop.Value.GetRawText());
+                    nEpochs = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("reasoning_effort"u8))
@@ -230,7 +230,7 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    computeMultiplier = BinaryData.FromString(prop.Value.GetRawText());
+                    computeMultiplier = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("eval_interval"u8))
@@ -239,7 +239,7 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    evalInterval = BinaryData.FromString(prop.Value.GetRawText());
+                    evalInterval = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("eval_samples"u8))
@@ -248,11 +248,11 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    evalSamples = BinaryData.FromString(prop.Value.GetRawText());
+                    evalSamples = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new FineTuneReinforcementHyperparameters(
                 batchSize,

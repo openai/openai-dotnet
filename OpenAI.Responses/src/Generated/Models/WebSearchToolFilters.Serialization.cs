@@ -81,9 +81,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("allowed_domains"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
                 for (int i = 0; i < AllowedDomains.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
                     {
                         continue;
                     }

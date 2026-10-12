@@ -10,18 +10,8 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseContentPartAdded : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseContentPartAdded(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(InternalRealtimeServerEventTypeGA.ResponseContentPartAdded)
-        {
-            EventId = eventId;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            ContentIndex = contentIndex;
-            Part = part;
-        }
-
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseContentPartAdded(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, patch)
+        internal RealtimeServerUpdateResponseContentPartAdded(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(RealtimeServerUpdateKind.ResponseContentPartAdded)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -33,16 +23,29 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateResponseContentPartAdded(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, patch)
+        {
+            EventId = eventId;
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            ContentIndex = contentIndex;
+            Part = part;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ResponseId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ResponseId { get; set; }
 
-        public int OutputIndex { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public RealtimeResponseContentPart Part { get; }
+        public int ContentIndex { get; set; }
+
+        public RealtimeResponseContentPart Part { get; set; }
     }
 }

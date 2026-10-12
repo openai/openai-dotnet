@@ -87,9 +87,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "include"u8);
                 for (int i = 0; i < IncludedProperties.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
                     {
                         continue;
                     }
@@ -171,6 +172,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             return false;
@@ -184,6 +189,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }

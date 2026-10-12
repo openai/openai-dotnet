@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    [PersistableModelProxy(typeof(InternalUnknownCreateTranscriptionResponseStreamEvent))]
     public partial class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>
     {
         internal StreamingAudioTranscriptionUpdate()
@@ -113,12 +112,12 @@ namespace OpenAI.Audio
             {
                 switch (discriminator.GetString())
                 {
-                    case "transcript.text.segment":
-                        return StreamingAudioTranscriptionTextSegmentUpdate.DeserializeStreamingAudioTranscriptionTextSegmentUpdate(element, options);
                     case "transcript.text.delta":
                         return StreamingAudioTranscriptionTextDeltaUpdate.DeserializeStreamingAudioTranscriptionTextDeltaUpdate(element, options);
                     case "transcript.text.done":
                         return StreamingAudioTranscriptionTextDoneUpdate.DeserializeStreamingAudioTranscriptionTextDoneUpdate(element, options);
+                    case "transcript.text.segment":
+                        return StreamingAudioTranscriptionTextSegmentUpdate.DeserializeStreamingAudioTranscriptionTextSegmentUpdate(element, options);
                 }
             }
             return InternalUnknownCreateTranscriptionResponseStreamEvent.DeserializeInternalUnknownCreateTranscriptionResponseStreamEvent(element, options);

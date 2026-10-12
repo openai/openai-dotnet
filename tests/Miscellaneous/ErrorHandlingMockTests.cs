@@ -49,15 +49,15 @@ public class ErrorHandlingMockTests : ClientTestBase
         };
         ResponsesClient client = CreateProxyFromClient(new ResponsesClient(s_fakeCredential, options));
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () =>
-            await client.CreateResponseAsync("model", "hello"));
-
-        Assert.That(ex!.Status, Is.EqualTo(400));
-        Assert.That(ex.Message, Does.Contain("HTTP 400"));
-        Assert.That(ex.Message, Does.Contain("invalid_request_error"));
-        Assert.That(ex.Message, Does.Contain("invalid_value"));
-        Assert.That(ex.Message, Does.Contain("Parameter: input"));
-        Assert.That(ex.Message, Does.Contain("Invalid value for parameter 'input'."));
+        Assert.That(
+            async () => await client.CreateResponseAsync("model", "hello"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(400)
+                .And.Message.Contains("HTTP 400")
+                .And.Message.Contains("invalid_request_error")
+                .And.Message.Contains("invalid_value")
+                .And.Message.Contains("Parameter: input")
+                .And.Message.Contains("Invalid value for parameter 'input'."));
     }
 
     [Test]
@@ -80,15 +80,15 @@ public class ErrorHandlingMockTests : ClientTestBase
         };
         EvaluationClient client = CreateProxyFromClient(new EvaluationClient(s_fakeCredential, options));
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () =>
-            await client.GetEvaluationsAsync(limit: null, orderBy: null, order: null, after: null, options: null));
-
-        Assert.That(ex!.Status, Is.EqualTo(400));
-        Assert.That(ex.Message, Does.Contain("HTTP 400"));
-        Assert.That(ex.Message, Does.Contain("invalid_request_error"));
-        Assert.That(ex.Message, Does.Contain("missing_required_field"));
-        Assert.That(ex.Message, Does.Contain("Parameter: data_source"));
-        Assert.That(ex.Message, Does.Contain("Missing required field 'data_source'."));
+        Assert.That(
+            async () => await client.GetEvaluationsAsync(limit: null, orderBy: null, order: null, after: null, options: null),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(400)
+                .And.Message.Contains("HTTP 400")
+                .And.Message.Contains("invalid_request_error")
+                .And.Message.Contains("missing_required_field")
+                .And.Message.Contains("Parameter: data_source")
+                .And.Message.Contains("Missing required field 'data_source'."));
     }
 
     [Test]
@@ -111,11 +111,11 @@ public class ErrorHandlingMockTests : ClientTestBase
         };
         ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, options));
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () =>
-            await client.CompleteChatAsync(new List<ChatMessage> { new UserChatMessage("hi") }));
-
-        Assert.That(ex!.Status, Is.EqualTo(500));
-        Assert.That(ex.Message, Does.Contain("HTTP 500"));
-        Assert.That(ex.Message, Does.Contain("server_error"));
+        Assert.That(
+            async () => await client.CompleteChatAsync(new List<ChatMessage> { new UserChatMessage("hi") }),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(500)
+                .And.Message.Contains("HTTP 500")
+                .And.Message.Contains("server_error"));
     }
 }

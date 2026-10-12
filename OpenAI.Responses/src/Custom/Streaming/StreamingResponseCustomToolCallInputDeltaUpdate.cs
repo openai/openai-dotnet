@@ -4,6 +4,7 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseCustomToolCallInputDeltaEvent")]
-internal partial class StreamingResponseCustomToolCallInputDeltaUpdate
+[CodeGenVisibility(nameof(Agent), CodeGenVisibility.Internal)] // feat: multi-agent
+public partial class StreamingResponseCustomToolCallInputDeltaUpdate
 {
 }

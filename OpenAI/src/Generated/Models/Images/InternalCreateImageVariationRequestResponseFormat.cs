@@ -10,7 +10,7 @@ namespace OpenAI.Images
     internal readonly partial struct InternalCreateImageVariationRequestResponseFormat : IEquatable<InternalCreateImageVariationRequestResponseFormat>
     {
         private readonly string _value;
-        private const string UrlValue = "url";
+        private const string UriValue = "url";
         private const string B64JsonValue = "b64_json";
 
         public InternalCreateImageVariationRequestResponseFormat(string value)
@@ -18,7 +18,7 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        internal static InternalCreateImageVariationRequestResponseFormat Url { get; } = new InternalCreateImageVariationRequestResponseFormat(UrlValue);
+        internal static InternalCreateImageVariationRequestResponseFormat Uri { get; } = new InternalCreateImageVariationRequestResponseFormat(UriValue);
 
         internal static InternalCreateImageVariationRequestResponseFormat B64Json { get; } = new InternalCreateImageVariationRequestResponseFormat(B64JsonValue);
 

@@ -103,18 +103,37 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("headers"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Headers)
+                bool hasPatch = Patch.Contains("$"u8, "headers"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.headers"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.headers"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.headers"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Headers)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.headers"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.headers"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.headers"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+                            writer.WriteStringValue(item.Value);
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.headers"u8);
+                }
+                else
+                {
+                    foreach (var item in Headers)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -125,8 +144,6 @@ namespace OpenAI.Responses
                         writer.WriteStringValue(item.Value);
                     }
                 }
-
-                Patch.WriteTo(writer, "$.headers"u8);
                 writer.WriteEndObject();
             }
             if (Optional.IsDefined(AllowedTools) && !Patch.Contains("$.allowed_tools"u8))
@@ -274,10 +291,18 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("allowed_tools"u8))
             {
+                if (AllowedTools == null)
+                {
+                    return false;
+                }
                 return AllowedTools.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], out value);
             }
             if (local.StartsWith("require_approval"u8))
             {
+                if (ToolCallApprovalPolicy == null)
+                {
+                    return false;
+                }
                 return ToolCallApprovalPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("require_approval"u8.Length)], out value);
             }
             return false;
@@ -291,11 +316,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("allowed_tools"u8))
             {
+                if (AllowedTools == null)
+                {
+                    return false;
+                }
                 AllowedTools.Patch.Set([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("require_approval"u8))
             {
+                if (ToolCallApprovalPolicy == null)
+                {
+                    return false;
+                }
                 ToolCallApprovalPolicy.Patch.Set([.. "$"u8, .. local.Slice("require_approval"u8.Length)], value);
                 return true;
             }

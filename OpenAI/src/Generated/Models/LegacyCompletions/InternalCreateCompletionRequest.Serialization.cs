@@ -254,7 +254,7 @@ namespace OpenAI.LegacyCompletions
                         prompt = null;
                         continue;
                     }
-                    prompt = BinaryData.FromString(prop.Value.GetRawText());
+                    prompt = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("best_of"u8))
@@ -358,7 +358,7 @@ namespace OpenAI.LegacyCompletions
                         stop = null;
                         continue;
                     }
-                    stop = BinaryData.FromString(prop.Value.GetRawText());
+                    stop = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("stream"u8))
@@ -417,7 +417,7 @@ namespace OpenAI.LegacyCompletions
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalCreateCompletionRequest(
                 model,

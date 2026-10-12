@@ -60,11 +60,6 @@ public partial class RealtimeSessionClient
         WebSocket = clientWebSocket;
     }
 
-    protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default)
-    {
-        ConnectAsync(queryString, headers, cancellationToken).Wait();
-    }
-
     public virtual async Task SendCommandAsync(BinaryData data, RequestOptions options)
     {
         Argument.AssertNotNull(data, nameof(data));
@@ -91,12 +86,6 @@ public partial class RealtimeSessionClient
         }
     }
 
-    public virtual void SendCommand(BinaryData data, RequestOptions options)
-    {
-        // ClientWebSocket does **not** include a synchronous Send()
-        SendCommandAsync(data, options).ConfigureAwait(false).GetAwaiter().GetResult();
-    }
-
     public virtual async IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options)
     {
         lock (_singleReceiveLock)
@@ -112,11 +101,6 @@ public partial class RealtimeSessionClient
             }
             yield return result;
         }
-    }
-
-    public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options)
-    {
-        throw new NotImplementedException();
     }
 
     private static Uri BuildSessionUri(Uri endpoint, string model, string intent)

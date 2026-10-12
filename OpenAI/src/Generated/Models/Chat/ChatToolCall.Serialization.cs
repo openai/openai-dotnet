@@ -152,6 +152,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("function"u8))
             {
+                if (Function == null)
+                {
+                    return false;
+                }
                 return Function.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function"u8.Length)], out value);
             }
             return false;
@@ -165,6 +169,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("function"u8))
             {
+                if (Function == null)
+                {
+                    return false;
+                }
                 Function.Patch.Set([.. "$"u8, .. local.Slice("function"u8.Length)], value);
                 return true;
             }

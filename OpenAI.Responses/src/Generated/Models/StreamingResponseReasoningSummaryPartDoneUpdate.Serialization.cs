@@ -178,6 +178,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("part"u8))
             {
+                if (Part == null)
+                {
+                    return false;
+                }
                 return Part.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("part"u8.Length)], out value);
             }
             return false;
@@ -191,6 +195,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("part"u8))
             {
+                if (Part == null)
+                {
+                    return false;
+                }
                 Part.Patch.Set([.. "$"u8, .. local.Slice("part"u8.Length)], value);
                 return true;
             }

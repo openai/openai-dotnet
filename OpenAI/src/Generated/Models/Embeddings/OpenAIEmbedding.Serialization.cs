@@ -138,7 +138,7 @@ namespace OpenAI.Embeddings
                 }
                 if (prop.NameEquals("embedding"u8))
                 {
-                    embeddingProperty = BinaryData.FromString(prop.Value.GetRawText());
+                    embeddingProperty = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("object"u8))

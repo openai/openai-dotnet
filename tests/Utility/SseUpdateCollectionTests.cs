@@ -105,12 +105,15 @@ public class SseUpdateCollectionTests
             item => DeserializeEventAndCancelOnUnknown(item, source),
             source.Token);
 
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await foreach (string _ in collection)
+        Assert.That(
+            async () =>
             {
-            }
-        });
+                await foreach (string update in collection)
+                {
+                    Assert.That(update, Is.EqualTo("A"));
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     // The terminal event is the next frame after the one that cancels, so the parser has it
@@ -148,12 +151,15 @@ public class SseUpdateCollectionTests
 
         // Without the check ahead of the read, the buffered terminal event is reached first
         // and enumeration ends normally having produced only "A".
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await foreach (string _ in collection)
+        Assert.That(
+            async () =>
             {
-            }
-        });
+                await foreach (string update in collection)
+                {
+                    Assert.That(update, Is.EqualTo("A"));
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     [Test]

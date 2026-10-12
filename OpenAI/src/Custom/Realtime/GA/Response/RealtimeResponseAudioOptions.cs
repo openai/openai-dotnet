@@ -8,5 +8,5 @@ public partial class RealtimeResponseAudioOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Output")]
-    public RealtimeResponseOutputAudioOptions OutputAudioOptions { get; }
+    public RealtimeResponseOutputAudioOptions OutputAudioOptions { get; set; }
 }

@@ -26,27 +26,27 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetMessages(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantMessageClientGetMessagesCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 

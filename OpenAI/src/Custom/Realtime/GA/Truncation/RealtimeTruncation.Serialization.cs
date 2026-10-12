@@ -30,16 +30,14 @@ public partial class RealtimeTruncation
         {
             throw new FormatException($"The model {nameof(RealtimeTruncation)} does not support writing '{format}' format.");
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        if (Optional.IsDefined(DefaultTruncation) && !Patch.Contains("$.default_truncation"u8))
+        if (Optional.IsDefined(DefaultTruncation))
         {
             writer.WriteStringValue(DefaultTruncation.Value.ToString());
         }
-        if (Optional.IsDefined(CustomTruncation) && !Patch.Contains("$.custom_truncation"u8))
+        else if (Optional.IsDefined(CustomTruncation))
         {
             writer.WriteObjectValue(CustomTruncation, options);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
@@ -60,11 +58,36 @@ public partial class RealtimeTruncation
         {
             defaultTruncation = new RealtimeDefaultTruncation(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customTruncation = RealtimeCustomTruncation.DeserializeRealtimeCustomTruncation(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected realtime truncation to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new RealtimeTruncation(defaultTruncation, customTruncation, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomTruncation is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomTruncation.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomTruncation is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomTruncation.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

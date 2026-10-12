@@ -126,7 +126,7 @@ namespace OpenAI.Graders
                 }
                 if (prop.NameEquals("graders"u8))
                 {
-                    graders = BinaryData.FromString(prop.Value.GetRawText());
+                    graders = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("calculate_output"u8))
@@ -135,7 +135,7 @@ namespace OpenAI.Graders
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new GraderMulti(kind, additionalBinaryDataProperties, name, graders, calculateOutput);
         }
