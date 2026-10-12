@@ -692,6 +692,21 @@ namespace OpenAI.Responses {
         public static bool operator !=(IncludedResponseProperty left, IncludedResponseProperty right);
         public override readonly string ToString();
     }
+    public readonly partial struct InternalToolChoiceAllowedMode : IEquatable<InternalToolChoiceAllowedMode> {
+        public InternalToolChoiceAllowedMode(string value);
+        public static InternalToolChoiceAllowedMode Auto { get; }
+        public static InternalToolChoiceAllowedMode Required { get; }
+        public readonly bool Equals(InternalToolChoiceAllowedMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalToolChoiceAllowedMode left, InternalToolChoiceAllowedMode right);
+        public static implicit operator InternalToolChoiceAllowedMode(string value);
+        public static implicit operator InternalToolChoiceAllowedMode?(string value);
+        public static bool operator !=(InternalToolChoiceAllowedMode left, InternalToolChoiceAllowedMode right);
+        public override readonly string ToString();
+    }
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
         public McpTool() : base(default);
         public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(default);
@@ -874,6 +889,12 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
+    public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
+        public ResponseCustomAllowedToolsToolChoice();
+        public ResponseCustomAllowedToolsToolChoice(InternalToolChoiceAllowedMode mode, IEnumerable<ResponseCustomToolChoice> tools);
+        public InternalToolChoiceAllowedMode Mode { get; set; }
+        public IList<ResponseCustomToolChoice> Tools { get; }
+    }
     public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
         public ResponseCustomApplyPatchToolChoice();
     }
@@ -885,8 +906,8 @@ namespace OpenAI.Responses {
     }
     public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
         public ResponseCustomCustomToolChoice();
-        public ResponseCustomCustomToolChoice(string name);
-        public string Name { get; set; }
+        public ResponseCustomCustomToolChoice(string toolName);
+        public string ToolName { get; set; }
     }
     public class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFileSearchToolChoice>, IPersistableModel<ResponseCustomFileSearchToolChoice> {
         public ResponseCustomFileSearchToolChoice();
@@ -901,9 +922,9 @@ namespace OpenAI.Responses {
     }
     public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
         public ResponseCustomMcpToolChoice();
-        public ResponseCustomMcpToolChoice(string name, string serverLabel);
-        public string Name { get; set; }
+        public ResponseCustomMcpToolChoice(string toolName, string serverLabel);
         public string ServerLabel { get; set; }
+        public string ToolName { get; set; }
     }
     public class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseCustomProgrammaticToolCallingToolChoice> {
         public ResponseCustomProgrammaticToolCallingToolChoice();
