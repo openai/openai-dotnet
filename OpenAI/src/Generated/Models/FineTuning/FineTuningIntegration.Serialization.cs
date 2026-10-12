@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    [PersistableModelProxy(typeof(UnknownCreateFineTuningJobRequestIntegration))]
     public partial class FineTuningIntegration : IJsonModel<FineTuningIntegration>
     {
         internal FineTuningIntegration()

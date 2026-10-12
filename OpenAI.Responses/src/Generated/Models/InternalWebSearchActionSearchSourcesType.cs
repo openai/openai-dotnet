@@ -10,14 +10,14 @@ namespace OpenAI.Responses
     internal readonly partial struct InternalWebSearchActionSearchSourcesType : IEquatable<InternalWebSearchActionSearchSourcesType>
     {
         private readonly string _value;
-        private const string UrlValue = "url";
+        private const string UriValue = "url";
 
         public InternalWebSearchActionSearchSourcesType(string value)
         {
             _value = value;
         }
 
-        internal static InternalWebSearchActionSearchSourcesType Url { get; } = new InternalWebSearchActionSearchSourcesType(UrlValue);
+        internal static InternalWebSearchActionSearchSourcesType Uri { get; } = new InternalWebSearchActionSearchSourcesType(UriValue);
 
         public static bool operator ==(InternalWebSearchActionSearchSourcesType left, InternalWebSearchActionSearchSourcesType right) => left.Equals(right);
 

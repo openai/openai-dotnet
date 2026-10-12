@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "141",
+        "Content-Length": "136",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -17,15 +17,19 @@
             "content": "What was a positive news story from today?"
           }
         ],
-        "model": "gpt-4o-search-preview",
+        "model": "gpt-5-search-api",
         "web_search_options": {}
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102d9d911a3b3-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3b32420ad3e093b-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -48,52 +52,34 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-a503c6c0-2f16-4357-9e9f-d75c1cac830d",
+        "id": "chatcmpl-2ae02544-c95f-4b7e-9160-d5790d6baae7",
         "object": "chat.completion",
-        "created": 1770950952,
-        "model": "gpt-4o-search-preview-2025-03-11",
+        "created": 1789428240,
+        "model": "gpt-5-search-api-2025-10-14",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "On February 13, 2026, several positive news stories emerged:\n\n- **WHO Declares Mpox Outbreak Contained in Central Africa**: The World Health Organization announced that the mpox outbreak in Central African nations is now under control, thanks to intensive vaccination campaigns and improved surveillance systems. Over 2.5 million vaccine doses were administered across affected regions, highlighting the success of international cooperation in managing public health emergencies. ([observervoice.com](https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai))\n\n- **European Union Announces €10 Billion Green Energy Fund for Developing Nations**: The European Union committed €10 billion to support renewable energy projects in developing countries over the next five years. This initiative aims to assist nations in transitioning from fossil fuels to clean energy, with priority given to Africa and Southeast Asian countries. The fund will support solar, wind, and hydroelectric projects, promoting sustainable development globally. ([observervoice.com](https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai))\n\n- **United Nations Launches Global Initiative to Combat Ocean Plastic Pollution**: The UN Environment Programme launched a comprehensive initiative to reduce ocean plastic pollution by 80% by 2040. Over 150 countries have pledged support for the program, which includes funding for waste management infrastructure, research into biodegradable alternatives, and stricter regulations on single-use plastics. This global effort signifies a major step toward preserving marine ecosystems. ([observervoice.com](https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai))\n\n- **Community Soccer Match Promotes Positive Change in Pretoria, South Africa**: In the Itireleng Squatter Camp in Pretoria, a community soccer match was organized to motivate both young children and adults to embrace sports as a positive alternative to crime and drug abuse. The event aimed to inspire the community to choose healthier paths and demonstrated how collective action can foster positive change. ([reutersconnect.com](https://www.reutersconnect.com/item/world-news-february-13-2026/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMVpVTUEwMDBFOVVKMjc?utm_source=openai))\n\nThese stories reflect significant progress in public health, environmental sustainability, and community development on this day. ",
+              "content": "Here’s a feel-good story from recent science news:\n\n---\n\n**Empty Space Isn't Really Empty — and Scientists May Have Finally Seen Proof**\n\nA team of international researchers may have confirmed a quantum effect called *vacuum birefringence*, predicted nearly 90 years ago by physicist Werner Heisenberg. This effect suggests that what seems like empty space can actually affect how light behaves when exposed to extremely strong magnetic fields. ([sciencedaily.com](https://sciencedaily.com/releases/2026/08/260826055445.htm?utm_source=openai))\n\nThey observed this strange behavior coming from a magnetar — a type of neutron star with one of the strongest magnetic fields known in the universe. By combining data from ground-based radio observations and space telescopes, scientists saw that light coming from this magnetar had its polarization aligned with its magnetic field in just the way the theory predicts. ([sciencedaily.com](https://sciencedaily.com/releases/2026/08/260826055445.htm?utm_source=openai))\n\n---\n\nIt’s a thrilling breakthrough because it bridges our understanding of quantum mechanics and astronomy, showing how even “nothing” out there — like a vacuum — is actually teeming with hidden activity. If you like, I can pull up more uplifting science stories too.",
               "refusal": null,
               "annotations": [
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 606,
-                    "start_index": 480,
-                    "title": "Today’s School Assembly News Headlines (13 February) - Observer Voice",
-                    "url": "https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai"
+                    "end_index": 543,
+                    "start_index": 445,
+                    "title": "Scientists may have finally caught “empty” space changing light | ScienceDaily",
+                    "url": "https://sciencedaily.com/releases/2026/08/260826055445.htm?utm_source=openai"
                   }
                 },
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 1206,
-                    "start_index": 1080,
-                    "title": "Today’s School Assembly News Headlines (13 February) - Observer Voice",
-                    "url": "https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai"
-                  }
-                },
-                {
-                  "type": "url_citation",
-                  "url_citation": {
-                    "end_index": 1819,
-                    "start_index": 1693,
-                    "title": "Today’s School Assembly News Headlines (13 February) - Observer Voice",
-                    "url": "https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai"
-                  }
-                },
-                {
-                  "type": "url_citation",
-                  "url_citation": {
-                    "end_index": 2396,
-                    "start_index": 2231,
-                    "title": "World News - February 13, 2026 | Reuters Connect",
-                    "url": "https://www.reutersconnect.com/item/world-news-february-13-2026/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMVpVTUEwMDBFOVVKMjc?utm_source=openai"
+                    "end_index": 1011,
+                    "start_index": 913,
+                    "title": "Scientists may have finally caught “empty” space changing light | ScienceDaily",
+                    "url": "https://sciencedaily.com/releases/2026/08/260826055445.htm?utm_source=openai"
                   }
                 }
               ]
@@ -102,9 +88,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 9,
-          "completion_tokens": 514,
-          "total_tokens": 523,
+          "prompt_tokens": 31495,
+          "completion_tokens": 245,
+          "total_tokens": 31740,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -116,7 +102,7 @@
             "rejected_prediction_tokens": 0
           }
         },
-        "system_fingerprint": ""
+        "system_fingerprint": null
       }
     }
   ],

@@ -29,28 +29,12 @@ namespace OpenAI.Realtime
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateCreateRealtimeClientSecretRequest(content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
-        }
-
         public virtual async Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCreateRealtimeClientSecretRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        public virtual ClientResult<CreateClientSecretResult> CreateRealtimeClientSecret(CreateClientSecretOptions options, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(options, nameof(options));
-
-            ClientResult result = CreateRealtimeClientSecret(options, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue((CreateClientSecretResult)result, result.GetRawResponse());
         }
 
         public virtual async Task<ClientResult<CreateClientSecretResult>> CreateRealtimeClientSecretAsync(CreateClientSecretOptions options, CancellationToken cancellationToken = default)

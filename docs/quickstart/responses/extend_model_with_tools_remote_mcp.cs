@@ -15,7 +15,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
-        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
     )
 );
 options.InputItems.Add(

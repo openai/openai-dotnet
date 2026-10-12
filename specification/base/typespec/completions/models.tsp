@@ -1,7 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
 
 using Http;
 using TypeSpec.OpenAPI;

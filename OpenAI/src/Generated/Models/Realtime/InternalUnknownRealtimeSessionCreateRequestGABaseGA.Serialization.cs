@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeSessionCreateRequestGABaseGA : RealtimeSessionOptions, IJsonModel<RealtimeSessionOptions>
     {
-        internal InternalUnknownRealtimeSessionCreateRequestGABaseGA() : this(default, default)
+        public InternalUnknownRealtimeSessionCreateRequestGABaseGA() : this(default, default)
         {
         }
 

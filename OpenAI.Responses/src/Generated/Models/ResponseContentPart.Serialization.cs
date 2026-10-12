@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownItemContent))]
     public partial class ResponseContentPart : IJsonModel<ResponseContentPart>
     {
         internal ResponseContentPart()
@@ -105,18 +104,18 @@ namespace OpenAI.Responses
                 {
                     case "input_audio":
                         return InternalItemContentInputAudio.DeserializeInternalItemContentInputAudio(element, data, options);
-                    case "output_audio":
-                        return InternalItemContentOutputAudio.DeserializeInternalItemContentOutputAudio(element, data, options);
-                    case "refusal":
-                        return InternalItemContentRefusal.DeserializeInternalItemContentRefusal(element, data, options);
-                    case "input_text":
-                        return InternalItemContentInputText.DeserializeInternalItemContentInputText(element, data, options);
-                    case "input_image":
-                        return InternalItemContentInputImage.DeserializeInternalItemContentInputImage(element, data, options);
                     case "input_file":
                         return InternalItemContentInputFile.DeserializeInternalItemContentInputFile(element, data, options);
+                    case "input_image":
+                        return InternalItemContentInputImage.DeserializeInternalItemContentInputImage(element, data, options);
+                    case "input_text":
+                        return InternalItemContentInputText.DeserializeInternalItemContentInputText(element, data, options);
+                    case "output_audio":
+                        return InternalItemContentOutputAudio.DeserializeInternalItemContentOutputAudio(element, data, options);
                     case "output_text":
                         return InternalItemContentOutputText.DeserializeInternalItemContentOutputText(element, data, options);
+                    case "refusal":
+                        return InternalItemContentRefusal.DeserializeInternalItemContentRefusal(element, data, options);
                 }
             }
             return InternalUnknownItemContent.DeserializeInternalUnknownItemContent(element, data, options);

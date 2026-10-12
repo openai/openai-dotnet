@@ -204,7 +204,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(options, nameof(options));
 
         using BinaryContent content = options?.ToBinaryContent();
-        ClientResult protocolResult = ModifyAssistant(assistantId, content, null);
+        ClientResult protocolResult = ModifyAssistant(assistantId, content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -979,7 +979,7 @@ public partial class AssistantClient
             truncationStrategy: runOptions.TruncationStrategy,
             parallelToolCalls: runOptions.AllowParallelToolCalls,
             model: runOptions.ModelOverride,
-            toolResources: threadOptions.ToolResources,
+            toolResources: threadOptions?.ToolResources,
             responseFormat: runOptions.ResponseFormat,
             toolChoice: runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);

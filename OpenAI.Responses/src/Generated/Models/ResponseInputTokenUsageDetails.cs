@@ -15,15 +15,17 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseInputTokenUsageDetails(int cachedTokenCount)
+        internal ResponseInputTokenUsageDetails(int cachedTokenCount, int cacheWriteTokenCount)
         {
             CachedTokenCount = cachedTokenCount;
+            CacheWriteTokenCount = cacheWriteTokenCount;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseInputTokenUsageDetails(int cachedTokenCount, in JsonPatch patch)
+        internal ResponseInputTokenUsageDetails(int cachedTokenCount, int cacheWriteTokenCount, in JsonPatch patch)
         {
             CachedTokenCount = cachedTokenCount;
+            CacheWriteTokenCount = cacheWriteTokenCount;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -32,5 +34,7 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public int CacheWriteTokenCount { get; set; }
     }
 }

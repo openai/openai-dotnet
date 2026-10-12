@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeErrorResponseGA : IJsonModel<InternalRealtimeErrorResponseGA>
     {
-        internal InternalRealtimeErrorResponseGA()
+        public InternalRealtimeErrorResponseGA()
         {
         }
 
@@ -119,7 +119,7 @@ namespace OpenAI.Realtime
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalRealtimeErrorResponseGA(error, additionalBinaryDataProperties);
         }

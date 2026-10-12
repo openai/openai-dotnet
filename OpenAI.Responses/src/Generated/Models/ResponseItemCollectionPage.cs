@@ -18,13 +18,16 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseItemCollectionPage(IEnumerable<ResponseItem> data, bool hasMore, string firstId, string lastId)
         {
             Data = data.ToList();
             HasMore = hasMore;
             FirstId = firstId;
             LastId = lastId;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseItemCollectionPage(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, in JsonPatch patch)

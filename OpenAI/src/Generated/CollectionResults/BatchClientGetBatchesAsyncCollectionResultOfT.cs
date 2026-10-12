@@ -13,21 +13,21 @@ namespace OpenAI.Batch
     internal partial class BatchClientGetBatchesAsyncCollectionResultOfT : AsyncCollectionResult<BatchJob>
     {
         private readonly BatchClient _client;
-        private readonly string _after;
-        private readonly int? _limit;
+        private readonly string _afterId;
+        private readonly int? _pageSizeLimit;
         private readonly RequestOptions _options;
 
-        public BatchClientGetBatchesAsyncCollectionResultOfT(BatchClient client, string after, int? limit, RequestOptions options)
+        public BatchClientGetBatchesAsyncCollectionResultOfT(BatchClient client, string afterId, int? pageSizeLimit, RequestOptions options)
         {
             _client = client;
-            _after = after;
-            _limit = limit;
+            _afterId = afterId;
+            _pageSizeLimit = pageSizeLimit;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetBatchesRequest(_after, _limit, _options);
+            PipelineMessage message = _client.CreateGetBatchesRequest(_afterId, _pageSizeLimit, _options);
             string nextToken = null;
             while (true)
             {
@@ -42,7 +42,7 @@ namespace OpenAI.Batch
                 {
                     yield break;
                 }
-                message = _client.CreateGetBatchesRequest(nextToken, _limit, _options);
+                message = _client.CreateGetBatchesRequest(nextToken, _pageSizeLimit, _options);
             }
         }
 

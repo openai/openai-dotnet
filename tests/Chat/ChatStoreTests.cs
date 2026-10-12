@@ -488,10 +488,9 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             await Task.Delay(DelayInMilliseconds); // Wait for completions to be deleted
         }
 
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            ChatCompletion deletedCompletion = await client.GetChatCompletionAsync(completion.Id);
-        });
+        Assert.That(
+            async () => await client.GetChatCompletionAsync(completion.Id),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
@@ -540,10 +539,9 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             await Task.Delay(DelayInMilliseconds); // Wait for completions to be deleted
         }
 
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            _ = await client.GetChatCompletionAsync(chatCompletion.Id);
-        });
+        Assert.That(
+            async () => await client.GetChatCompletionAsync(chatCompletion.Id),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]

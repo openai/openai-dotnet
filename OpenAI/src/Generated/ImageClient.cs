@@ -5,6 +5,8 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.ServerSentEvents;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -38,6 +40,17 @@ namespace OpenAI.Images
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+        [Experimental("OPENAI001")]
+        public virtual async Task<AsyncStreamingResult<SseItem<BinaryData>>> GenerateImageEditsStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+            using PipelineMessage message = CreateGenerateImageEditsStreamingRequest(content, contentType, options);
+            message.BufferResponse = false;
+            return AsyncStreamingResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
         public virtual ClientResult GenerateImages(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -52,6 +65,16 @@ namespace OpenAI.Images
 
             using PipelineMessage message = CreateGenerateImagesRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<AsyncStreamingResult<SseItem<BinaryData>>> GenerateImagesStreamingAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateGenerateImagesStreamingRequest(content, options);
+            message.BufferResponse = false;
+            return AsyncStreamingResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
         public virtual ClientResult GenerateImageVariations(BinaryContent content, string contentType, RequestOptions options = null)

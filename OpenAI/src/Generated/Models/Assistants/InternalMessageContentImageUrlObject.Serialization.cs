@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentImageUrlObject : MessageContent, IJsonModel<InternalMessageContentImageUrlObject>
     {
-        internal InternalMessageContentImageUrlObject() : this(InternalMessageContentType.ImageUrl, null, null)
+        internal InternalMessageContentImageUrlObject() : this(InternalMessageContentType.ImageUri, null, null)
         {
         }
 
@@ -106,7 +106,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalMessageContentImageUrlObject(kind, additionalBinaryDataProperties, imageUrl);
         }

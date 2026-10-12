@@ -176,7 +176,7 @@ namespace OpenAI.Chat
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalChatError(code, message, @param, kind, additionalBinaryDataProperties);
         }

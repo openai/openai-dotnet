@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeConversationItemGA))]
     public partial class RealtimeItem : IJsonModel<RealtimeItem>
     {
         internal RealtimeItem()
@@ -107,14 +106,14 @@ namespace OpenAI.Realtime
                         return RealtimeFunctionCallItem.DeserializeRealtimeFunctionCallItem(element, data, options);
                     case "function_call_output":
                         return RealtimeFunctionCallOutputItem.DeserializeRealtimeFunctionCallOutputItem(element, data, options);
-                    case "mcp_approval_response":
-                        return RealtimeMcpToolCallApprovalResponseItem.DeserializeRealtimeMcpToolCallApprovalResponseItem(element, data, options);
-                    case "mcp_list_tools":
-                        return RealtimeMcpToolDefinitionListItem.DeserializeRealtimeMcpToolDefinitionListItem(element, data, options);
-                    case "mcp_call":
-                        return RealtimeMcpToolCallItem.DeserializeRealtimeMcpToolCallItem(element, data, options);
                     case "mcp_approval_request":
                         return RealtimeMcpToolCallApprovalRequestItem.DeserializeRealtimeMcpToolCallApprovalRequestItem(element, data, options);
+                    case "mcp_approval_response":
+                        return RealtimeMcpToolCallApprovalResponseItem.DeserializeRealtimeMcpToolCallApprovalResponseItem(element, data, options);
+                    case "mcp_call":
+                        return RealtimeMcpToolCallItem.DeserializeRealtimeMcpToolCallItem(element, data, options);
+                    case "mcp_list_tools":
+                        return RealtimeMcpToolDefinitionListItem.DeserializeRealtimeMcpToolDefinitionListItem(element, data, options);
                     case "message":
                         return RealtimeMessageItem.DeserializeRealtimeMessageItem(element, data, options);
                 }

@@ -13,13 +13,13 @@ namespace OpenAI.Evals
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalEvalRunOutputItem(string id, string runId, string evalId, DateTimeOffset createdAt, string status, int datasourceItemId, IDictionary<string, BinaryData> datasourceItem, IEnumerable<IDictionary<string, BinaryData>> results, InternalEvalRunOutputItemSample sample)
+        internal InternalEvalRunOutputItem(string id, string runId, string evalId, DateTimeOffset createdOn, string status, int datasourceItemId, IDictionary<string, BinaryData> datasourceItem, IEnumerable<IDictionary<string, BinaryData>> results, InternalEvalRunOutputItemSample sample)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             RunId = runId;
             EvalId = evalId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Status = status;
             DatasourceItemId = datasourceItemId;
             DatasourceItem = datasourceItem ?? new ChangeTrackingDictionary<string, BinaryData>();
@@ -27,14 +27,14 @@ namespace OpenAI.Evals
             Sample = sample;
         }
 
-        internal InternalEvalRunOutputItem(string @object, string id, string runId, string evalId, DateTimeOffset createdAt, string status, int datasourceItemId, IDictionary<string, BinaryData> datasourceItem, IList<IDictionary<string, BinaryData>> results, InternalEvalRunOutputItemSample sample, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalRunOutputItem(string @object, string id, string runId, string evalId, DateTimeOffset createdOn, string status, int datasourceItemId, IDictionary<string, BinaryData> datasourceItem, IList<IDictionary<string, BinaryData>> results, InternalEvalRunOutputItemSample sample, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
             Id = id;
             RunId = runId;
             EvalId = evalId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Status = status;
             DatasourceItemId = datasourceItemId;
             DatasourceItem = datasourceItem ?? new ChangeTrackingDictionary<string, BinaryData>();
@@ -51,7 +51,7 @@ namespace OpenAI.Evals
 
         public string EvalId { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string Status { get; }
 

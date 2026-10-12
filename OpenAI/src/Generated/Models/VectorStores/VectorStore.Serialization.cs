@@ -190,7 +190,7 @@ namespace OpenAI.VectorStores
             string @object = default;
             DateTimeOffset createdAt = default;
             string name = default;
-            int usageBytes = default;
+            long usageBytes = default;
             VectorStoreFileCounts fileCounts = default;
             VectorStoreStatus status = default;
             VectorStoreExpirationPolicy expirationPolicy = default;
@@ -222,7 +222,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("usage_bytes"u8))
                 {
-                    usageBytes = prop.Value.GetInt32();
+                    usageBytes = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("file_counts"u8))
@@ -287,7 +287,7 @@ namespace OpenAI.VectorStores
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new VectorStore(
                 id,

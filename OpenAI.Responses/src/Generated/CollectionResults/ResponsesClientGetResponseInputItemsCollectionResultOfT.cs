@@ -13,26 +13,26 @@ namespace OpenAI.Responses
     {
         private readonly ResponsesClient _client;
         private readonly string _responseId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly RequestOptions _options;
 
-        public ResponsesClientGetResponseInputItemsCollectionResultOfT(ResponsesClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponsesClientGetResponseInputItemsCollectionResultOfT(ResponsesClient client, string responseId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
             _responseId = responseId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _options = options;
         }
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, _after, _before, _options);
+            PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, _afterId, _beforeId, _options);
             string nextToken = null;
             while (true)
             {
@@ -47,7 +47,7 @@ namespace OpenAI.Responses
                 {
                     yield break;
                 }
-                message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, nextToken, _before, _options);
+                message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
 

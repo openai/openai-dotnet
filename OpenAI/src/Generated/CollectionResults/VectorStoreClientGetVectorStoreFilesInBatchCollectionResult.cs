@@ -14,29 +14,29 @@ namespace OpenAI.VectorStores
         private readonly VectorStoreClient _client;
         private readonly string _vectorStoreId;
         private readonly string _batchId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly string _filter;
         private readonly RequestOptions _options;
 
-        public VectorStoreClientGetVectorStoreFilesInBatchCollectionResult(VectorStoreClient client, string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        public VectorStoreClientGetVectorStoreFilesInBatchCollectionResult(VectorStoreClient client, string vectorStoreId, string batchId, int? pageSizeLimit, string order, string afterId, string beforeId, string filter, RequestOptions options)
         {
             _client = client;
             _vectorStoreId = vectorStoreId;
             _batchId = batchId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _filter = filter;
             _options = options;
         }
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetVectorStoreFilesInBatchRequest(_vectorStoreId, _batchId, _limit, _order, _after, _before, _filter, _options);
+            PipelineMessage message = _client.CreateGetVectorStoreFilesInBatchRequest(_vectorStoreId, _batchId, _pageSizeLimit, _order, _afterId, _beforeId, _filter, _options);
             string nextToken = null;
             while (true)
             {
@@ -51,7 +51,7 @@ namespace OpenAI.VectorStores
                 {
                     yield break;
                 }
-                message = _client.CreateGetVectorStoreFilesInBatchRequest(_vectorStoreId, _batchId, _limit, _order, nextToken, _before, _filter, _options);
+                message = _client.CreateGetVectorStoreFilesInBatchRequest(_vectorStoreId, _batchId, _pageSizeLimit, _order, nextToken, _beforeId, _filter, _options);
             }
         }
 

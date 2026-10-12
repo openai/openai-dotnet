@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeAudioFormatGA : RealtimeAudioFormat, IJsonModel<RealtimeAudioFormat>
     {
-        internal InternalUnknownRealtimeAudioFormatGA() : this(default, default)
+        public InternalUnknownRealtimeAudioFormatGA() : this(default, default)
         {
         }
 

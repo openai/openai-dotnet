@@ -50,14 +50,14 @@ public partial class CustomMcpToolCallApprovalPolicy
 The string-literal component is represented by an extensible enum:
 
 ```csharp
-public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy>
+public readonly partial struct DefaultMcpToolCallApprovalPolicy : IEquatable<DefaultMcpToolCallApprovalPolicy>
 {
-    public GlobalMcpToolCallApprovalPolicy(string value);
+  public DefaultMcpToolCallApprovalPolicy(string value);
 
-    public static GlobalMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
-    public static GlobalMcpToolCallApprovalPolicy NeverRequireApproval { get; }
+  public static DefaultMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
+  public static DefaultMcpToolCallApprovalPolicy NeverRequireApproval { get; }
 
-    public static implicit operator GlobalMcpToolCallApprovalPolicy(string value);
+  public static implicit operator DefaultMcpToolCallApprovalPolicy(string value);
     public override string ToString();
 }
 ```
@@ -74,16 +74,16 @@ public partial class McpToolCallApprovalPolicy
     CustomPolicy = customPolicy;
   }
 
-  public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy)
+  public McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy defaultPolicy)
   {
-    GlobalPolicy = globalPolicy;
+    DefaultPolicy = defaultPolicy;
   }
 
     public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
-    public GlobalMcpToolCallApprovalPolicy? GlobalPolicy { get; }
+    public DefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
 
     public static implicit operator McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy) => customPolicy is null ? null : new(customPolicy);
-    public static implicit operator McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy) => new(globalPolicy);
+    public static implicit operator McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy defaultPolicy) => new(defaultPolicy);
 }
 ```
 
@@ -108,7 +108,7 @@ if (policy.CustomPolicy is not null)
 {
     // ...
 }
-else if (policy.GlobalPolicy is not null)
+else if (policy.DefaultPolicy is not null)
 {
     // ...
 }
@@ -117,7 +117,7 @@ else if (policy.GlobalPolicy is not null)
 Implicit conversions allow callers to assign a component without explicitly constructing the wrapper:
 
 ```csharp
-McpToolCallApprovalPolicy policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
+McpToolCallApprovalPolicy policy = DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval;
 ```
 
 ### Serialization requirements
@@ -137,7 +137,7 @@ A union wrapper is a JSON value, not a JSON object with properties corresponding
 
 The union wrapper's patch support must follow these rules:
 
-1. Make the generated `Patch` property internal by applying `[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]` to the customization class. Do not expose synthetic component paths such as `$.global_policy` or `$.custom_policy` to callers.
+1. Make the generated `Patch` property internal by applying `[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]` to the customization class. Do not expose synthetic component paths such as `$.default_policy` or `$.custom_policy` to callers.
 2. Implement the patch propagators `PropagateSet` and `PropagateGet` to reflect the union's wire representation rather than the synthetic TypeSpec model.
 3. Initialize the propagators along all valid construction paths. Call `_patch.SetPropagators(PropagateSet, PropagateGet)` in each component constructor because those constructors initialize their components directly.
 4. Keep a patch for `$` on the wrapper by returning `false` from both propagators for that path. Before normal serialization, write the raw root patch when `Patch.Contains("$"u8)` is true. This supports replacing the complete union value through a containing model, such as patching `$.require_approval` from an object to a string.
