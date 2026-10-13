@@ -1,28 +1,33 @@
 <#
 .SYNOPSIS
-    Finalizes the inherited /responses OpenAPI document.
+    Finalizes an inherited feature-area OpenAPI document.
 
 .DESCRIPTION
-    Reads responses.openapi.json by default, validates the optional manually
+    Reads the feature alias by default, validates the optional manually
     maintained policy component map, regenerates the complete default component
-    map, applies the resolved maps, and atomically republishes the deduplicated
-    result as responses.openapi.json. Run Generate-ResponsesOpenApi.ps1 and
-    Inherit-ResponsesOpenApi.ps1 first when upstream inputs change.
+    map, applies the resolved maps, retains the deduplicated document as numbered
+    artifact 16, and atomically republishes it to the feature alias. Component
+    maps remain stable unnumbered files.
+
+.PARAMETER FeatureArea
+    Lowercase kebab-case feature name used for the output directory and artifact
+    prefix.
 
 .PARAMETER InputPath
-    The inherited and sorted Responses OpenAPI input. Defaults to
-    responses.openapi.json in OutputDirectory.
+    Inherited and sorted OpenAPI input. Defaults to the feature alias beneath
+    <OutputRoot>/<FeatureArea>.
 
-.PARAMETER OutputDirectory
-    Directory containing the default responses.openapi.json input and receiving
-    the generated default map, deduplicated document, and published alias.
-    Defaults to specification/openapi. An explicit InputPath may be elsewhere.
-
-.EXAMPLE
-    ./scripts/specification/Finalize-ResponsesOpenApi.ps1
+.PARAMETER OutputRoot
+    Root directory beneath which the feature-area directory is created. Defaults
+    to specification/openapi. An explicit InputPath may be elsewhere.
 
 .EXAMPLE
-    ./scripts/specification/Finalize-ResponsesOpenApi.ps1 -OutputDirectory ./artifacts/responses
+    ./scripts/specification/Finalize-OpenApi.ps1 -FeatureArea responses
+
+.EXAMPLE
+    ./scripts/specification/Finalize-OpenApi.ps1 `
+        -FeatureArea responses `
+        -OutputRoot ./artifacts/openapi
 #>
 
 #Requires -Version 7.0
@@ -30,37 +35,43 @@
 [CmdletBinding()]
 param(
     [Parameter()]
+    [string]$FeatureArea,
+
+    [Parameter()]
     [string]$InputPath,
 
     [Parameter()]
-    [string]$OutputDirectory
+    [string]$OutputRoot
 )
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. (Join-Path $PSScriptRoot "pipeline" "_ResponsesOpenApiPipeline.Helpers.ps1")
+. (Join-Path $PSScriptRoot "pipeline" "_OpenApiPipeline.Helpers.ps1")
 
 $script:RepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".."))
 $script:PipelineDirectory = Join-Path $PSScriptRoot "pipeline"
-$script:DefaultOutputDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
+$script:DefaultOutputRoot = Join-Path $script:RepositoryRoot "specification" "openapi"
 
-function Invoke-ResponsesOpenApiFinalization {
+function Invoke-OpenApiFinalization {
     param(
+        [Parameter(Mandatory = $true)]
+        [string]$FeatureArea,
+
         [Parameter()]
         [string]$InputPath,
 
         [Parameter(Mandatory = $true)]
-        [string]$OutputDirectory
+        [string]$OutputRoot
     )
 
-    $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
+    $paths = Get-OpenApiArtifactPaths -FeatureArea $FeatureArea -OutputRoot $OutputRoot
     if ([string]::IsNullOrWhiteSpace($InputPath)) {
         $InputPath = $paths.Final
     }
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
     if (-not [System.IO.File]::Exists($resolvedInputPath)) {
-        throw "The inherited Responses OpenAPI input path is not a file: $resolvedInputPath"
+        throw "The inherited '$FeatureArea' OpenAPI input path is not a file: $resolvedInputPath"
     }
 
     $stageScriptNames = @(
@@ -92,16 +103,16 @@ function Invoke-ResponsesOpenApiFinalization {
 
     foreach ($artifactPath in @($paths.DefaultComponentMap, $paths.Deduplicated)) {
         if (-not [System.IO.File]::Exists($artifactPath)) {
-            throw "The Responses OpenAPI finalization pipeline did not produce '$artifactPath'."
+            throw "The '$FeatureArea' OpenAPI finalization pipeline did not produce '$artifactPath'."
         }
     }
 
-    $null = Publish-ResponsesOpenApiArtifact `
+    $null = Publish-OpenApiArtifact `
         -SourcePath $paths.Deduplicated `
         -DestinationPath $paths.Final
 
     Write-Host ""
-    Write-Host "Responses OpenAPI finalization complete."
+    Write-Host "OpenAPI finalization complete for '$FeatureArea'."
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Policy component map: $(if ([System.IO.File]::Exists($paths.PolicyComponentMap)) { $paths.PolicyComponentMap } else { '<none>' })"
     Write-Host "Default component map: $($paths.DefaultComponentMap)"
@@ -114,10 +125,14 @@ function Invoke-ResponsesOpenApiFinalization {
 # Dot-sourcing exposes the orchestration functions to tests without running the
 # finalization pipeline.
 if ($MyInvocation.InvocationName -ne ".") {
-    if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
-        $OutputDirectory = $script:DefaultOutputDirectory
+    if ([string]::IsNullOrWhiteSpace($FeatureArea)) {
+        throw "FeatureArea is required."
     }
-    $null = Invoke-ResponsesOpenApiFinalization `
+    if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
+        $OutputRoot = $script:DefaultOutputRoot
+    }
+    $null = Invoke-OpenApiFinalization `
+        -FeatureArea $FeatureArea `
         -InputPath $InputPath `
-        -OutputDirectory $OutputDirectory
+        -OutputRoot $OutputRoot
 }

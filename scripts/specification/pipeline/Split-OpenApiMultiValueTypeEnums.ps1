@@ -23,7 +23,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Split-OpenApiMultiValueTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
+        ./artifacts/custom.recursive-simplified.openapi.json `
+        -OutputPath ./artifacts/custom.type-enum-split.openapi.json
 #>
 
 #Requires -Version 7.0

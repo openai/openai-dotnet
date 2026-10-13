@@ -25,32 +25,12 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Flatten-OpenApiAllOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.openapi.json
+        ./artifacts/custom.inlined.openapi.json
 
 .EXAMPLE
     ./scripts/specification/pipeline/Flatten-OpenApiAllOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.openapi.json `
-        -OutputPath ./artifacts/openapi-extracts/responses.final.json
-
-.EXAMPLE
-    ./scripts/specification/pipeline/Flatten-OpenApiAllOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.openapi.json
-    ./scripts/specification/pipeline/Simplify-OpenApiStringVariants.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/specification/pipeline/Simplify-OpenApiRecursiveSchemas.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
-    ./scripts/specification/pipeline/Split-OpenApiMultiValueTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
-    ./scripts/specification/pipeline/Add-OpenApiOneOfDiscriminators.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json
-    ./scripts/specification/pipeline/Normalize-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
-    ./scripts/specification/pipeline/Flatten-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/specification/pipeline/Wrap-OpenApiSingletonTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
-    ./scripts/specification/pipeline/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
+        ./artifacts/custom.inlined.openapi.json `
+        -OutputPath ./artifacts/custom.flattened.openapi.json
 #>
 
 #Requires -Version 7.0

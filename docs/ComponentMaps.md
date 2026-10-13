@@ -1,6 +1,7 @@
 # Component maps
 
-Responses OpenAPI finalization uses two component maps:
+OpenAPI finalization uses two feature-scoped component maps. For the `responses`
+feature these are:
 
 - `responses.component-default-map.json` is generated from scratch on every run.
 - `responses.component-policy-map.json` is optional, maintained manually, and never modified by tooling.
@@ -8,22 +9,35 @@ Responses OpenAPI finalization uses two component maps:
 Run the three top-level phases in order:
 
 ```powershell
-./scripts/specification/Generate-ResponsesOpenApi.ps1
-./scripts/specification/Inherit-ResponsesOpenApi.ps1
-./scripts/specification/Finalize-ResponsesOpenApi.ps1
+./scripts/specification/Generate-OpenApi.ps1 `
+  -FeatureArea responses `
+  -OperationId createResponse
+./scripts/specification/Inherit-OpenApi.ps1 -FeatureArea responses
+./scripts/specification/Finalize-OpenApi.ps1 -FeatureArea responses
 ```
 
 Each successful phase atomically publishes its result to
-`specification/openapi/responses.openapi.json`. Generation publishes the
-componentized document. Inheritance reads that alias by default, retains the
-discriminator-inherited and inherited-sorted artifacts, and republishes the
-inherited-sorted document. Finalization also reads the alias by default,
-validates policy, replaces the default map, applies both maps, retains the
-deduplicated document, and republishes it as the final alias.
+`specification/openapi/<feature-area>/<feature-area>.openapi.json`. Generation
+publishes numbered artifact 13, the componentized document. Inheritance reads
+that alias by default, retains artifacts 14 and 15, and republishes artifact 15.
+Finalization also reads the alias by default, validates policy, replaces the
+default map, applies both maps, retains artifact 16, and republishes it as the
+final alias. The retained OpenAPI audit trail is numbered continuously from 01
+through 16 across all three phases.
 
-`Inherit-ResponsesOpenApi.ps1` and `Finalize-ResponsesOpenApi.ps1` accept
-`-InputPath` when a different input is needed. Their retained outputs and the
-published alias are always written beneath `-OutputDirectory`.
+Component maps are control files rather than transformation snapshots, so they
+remain unnumbered. The final alias also remains unnumbered so consumers have one
+stable path regardless of the most recently completed phase.
+
+All phases accept `-OutputRoot`, defaulting to `specification/openapi`, and
+always append the required lowercase kebab-case `-FeatureArea`. Inherit and
+Finalize accept `-InputPath` when a different input is needed, but their outputs
+remain under the selected feature directory. Generate also requires the exact
+`-OperationId` to extract and accepts `-Mode RequestBody|Responses|Both`.
+
+The former Responses-specific scripts and root-level Responses artifacts are no
+longer supported. Responses outputs now live under
+`specification/openapi/responses/`.
 
 ## Default map
 

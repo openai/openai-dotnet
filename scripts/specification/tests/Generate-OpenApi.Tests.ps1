@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Runs focused tests for scripts/specification/Generate-ResponsesOpenApi.ps1.
+    Runs focused tests for scripts/specification/Generate-OpenApi.ps1.
 #>
 
 [CmdletBinding()]
@@ -9,7 +9,7 @@ param()
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$scriptPath = Join-Path $PSScriptRoot ".." "Generate-ResponsesOpenApi.ps1"
+$scriptPath = Join-Path $PSScriptRoot ".." "Generate-OpenApi.ps1"
 . $scriptPath
 . (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 . (Join-Path $PSScriptRoot ".." "pipeline" "_OpenApiDocument.Helpers.ps1")
@@ -77,7 +77,7 @@ function Assert-BytesEqual {
 
 function Write-TestSpecification {
     param([string]$Path)
-    $document = Read-TestJsonFixture -RelativePath "Generate-ResponsesOpenApi/source.openapi.json"
+    $document = Read-TestJsonFixture -RelativePath "Generate-OpenApi/source.openapi.json"
     $properties = $document.paths["/responses"].post.requestBody.content["application/json"].schema.allOf[0].properties
     $properties["splitChoice"] = [ordered]@{
         oneOf = @(
@@ -145,17 +145,18 @@ function Write-TestJson {
     )
 }
 
-$temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "generate-responses-openapi-$([Guid]::NewGuid().ToString('N'))"
+$temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "generate-openapi-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
+$featureArea = "responses"
 
 try {
     # Tests and tooling need orchestration helpers without paying for generation
     # as a side effect of loading the script.
     Invoke-Test "dot-sourcing defines orchestration functions without running the pipeline" {
-        Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiGeneration -ErrorAction SilentlyContinue)) "Generation function was not defined."
-        Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
-        Assert-True ($null -ne (Get-Command Publish-ResponsesOpenApiArtifact -ErrorAction SilentlyContinue)) "Shared publisher was not defined."
-        Assert-True (-not (Get-Command Invoke-ResponsesOpenApiGeneration).Parameters.ContainsKey("ResetDeduplicationMap")) "Generation still exposes map reset policy."
+        Assert-True ($null -ne (Get-Command Invoke-OpenApiGeneration -ErrorAction SilentlyContinue)) "Generation function was not defined."
+        Assert-True ($null -ne (Get-Command Get-OpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
+        Assert-True ($null -ne (Get-Command Publish-OpenApiArtifact -ErrorAction SilentlyContinue)) "Shared publisher was not defined."
+        Assert-True (-not (Get-Command Invoke-OpenApiGeneration).Parameters.ContainsKey("ResetDeduplicationMap")) "Generation still exposes map reset policy."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly generated output."
     }
 
@@ -163,8 +164,63 @@ try {
     # canonical specification/openapi location.
     Invoke-Test "production defaults target specification openapi" {
         $expectedDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
-        Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputDirectory)) "Default output directory was incorrect."
+        Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputRoot)) "Default output root was incorrect."
         Assert-Equal ([System.IO.Path]::GetFullPath((Join-Path $expectedDirectory "openapi.json"))) ([System.IO.Path]::GetFullPath($script:DefaultSpecificationPath)) "Default source path was incorrect."
+    }
+
+    Invoke-Test "feature areas are validated and scoped beneath the output root" {
+        $outputRoot = Join-Path $temporaryDirectory "feature-paths"
+        $paths = Get-OpenApiArtifactPaths -FeatureArea "chat-completions" -OutputRoot $outputRoot
+        Assert-Equal "chat-completions" ([System.IO.Path]::GetFileName($paths.OutputDirectory)) "Feature directory was incorrect."
+        Assert-Equal "chat-completions.openapi.json" ([System.IO.Path]::GetFileName($paths.Final)) "Feature alias name was incorrect."
+        foreach ($invalid in @("Responses", "chat_completions", "../responses", "responses/other", "-responses")) {
+            Assert-Throws {
+                Get-OpenApiArtifactPaths -FeatureArea $invalid -OutputRoot $outputRoot
+            } "*must be lowercase kebab-case*"
+        }
+    }
+
+    Invoke-Test "CLI requires feature area and operation id" {
+        $pwshPath = (Get-Process -Id $PID).Path
+        $output = & $pwshPath `
+            -NoLogo `
+            -NoProfile `
+            -NonInteractive `
+            -File $scriptPath `
+            -OperationId "createResponse" `
+            2>&1
+        Assert-True ($LASTEXITCODE -ne 0) "Generate CLI accepted a missing feature area."
+        Assert-True (($output -join "`n") -like "*FeatureArea is required*") "Missing feature area error was unclear."
+
+        $output = & $pwshPath `
+            -NoLogo `
+            -NoProfile `
+            -NonInteractive `
+            -File $scriptPath `
+            -FeatureArea $featureArea `
+            2>&1
+        Assert-True ($LASTEXITCODE -ne 0) "Generate CLI accepted a missing operation id."
+        Assert-True (($output -join "`n") -like "*OperationId is required*") "Missing operation id error was unclear."
+    }
+
+    Invoke-Test "generation forwards Responses and Both extraction modes" {
+        $sourcePath = Join-Path $PSScriptRoot "fixtures" "Generate-OpenApi" "source.openapi.json"
+        foreach ($mode in @("Responses", "Both")) {
+            $modeFeature = "mode-$($mode.ToLowerInvariant())"
+            $modeRoot = Join-Path $temporaryDirectory "mode-forwarding"
+            $result = Invoke-OpenApiGeneration `
+                -FeatureArea $modeFeature `
+                -OperationId "createResponse" `
+                -Mode $mode `
+                -SpecificationPath $sourcePath `
+                -OutputRoot $modeRoot `
+                6>$null
+            $extracted = Read-TestJson -Path $result.Extracted
+            Assert-True ($extracted.paths.'/responses'.post.PSObject.Properties.Name -ccontains "responses") "Mode '$mode' omitted responses."
+            Assert-Sequence @("200") @($extracted.paths.'/responses'.post.responses.PSObject.Properties.Name) "Mode '$mode' retained the wrong responses."
+            $hasRequestBody = $extracted.paths.'/responses'.post.PSObject.Properties.Name -ccontains "requestBody"
+            Assert-Equal ($mode -eq "Both") $hasRequestBody "Mode '$mode' request-body projection was incorrect."
+        }
     }
 
     # Orchestration invokes stages by filename, so a rename/removal should fail
@@ -193,27 +249,27 @@ try {
     # Intermediate filenames are an audit trail of the pipeline, while the final
     # consumer-facing artifact intentionally has the short stable name.
     Invoke-Test "artifact paths retain every stage and use the short final name" {
-        $outputDirectory = Join-Path $temporaryDirectory "artifact-paths"
-        $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+        $outputRoot = Join-Path $temporaryDirectory "artifact-paths"
+        $paths = Get-OpenApiArtifactPaths -FeatureArea $featureArea -OutputRoot $outputRoot
         Assert-Sequence @(
-            "responses.extracted.openapi.json",
-            "responses.extracted.omitted.openapi.json",
-            "responses.inlined.openapi.json",
-            "responses.inlined.flattened.openapi.json",
-            "responses.inlined.flattened.simplified.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json",
-            "responses.componentized.openapi.json",
-            "responses.componentized.discriminator-inherited.openapi.json",
-            "responses.componentized.discriminator-inherited.sorted.openapi.json",
+            "responses.01.route-extracted.openapi.json",
+            "responses.02.properties-omitted.openapi.json",
+            "responses.03.references-inlined.openapi.json",
+            "responses.04.allof-flattened.openapi.json",
+            "responses.05.string-variants-simplified.openapi.json",
+            "responses.06.recursive-schemas-simplified.openapi.json",
+            "responses.07.multi-value-type-enums-split.openapi.json",
+            "responses.08.oneof-discriminators-added.openapi.json",
+            "responses.09.oneof-normalized.openapi.json",
+            "responses.10.nested-oneof-flattened.openapi.json",
+            "responses.11.singleton-type-enums-wrapped.openapi.json",
+            "responses.12.document-sorted.openapi.json",
+            "responses.13.schemas-componentized.openapi.json",
+            "responses.14.discriminator-inheritance-refactored.openapi.json",
+            "responses.15.inherited-document-sorted.openapi.json",
             "responses.component-default-map.json",
             "responses.component-policy-map.json",
-            "responses.componentized.deduplicated.openapi.json",
+            "responses.16.components-deduplicated.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Extracted),
@@ -236,6 +292,33 @@ try {
             [System.IO.Path]::GetFileName($paths.Deduplicated),
             [System.IO.Path]::GetFileName($paths.Final)
         ) "Artifact names were incorrect."
+        $numberedPaths = @(
+            $paths.Extracted,
+            $paths.Omitted,
+            $paths.Inlined,
+            $paths.Flattened,
+            $paths.Simplified,
+            $paths.RecursiveSimplified,
+            $paths.TypeEnumSplit,
+            $paths.OneOfDiscriminated,
+            $paths.OneOfNormalized,
+            $paths.OneOfFlattened,
+            $paths.SingletonTypeWrapped,
+            $paths.Sorted,
+            $paths.Componentized,
+            $paths.DiscriminatorInherited,
+            $paths.DiscriminatorInheritedSorted,
+            $paths.Deduplicated
+        )
+        Assert-Sequence (1..16 | ForEach-Object { $_.ToString("00") }) @(
+            $numberedPaths | ForEach-Object {
+                $fileName = [System.IO.Path]::GetFileName($_)
+                if ($fileName -notmatch '^responses\.(\d{2})\.') {
+                    throw "Artifact '$fileName' does not have a two-digit sequence number."
+                }
+                $Matches[1]
+            }
+        ) "Artifact sequence numbers were not contiguous."
         foreach ($path in @(
             $paths.Componentized,
             $paths.DiscriminatorInherited,
@@ -245,27 +328,22 @@ try {
             $paths.Deduplicated
         )) {
             Assert-Equal `
-                ([System.IO.Path]::GetFullPath($outputDirectory)) `
+                ([System.IO.Path]::GetFullPath((Join-Path $outputRoot $featureArea))) `
                 ([System.IO.Path]::GetDirectoryName($path)) `
-                "Post-processing artifact was not rooted in the requested output directory."
+                "Post-processing artifact was not rooted in the feature directory."
         }
+        Assert-True (-not [System.IO.Directory]::Exists($paths.OutputDirectory)) "Path construction created the feature directory."
     }
 
     # One compact end-to-end test owns stage ordering, intermediate persistence,
     # semantic handoffs, source immutability, and the componentization boundary.
     Invoke-Test "pipeline persists every stage through componentization and publishes the alias" {
         $sourcePath = Join-Path $temporaryDirectory "openapi.json"
-        $outputDirectory = Join-Path $temporaryDirectory "generated"
+        $outputRoot = Join-Path $temporaryDirectory "generated"
         Write-TestSpecification -Path $sourcePath
         [byte[]]$sourceBefore = [System.IO.File]::ReadAllBytes($sourcePath)
-        $obsoleteSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
-        $obsoleteDiscriminatedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json"
-        $obsoletePreWrapSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
-        $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
-        [System.IO.File]::WriteAllText($obsoleteSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
-        [System.IO.File]::WriteAllText($obsoleteDiscriminatedPath, "stale", [System.Text.UTF8Encoding]::new($false))
-        [System.IO.File]::WriteAllText($obsoletePreWrapSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
-        $expectedPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+        $expectedPaths = Get-OpenApiArtifactPaths -FeatureArea $featureArea -OutputRoot $outputRoot
+        $null = [System.IO.Directory]::CreateDirectory($expectedPaths.OutputDirectory)
         foreach ($downstreamPath in @($expectedPaths.DiscriminatorInherited, $expectedPaths.DiscriminatorInheritedSorted, $expectedPaths.DefaultComponentMap, $expectedPaths.PolicyComponentMap, $expectedPaths.Deduplicated)) {
             [System.IO.File]::WriteAllText($downstreamPath, "downstream-sentinel", [System.Text.UTF8Encoding]::new($false))
         }
@@ -276,12 +354,14 @@ try {
             -NoProfile `
             -NonInteractive `
             -File $scriptPath `
+            -FeatureArea $featureArea `
+            -OperationId "createResponse" `
             -SpecificationPath $sourcePath `
-            -OutputDirectory $outputDirectory
+            -OutputRoot $outputRoot
         if ($LASTEXITCODE -ne 0) {
             throw "Generate CLI failed with exit code $LASTEXITCODE."
         }
-        $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+        $paths = Get-OpenApiArtifactPaths -FeatureArea $featureArea -OutputRoot $outputRoot
 
         foreach ($artifactPath in @(
             $paths.Extracted,
@@ -306,9 +386,7 @@ try {
             Assert-Equal "downstream-sentinel" ([System.IO.File]::ReadAllText($downstreamPath)) "Generation modified downstream artifact '$downstreamPath'."
         }
         Assert-BytesEqual ([System.IO.File]::ReadAllBytes($paths.Componentized)) ([System.IO.File]::ReadAllBytes($paths.Final)) "Published alias differs from componentized output."
-        Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
-        Assert-True (-not [System.IO.File]::Exists($obsoleteDiscriminatedPath)) "Pipeline retained an obsolete pre-split artifact."
-        Assert-True (-not [System.IO.File]::Exists($obsoletePreWrapSortedPath)) "Pipeline retained an obsolete pre-wrapper sorted artifact."
+        Assert-True (-not [System.IO.File]::Exists((Join-Path $outputRoot "responses.openapi.json"))) "Generation wrote an artifact directly beneath the output root."
 
         $extracted = Read-TestJson -Path $paths.Extracted
         $omitted = Read-TestJson -Path $paths.Omitted
@@ -457,24 +535,28 @@ try {
     # Orchestration should validate its source before launching any stage or
     # creating a partial artifact chain.
     Invoke-Test "missing and non-file specifications fail clearly" {
-        $guardOutputDirectory = Join-Path $temporaryDirectory "source-guard"
-        $guardPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $guardOutputDirectory
-        $null = [System.IO.Directory]::CreateDirectory($guardOutputDirectory)
+        $guardOutputRoot = Join-Path $temporaryDirectory "source-guard"
+        $guardPaths = Get-OpenApiArtifactPaths -FeatureArea $featureArea -OutputRoot $guardOutputRoot
+        $null = [System.IO.Directory]::CreateDirectory($guardPaths.OutputDirectory)
         [System.IO.File]::WriteAllText($guardPaths.DefaultComponentMap, "preserve", [System.Text.UTF8Encoding]::new($false))
         [System.IO.File]::WriteAllText($guardPaths.Final, "published", [System.Text.UTF8Encoding]::new($false))
         [byte[]]$guardBytes = [System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)
         [byte[]]$publishedBytes = [System.IO.File]::ReadAllBytes($guardPaths.Final)
         Assert-Throws {
-            Invoke-ResponsesOpenApiGeneration `
+            Invoke-OpenApiGeneration `
+                -FeatureArea $featureArea `
+                -OperationId "createResponse" `
                 -SpecificationPath (Join-Path $temporaryDirectory "missing.json") `
-                -OutputDirectory $guardOutputDirectory
+                -OutputRoot $guardOutputRoot
         } "*cannot find path*"
         Assert-BytesEqual $guardBytes ([System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)) "Early failure changed the existing default map."
         Assert-BytesEqual $publishedBytes ([System.IO.File]::ReadAllBytes($guardPaths.Final)) "Early failure changed the published alias."
         Assert-Throws {
-            Invoke-ResponsesOpenApiGeneration `
+            Invoke-OpenApiGeneration `
+                -FeatureArea $featureArea `
+                -OperationId "createResponse" `
                 -SpecificationPath $temporaryDirectory `
-                -OutputDirectory (Join-Path $temporaryDirectory "directory-output")
+                -OutputRoot (Join-Path $temporaryDirectory "directory-output")
         } "*is not a file*"
     }
 }

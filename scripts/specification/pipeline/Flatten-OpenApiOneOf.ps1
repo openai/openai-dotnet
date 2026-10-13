@@ -30,11 +30,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Flatten-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/specification/pipeline/Wrap-OpenApiSingletonTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
-    ./scripts/specification/pipeline/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
+        ./artifacts/custom.oneof-normalized.openapi.json `
+        -OutputPath ./artifacts/custom.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

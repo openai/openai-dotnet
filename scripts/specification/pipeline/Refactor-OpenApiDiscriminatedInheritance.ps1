@@ -18,7 +18,7 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Refactor-OpenApiDiscriminatedInheritance.ps1 `
-        ./specification/openapi/responses.componentized.openapi.json
+        ./artifacts/custom.componentized.openapi.json
 #>
 
 #Requires -Version 7.0
@@ -42,8 +42,6 @@ if (-not (Test-Path -LiteralPath $helperPath -PathType Leaf)) {
 . $helperPath
 
 $script:InheritanceRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultInheritanceInputPath = Join-Path $script:InheritanceRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
-$script:DefaultInheritanceOutputPath = Join-Path $script:InheritanceRepositoryRoot "specification" "openapi" "responses.componentized.discriminator-inherited.openapi.json"
 
 function ConvertTo-OpenApiInheritanceNameToken {
     param(
@@ -516,31 +514,20 @@ function Resolve-InheritanceRepositoryPath {
 
 function Invoke-OpenApiDiscriminatedInheritanceRefactor {
     param(
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$InputPath,
 
         [Parameter()]
         [string]$OutputPath
     )
 
-    $usingCanonicalInput = [string]::IsNullOrWhiteSpace($InputPath)
-    if ($usingCanonicalInput) {
-        $InputPath = $script:DefaultInheritanceInputPath
-    }
-    else {
-        $InputPath = Resolve-InheritanceRepositoryPath -Path $InputPath
-    }
+    $InputPath = Resolve-InheritanceRepositoryPath -Path $InputPath
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
     if (-not [System.IO.File]::Exists($resolvedInputPath)) {
         throw "The componentized OpenAPI input path is not a file: $resolvedInputPath"
     }
     if ([string]::IsNullOrWhiteSpace($OutputPath)) {
-        $OutputPath = if ($usingCanonicalInput) {
-            $script:DefaultInheritanceOutputPath
-        }
-        else {
-            Get-DefaultDiscriminatorInheritedOpenApiPath -InputPath $resolvedInputPath
-        }
+        $OutputPath = Get-DefaultDiscriminatorInheritedOpenApiPath -InputPath $resolvedInputPath
     }
     else {
         $OutputPath = Resolve-InheritanceRepositoryPath -Path $OutputPath
@@ -561,6 +548,9 @@ function Invoke-OpenApiDiscriminatedInheritanceRefactor {
 }
 
 if ($MyInvocation.InvocationName -ne ".") {
+    if ([string]::IsNullOrWhiteSpace($InputPath)) {
+        throw "InputPath is required."
+    }
     $null = Invoke-OpenApiDiscriminatedInheritanceRefactor `
         -InputPath $InputPath `
         -OutputPath $OutputPath

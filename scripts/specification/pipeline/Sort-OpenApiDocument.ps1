@@ -26,7 +26,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
+        ./artifacts/custom.openapi.json `
+        -OutputPath ./artifacts/custom.sorted.openapi.json
 
 #>
 

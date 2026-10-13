@@ -24,24 +24,19 @@
     After component names stabilize, every discriminator receives a canonical
     exhaustive mapping from accepted const/enum payload values to its branch
     component pointers. Structurally identical occurrences intentionally remain
-    separate components. In the Responses workflow, run
-    Inherit-ResponsesOpenApi.ps1 with this output as its input before
-    finalization.
+    separate components. Run Inherit-OpenApi.ps1 with this output as its input
+    before finalization.
 
 .PARAMETER InputPath
-    The OpenAPI JSON document to componentize. When omitted, reads
-    the retained sorted Responses artifact beneath specification/openapi.
+    The OpenAPI JSON document to componentize.
 
 .PARAMETER OutputPath
-    The destination JSON file. When omitted for the canonical input, writes
-    specification/openapi/responses.componentized.openapi.json. Other inputs use
-    a sibling filename with '.componentized' inserted before the JSON suffix.
+    The destination JSON file. When omitted, uses a sibling filename with
+    '.componentized' inserted before the JSON suffix.
 
 .EXAMPLE
-    ./scripts/specification/pipeline/Componentize-OpenApiObjectSchemas.ps1
-    ./scripts/specification/Inherit-ResponsesOpenApi.ps1 `
-        -InputPath ./specification/openapi/responses.componentized.openapi.json
-    ./scripts/specification/Finalize-ResponsesOpenApi.ps1
+    ./scripts/specification/pipeline/Componentize-OpenApiObjectSchemas.ps1 `
+        ./artifacts/custom.openapi.json
 
 .EXAMPLE
     ./scripts/specification/pipeline/Componentize-OpenApiObjectSchemas.ps1 `
@@ -70,8 +65,6 @@ if (-not (Test-Path -LiteralPath $helperPath -PathType Leaf)) {
 . $helperPath
 
 $script:ComponentizerRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultComponentizerInputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json"
-$script:DefaultComponentizerOutputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
 
 # Eligibility is deliberately narrower than "any JSON object with type=object".
 # The traversal context must say that the value is a Schema Object. This keeps
@@ -1629,32 +1622,21 @@ function Resolve-ComponentizerRepositoryPath {
 # and callers that need more than the host summary.
 function Invoke-OpenApiObjectSchemaComponentizer {
     param(
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$InputPath,
 
         [Parameter()]
         [string]$OutputPath
     )
 
-    $usingCanonicalInput = [string]::IsNullOrWhiteSpace($InputPath)
-    if ($usingCanonicalInput) {
-        $InputPath = $script:DefaultComponentizerInputPath
-    }
-    else {
-        $InputPath = Resolve-ComponentizerRepositoryPath -Path $InputPath
-    }
+    $InputPath = Resolve-ComponentizerRepositoryPath -Path $InputPath
 
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
     if (-not [System.IO.File]::Exists($resolvedInputPath)) {
         throw "The OpenAPI input path is not a file: $resolvedInputPath"
     }
     if ([string]::IsNullOrWhiteSpace($OutputPath)) {
-        $OutputPath = if ($usingCanonicalInput) {
-            $script:DefaultComponentizerOutputPath
-        }
-        else {
-            Get-DefaultComponentizedOpenApiPath -InputPath $resolvedInputPath
-        }
+        $OutputPath = Get-DefaultComponentizedOpenApiPath -InputPath $resolvedInputPath
     }
     else {
         $OutputPath = Resolve-ComponentizerRepositoryPath -Path $OutputPath
@@ -1682,6 +1664,9 @@ function Invoke-OpenApiObjectSchemaComponentizer {
 
 # Dot-sourcing exposes conversion functions to tests without running the CLI.
 if ($MyInvocation.InvocationName -ne ".") {
+    if ([string]::IsNullOrWhiteSpace($InputPath)) {
+        throw "InputPath is required."
+    }
     $null = Invoke-OpenApiObjectSchemaComponentizer `
         -InputPath $InputPath `
         -OutputPath $OutputPath

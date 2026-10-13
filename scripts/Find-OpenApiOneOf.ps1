@@ -16,7 +16,7 @@
     The path to the OpenAPI JSON document to inspect.
 
 .EXAMPLE
-    ./scripts/Find-OpenApiOneOf.ps1 ./specification/openapi/responses.openapi.json
+    ./scripts/Find-OpenApiOneOf.ps1 ./specification/openapi/responses/responses.openapi.json
 #>
 
 #Requires -Version 7.0

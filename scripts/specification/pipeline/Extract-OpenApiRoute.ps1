@@ -45,31 +45,9 @@
     ./scripts/specification/pipeline/Extract-OpenApiRoute.ps1 `
         -OperationId createResponse `
         -Mode Both `
-        -OutputPath ./artifacts/openapi-extracts/responses.extracted.openapi.json
-    ./scripts/specification/pipeline/Remove-OpenApiOmittedProperties.ps1 `
-        ./artifacts/openapi-extracts/responses.extracted.openapi.json
-    ./scripts/specification/pipeline/Inline-OpenApiReferences.ps1 `
-        ./artifacts/openapi-extracts/responses.extracted.omitted.openapi.json
-    ./scripts/specification/pipeline/Flatten-OpenApiAllOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.openapi.json
-    ./scripts/specification/pipeline/Simplify-OpenApiStringVariants.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/specification/pipeline/Simplify-OpenApiRecursiveSchemas.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
-    ./scripts/specification/pipeline/Split-OpenApiMultiValueTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
-    ./scripts/specification/pipeline/Add-OpenApiOneOfDiscriminators.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json
-    ./scripts/specification/pipeline/Normalize-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
-    ./scripts/specification/pipeline/Flatten-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/specification/pipeline/Wrap-OpenApiSingletonTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
-    ./scripts/specification/pipeline/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
-    Noninteractively extracts both sides, removes omitted properties, inlines
-    references, then simplifies, normalizes, and sorts in twelve explicit stages.
+        -OutputPath ./artifacts/custom.extracted.openapi.json
+    Noninteractively extracts both sides to a caller-selected standalone path.
+    Generate-OpenApi.ps1 owns the numbered top-level pipeline artifacts.
 #>
 
 #Requires -Version 7.0

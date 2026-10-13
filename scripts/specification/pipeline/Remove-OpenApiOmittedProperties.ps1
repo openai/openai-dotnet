@@ -18,9 +18,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Remove-OpenApiOmittedProperties.ps1 `
-        ./artifacts/openapi-extracts/responses.extracted.openapi.json
-    ./scripts/specification/pipeline/Inline-OpenApiReferences.ps1 `
-        ./artifacts/openapi-extracts/responses.extracted.omitted.openapi.json
+        ./artifacts/custom.openapi.json `
+        -OutputPath ./artifacts/custom.omitted.openapi.json
 #>
 
 #Requires -Version 7.0

@@ -110,14 +110,6 @@ try {
     Invoke-Test "dot-sourcing exposes componentizer functions without running the CLI" {
         Assert-True ($null -ne (Get-Command ConvertTo-ComponentizedOpenApiDocument -ErrorAction SilentlyContinue)) "Conversion function was not defined."
         Assert-True ($null -ne (Get-Command Invoke-OpenApiObjectSchemaComponentizer -ErrorAction SilentlyContinue)) "CLI function was not defined."
-        Assert-Equal `
-            ([System.IO.Path]::GetFullPath("./specification/openapi/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json")) `
-            $script:DefaultComponentizerInputPath `
-            "Canonical input path was incorrect."
-        Assert-Equal `
-            ([System.IO.Path]::GetFullPath("./specification/openapi/responses.componentized.openapi.json")) `
-            $script:DefaultComponentizerOutputPath `
-            "Canonical output path was incorrect."
     }
 
     Invoke-Test "name tokens use context-specific casing" {

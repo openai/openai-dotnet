@@ -19,9 +19,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Inline-OpenApiReferences.ps1 `
-        ./artifacts/openapi-extracts/responses.extracted.omitted.openapi.json
-    ./scripts/specification/pipeline/Flatten-OpenApiAllOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.openapi.json
+        ./artifacts/custom.openapi.json `
+        -OutputPath ./artifacts/custom.inlined.openapi.json
 #>
 
 #Requires -Version 7.0

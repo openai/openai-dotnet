@@ -25,7 +25,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Wrap-OpenApiSingletonTypeEnums.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+        ./artifacts/custom.oneof-flattened.openapi.json `
+        -OutputPath ./artifacts/custom.singleton-type-wrapped.openapi.json
 #>
 
 #Requires -Version 7.0

@@ -1,28 +1,33 @@
 <#
 .SYNOPSIS
-    Refactors the Responses OpenAPI document into discriminator inheritance.
+    Refactors one feature-area OpenAPI document into discriminator inheritance.
 
 .DESCRIPTION
-    Reads responses.openapi.json by default, refactors componentized
-    discriminator oneOf schemas into base/derived allOf inheritance, canonically
-    sorts the result, retains both stage artifacts, and atomically republishes
-    the inherited-sorted document as responses.openapi.json.
+    Reads the feature alias by default, refactors componentized discriminator
+    oneOf schemas into base/derived allOf inheritance, canonically sorts the
+    result, retains numbered stage artifacts 14 and 15, and atomically
+    republishes the sorted result to the feature alias.
+
+.PARAMETER FeatureArea
+    Lowercase kebab-case feature name used for the output directory and artifact
+    prefix.
 
 .PARAMETER InputPath
-    The componentized Responses OpenAPI input. Defaults to responses.openapi.json
-    in OutputDirectory.
+    Componentized OpenAPI input. Defaults to the feature alias beneath
+    <OutputRoot>/<FeatureArea>.
 
-.PARAMETER OutputDirectory
-    Directory receiving retained stage artifacts and responses.openapi.json.
-    Defaults to specification/openapi.
-
-.EXAMPLE
-    ./scripts/specification/Inherit-ResponsesOpenApi.ps1
+.PARAMETER OutputRoot
+    Root directory beneath which the feature-area directory is created. Defaults
+    to specification/openapi.
 
 .EXAMPLE
-    ./scripts/specification/Inherit-ResponsesOpenApi.ps1 `
+    ./scripts/specification/Inherit-OpenApi.ps1 -FeatureArea responses
+
+.EXAMPLE
+    ./scripts/specification/Inherit-OpenApi.ps1 `
+        -FeatureArea responses `
         -InputPath ./artifacts/source/responses.openapi.json `
-        -OutputDirectory ./artifacts/inherited
+        -OutputRoot ./artifacts/openapi
 #>
 
 #Requires -Version 7.0
@@ -30,37 +35,43 @@
 [CmdletBinding()]
 param(
     [Parameter()]
+    [string]$FeatureArea,
+
+    [Parameter()]
     [string]$InputPath,
 
     [Parameter()]
-    [string]$OutputDirectory
+    [string]$OutputRoot
 )
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. (Join-Path $PSScriptRoot "pipeline" "_ResponsesOpenApiPipeline.Helpers.ps1")
+. (Join-Path $PSScriptRoot "pipeline" "_OpenApiPipeline.Helpers.ps1")
 
 $script:RepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".."))
 $script:PipelineDirectory = Join-Path $PSScriptRoot "pipeline"
-$script:DefaultOutputDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
+$script:DefaultOutputRoot = Join-Path $script:RepositoryRoot "specification" "openapi"
 
-function Invoke-ResponsesOpenApiInheritance {
+function Invoke-OpenApiInheritance {
     param(
+        [Parameter(Mandatory = $true)]
+        [string]$FeatureArea,
+
         [Parameter()]
         [string]$InputPath,
 
         [Parameter(Mandatory = $true)]
-        [string]$OutputDirectory
+        [string]$OutputRoot
     )
 
-    $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
+    $paths = Get-OpenApiArtifactPaths -FeatureArea $FeatureArea -OutputRoot $OutputRoot
     if ([string]::IsNullOrWhiteSpace($InputPath)) {
         $InputPath = $paths.Final
     }
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
     if (-not [System.IO.File]::Exists($resolvedInputPath)) {
-        throw "The componentized Responses OpenAPI input path is not a file: $resolvedInputPath"
+        throw "The componentized '$FeatureArea' OpenAPI input path is not a file: $resolvedInputPath"
     }
 
     $stageScriptNames = @(
@@ -85,15 +96,15 @@ function Invoke-ResponsesOpenApiInheritance {
 
     foreach ($artifactPath in @($paths.DiscriminatorInherited, $paths.DiscriminatorInheritedSorted)) {
         if (-not [System.IO.File]::Exists($artifactPath)) {
-            throw "The Responses OpenAPI inheritance pipeline did not produce '$artifactPath'."
+            throw "The '$FeatureArea' OpenAPI inheritance pipeline did not produce '$artifactPath'."
         }
     }
-    $null = Publish-ResponsesOpenApiArtifact `
+    $null = Publish-OpenApiArtifact `
         -SourcePath $paths.DiscriminatorInheritedSorted `
         -DestinationPath $paths.Final
 
     Write-Host ""
-    Write-Host "Responses OpenAPI inheritance complete."
+    Write-Host "OpenAPI inheritance complete for '$FeatureArea'."
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Inherited output: $($paths.DiscriminatorInherited)"
     Write-Host "Inherited sorted output: $($paths.DiscriminatorInheritedSorted)"
@@ -103,10 +114,14 @@ function Invoke-ResponsesOpenApiInheritance {
 }
 
 if ($MyInvocation.InvocationName -ne ".") {
-    if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
-        $OutputDirectory = $script:DefaultOutputDirectory
+    if ([string]::IsNullOrWhiteSpace($FeatureArea)) {
+        throw "FeatureArea is required."
     }
-    $null = Invoke-ResponsesOpenApiInheritance `
+    if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
+        $OutputRoot = $script:DefaultOutputRoot
+    }
+    $null = Invoke-OpenApiInheritance `
+        -FeatureArea $FeatureArea `
         -InputPath $InputPath `
-        -OutputDirectory $OutputDirectory
+        -OutputRoot $OutputRoot
 }

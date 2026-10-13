@@ -28,7 +28,8 @@
 
 .EXAMPLE
     ./scripts/specification/pipeline/Add-OpenApiOneOfDiscriminators.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json
+        ./artifacts/custom.type-enum-split.openapi.json `
+        -OutputPath ./artifacts/custom.oneof-discriminated.openapi.json
 #>
 
 #Requires -Version 7.0

@@ -9,26 +9,19 @@
     map is never read; successful generation atomically replaces it.
 
 .PARAMETER InputPath
-    The inherited and sorted OpenAPI JSON document. Defaults to
-    specification/openapi/responses.componentized.discriminator-inherited.sorted.openapi.json.
+    The inherited and sorted OpenAPI JSON document.
 
 .PARAMETER DefaultMapPath
-    The generated JSON map. Defaults to
-    specification/openapi/responses.component-default-map.json.
+    The generated JSON map destination.
 
 .PARAMETER PolicyMapPath
-    The optional manually maintained policy map. Defaults to
-    specification/openapi/responses.component-policy-map.json. A missing file
-    means that no policy has been defined.
-
-.EXAMPLE
-    ./scripts/specification/pipeline/Generate-OpenApiComponentDefaultMap.ps1
+    An optional manually maintained policy map. A missing or omitted file means
+    that no policy has been defined.
 
 .EXAMPLE
     ./scripts/specification/pipeline/Generate-OpenApiComponentDefaultMap.ps1 `
-        ./artifacts/responses.componentized.openapi.json `
-        -DefaultMapPath ./artifacts/responses.component-default-map.json `
-        -PolicyMapPath ./artifacts/responses.component-policy-map.json
+        ./artifacts/custom.inherited.sorted.openapi.json `
+        -DefaultMapPath ./artifacts/custom.component-default-map.json
 #>
 
 #Requires -Version 7.0
@@ -58,9 +51,6 @@ foreach ($path in @($helperPath, $componentMapHelperPath)) {
 }
 
 $script:ComponentMapRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultComponentMapInputPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.componentized.discriminator-inherited.sorted.openapi.json"
-$script:DefaultComponentDefaultMapPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.component-default-map.json"
-$script:DefaultComponentPolicyMapPath = Join-Path $script:ComponentMapRepositoryRoot "specification" "openapi" "responses.component-policy-map.json"
 
 function Resolve-ComponentMapRepositoryPath {
     param(
@@ -76,46 +66,35 @@ function Resolve-ComponentMapRepositoryPath {
 
 function Invoke-OpenApiComponentDefaultMapGeneration {
     param(
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$InputPath,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$DefaultMapPath,
 
         [Parameter()]
         [string]$PolicyMapPath
     )
 
-    if ([string]::IsNullOrWhiteSpace($InputPath)) {
-        $InputPath = $script:DefaultComponentMapInputPath
-    }
-    else {
-        $InputPath = Resolve-ComponentMapRepositoryPath -Path $InputPath
-    }
+    $InputPath = Resolve-ComponentMapRepositoryPath -Path $InputPath
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).ProviderPath
     if (-not [System.IO.File]::Exists($resolvedInputPath)) {
         throw "The componentized OpenAPI input path is not a file: $resolvedInputPath"
     }
 
-    if ([string]::IsNullOrWhiteSpace($DefaultMapPath)) {
-        $DefaultMapPath = $script:DefaultComponentDefaultMapPath
-    }
-    else {
-        $DefaultMapPath = Resolve-ComponentMapRepositoryPath -Path $DefaultMapPath
-    }
-    if ([string]::IsNullOrWhiteSpace($PolicyMapPath)) {
-        $PolicyMapPath = $script:DefaultComponentPolicyMapPath
-    }
-    else {
+    $DefaultMapPath = Resolve-ComponentMapRepositoryPath -Path $DefaultMapPath
+    if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath)) {
         $PolicyMapPath = Resolve-ComponentMapRepositoryPath -Path $PolicyMapPath
     }
-    if (Test-Path -LiteralPath $PolicyMapPath -PathType Container) {
+    if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and
+        (Test-Path -LiteralPath $PolicyMapPath -PathType Container)) {
         throw "The component policy map path is not a file: $PolicyMapPath"
     }
 
     $document = Read-OpenApiDocument -Path $resolvedInputPath
     $null = Assert-OpenApiDiscriminatorMappings -Document $document
-    $policyMap = if ([System.IO.File]::Exists($PolicyMapPath)) {
+    $policyMap = if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and
+        [System.IO.File]::Exists($PolicyMapPath)) {
         Read-OpenApiComponentPolicyMap -Path $PolicyMapPath
     }
     else {
@@ -126,7 +105,7 @@ function Invoke-OpenApiComponentDefaultMapGeneration {
 
     Write-Host ""
     Write-Host "Input: $resolvedInputPath"
-    Write-Host "Policy map: $(if ([System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { '<none>' })"
+    Write-Host "Policy map: $(if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and [System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { '<none>' })"
     Write-Host "Default map: $writtenPath"
     Write-Host "Components scanned: $($plan.ComponentCount)"
     Write-Host "Policy components: $($plan.PolicyComponentCount)"
@@ -139,7 +118,7 @@ function Invoke-OpenApiComponentDefaultMapGeneration {
     return [PSCustomObject]@{
         DefaultMap = $plan.DefaultMap
         DefaultMapPath = $writtenPath
-        PolicyMapPath = if ([System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { $null }
+        PolicyMapPath = if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and [System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { $null }
         ComponentCount = $plan.ComponentCount
         PolicyComponentCount = $plan.PolicyComponentCount
         DefaultGroupCount = $plan.DefaultMap.groups.Count
@@ -151,6 +130,12 @@ function Invoke-OpenApiComponentDefaultMapGeneration {
 }
 
 if ($MyInvocation.InvocationName -ne ".") {
+    if ([string]::IsNullOrWhiteSpace($InputPath)) {
+        throw "InputPath is required."
+    }
+    if ([string]::IsNullOrWhiteSpace($DefaultMapPath)) {
+        throw "DefaultMapPath is required."
+    }
     $null = Invoke-OpenApiComponentDefaultMapGeneration `
         -InputPath $InputPath `
         -DefaultMapPath $DefaultMapPath `

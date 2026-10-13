@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Runs focused tests for scripts/specification/Finalize-ResponsesOpenApi.ps1.
+    Runs focused tests for scripts/specification/Finalize-OpenApi.ps1.
 #>
 
 [CmdletBinding()]
@@ -9,15 +9,16 @@ param()
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$scriptPath = Join-Path $PSScriptRoot ".." "Finalize-ResponsesOpenApi.ps1"
+$scriptPath = Join-Path $PSScriptRoot ".." "Finalize-OpenApi.ps1"
 . $scriptPath
 . (Join-Path $PSScriptRoot ".." "pipeline" "_OpenApiDocument.Helpers.ps1")
 . (Join-Path $PSScriptRoot "_OpenApiComponentDeduplicationTest.Helpers.ps1")
 Initialize-OpenApiComponentDeduplicationTestState
 
 $fixturePath = Get-TestDeduplicationFixturePath
-$temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "finalize-responses-openapi-$([Guid]::NewGuid().ToString('N'))"
+$temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "finalize-openapi-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
+$script:TestFeatureArea = "responses"
 
 function New-FinalizationTestDocument {
     $document = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
@@ -30,10 +31,10 @@ function New-FinalizationTestDocument {
 }
 
 function Initialize-FinalizationOutput {
-    param([string]$OutputDirectory)
+    param([string]$OutputRoot)
 
-    $null = [System.IO.Directory]::CreateDirectory($OutputDirectory)
-    $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
+    $paths = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $OutputRoot
+    $null = [System.IO.Directory]::CreateDirectory($paths.OutputDirectory)
     $document = New-FinalizationTestDocument
     $null = Write-OpenApiJsonFile -Document $document -Path $paths.DiscriminatorInheritedSorted
     $null = Write-OpenApiJsonFile -Document $document -Path $paths.Final
@@ -49,17 +50,17 @@ function Read-FinalizationJson {
 
 try {
     Invoke-Test "dot-sourcing defines finalization without running it" {
-        Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiFinalization -ErrorAction SilentlyContinue)) "Finalization function was not defined."
-        Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
-        Assert-True ($null -ne (Get-Command Publish-ResponsesOpenApiArtifact -ErrorAction SilentlyContinue)) "Shared publisher was not defined."
-        Assert-True ((Get-Command Invoke-ResponsesOpenApiFinalization).Parameters.ContainsKey("InputPath")) "Finalization does not expose an optional input path."
-        Assert-True (-not (Get-Command Invoke-ResponsesOpenApiFinalization).Parameters.ContainsKey("ResetDeduplicationMap")) "Finalization still exposes reset policy."
+        Assert-True ($null -ne (Get-Command Invoke-OpenApiFinalization -ErrorAction SilentlyContinue)) "Finalization function was not defined."
+        Assert-True ($null -ne (Get-Command Get-OpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
+        Assert-True ($null -ne (Get-Command Publish-OpenApiArtifact -ErrorAction SilentlyContinue)) "Shared publisher was not defined."
+        Assert-True ((Get-Command Invoke-OpenApiFinalization).Parameters.ContainsKey("InputPath")) "Finalization does not expose an optional input path."
+        Assert-True (-not (Get-Command Invoke-OpenApiFinalization).Parameters.ContainsKey("ResetDeduplicationMap")) "Finalization still exposes reset policy."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly finalized output."
     }
 
     Invoke-Test "production defaults and downstream stages are correct" {
         $expectedDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
-        Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputDirectory)) "Default output directory was incorrect."
+        Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputRoot)) "Default output root was incorrect."
         foreach ($stageScriptName in @(
             "Generate-OpenApiComponentDefaultMap.ps1",
             "Deduplicate-OpenApiComponents.ps1"
@@ -68,17 +69,17 @@ try {
             Assert-True (Test-Path -LiteralPath $stageScriptPath -PathType Leaf) "Required stage script was not found: $stageScriptPath"
         }
 
-        $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $expectedDirectory
-        Assert-Equal "responses.componentized.discriminator-inherited.sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Retained inherited name was incorrect."
+        $paths = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $expectedDirectory
+        Assert-Equal "responses.15.inherited-document-sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Retained inherited name was incorrect."
         Assert-Equal "responses.component-default-map.json" ([System.IO.Path]::GetFileName($paths.DefaultComponentMap)) "Default map name was incorrect."
         Assert-Equal "responses.component-policy-map.json" ([System.IO.Path]::GetFileName($paths.PolicyComponentMap)) "Policy map name was incorrect."
-        Assert-Equal "responses.componentized.deduplicated.openapi.json" ([System.IO.Path]::GetFileName($paths.Deduplicated)) "Deduplicated output name was incorrect."
+        Assert-Equal "responses.16.components-deduplicated.openapi.json" ([System.IO.Path]::GetFileName($paths.Deduplicated)) "Deduplicated output name was incorrect."
         Assert-Equal "responses.openapi.json" ([System.IO.Path]::GetFileName($paths.Final)) "Final output name was incorrect."
     }
 
     Invoke-Test "standalone finalization creates map deduplicated output and final alias" {
-        $outputDirectory = Join-Path $temporaryDirectory "fresh"
-        $paths = Initialize-FinalizationOutput -OutputDirectory $outputDirectory
+        $outputRoot = Join-Path $temporaryDirectory "fresh"
+        $paths = Initialize-FinalizationOutput -OutputRoot $outputRoot
         [byte[]]$inheritedBytes = [System.IO.File]::ReadAllBytes($paths.DiscriminatorInheritedSorted)
         Assert-BytesEqual $inheritedBytes ([System.IO.File]::ReadAllBytes($paths.Final)) "Initial alias differs from the inherited handoff."
 
@@ -88,11 +89,12 @@ try {
             -NoProfile `
             -NonInteractive `
             -File $scriptPath `
-            -OutputDirectory $outputDirectory
+            -FeatureArea $script:TestFeatureArea `
+            -OutputRoot $outputRoot
         if ($LASTEXITCODE -ne 0) {
             throw "Finalize CLI failed with exit code $LASTEXITCODE."
         }
-        $result = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+        $result = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot
         foreach ($artifactPath in @($result.DefaultComponentMap, $result.Deduplicated, $result.Final)) {
             Assert-True ([System.IO.File]::Exists($artifactPath)) "Finalization artifact was not created: $artifactPath"
         }
@@ -112,9 +114,10 @@ try {
         [byte[]]$defaultBytes = [System.IO.File]::ReadAllBytes($result.DefaultComponentMap)
         [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($result.Deduplicated)
         [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($result.Final)
-        $null = Invoke-ResponsesOpenApiFinalization `
+        $null = Invoke-OpenApiFinalization `
+            -FeatureArea $script:TestFeatureArea `
             -InputPath $result.DiscriminatorInheritedSorted `
-            -OutputDirectory $outputDirectory `
+            -OutputRoot $outputRoot `
             6>$null
         Assert-BytesEqual $defaultBytes ([System.IO.File]::ReadAllBytes($result.DefaultComponentMap)) "Repeated finalization changed default-map bytes."
         Assert-BytesEqual $deduplicatedBytes ([System.IO.File]::ReadAllBytes($result.Deduplicated)) "Repeated finalization changed deduplicated bytes."
@@ -122,9 +125,9 @@ try {
     }
 
     Invoke-Test "default edits are discarded while policy edits persist" {
-        $outputDirectory = Join-Path $temporaryDirectory "reviewed"
-        $paths = Initialize-FinalizationOutput -OutputDirectory $outputDirectory
-        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
+        $outputRoot = Join-Path $temporaryDirectory "reviewed"
+        $paths = Initialize-FinalizationOutput -OutputRoot $outputRoot
+        $null = Invoke-OpenApiFinalization -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot 6>$null
         [byte[]]$inheritedBytes = [System.IO.File]::ReadAllBytes($paths.DiscriminatorInheritedSorted)
 
         $defaultMap = Read-FinalizationJson -Path $paths.DefaultComponentMap
@@ -132,9 +135,10 @@ try {
         $leafGroup.id = "DiscardedEdit"
         $null = Write-OpenApiJsonFile -Document $defaultMap -Path $paths.DefaultComponentMap
 
-        $null = Invoke-ResponsesOpenApiFinalization `
+        $null = Invoke-OpenApiFinalization `
+            -FeatureArea $script:TestFeatureArea `
             -InputPath $paths.DiscriminatorInheritedSorted `
-            -OutputDirectory $outputDirectory `
+            -OutputRoot $outputRoot `
             6>$null
         Assert-BytesEqual $inheritedBytes ([System.IO.File]::ReadAllBytes($paths.DiscriminatorInheritedSorted)) "Map-only finalization changed the inherited input."
         $regeneratedMap = Read-FinalizationJson -Path $paths.DefaultComponentMap
@@ -152,9 +156,10 @@ try {
         }
         $null = Write-OpenApiJsonFile -Document $policy -Path $paths.PolicyComponentMap
         [byte[]]$policyBytes = [System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)
-        $null = Invoke-ResponsesOpenApiFinalization `
+        $null = Invoke-OpenApiFinalization `
+            -FeatureArea $script:TestFeatureArea `
             -InputPath $paths.DiscriminatorInheritedSorted `
-            -OutputDirectory $outputDirectory `
+            -OutputRoot $outputRoot `
             6>$null
         Assert-BytesEqual $policyBytes ([System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)) "Finalization rewrote policy bytes."
         $reviewedDocument = Read-FinalizationJson -Path $paths.Deduplicated
@@ -164,18 +169,19 @@ try {
 
     Invoke-Test "explicit input supports cross-directory finalization" {
         $inputDirectory = Join-Path $temporaryDirectory "source"
-        $outputDirectory = Join-Path $temporaryDirectory "cross-directory"
+        $outputRoot = Join-Path $temporaryDirectory "cross-directory"
         $null = [System.IO.Directory]::CreateDirectory($inputDirectory)
-        $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
         $inputPath = Join-Path $inputDirectory "responses.openapi.json"
         $null = Write-OpenApiJsonFile -Document (New-FinalizationTestDocument) -Path $inputPath
         [byte[]]$inputBytes = [System.IO.File]::ReadAllBytes($inputPath)
-        $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+        $paths = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot
+        $null = [System.IO.Directory]::CreateDirectory($paths.OutputDirectory)
         [System.IO.File]::WriteAllText($paths.DiscriminatorInheritedSorted, "upstream-sentinel", [System.Text.UTF8Encoding]::new($false))
 
-        $result = Invoke-ResponsesOpenApiFinalization `
+        $result = Invoke-OpenApiFinalization `
+            -FeatureArea $script:TestFeatureArea `
             -InputPath $inputPath `
-            -OutputDirectory $outputDirectory `
+            -OutputRoot $outputRoot `
             6>$null
         Assert-BytesEqual $inputBytes ([System.IO.File]::ReadAllBytes($inputPath)) "Cross-directory finalization modified its input."
         Assert-Equal "upstream-sentinel" ([System.IO.File]::ReadAllText($paths.DiscriminatorInheritedSorted)) "Cross-directory finalization modified a retained upstream artifact."
@@ -183,9 +189,9 @@ try {
     }
 
     Invoke-Test "invalid policy preserves policy generated map and published outputs" {
-        $outputDirectory = Join-Path $temporaryDirectory "invalid-policy"
-        $paths = Initialize-FinalizationOutput -OutputDirectory $outputDirectory
-        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
+        $outputRoot = Join-Path $temporaryDirectory "invalid-policy"
+        $paths = Initialize-FinalizationOutput -OutputRoot $outputRoot
+        $null = Invoke-OpenApiFinalization -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot 6>$null
         [byte[]]$defaultBytes = [System.IO.File]::ReadAllBytes($paths.DefaultComponentMap)
         [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($paths.Deduplicated)
         [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
@@ -193,7 +199,7 @@ try {
         [byte[]]$policyBytes = [System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)
 
         Assert-Throws {
-            Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
+            Invoke-OpenApiFinalization -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot 6>$null
         } "*Could not parse component policy map JSON*"
         Assert-BytesEqual $policyBytes ([System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)) "Failed finalization changed policy bytes."
         Assert-BytesEqual $defaultBytes ([System.IO.File]::ReadAllBytes($paths.DefaultComponentMap)) "Failed finalization changed default bytes."
@@ -203,9 +209,9 @@ try {
 
     Invoke-Test "default alias input preflight protects component maps" {
         foreach ($case in @("missing", "directory")) {
-            $outputDirectory = Join-Path $temporaryDirectory "preflight-$case"
-            $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
-            $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
+            $outputRoot = Join-Path $temporaryDirectory "preflight-$case"
+            $paths = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot
+            $null = [System.IO.Directory]::CreateDirectory($paths.OutputDirectory)
             [System.IO.File]::WriteAllText($paths.DefaultComponentMap, "default", [System.Text.UTF8Encoding]::new($false))
             [System.IO.File]::WriteAllText($paths.PolicyComponentMap, "policy", [System.Text.UTF8Encoding]::new($false))
             if ($case -eq "directory") {
@@ -214,7 +220,7 @@ try {
 
             $expectedMessage = if ($case -eq "missing") { "*does not exist*" } else { "*is not a file*" }
             Assert-Throws {
-                Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory
+                Invoke-OpenApiFinalization -FeatureArea $script:TestFeatureArea -OutputRoot $outputRoot
             } $expectedMessage
             Assert-Equal "default" ([System.IO.File]::ReadAllText($paths.DefaultComponentMap)) "Input preflight changed the default map for '$case'."
             Assert-Equal "policy" ([System.IO.File]::ReadAllText($paths.PolicyComponentMap)) "Input preflight changed the policy map for '$case'."

@@ -10,24 +10,23 @@
     relocated. Neither map is modified by this command.
 
 .PARAMETER InputPath
-    The inherited and sorted OpenAPI document. Defaults to
-    specification/openapi/responses.componentized.discriminator-inherited.sorted.openapi.json.
+    The inherited and sorted OpenAPI document.
 
 .PARAMETER DefaultMapPath
-    The generated default map. Defaults to
-    specification/openapi/responses.component-default-map.json.
+    The generated default map.
 
 .PARAMETER PolicyMapPath
-    The optional manual policy map. Defaults to
-    specification/openapi/responses.component-policy-map.json.
+    An optional manual policy map. A missing or omitted file means that no policy
+    has been defined.
 
 .PARAMETER OutputPath
-    The deduplicated OpenAPI destination. Defaults to
-    specification/openapi/responses.componentized.deduplicated.openapi.json.
+    The deduplicated OpenAPI destination.
 
 .EXAMPLE
-    ./scripts/specification/pipeline/Generate-OpenApiComponentDefaultMap.ps1
-    ./scripts/specification/pipeline/Deduplicate-OpenApiComponents.ps1
+    ./scripts/specification/pipeline/Deduplicate-OpenApiComponents.ps1 `
+        ./artifacts/custom.inherited.sorted.openapi.json `
+        -DefaultMapPath ./artifacts/custom.component-default-map.json `
+        -OutputPath ./artifacts/custom.deduplicated.openapi.json
 #>
 
 #Requires -Version 7.0
@@ -60,10 +59,6 @@ foreach ($path in @($helperPath, $deduplicationHelperPath)) {
 }
 
 $script:ComponentDeduplicatorRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".." ".."))
-$script:DefaultComponentDeduplicatorInputPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.componentized.discriminator-inherited.sorted.openapi.json"
-$script:DefaultComponentDeduplicatorDefaultMapPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.component-default-map.json"
-$script:DefaultComponentDeduplicatorPolicyMapPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.component-policy-map.json"
-$script:DefaultComponentDeduplicatorOutputPath = Join-Path $script:ComponentDeduplicatorRepositoryRoot "specification" "openapi" "responses.componentized.deduplicated.openapi.json"
 
 # Keep path behavior aligned with the componentizer: CLI paths are repository-
 # relative by default, while tests and external automation may pass absolutes.
@@ -282,43 +277,25 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
 # state, writes one output, and never modifies either map.
 function Invoke-OpenApiComponentDeduplicator {
     param(
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$InputPath,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$DefaultMapPath,
 
         [Parameter()]
         [string]$PolicyMapPath,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string]$OutputPath
     )
 
-    if ([string]::IsNullOrWhiteSpace($InputPath)) {
-        $InputPath = $script:DefaultComponentDeduplicatorInputPath
-    }
-    else {
-        $InputPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $InputPath
-    }
-    if ([string]::IsNullOrWhiteSpace($DefaultMapPath)) {
-        $DefaultMapPath = $script:DefaultComponentDeduplicatorDefaultMapPath
-    }
-    else {
-        $DefaultMapPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $DefaultMapPath
-    }
-    if ([string]::IsNullOrWhiteSpace($PolicyMapPath)) {
-        $PolicyMapPath = $script:DefaultComponentDeduplicatorPolicyMapPath
-    }
-    else {
+    $InputPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $InputPath
+    $DefaultMapPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $DefaultMapPath
+    if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath)) {
         $PolicyMapPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $PolicyMapPath
     }
-    if ([string]::IsNullOrWhiteSpace($OutputPath)) {
-        $OutputPath = $script:DefaultComponentDeduplicatorOutputPath
-    }
-    else {
-        $OutputPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $OutputPath
-    }
+    $OutputPath = Resolve-ComponentDeduplicatorRepositoryPath -Path $OutputPath
 
     # Resolve required inputs before conversion so path/parse failures cannot
     # leave a partially written destination.
@@ -330,13 +307,15 @@ function Invoke-OpenApiComponentDeduplicator {
     if (-not [System.IO.File]::Exists($resolvedDefaultMapPath)) {
         throw "The component default map path is not a file: $resolvedDefaultMapPath"
     }
-    if (Test-Path -LiteralPath $PolicyMapPath -PathType Container) {
+    if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and
+        (Test-Path -LiteralPath $PolicyMapPath -PathType Container)) {
         throw "The component policy map path is not a file: $PolicyMapPath"
     }
 
     $document = Read-OpenApiDocument -Path $resolvedInputPath
     $defaultMap = Read-OpenApiComponentDefaultMap -Path $resolvedDefaultMapPath
-    $policyMap = if ([System.IO.File]::Exists($PolicyMapPath)) {
+    $policyMap = if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and
+        [System.IO.File]::Exists($PolicyMapPath)) {
         Read-OpenApiComponentPolicyMap -Path $PolicyMapPath
     }
     else {
@@ -351,7 +330,7 @@ function Invoke-OpenApiComponentDeduplicator {
     Write-Host ""
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Default map: $resolvedDefaultMapPath"
-    Write-Host "Policy map: $(if ([System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { '<none>' })"
+    Write-Host "Policy map: $(if (-not [string]::IsNullOrWhiteSpace($PolicyMapPath) -and [System.IO.File]::Exists($PolicyMapPath)) { $PolicyMapPath } else { '<none>' })"
     Write-Host "Output: $writtenPath"
     Write-Host "Logical groups applied: $($result.AppliedGroupCount)"
     Write-Host "Components removed: $($result.RemovedComponentCount)"
@@ -379,6 +358,15 @@ function Invoke-OpenApiComponentDeduplicator {
 }
 
 if ($MyInvocation.InvocationName -ne ".") {
+    if ([string]::IsNullOrWhiteSpace($InputPath)) {
+        throw "InputPath is required."
+    }
+    if ([string]::IsNullOrWhiteSpace($DefaultMapPath)) {
+        throw "DefaultMapPath is required."
+    }
+    if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+        throw "OutputPath is required."
+    }
     $null = Invoke-OpenApiComponentDeduplicator `
         -InputPath $InputPath `
         -DefaultMapPath $DefaultMapPath `
