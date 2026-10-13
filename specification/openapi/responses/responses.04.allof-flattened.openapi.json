@@ -59,24 +59,18 @@
                   "top_logprobs": {
                     "anyOf": [
                       {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 20
+                        "type": "integer"
                       },
                       {
                         "type": "null"
                       }
                     ],
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 20
+                    "type": "integer"
                   },
                   "temperature": {
                     "anyOf": [
                       {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 2
+                        "type": "number"
                       },
                       {
                         "type": "null"
@@ -86,9 +80,7 @@
                   "top_p": {
                     "anyOf": [
                       {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 1
+                        "type": "number"
                       },
                       {
                         "type": "null"
@@ -1108,9 +1100,7 @@
                               ]
                             },
                             "output_compression": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "maximum": 100
+                              "type": "integer"
                             },
                             "moderation": {
                               "type": "string",
@@ -1155,9 +1145,7 @@
                               "additionalProperties": false
                             },
                             "partial_images": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "maximum": 3
+                              "type": "integer"
                             },
                             "action": {
                               "type": "string",
@@ -5030,9 +5018,7 @@
                                                 ]
                                               },
                                               "output_compression": {
-                                                "type": "integer",
-                                                "minimum": 0,
-                                                "maximum": 100
+                                                "type": "integer"
                                               },
                                               "moderation": {
                                                 "type": "string",
@@ -5077,9 +5063,7 @@
                                                 "additionalProperties": false
                                               },
                                               "partial_images": {
-                                                "type": "integer",
-                                                "minimum": 0,
-                                                "maximum": 3
+                                                "type": "integer"
                                               },
                                               "action": {
                                                 "type": "string",
@@ -6600,9 +6584,7 @@
                                                 ]
                                               },
                                               "output_compression": {
-                                                "type": "integer",
-                                                "minimum": 0,
-                                                "maximum": 100
+                                                "type": "integer"
                                               },
                                               "moderation": {
                                                 "type": "string",
@@ -6647,9 +6629,7 @@
                                                 "additionalProperties": false
                                               },
                                               "partial_images": {
-                                                "type": "integer",
-                                                "minimum": 0,
-                                                "maximum": 3
+                                                "type": "integer"
                                               },
                                               "action": {
                                                 "type": "string",
@@ -9447,8 +9427,7 @@
                             "compact_threshold": {
                               "anyOf": [
                                 {
-                                  "type": "integer",
-                                  "minimum": 1000
+                                  "type": "integer"
                                 },
                                 {
                                   "type": "null"
@@ -9470,8 +9449,7 @@
                   "max_output_tokens": {
                     "anyOf": [
                       {
-                        "type": "integer",
-                        "minimum": 16
+                        "type": "integer"
                       },
                       {
                         "type": "null"

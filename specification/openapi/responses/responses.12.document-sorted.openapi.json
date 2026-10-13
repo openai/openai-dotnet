@@ -69,8 +69,7 @@
                             "compact_threshold": {
                               "anyOf": [
                                 {
-                                  "type": "integer",
-                                  "minimum": 1000
+                                  "type": "integer"
                                 },
                                 {
                                   "type": "null"
@@ -719,9 +718,7 @@
                                             ]
                                           },
                                           "output_compression": {
-                                            "type": "integer",
-                                            "maximum": 100,
-                                            "minimum": 0
+                                            "type": "integer"
                                           },
                                           "output_format": {
                                             "type": "string",
@@ -732,9 +729,7 @@
                                             ]
                                           },
                                           "partial_images": {
-                                            "type": "integer",
-                                            "maximum": 3,
-                                            "minimum": 0
+                                            "type": "integer"
                                           },
                                           "quality": {
                                             "type": "string",
@@ -5848,9 +5843,7 @@
                                             ]
                                           },
                                           "output_compression": {
-                                            "type": "integer",
-                                            "maximum": 100,
-                                            "minimum": 0
+                                            "type": "integer"
                                           },
                                           "output_format": {
                                             "type": "string",
@@ -5861,9 +5854,7 @@
                                             ]
                                           },
                                           "partial_images": {
-                                            "type": "integer",
-                                            "maximum": 3,
-                                            "minimum": 0
+                                            "type": "integer"
                                           },
                                           "quality": {
                                             "type": "string",
@@ -7040,8 +7031,7 @@
                   "max_output_tokens": {
                     "anyOf": [
                       {
-                        "type": "integer",
-                        "minimum": 16
+                        "type": "integer"
                       },
                       {
                         "type": "null"
@@ -7696,9 +7686,7 @@
                   "temperature": {
                     "anyOf": [
                       {
-                        "type": "number",
-                        "maximum": 2,
-                        "minimum": 0
+                        "type": "number"
                       },
                       {
                         "type": "null"
@@ -8606,9 +8594,7 @@
                               ]
                             },
                             "output_compression": {
-                              "type": "integer",
-                              "maximum": 100,
-                              "minimum": 0
+                              "type": "integer"
                             },
                             "output_format": {
                               "type": "string",
@@ -8619,9 +8605,7 @@
                               ]
                             },
                             "partial_images": {
-                              "type": "integer",
-                              "maximum": 3,
-                              "minimum": 0
+                              "type": "integer"
                             },
                             "quality": {
                               "type": "string",
@@ -9598,23 +9582,17 @@
                     "type": "integer",
                     "anyOf": [
                       {
-                        "type": "integer",
-                        "maximum": 20,
-                        "minimum": 0
+                        "type": "integer"
                       },
                       {
                         "type": "null"
                       }
-                    ],
-                    "maximum": 20,
-                    "minimum": 0
+                    ]
                   },
                   "top_p": {
                     "anyOf": [
                       {
-                        "type": "number",
-                        "maximum": 1,
-                        "minimum": 0
+                        "type": "number"
                       },
                       {
                         "type": "null"

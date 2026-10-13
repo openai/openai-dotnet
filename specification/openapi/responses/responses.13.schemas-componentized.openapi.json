@@ -121,8 +121,7 @@
           "max_output_tokens": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 16
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -286,9 +285,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "maximum": 2,
-                "minimum": 0
+                "type": "number"
               },
               {
                 "type": "null"
@@ -311,23 +308,17 @@
             "type": "integer",
             "anyOf": [
               {
-                "type": "integer",
-                "maximum": 20,
-                "minimum": 0
+                "type": "integer"
               },
               {
                 "type": "null"
               }
-            ],
-            "maximum": 20,
-            "minimum": 0
+            ]
           },
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "maximum": 1,
-                "minimum": 0
+                "type": "number"
               },
               {
                 "type": "null"
@@ -363,8 +354,7 @@
           "compact_threshold": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1000
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -1255,17 +1245,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
-            "type": "integer",
-            "maximum": 100,
-            "minimum": 0
+            "type": "integer"
           },
           "output_format": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
-            "type": "integer",
-            "maximum": 3,
-            "minimum": 0
+            "type": "integer"
           },
           "quality": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"
@@ -7315,17 +7301,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
-            "type": "integer",
-            "maximum": 100,
-            "minimum": 0
+            "type": "integer"
           },
           "output_format": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
-            "type": "integer",
-            "maximum": 3,
-            "minimum": 0
+            "type": "integer"
           },
           "quality": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"
@@ -10404,17 +10386,13 @@
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Moderation_enum"
           },
           "output_compression": {
-            "type": "integer",
-            "maximum": 100,
-            "minimum": 0
+            "type": "integer"
           },
           "output_format": {
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum"
           },
           "partial_images": {
-            "type": "integer",
-            "maximum": 3,
-            "minimum": 0
+            "type": "integer"
           },
           "quality": {
             "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Quality_enum"

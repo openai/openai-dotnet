@@ -448,9 +448,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 2
+                "type": "number"
               },
               {
                 "type": "null"
@@ -460,9 +458,7 @@
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               {
                 "type": "null"
@@ -589,9 +585,7 @@
             "type": "object",
             "properties": {
               "max_num_results": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 50
+                "type": "integer"
               },
               "ranking_options": {
                 "$ref": "#/components/schemas/FileSearchRankingOptions"
@@ -2152,9 +2146,7 @@
           },
           "seconds": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 3600,
-            "maximum": 2592000
+            "format": "int64"
           }
         },
         "required": [
@@ -4523,9 +4515,7 @@
                                       "additionalProperties": false,
                                       "properties": {
                                         "max_chunk_size_tokens": {
-                                          "type": "integer",
-                                          "minimum": 100,
-                                          "maximum": 4096
+                                          "type": "integer"
                                         },
                                         "chunk_overlap_tokens": {
                                           "type": "integer"
@@ -4577,9 +4567,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 2
+                "type": "number"
               },
               {
                 "type": "null"
@@ -4589,9 +4577,7 @@
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               {
                 "type": "null"
@@ -4686,14 +4672,10 @@
               },
               "frequency_penalty": {
                 "type": "number",
-                "minimum": -2,
-                "maximum": 2,
                 "nullable": true
               },
               "presence_penalty": {
                 "type": "number",
-                "minimum": -2,
-                "maximum": 2,
                 "nullable": true
               },
               "web_search_options": {
@@ -4725,8 +4707,6 @@
               },
               "top_logprobs": {
                 "type": "integer",
-                "minimum": 0,
-                "maximum": 20,
                 "nullable": true
               },
               "response_format": {
@@ -4808,8 +4788,6 @@
               },
               "n": {
                 "type": "integer",
-                "minimum": 1,
-                "maximum": 128,
                 "nullable": true
               },
               "prediction": {
@@ -4822,8 +4800,6 @@
               },
               "seed": {
                 "type": "integer",
-                "minimum": -9223372036854776000,
-                "maximum": 9223372036854776000,
                 "nullable": true,
                 "deprecated": true
               },
@@ -5157,8 +5133,6 @@
           },
           "best_of": {
             "type": "integer",
-            "minimum": 0,
-            "maximum": 20,
             "nullable": true
           },
           "echo": {
@@ -5167,8 +5141,6 @@
           },
           "frequency_penalty": {
             "type": "number",
-            "minimum": -2,
-            "maximum": 2,
             "nullable": true
           },
           "logit_bias": {
@@ -5180,25 +5152,18 @@
           },
           "logprobs": {
             "type": "integer",
-            "minimum": 0,
-            "maximum": 5,
             "nullable": true
           },
           "max_tokens": {
             "type": "integer",
-            "minimum": 0,
             "nullable": true
           },
           "n": {
             "type": "integer",
-            "minimum": 1,
-            "maximum": 128,
             "nullable": true
           },
           "presence_penalty": {
             "type": "number",
-            "minimum": -2,
-            "maximum": 2,
             "nullable": true
           },
           "seed": {
@@ -5222,14 +5187,10 @@
           },
           "temperature": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 2,
             "nullable": true
           },
           "top_p": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 1,
             "nullable": true
           },
           "user": {
@@ -5483,8 +5444,7 @@
             ]
           },
           "dimensions": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           },
           "user": {
             "type": "string"
@@ -6089,9 +6049,7 @@
                     ]
                   },
                   {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 256
+                    "type": "integer"
                   }
                 ]
               },
@@ -6105,7 +6063,6 @@
                   },
                   {
                     "type": "number",
-                    "minimum": 0,
                     "exclusiveMinimum": true
                   }
                 ]
@@ -6119,9 +6076,7 @@
                     ]
                   },
                   {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 50
+                    "type": "integer"
                   }
                 ]
               }
@@ -6186,9 +6141,7 @@
           },
           "seed": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "maximum": 2147483647
+            "nullable": true
           },
           "method": {
             "$ref": "#/components/schemas/FineTuneMethod"
@@ -6284,8 +6237,6 @@
           },
           "n": {
             "type": "integer",
-            "minimum": 1,
-            "maximum": 10,
             "nullable": true
           },
           "size": {
@@ -6399,8 +6350,6 @@
           },
           "n": {
             "type": "integer",
-            "minimum": 1,
-            "maximum": 10,
             "nullable": true
           },
           "quality": {
@@ -6522,8 +6471,6 @@
           },
           "n": {
             "type": "integer",
-            "minimum": 1,
-            "maximum": 10,
             "nullable": true
           },
           "response_format": {
@@ -6641,9 +6588,7 @@
                 "$ref": "#/components/schemas/PromptCacheOptionsParam"
               },
               "top_logprobs": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 20
+                "type": "integer"
               }
             }
           }
@@ -7184,8 +7129,7 @@
               "max_output_tokens": {
                 "anyOf": [
                   {
-                    "type": "integer",
-                    "minimum": 16
+                    "type": "integer"
                   },
                   {
                     "type": "null"
@@ -7254,14 +7198,10 @@
           },
           "temperature": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 2,
             "nullable": true
           },
           "top_p": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 1,
             "nullable": true
           },
           "stream": {
@@ -7270,13 +7210,11 @@
           },
           "max_prompt_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "max_completion_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "truncation_strategy": {
             "allOf": [
@@ -7351,9 +7289,7 @@
             ]
           },
           "speed": {
-            "type": "number",
-            "minimum": 0.25,
-            "maximum": 4
+            "type": "number"
           },
           "stream_format": {
             "type": "string",
@@ -7386,8 +7322,7 @@
         "type": "object",
         "properties": {
           "threshold_amount": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "currency": {
             "type": "string",
@@ -7527,14 +7462,10 @@
           },
           "temperature": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 2,
             "nullable": true
           },
           "top_p": {
             "type": "number",
-            "minimum": 0,
-            "maximum": 1,
             "nullable": true
           },
           "stream": {
@@ -7543,13 +7474,11 @@
           },
           "max_prompt_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "max_completion_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "truncation_strategy": {
             "allOf": [
@@ -7662,9 +7591,7 @@
                                       "additionalProperties": false,
                                       "properties": {
                                         "max_chunk_size_tokens": {
-                                          "type": "integer",
-                                          "minimum": 100,
-                                          "maximum": 4096
+                                          "type": "integer"
                                         },
                                         "chunk_overlap_tokens": {
                                           "type": "integer"
@@ -8761,9 +8688,7 @@
           "n": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 10
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -8842,9 +8767,7 @@
           "output_compression": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 100
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -9418,8 +9341,7 @@
           "created_after": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 0
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -9429,8 +9351,7 @@
           "created_before": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 0
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -9983,9 +9904,7 @@
           },
           "seconds": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 3600,
-            "maximum": 2592000
+            "format": "int64"
           }
         },
         "required": [
@@ -10029,9 +9948,7 @@
             "$ref": "#/components/schemas/FileSearchRanker"
           },
           "score_threshold": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+            "type": "number"
           }
         },
         "required": [
@@ -10141,8 +10058,6 @@
               },
               {
                 "type": "number",
-                "minimum": 0,
-                "maximum": 2,
                 "exclusiveMinimum": true
               }
             ]
@@ -10156,9 +10071,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 256
+                "type": "integer"
               }
             ]
           },
@@ -10172,7 +10085,6 @@
               },
               {
                 "type": "number",
-                "minimum": 0,
                 "exclusiveMinimum": true
               }
             ]
@@ -10186,9 +10098,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 50
+                "type": "integer"
               }
             ]
           }
@@ -10239,9 +10149,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 256
+                "type": "integer"
               }
             ]
           },
@@ -10255,7 +10163,6 @@
               },
               {
                 "type": "number",
-                "minimum": 0,
                 "exclusiveMinimum": true
               }
             ]
@@ -10269,9 +10176,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 50
+                "type": "integer"
               }
             ]
           },
@@ -10294,8 +10199,6 @@
               },
               {
                 "type": "number",
-                "minimum": 1E-05,
-                "maximum": 10,
                 "exclusiveMinimum": true
               }
             ]
@@ -10309,8 +10212,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1
+                "type": "integer"
               }
             ]
           },
@@ -10323,8 +10225,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1
+                "type": "integer"
               }
             ]
           }
@@ -10373,9 +10274,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 256
+                "type": "integer"
               }
             ]
           },
@@ -10389,7 +10288,6 @@
               },
               {
                 "type": "number",
-                "minimum": 0,
                 "exclusiveMinimum": true
               }
             ]
@@ -10403,9 +10301,7 @@
                 ]
               },
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 50
+                "type": "integer"
               }
             ]
           }
@@ -10576,9 +10472,7 @@
                         ]
                       },
                       {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 256
+                        "type": "integer"
                       }
                     ]
                   },
@@ -10597,7 +10491,6 @@
                   },
                   {
                     "type": "number",
-                    "minimum": 0,
                     "exclusiveMinimum": true
                   }
                 ]
@@ -10611,9 +10504,7 @@
                     ]
                   },
                   {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 50
+                    "type": "integer"
                   }
                 ]
               }
@@ -11204,8 +11095,7 @@
               "max_completions_tokens": {
                 "anyOf": [
                   {
-                    "type": "integer",
-                    "minimum": 1
+                    "type": "integer"
                   },
                   {
                     "type": "null"
@@ -12032,9 +11922,7 @@
             ]
           },
           "output_compression": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
+            "type": "integer"
           },
           "moderation": {
             "type": "string",
@@ -12075,9 +11963,7 @@
             "additionalProperties": false
           },
           "partial_images": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 3
+            "type": "integer"
           },
           "action": {
             "$ref": "#/components/schemas/ImageGenActionEnum"
@@ -13415,9 +13301,7 @@
         "type": "object",
         "properties": {
           "status_code": {
-            "type": "integer",
-            "minimum": 300,
-            "maximum": 699
+            "type": "integer"
           }
         },
         "required": [
@@ -14376,12 +14260,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           }
         },
         "required": [
@@ -14416,12 +14298,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           }
         },
         "required": [
@@ -14589,12 +14469,10 @@
             }
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           }
         },
         "required": [
@@ -14626,12 +14504,10 @@
             }
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           }
         },
         "required": [
@@ -15242,9 +15118,7 @@
           "top_logprobs": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 20
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -15254,9 +15128,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 2
+                "type": "number"
               },
               {
                 "type": "null"
@@ -15266,9 +15138,7 @@
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               {
                 "type": "null"
@@ -15419,9 +15289,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 2
+                "type": "number"
               },
               {
                 "type": "null"
@@ -15431,9 +15299,7 @@
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               {
                 "type": "null"
@@ -16125,9 +15991,7 @@
       "PartialImages": {
         "anyOf": [
           {
-            "type": "integer",
-            "maximum": 3,
-            "minimum": 0
+            "type": "integer"
           },
           {
             "type": "null"
@@ -17011,9 +16875,7 @@
           "expires_in_seconds": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 31536000
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -20225,9 +20087,7 @@
               },
               "seconds": {
                 "type": "integer",
-                "format": "int64",
-                "minimum": 10,
-                "maximum": 7200
+                "format": "int64"
               }
             }
           },
@@ -22592,9 +22452,7 @@
             }
           },
           "speed": {
-            "type": "number",
-            "maximum": 1.5,
-            "minimum": 0.25
+            "type": "number"
           },
           "tracing": {
             "anyOf": [
@@ -22733,9 +22591,7 @@
             }
           },
           "speed": {
-            "type": "number",
-            "maximum": 1.5,
-            "minimum": 0.25
+            "type": "number"
           },
           "tracing": {
             "oneOf": [
@@ -22919,9 +22775,7 @@
                     "$ref": "#/components/schemas/VoiceIdsOrCustomVoice"
                   },
                   "speed": {
-                    "type": "number",
-                    "maximum": 1.5,
-                    "minimum": 0.25
+                    "type": "number"
                   }
                 }
               }
@@ -23275,9 +23129,7 @@
                     "$ref": "#/components/schemas/VoiceIdsShared"
                   },
                   "speed": {
-                    "type": "number",
-                    "maximum": 1.5,
-                    "minimum": 0.25
+                    "type": "number"
                   }
                 }
               }
@@ -23709,9 +23561,7 @@
               },
               "seconds": {
                 "type": "integer",
-                "format": "int64",
-                "minimum": 10,
-                "maximum": 7200
+                "format": "int64"
               }
             }
           },
@@ -24166,16 +24016,13 @@
                 ]
               },
               "retention_ratio": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               "token_limits": {
                 "type": "object",
                 "properties": {
                   "post_instructions": {
-                    "type": "integer",
-                    "minimum": 0
+                    "type": "integer"
                   }
                 }
               }
@@ -24219,9 +24066,7 @@
                   "idle_timeout_ms": {
                     "anyOf": [
                       {
-                        "type": "integer",
-                        "minimum": 5000,
-                        "maximum": 30000
+                        "type": "integer"
                       },
                       {
                         "type": "null"
@@ -28798,13 +28643,11 @@
           },
           "max_prompt_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "max_completion_tokens": {
             "type": "integer",
-            "nullable": true,
-            "minimum": 256
+            "nullable": true
           },
           "truncation_strategy": {
             "allOf": [
@@ -29287,9 +29130,7 @@
             "$ref": "#/components/schemas/FileSearchRanker"
           },
           "score_threshold": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+            "type": "number"
           }
         },
         "required": [
@@ -29307,9 +29148,7 @@
             "type": "string"
           },
           "score": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+            "type": "number"
           },
           "content": {
             "type": "array",
@@ -30033,9 +29872,7 @@
         "additionalProperties": false,
         "properties": {
           "max_chunk_size_tokens": {
-            "type": "integer",
-            "minimum": 100,
-            "maximum": 4096
+            "type": "integer"
           },
           "chunk_overlap_tokens": {
             "type": "integer"
@@ -30832,8 +30669,7 @@
           "last_messages": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -32298,9 +32134,7 @@
             ]
           },
           "days": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 365
+            "type": "integer"
           }
         },
         "required": [
@@ -32646,9 +32480,7 @@
             "type": "boolean"
           },
           "max_num_results": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 50
+            "type": "integer"
           },
           "filters": {
             "oneOf": [
@@ -32673,9 +32505,7 @@
                 ]
               },
               "score_threshold": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               }
             }
           }
@@ -32714,9 +32544,7 @@
             "type": "string"
           },
           "score": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
+            "type": "number"
           },
           "attributes": {
             "$ref": "#/components/schemas/VectorStoreFileAttributes"
@@ -37668,8 +37496,7 @@
             ]
           },
           "index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "file_id": {
             "type": "string"
@@ -37695,12 +37522,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "url": {
             "type": "string",
@@ -37728,12 +37553,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "container_id": {
             "type": "string"
@@ -38883,8 +38706,7 @@
           "max_output_tokens": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 16
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -39324,8 +39146,7 @@
           "max_output_tokens": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 16
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -39626,8 +39447,7 @@
           "compact_threshold": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1000
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -40518,8 +40338,7 @@
       "UpdateOrganizationSpendLimitBody": {
         "properties": {
           "threshold_amount": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           },
           "currency": {
             "type": "string",
@@ -40592,8 +40411,7 @@
       "UpdateProjectSpendLimitBody": {
         "properties": {
           "threshold_amount": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           },
           "currency": {
             "type": "string",
@@ -40647,9 +40465,7 @@
           "expires_in_seconds": {
             "anyOf": [
               {
-                "type": "integer",
-                "maximum": 31536000,
-                "minimum": 1
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -42288,8 +42104,6 @@
           },
           "seconds": {
             "type": "integer",
-            "maximum": 600,
-            "minimum": 1,
             "format": "int64"
           }
         },
@@ -42302,8 +42116,7 @@
       "RateLimitsParam": {
         "properties": {
           "max_requests_per_1_minute": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           }
         },
         "type": "object",
@@ -42324,13 +42137,10 @@
             "type": "boolean"
           },
           "max_file_size": {
-            "type": "integer",
-            "maximum": 512,
-            "minimum": 1
+            "type": "integer"
           },
           "max_files": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           }
         },
         "type": "object",
@@ -42342,8 +42152,7 @@
             "type": "boolean"
           },
           "recent_threads": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           }
         },
         "type": "object",
@@ -43268,8 +43077,7 @@
           },
           "size_bytes": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           }
         },
         "required": [
@@ -43298,8 +43106,7 @@
           },
           "size_bytes": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           }
         },
         "required": [
@@ -43551,8 +43358,7 @@
           },
           "size_bytes": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           }
         },
         "required": [
@@ -45538,9 +45344,7 @@
               "integer",
               "null"
             ],
-            "format": "int64",
-            "minimum": 1,
-            "maximum": 4294967295
+            "format": "int64"
           }
         },
         "required": [
@@ -46184,9 +45988,7 @@
           },
           "max_concurrent_subagents": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 1,
-            "maximum": 4294967295
+            "format": "int64"
           }
         },
         "required": [
@@ -46547,8 +46349,7 @@
           },
           "size_bytes": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           }
         },
         "required": [
@@ -48629,8 +48430,7 @@
           },
           "reset_count": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           }
         },
         "required": [
@@ -48669,9 +48469,7 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "delta": {
             "type": "string"
@@ -48925,9 +48723,7 @@
               "integer",
               "null"
             ],
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "item": {
             "$ref": "#/components/schemas/SessionTurnItemResource"
@@ -49372,9 +49168,7 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "item": {
             "$ref": "#/components/schemas/AgentOutputItemResource"
@@ -49416,15 +49210,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "content_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "part": {
             "$ref": "#/components/schemas/OutputTextResource"
@@ -49468,15 +49258,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "content_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "part": {
             "$ref": "#/components/schemas/OutputTextResource"
@@ -49520,15 +49306,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "content_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "delta": {
             "type": "string"
@@ -49572,15 +49354,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "content_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "text": {
             "type": "string"
@@ -49624,15 +49402,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "summary_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "part": {
             "$ref": "#/components/schemas/SummaryTextResource"
@@ -49676,15 +49450,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "summary_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "part": {
             "$ref": "#/components/schemas/SummaryTextResource"
@@ -49739,15 +49509,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "summary_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "delta": {
             "type": "string"
@@ -49791,15 +49557,11 @@
           },
           "output_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "summary_index": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "maximum": 4294967295
+            "format": "int64"
           },
           "text": {
             "type": "string"
@@ -50060,8 +49822,7 @@
           },
           "size_bytes": {
             "type": "integer",
-            "format": "int64",
-            "minimum": 0
+            "format": "int64"
           },
           "created_at": {
             "type": "integer",
@@ -51605,8 +51366,6 @@
           },
           "rate": {
             "type": "integer",
-            "minimum": 16000,
-            "maximum": 24000,
             "enum": [
               16000,
               24000
@@ -51628,9 +51387,7 @@
             ]
           },
           "rate": {
-            "type": "integer",
-            "minimum": 8000,
-            "maximum": 8000
+            "type": "integer"
           }
         },
         "required": [
@@ -51648,9 +51405,7 @@
             ]
           },
           "rate": {
-            "type": "integer",
-            "minimum": 8000,
-            "maximum": 8000
+            "type": "integer"
           }
         },
         "required": [
@@ -54545,9 +54300,7 @@
             ]
           },
           "output_compression": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
+            "type": "integer"
           },
           "moderation": {
             "type": "string",
@@ -54588,9 +54341,7 @@
             "additionalProperties": false
           },
           "partial_images": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 3
+            "type": "integer"
           },
           "action": {
             "$ref": "#/components/schemas/BetaImageGenActionEnum"
@@ -57591,12 +57342,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "container_id": {
             "type": "string"
@@ -57627,12 +57376,10 @@
             ]
           },
           "start_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "end_index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "url": {
             "type": "string",
@@ -57660,8 +57407,7 @@
             ]
           },
           "index": {
-            "type": "integer",
-            "minimum": 0
+            "type": "integer"
           },
           "file_id": {
             "type": "string"
@@ -62256,9 +62002,7 @@
           "top_logprobs": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 20
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -62268,9 +62012,7 @@
           "temperature": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 2
+                "type": "number"
               },
               {
                 "type": "null"
@@ -62280,9 +62022,7 @@
           "top_p": {
             "anyOf": [
               {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+                "type": "number"
               },
               {
                 "type": "null"
@@ -66594,8 +66334,7 @@
               "max_output_tokens": {
                 "anyOf": [
                   {
-                    "type": "integer",
-                    "minimum": 16
+                    "type": "integer"
                   },
                   {
                     "type": "null"
@@ -66622,8 +66361,7 @@
             "type": "boolean"
           },
           "max_concurrent_subagents": {
-            "type": "integer",
-            "minimum": 1
+            "type": "integer"
           }
         },
         "type": "object",
@@ -66639,8 +66377,7 @@
           "compact_threshold": {
             "anyOf": [
               {
-                "type": "integer",
-                "minimum": 1000
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -66770,9 +66507,7 @@
                 "$ref": "#/components/schemas/BetaPromptCacheOptionsParam"
               },
               "top_logprobs": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 20
+                "type": "integer"
               }
             }
           }
@@ -66969,8 +66704,7 @@
         "headers": {
           "Retry-After": {
             "schema": {
-              "type": "integer",
-              "minimum": 1
+              "type": "integer"
             }
           }
         },
@@ -66987,8 +66721,7 @@
         "headers": {
           "Retry-After": {
             "schema": {
-              "type": "integer",
-              "minimum": 1
+              "type": "integer"
             }
           }
         },
@@ -67005,8 +66738,7 @@
         "headers": {
           "Retry-After": {
             "schema": {
-              "type": "integer",
-              "minimum": 1
+              "type": "integer"
             }
           }
         },
