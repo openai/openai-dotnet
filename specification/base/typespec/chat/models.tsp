@@ -24,16 +24,18 @@ model ChatErrorResponse {
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
+  Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. Reducing
   reasoning effort can result in faster responses and fewer tokens used
   on reasoning in a response.
   """)
 union ChatReasoningEffort {
-  "none",
-  "minimal",
-  "low",
-  "medium",
-  "high",
+  none: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max",
 }
 
 // Tool generated type. Extracts from CreateChatCompletionResponse.choices
