@@ -9203,7 +9203,6 @@
                                   },
                                   "type": "object",
                                   "required": [
-                                    "type",
                                     "id"
                                   ]
                                 },

@@ -1542,55 +1542,65 @@
                                           "user_location": {
                                             "anyOf": [
                                               {
-                                                "type": "object",
-                                                "properties": {
-                                                  "city": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                "discriminator": {
+                                                  "propertyName": "type"
+                                                },
+                                                "oneOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
+                                                    "properties": {
+                                                      "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "approximate"
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "country": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "city": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "region": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "country": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "timezone": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "region": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
+                                                      "timezone": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       }
-                                                    ]
-                                                  },
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "approximate"
-                                                    ]
+                                                    }
                                                   }
-                                                }
+                                                ]
                                               },
                                               {
                                                 "type": "null"
@@ -6667,55 +6677,65 @@
                                           "user_location": {
                                             "anyOf": [
                                               {
-                                                "type": "object",
-                                                "properties": {
-                                                  "city": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                "discriminator": {
+                                                  "propertyName": "type"
+                                                },
+                                                "oneOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
+                                                    "properties": {
+                                                      "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "approximate"
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "country": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "city": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "region": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "country": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "timezone": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string"
+                                                      "region": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       },
-                                                      {
-                                                        "type": "null"
+                                                      "timezone": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string"
+                                                          },
+                                                          {
+                                                            "type": "null"
+                                                          }
+                                                        ]
                                                       }
-                                                    ]
-                                                  },
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "approximate"
-                                                    ]
+                                                    }
                                                   }
-                                                }
+                                                ]
                                               },
                                               {
                                                 "type": "null"
@@ -9418,55 +9438,65 @@
                             "user_location": {
                               "anyOf": [
                                 {
-                                  "type": "object",
-                                  "properties": {
-                                    "city": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string"
+                                  "discriminator": {
+                                    "propertyName": "type"
+                                  },
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "required": [
+                                        "type"
+                                      ],
+                                      "properties": {
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "approximate"
+                                          ]
                                         },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    },
-                                    "country": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string"
+                                        "city": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
                                         },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    },
-                                    "region": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string"
+                                        "country": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
                                         },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    },
-                                    "timezone": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string"
+                                        "region": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
                                         },
-                                        {
-                                          "type": "null"
+                                        "timezone": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
                                         }
-                                      ]
-                                    },
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "approximate"
-                                      ]
+                                      }
                                     }
-                                  }
+                                  ]
                                 },
                                 {
                                   "type": "null"

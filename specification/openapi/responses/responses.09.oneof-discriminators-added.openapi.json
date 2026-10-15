@@ -308,6 +308,9 @@
                     "type": "object",
                     "properties": {
                       "format": {
+                        "discriminator": {
+                          "propertyName": "type"
+                        },
                         "oneOf": [
                           {
                             "type": "object",
@@ -638,6 +641,9 @@
                               "anyOf": [
                                 {
                                   "type": "object",
+                                  "required": [
+                                    "type"
+                                  ],
                                   "properties": {
                                     "type": {
                                       "type": "string",
@@ -2511,6 +2517,9 @@
                                     "content": {
                                       "type": "array",
                                       "items": {
+                                        "discriminator": {
+                                          "propertyName": "type"
+                                        },
                                         "oneOf": [
                                           {
                                             "oneOf": [
@@ -4634,6 +4643,9 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
                                                     "properties": {
                                                       "type": {
                                                         "type": "string",
@@ -6200,6 +6212,9 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
                                                     "properties": {
                                                       "type": {
                                                         "type": "string",
@@ -9230,8 +9245,8 @@
                               },
                               "type": "object",
                               "required": [
-                                "type",
-                                "id"
+                                "id",
+                                "type"
                               ]
                             },
                             {

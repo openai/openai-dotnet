@@ -84,7 +84,6 @@ function Write-TestSpecification {
             [ordered]@{ type = "string"; enum = @("auto") },
             [ordered]@{
                 type = "object"
-                required = @("type")
                 properties = [ordered]@{
                     type = [ordered]@{ type = "string"; enum = @("alpha", "beta") }
                 }
@@ -233,6 +232,7 @@ try {
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
             "Simplify-OpenApiRecursiveSchemas.ps1",
+            "Require-OpenApiTypeProperties.ps1",
             "Split-OpenApiMultiValueTypeEnums.ps1",
             "Add-OpenApiOneOfDiscriminators.ps1",
             "Normalize-OpenApiOneOf.ps1",
@@ -258,18 +258,19 @@ try {
             "responses.04.allof-flattened.openapi.json",
             "responses.05.string-variants-simplified.openapi.json",
             "responses.06.recursive-schemas-simplified.openapi.json",
-            "responses.07.multi-value-type-enums-split.openapi.json",
-            "responses.08.oneof-discriminators-added.openapi.json",
-            "responses.09.oneof-normalized.openapi.json",
-            "responses.10.nested-oneof-flattened.openapi.json",
-            "responses.11.singleton-type-enums-wrapped.openapi.json",
-            "responses.12.document-sorted.openapi.json",
-            "responses.13.schemas-componentized.openapi.json",
-            "responses.14.discriminator-inheritance-refactored.openapi.json",
-            "responses.15.inherited-document-sorted.openapi.json",
+            "responses.07.type-properties-required.openapi.json",
+            "responses.08.multi-value-type-enums-split.openapi.json",
+            "responses.09.oneof-discriminators-added.openapi.json",
+            "responses.10.oneof-normalized.openapi.json",
+            "responses.11.nested-oneof-flattened.openapi.json",
+            "responses.12.singleton-type-enums-wrapped.openapi.json",
+            "responses.13.document-sorted.openapi.json",
+            "responses.14.schemas-componentized.openapi.json",
+            "responses.15.discriminator-inheritance-refactored.openapi.json",
+            "responses.16.inherited-document-sorted.openapi.json",
             "responses.component-default-map.json",
             "responses.component-policy-map.json",
-            "responses.16.components-deduplicated.openapi.json",
+            "responses.17.components-deduplicated.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Extracted),
@@ -278,6 +279,7 @@ try {
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
             [System.IO.Path]::GetFileName($paths.RecursiveSimplified),
+            [System.IO.Path]::GetFileName($paths.TypePropertiesRequired),
             [System.IO.Path]::GetFileName($paths.TypeEnumSplit),
             [System.IO.Path]::GetFileName($paths.OneOfDiscriminated),
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
@@ -299,6 +301,7 @@ try {
             $paths.Flattened,
             $paths.Simplified,
             $paths.RecursiveSimplified,
+            $paths.TypePropertiesRequired,
             $paths.TypeEnumSplit,
             $paths.OneOfDiscriminated,
             $paths.OneOfNormalized,
@@ -310,7 +313,7 @@ try {
             $paths.DiscriminatorInheritedSorted,
             $paths.Deduplicated
         )
-        Assert-Sequence (1..16 | ForEach-Object { $_.ToString("00") }) @(
+        Assert-Sequence (1..17 | ForEach-Object { $_.ToString("00") }) @(
             $numberedPaths | ForEach-Object {
                 $fileName = [System.IO.Path]::GetFileName($_)
                 if ($fileName -notmatch '^responses\.(\d{2})\.') {
@@ -370,6 +373,7 @@ try {
             $paths.Flattened,
             $paths.Simplified,
             $paths.RecursiveSimplified,
+            $paths.TypePropertiesRequired,
             $paths.TypeEnumSplit,
             $paths.OneOfDiscriminated,
             $paths.OneOfNormalized,
@@ -394,6 +398,7 @@ try {
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
         $recursiveSimplified = Read-TestJson -Path $paths.RecursiveSimplified
+        $typePropertiesRequired = Read-TestJson -Path $paths.TypePropertiesRequired
         $typeEnumSplit = Read-TestJson -Path $paths.TypeEnumSplit
         $oneOfDiscriminated = Read-TestJson -Path $paths.OneOfDiscriminated
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
@@ -436,7 +441,10 @@ try {
         $recursiveSimplifiedFilters = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $recursiveSimplifiedFormat = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
         $recursiveSimplifiedGrouped = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
+        $recursiveSimplifiedNested = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         $recursiveSimplifiedSplitChoice = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
+        $requiredNested = $typePropertiesRequired.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
+        $requiredSplitChoice = $typePropertiesRequired.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $splitChoice = $typeEnumSplit.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $discriminatedFormat = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
         $discriminatedGrouped = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
@@ -469,7 +477,14 @@ try {
         Assert-Equal "null" $recursiveSimplifiedFilters.anyOf[1].type "Recursive Simplify stage lost the nullable branch."
         Assert-True (-not ($recursiveSimplifiedFormat.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the discriminator early."
         Assert-True (-not ($recursiveSimplifiedGrouped.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the grouped discriminator early."
+        Assert-True (-not ($recursiveSimplifiedNested.oneOf[0].PSObject.Properties.Name -ccontains "required")) "Recursive Simplify stage required the optional alpha type early."
+        Assert-True (-not ($recursiveSimplifiedNested.oneOf[2].PSObject.Properties.Name -ccontains "required")) "Recursive Simplify stage required the optional omega type early."
+        Assert-True (-not ($recursiveSimplifiedSplitChoice.oneOf[1].PSObject.Properties.Name -ccontains "required")) "Recursive Simplify stage required the optional multi-value type early."
         Assert-Sequence @("alpha", "beta") @($recursiveSimplifiedSplitChoice.oneOf[1].properties.type.enum) "Recursive Simplify stage changed the multi-value type enum early."
+        Assert-Sequence @("type") @($requiredNested.oneOf[0].required) "Type requirement stage did not require the alpha selector."
+        Assert-Sequence @("type") @($requiredNested.oneOf[2].required) "Type requirement stage did not require the omega selector."
+        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[1].required) "Type requirement stage did not require the multi-value selector."
+        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[2].required) "Type requirement stage changed the already-required selector."
         Assert-Equal 4 $splitChoice.oneOf.Count "Type enum split stage emitted the wrong branch count."
         Assert-Sequence @("alpha", "beta", "gamma") @($splitChoice.oneOf[1..3] | ForEach-Object { $_.properties.type.enum[0] }) "Type enum split stage emitted the wrong singleton branches."
         Assert-True (-not ($discriminatedSplitChoice.PSObject.Properties.Name -ccontains "discriminator")) "Discriminator stage added metadata to a mixed scalar/object union."
@@ -513,7 +528,14 @@ try {
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "anyOf") "Sort stage lost the retained anyOf."
         Assert-Equal "type" $sortedGrouped.discriminator.propertyName "Sort stage lost the grouped discriminator."
         Assert-Equal 5 $sortedGrouped.oneOf.Count "Sort stage changed grouped branches."
-        Assert-Equal 3 $sortedNested.oneOf.Count "Sort stage changed retained oneOf branches."
+        Assert-Equal 2 $sortedNested.oneOf.Count "Singleton wrapper stage did not group the newly required type alternatives."
+        $sortedNestedTypeGroups = @($sortedNested.oneOf | Where-Object {
+            $_.PSObject.Properties.Name -ccontains "discriminator"
+        })
+        Assert-Equal 1 $sortedNestedTypeGroups.Count "Sorted nested union did not contain one type discriminator group."
+        Assert-Sequence @("alpha", "omega") @(
+            $sortedNestedTypeGroups[0].oneOf | ForEach-Object { $_.properties.type.enum[0] }
+        ) "Newly required singleton selectors were not grouped together."
         Assert-Sequence @("apply_patch", "function", "web_search_preview") @(
             $sortedTools.items.oneOf | ForEach-Object { $_.properties.type.enum[0] }
         ) "Sort stage did not order tools by discriminator value."

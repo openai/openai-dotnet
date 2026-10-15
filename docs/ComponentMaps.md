@@ -18,12 +18,13 @@ Run the three top-level phases in order:
 
 Each successful phase atomically publishes its result to
 `specification/openapi/<feature-area>/<feature-area>.openapi.json`. Generation
-publishes numbered artifact 13, the componentized document. Inheritance reads
-that alias by default, retains artifacts 14 and 15, and republishes artifact 15.
+adds required `type` selectors at artifact 07 and publishes numbered artifact
+14, the componentized document. Inheritance reads that alias by default,
+retains artifacts 15 and 16, and republishes artifact 16.
 Finalization also reads the alias by default, validates policy, replaces the
-default map, applies both maps, retains artifact 16, and republishes it as the
+default map, applies both maps, retains artifact 17, and republishes it as the
 final alias. The retained OpenAPI audit trail is numbered continuously from 01
-through 16 across all three phases.
+through 17 across all three phases.
 
 Component maps are control files rather than transformation snapshots, so they
 remain unnumbered. The final alias also remains unnumbered so consumers have one

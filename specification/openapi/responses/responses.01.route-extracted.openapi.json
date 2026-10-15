@@ -47192,7 +47192,6 @@
         },
         "type": "object",
         "required": [
-          "type",
           "id"
         ],
         "title": "Item reference",

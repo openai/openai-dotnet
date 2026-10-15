@@ -6585,7 +6585,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject"
               },
               {
                 "type": "null"
@@ -6617,9 +6617,35 @@
           }
         }
       },
-      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject": {
         "type": "object",
+        "required": [
+          "type"
+        ],
         "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "approximate": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject_typeOfApproximate"
+          }
+        }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject_typeOfApproximate": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "approximate"
+            ]
+          },
           "city": {
             "anyOf": [
               {
@@ -6659,14 +6685,13 @@
                 "type": "null"
               }
             ]
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "approximate"
-            ]
           }
-        }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject"
+          }
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview": {
         "type": "object",
@@ -6692,7 +6717,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_discriminatedObject"
               },
               {
                 "type": "null"
@@ -6711,82 +6736,6 @@
         "enum": [
           "image",
           "text"
-        ]
-      },
-      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "approximate": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate"
-          }
-        }
-      },
-      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "approximate"
-            ]
-          },
-          "city": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "region": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "timezone": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject"
-          }
         ]
       },
       "createResponse_request_object_Truncation_enum": {

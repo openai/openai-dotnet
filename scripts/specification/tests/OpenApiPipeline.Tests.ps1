@@ -12,6 +12,7 @@ Set-StrictMode -Version Latest
 $specificationScriptsDirectory = Join-Path $PSScriptRoot ".."
 . (Join-Path $specificationScriptsDirectory "pipeline" "_OpenApiPipeline.Helpers.ps1")
 . (Join-Path $specificationScriptsDirectory "pipeline" "_OpenApiDocument.Helpers.ps1")
+. (Join-Path $specificationScriptsDirectory "pipeline" "Require-OpenApiTypeProperties.ps1")
 
 function Assert-True {
     param([bool]$Condition, [string]$Message)
@@ -35,6 +36,7 @@ function Assert-FeatureArtifactLayout {
         $Paths.Flattened,
         $Paths.Simplified,
         $Paths.RecursiveSimplified,
+        $Paths.TypePropertiesRequired,
         $Paths.TypeEnumSplit,
         $Paths.OneOfDiscriminated,
         $Paths.OneOfNormalized,
@@ -56,7 +58,7 @@ function Assert-FeatureArtifactLayout {
         Assert-True ([System.IO.File]::Exists($stablePath)) "Stable artifact was not created: $stablePath"
         Assert-True ([System.IO.Path]::GetFileName($stablePath) -notmatch '^.+\.\d{2}\.') "Stable artifact was unexpectedly numbered: $stablePath"
     }
-    Assert-True (@(Get-ChildItem -LiteralPath $Paths.OutputDirectory -File).Count -eq 19) "Feature '$($Paths.FeatureArea)' did not contain exactly 19 artifacts."
+    Assert-True (@(Get-ChildItem -LiteralPath $Paths.OutputDirectory -File).Count -eq 20) "Feature '$($Paths.FeatureArea)' did not contain exactly 20 artifacts."
 }
 
 function Invoke-TopLevelPhase {
@@ -110,6 +112,7 @@ try {
     $document = Read-OpenApiDocument -Path $paths.Final
     Assert-OpenApiReferencesResolve -Document $document
     Assert-AdditionalOpenApiReferencesResolve -Document $document
+    Assert-OpenApiTypePropertiesRequired -Value $document
     Assert-FeatureArtifactLayout -Paths $paths
 
     [byte[]]$responsesFinalBytes = [System.IO.File]::ReadAllBytes($paths.Final)

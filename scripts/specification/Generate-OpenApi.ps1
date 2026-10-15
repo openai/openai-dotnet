@@ -7,9 +7,9 @@
     Extracts the selected operation and runs the OpenAPI transformation stages
     through componentization. Every retained artifact is written beneath
     <OutputRoot>/<FeatureArea> with a feature prefix and sequence number from 01
-    through 13. The componentized result is atomically published as
+    through 14. The componentized result is atomically published as
     <FeatureArea>.openapi.json. Run Inherit-OpenApi.ps1 afterward; its retained
-    artifacts continue the sequence at 14 and 15.
+    artifacts continue the sequence at 15 and 16.
 
 .PARAMETER FeatureArea
     Lowercase kebab-case feature name used for the output directory and artifact
@@ -109,6 +109,7 @@ function Invoke-OpenApiGeneration {
         "Flatten-OpenApiAllOf.ps1"
         "Simplify-OpenApiStringVariants.ps1"
         "Simplify-OpenApiRecursiveSchemas.ps1"
+        "Require-OpenApiTypeProperties.ps1"
         "Split-OpenApiMultiValueTypeEnums.ps1"
         "Add-OpenApiOneOfDiscriminators.ps1"
         "Normalize-OpenApiOneOf.ps1"
@@ -149,8 +150,11 @@ function Invoke-OpenApiGeneration {
     $null = & $stageScriptPaths["Simplify-OpenApiRecursiveSchemas.ps1"] `
         -InputPath $paths.Simplified `
         -OutputPath $paths.RecursiveSimplified
-    $null = & $stageScriptPaths["Split-OpenApiMultiValueTypeEnums.ps1"] `
+    $null = & $stageScriptPaths["Require-OpenApiTypeProperties.ps1"] `
         -InputPath $paths.RecursiveSimplified `
+        -OutputPath $paths.TypePropertiesRequired
+    $null = & $stageScriptPaths["Split-OpenApiMultiValueTypeEnums.ps1"] `
+        -InputPath $paths.TypePropertiesRequired `
         -OutputPath $paths.TypeEnumSplit
     $null = & $stageScriptPaths["Add-OpenApiOneOfDiscriminators.ps1"] `
         -InputPath $paths.TypeEnumSplit `
@@ -175,6 +179,7 @@ function Invoke-OpenApiGeneration {
         $paths.Flattened,
         $paths.Simplified,
         $paths.RecursiveSimplified,
+        $paths.TypePropertiesRequired,
         $paths.TypeEnumSplit,
         $paths.OneOfDiscriminated,
         $paths.OneOfNormalized,

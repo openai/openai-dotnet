@@ -641,6 +641,9 @@
                               "anyOf": [
                                 {
                                   "type": "object",
+                                  "required": [
+                                    "type"
+                                  ],
                                   "properties": {
                                     "type": {
                                       "type": "string",
@@ -4640,6 +4643,9 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
                                                     "properties": {
                                                       "type": {
                                                         "type": "string",
@@ -6206,6 +6212,9 @@
                                                 "anyOf": [
                                                   {
                                                     "type": "object",
+                                                    "required": [
+                                                      "type"
+                                                    ],
                                                     "properties": {
                                                       "type": {
                                                         "type": "string",
@@ -7860,9 +7869,6 @@
                                             "discriminator": {
                                               "propertyName": "type"
                                             }
-                                          },
-                                          "discriminator": {
-                                            "propertyName": "type"
                                           }
                                         },
                                         {
@@ -9236,8 +9242,8 @@
                               },
                               "type": "object",
                               "required": [
-                                "type",
-                                "id"
+                                "id",
+                                "type"
                               ]
                             },
                             {
