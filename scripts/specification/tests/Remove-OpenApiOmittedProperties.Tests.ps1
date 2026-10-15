@@ -37,8 +37,8 @@ try {
             "title",
             "description",
             "default",
-            "minValue",
-            "maxValue",
+            "minimum",
+            "maximum",
             "minLength",
             "maxLength",
             "minItems",
@@ -48,7 +48,7 @@ try {
         foreach ($name in @($configuredNames) + "x-foo") {
             Assert-True (Test-IsOmittedOpenApiProperty -Name $name) "'$name' should be omitted."
         }
-        foreach ($name in @("Title", "Description", "Default", "Example", "Examples", "MinValue", "MaxValue", "MinLength", "MaxLength", "MinItems", "MaxItems", "Pattern", "X-foo")) {
+        foreach ($name in @("Title", "Description", "Default", "Example", "Examples", "Minimum", "Maximum", "MinLength", "MaxLength", "MinItems", "MaxItems", "Pattern", "X-foo")) {
             Assert-True (-not (Test-IsOmittedOpenApiProperty -Name $name)) "'$name' should be retained."
         }
         Assert-True (-not (Test-IsOmittedOpenApiProperty -Name "title" -ParentBreadcrumb "#/info")) "info.title should be retained."
@@ -65,8 +65,8 @@ try {
     Invoke-Test "validation keywords are removed while matching payload fields remain" {
         $schema = [ordered]@{
             type = "object"
-            minValue = 1
-            maxValue = 2
+            minimum = 1
+            maximum = 2
             minLength = 3
             maxLength = 4
             minItems = 5
@@ -74,7 +74,7 @@ try {
             pattern = "^[a-z]+$"
             properties = [ordered]@{}
         }
-        foreach ($name in @("minValue", "maxValue", "minLength", "maxLength", "minItems", "maxItems", "pattern")) {
+        foreach ($name in @("minimum", "maximum", "minLength", "maxLength", "minItems", "maxItems", "pattern")) {
             $schema.properties[$name] = [ordered]@{
                 type = "string"
                 $name = "discard"
@@ -82,7 +82,7 @@ try {
         }
 
         $pruned = ConvertTo-PrunedOpenApiValue -Value $schema -Context Schema
-        foreach ($name in @("minValue", "maxValue", "minLength", "maxLength", "minItems", "maxItems", "pattern")) {
+        foreach ($name in @("minimum", "maximum", "minLength", "maxLength", "minItems", "maxItems", "pattern")) {
             Assert-True (-not (Test-JsonProperty -Object $pruned -Name $name)) "Schema keyword '$name' remained."
             Assert-True (Test-JsonProperty -Object $pruned.properties -Name $name) "Payload field '$name' was removed."
             Assert-True (-not (Test-JsonProperty -Object $pruned.properties[$name] -Name $name)) "Nested schema keyword '$name' remained."
