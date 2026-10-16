@@ -1,4 +1,5 @@
-﻿using Microsoft.ClientModel.TestFramework;
+﻿#pragma warning disable OPENAI001
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
 using System;
@@ -37,8 +38,8 @@ internal class GenerateSpeechMockTests : ClientTestBase
     {
         AudioClient client = new AudioClient(model, s_fakeCredential);
 
-        Assert.That(
-            () => client.GenerateSpeechStreaming("text", GeneratedSpeechVoice.Alloy),
+        Assert.ThatAsync(
+            () => client.GenerateSpeechStreamingAsync("text", GeneratedSpeechVoice.Alloy),
             Throws.InstanceOf<NotSupportedException>()
                 .With.Message.Contains(model)
                 .And.Message.Contains("OPENAI_ENABLE_TTS_SSE_STREAMING"));

@@ -4,6 +4,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +22,10 @@ namespace OpenAI.Audio;
 [CodeGenSuppress("GenerateSpeech", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreamingAsync", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreaming", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
-[CodeGenSuppress(nameof(TranscribeAudio), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
-[CodeGenSuppress(nameof(TranscribeAudioAsync), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("TranscribeAudioStreamingAsync", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("TranscribeAudioStreaming", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(TranscribeAudio), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(TranscribeAudioAsync), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranslateAudio), typeof(AudioTranslationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranslateAudioAsync), typeof(AudioTranslationOptions), typeof(CancellationToken))]
 public partial class AudioClient
@@ -194,8 +195,9 @@ public partial class AudioClient
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
     [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<SseItem<StreamingSpeechUpdate>>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -204,34 +206,12 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
-            async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingResult.Create(
+            result.GetRawResponse(),
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
-    }
-
-    /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
-    /// <param name="text"> The text to generate audio for. </param>
-    /// <param name="voice"> The voice to use in the generated audio. </param>
-    /// <param name="options"> The options to configure the audio generation. </param>
-    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
-    /// <returns> A streaming collection of speech generation updates. </returns>
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(text, nameof(text));
-        EnsureModelSupportsSpeechStreaming();
-
-        options ??= new();
-        options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
-        CreateSpeechGenerationOptions(text, voice, ref options);
-
-        using BinaryContent content = options.ToBinaryContent();
-        return new SseUpdateCollection<StreamingSpeechUpdate>(
-            () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
-            cancellationToken);
+#pragma warning restore OPENAI001
     }
 
     #endregion
@@ -438,8 +418,9 @@ public partial class AudioClient
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<SseItem<StreamingAudioTranscriptionUpdate>>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -449,73 +430,34 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
 
-        return new AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate>(
-            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingResult.Create(
+            result.GetRawResponse(),
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
     }
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<SseItem<StreamingAudioTranscriptionUpdate>>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
 
-        FileStream inputStream = File.OpenRead(audioFilePath);
-
-        MultiPartFormDataBinaryContent content
+        using FileStream inputStream = File.OpenRead(audioFilePath);
+        using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(inputStream, audioFilePath);
 
-        AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
-            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingResult.Create(
+            result.GetRawResponse(),
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
-        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
-        return result;
-    }
-
-    // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(audio, nameof(audio));
-        Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
-
-        EnsureModelSupportsStreaming();
-
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(audio, audioFilename);
-
-        return new SseUpdateCollection<StreamingAudioTranscriptionUpdate>(
-            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken);
-    }
-
-    // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
-
-        EnsureModelSupportsStreaming();
-
-        FileStream inputStream = File.OpenRead(audioFilePath);
-
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
-
-        SseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
-            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken);
-        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
-        return result;
+#pragma warning restore OPENAI001
     }
 
     private void EnsureModelSupportsStreaming()

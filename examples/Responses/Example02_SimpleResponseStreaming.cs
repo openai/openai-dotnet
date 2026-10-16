@@ -2,6 +2,7 @@
 using OpenAI.Responses;
 using System;
 using System.ClientModel;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -12,15 +13,17 @@ namespace OpenAI.Examples;
 public partial class ResponseExamples
 {
     [Test]
-    public void Example02_SimpleResponseStreaming()
+    public async Task Example02_SimpleResponseStreaming()
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming("gpt-5", "Say 'this is a test.'");
+        var responseUpdates = await client.CreateResponseStreamingAsync("gpt-5", "Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
-        foreach (StreamingResponseUpdate update in responseUpdates)
+        await foreach (var responseUpdate in responseUpdates)
         {
+            StreamingResponseUpdate update = responseUpdate.Data;
+
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextUpdate)
             {
                 Console.Write(outputTextUpdate.Delta);
