@@ -1,0 +1,664 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Videos
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+paths:
+  /videos:
+    post:
+      tags:
+      - Videos
+      summary: Create a new video generation job from a prompt and optional reference assets.
+      operationId: createVideo
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateVideoMultipartBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVideoJsonBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoResource"
+    get:
+      tags:
+      - Videos
+      summary: List recently generated videos for the current project.
+      operationId: ListVideos
+      parameters:
+      - name: limit
+        in: query
+        description: Number of items to retrieve
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 100
+      - name: order
+        in: query
+        description: Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order.
+        required: false
+        schema:
+          $ref: "#/components/schemas/OrderEnum"
+      - name: after
+        in: query
+        description: Identifier for the last item from the previous pagination request
+        required: false
+        schema:
+          description: Identifier for the last item from the previous pagination request
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoListResource"
+  /videos/characters:
+    post:
+      tags:
+      - Videos
+      summary: Create a character from an uploaded video.
+      operationId: CreateVideoCharacter
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateVideoCharacterBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoCharacterResource"
+  /videos/characters/{character_id}:
+    get:
+      tags:
+      - Videos
+      summary: Fetch a character.
+      operationId: GetVideoCharacter
+      parameters:
+      - name: character_id
+        in: path
+        description: The identifier of the character to retrieve.
+        required: true
+        schema:
+          example: char_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoCharacterResource"
+  /videos/edits:
+    post:
+      tags:
+      - Videos
+      summary: Create a new video generation job by editing a source video or existing generated video.
+      operationId: CreateVideoEdit
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateVideoEditMultipartBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVideoEditJsonBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoResource"
+  /videos/extensions:
+    post:
+      tags:
+      - Videos
+      summary: Create an extension of a completed video.
+      operationId: CreateVideoExtend
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateVideoExtendMultipartBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVideoExtendJsonBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoResource"
+  /videos/{video_id}:
+    get:
+      tags:
+      - Videos
+      summary: Fetch the latest metadata for a generated video.
+      operationId: GetVideo
+      parameters:
+      - name: video_id
+        in: path
+        description: The identifier of the video to retrieve.
+        required: true
+        schema:
+          example: video_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoResource"
+    delete:
+      tags:
+      - Videos
+      summary: Permanently delete a completed or failed video and its stored assets.
+      operationId: DeleteVideo
+      parameters:
+      - name: video_id
+        in: path
+        description: The identifier of the video to delete.
+        required: true
+        schema:
+          example: video_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletedVideoResource"
+  /videos/{video_id}/content:
+    get:
+      tags:
+      - Videos
+      summary: |-
+        Download the generated video bytes or a derived preview asset.
+        Streams the rendered video content for the specified video job.
+      operationId: RetrieveVideoContent
+      parameters:
+      - name: video_id
+        in: path
+        description: The identifier of the video whose media to download.
+        required: true
+        schema:
+          example: video_123
+          type: string
+      - name: variant
+        in: query
+        description: Which downloadable asset to return. Defaults to the MP4 video.
+        required: false
+        schema:
+          $ref: "#/components/schemas/VideoContentVariant"
+      responses:
+        "200":
+          description: The video bytes or preview asset that matches the requested variant.
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+  /videos/{video_id}/remix:
+    post:
+      tags:
+      - Videos
+      summary: Create a remix of a completed video using a refreshed prompt.
+      operationId: CreateVideoRemix
+      parameters:
+      - name: video_id
+        in: path
+        description: The identifier of the completed video to remix.
+        required: true
+        schema:
+          example: video_123
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateVideoRemixBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVideoRemixBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoResource"
+components:
+  schemas:
+    CreateVideoCharacterBody:
+      properties:
+        video:
+          type: string
+          format: binary
+          description: Video file used to create a character.
+        name:
+          type: string
+          maxLength: 80
+          minLength: 1
+          description: Display name for this API character.
+      type: object
+      required:
+      - video
+      - name
+      title: Create character request
+      description: Parameters for creating a character from an uploaded video.
+    CreateVideoEditJsonBody:
+      properties:
+        video:
+          $ref: "#/components/schemas/VideoReferenceInputParam"
+          description: Reference to the completed video to edit.
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes how to edit the source video.
+      type: object
+      required:
+      - video
+      - prompt
+      title: Create video edit JSON request
+      description: JSON parameters for editing an existing generated video.
+    CreateVideoEditMultipartBody:
+      properties:
+        video:
+          oneOf:
+          - type: string
+            format: binary
+            description: Reference to the completed video to edit.
+          - $ref: "#/components/schemas/VideoReferenceInputParam"
+            description: Reference to the completed video to edit.
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes how to edit the source video.
+      type: object
+      required:
+      - video
+      - prompt
+      title: Create video edit multipart request
+      description: Parameters for editing an existing generated video.
+    CreateVideoExtendJsonBody:
+      properties:
+        video:
+          $ref: "#/components/schemas/VideoReferenceInputParam"
+          description: Reference to the completed video to extend.
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Updated text prompt that directs the extension generation.
+        seconds:
+          $ref: "#/components/schemas/VideoSeconds"
+          description: "Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20)."
+      type: object
+      required:
+      - video
+      - prompt
+      - seconds
+      title: Create video extension JSON request
+      description: JSON parameters for extending an existing generated video.
+    CreateVideoExtendMultipartBody:
+      properties:
+        video:
+          oneOf:
+          - $ref: "#/components/schemas/VideoReferenceInputParam"
+            description: Reference to the completed video to extend.
+          - type: string
+            format: binary
+            description: Reference to the completed video to extend.
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Updated text prompt that directs the extension generation.
+        seconds:
+          $ref: "#/components/schemas/VideoSeconds"
+          description: "Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20)."
+      type: object
+      required:
+      - video
+      - prompt
+      - seconds
+      title: Create video extension multipart request
+      description: Multipart parameters for extending an existing generated video.
+    CreateVideoJsonBody:
+      properties:
+        model:
+          $ref: "#/components/schemas/VideoModel"
+          description: "The video generation model to use (allowed values: sora-2, sora-2-pro). Defaults to `sora-2`."
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes the video to generate.
+        input_reference:
+          $ref: "#/components/schemas/ImageRefParam-2"
+          description: Optional reference object that guides generation. Provide exactly one of `image_url` or `file_id`.
+        seconds:
+          $ref: "#/components/schemas/VideoSeconds"
+          description: "Clip duration in seconds (allowed values: 4, 8, 12). Defaults to 4 seconds."
+        size:
+          $ref: "#/components/schemas/VideoSize"
+          description: "Output resolution formatted as width x height (allowed values: 720x1280, 1280x720, 1024x1792, 1792x1024). Defaults to 720x1280."
+      type: object
+      required:
+      - prompt
+      title: Create video JSON request
+      description: JSON parameters for creating a new video generation job.
+    CreateVideoMultipartBody:
+      properties:
+        model:
+          $ref: "#/components/schemas/VideoModel"
+          description: "The video generation model to use (allowed values: sora-2, sora-2-pro). Defaults to `sora-2`."
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes the video to generate.
+        input_reference:
+          oneOf:
+          - type: string
+            format: binary
+            description: Optional reference asset upload or reference object that guides generation.
+          - $ref: "#/components/schemas/ImageRefParam-2"
+            description: Optional reference asset upload or reference object that guides generation. Provide exactly one of `image_url` or `file_id` when using an object.
+        seconds:
+          $ref: "#/components/schemas/VideoSeconds"
+          description: "Clip duration in seconds (allowed values: 4, 8, 12). Defaults to 4 seconds."
+        size:
+          $ref: "#/components/schemas/VideoSize"
+          description: "Output resolution formatted as width x height (allowed values: 720x1280, 1280x720, 1024x1792, 1792x1024). Defaults to 720x1280."
+      type: object
+      required:
+      - prompt
+      title: Create video multipart request
+      description: Multipart parameters for creating a new video generation job.
+    CreateVideoRemixBody:
+      properties:
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Updated text prompt that directs the remix generation.
+      type: object
+      required:
+      - prompt
+      title: Create video remix request
+      description: Parameters for remixing an existing generated video.
+    DeletedVideoResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - video.deleted
+          description: The object type that signals the deletion response.
+          default: video.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Indicates that the video resource was deleted.
+        id:
+          type: string
+          description: Identifier of the deleted video.
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+      title: Deleted video response
+      description: Confirmation payload returned after deleting a video.
+    Error-2:
+      properties:
+        code:
+          type: string
+          description: A machine-readable error code that was returned.
+        message:
+          type: string
+          description: A human-readable description of the error that was returned.
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+      description: An error that occurred while generating the response.
+    ImageRefParam-2:
+      properties:
+        image_url:
+          type: string
+          maxLength: 20971520
+          format: uri
+          description: A fully qualified URL or base64-encoded data URL.
+        file_id:
+          type: string
+          example: file-123
+      type: object
+      required: []
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    VideoCharacterResource:
+      properties:
+        id:
+          anyOf:
+          - type: string
+            description: Identifier for the character creation cameo.
+          - type: "null"
+        name:
+          anyOf:
+          - type: string
+            description: Display name for the character.
+          - type: "null"
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the character was created.
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+    VideoContentVariant:
+      type: string
+      enum:
+      - video
+      - thumbnail
+      - spritesheet
+    VideoListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: "#/components/schemas/VideoResource"
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: "null"
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: "null"
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    VideoModel:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - sora-2
+        - sora-2-pro
+        - sora-2-2025-10-06
+        - sora-2-pro-2025-10-06
+        - sora-2-2025-12-08
+    VideoReferenceInputParam:
+      properties:
+        id:
+          type: string
+          description: The identifier of the completed video.
+          example: video_123
+      type: object
+      required:
+      - id
+      description: Reference to the completed video.
+    VideoResource:
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the video job.
+        object:
+          type: string
+          enum:
+          - video
+          description: The object type, which is always `video`.
+          default: video
+          x-stainless-const: true
+        model:
+          $ref: "#/components/schemas/VideoModel"
+          description: The video generation model that produced the job.
+        status:
+          $ref: "#/components/schemas/VideoStatus"
+          description: Current lifecycle status of the video job.
+        progress:
+          type: integer
+          description: Approximate completion percentage for the generation task.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (seconds) for when the job was created.
+        completed_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: Unix timestamp (seconds) for when the job completed, if finished.
+          - type: "null"
+        expires_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: Unix timestamp (seconds) for when the downloadable assets expire, if set.
+          - type: "null"
+        prompt:
+          anyOf:
+          - type: string
+            description: The prompt that was used to generate the video.
+          - type: "null"
+        size:
+          $ref: "#/components/schemas/VideoSize"
+          description: The resolution of the generated video.
+        seconds:
+          type: string
+          description: Duration of the generated clip in seconds. For extensions, this is the stitched total duration.
+        remixed_from_video_id:
+          anyOf:
+          - type: string
+            description: Identifier of the source video if this video is a remix.
+          - type: "null"
+        error:
+          anyOf:
+          - $ref: "#/components/schemas/Error-2"
+            description: Error payload that explains why generation failed, if applicable.
+          - type: "null"
+      type: object
+      required:
+      - id
+      - object
+      - model
+      - status
+      - progress
+      - created_at
+      - completed_at
+      - expires_at
+      - prompt
+      - size
+      - seconds
+      - remixed_from_video_id
+      - error
+      title: Video job
+      description: Structured information describing a generated video job.
+    VideoSeconds:
+      type: string
+      enum:
+      - "4"
+      - "8"
+      - "12"
+    VideoSize:
+      type: string
+      enum:
+      - 720x1280
+      - 1280x720
+      - 1024x1792
+      - 1792x1024
+    VideoStatus:
+      type: string
+      enum:
+      - queued
+      - in_progress
+      - completed
+      - failed
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...

@@ -1,0 +1,382 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Batch
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Batch
+  description: Create large batches of API requests to run asynchronously.
+paths:
+  /batches:
+    post:
+      summary: Creates and executes a batch from an uploaded file of requests
+      operationId: createBatch
+      tags:
+      - Batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBatchRequest"
+      responses:
+        "200":
+          description: Batch created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+    get:
+      operationId: listBatches
+      tags:
+      - Batch
+      summary: List your organization's batches.
+      parameters:
+      - in: query
+        name: after
+        required: false
+        schema:
+          type: string
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      responses:
+        "200":
+          description: Batch listed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListBatchesResponse"
+  /batches/{batch_id}:
+    get:
+      operationId: retrieveBatch
+      tags:
+      - Batch
+      summary: Retrieves a batch.
+      parameters:
+      - in: path
+        name: batch_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the batch to retrieve.
+      responses:
+        "200":
+          description: Batch retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+  /batches/{batch_id}/cancel:
+    post:
+      operationId: cancelBatch
+      tags:
+      - Batch
+      summary: Cancels an in-progress batch. The batch will be in status `cancelling` for up to 10 minutes, before changing to `cancelled`, where it will have partial results (if any) available in the output file.
+      parameters:
+      - in: path
+        name: batch_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the batch to cancel.
+      responses:
+        "200":
+          description: Batch is cancelling. Returns the cancelling batch's details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Batch"
+components:
+  schemas:
+    Batch:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum:
+          - batch
+          description: The object type, which is always `batch`.
+          x-stainless-const: true
+        endpoint:
+          type: string
+          description: The OpenAI API endpoint used by the batch.
+        model:
+          type: string
+          description: >-
+            Model ID used to process the batch, like `gpt-5-2025-08-07`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+        errors:
+          type: object
+          properties:
+            object:
+              type: string
+              description: The object type, which is always `list`.
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/BatchError"
+        input_file_id:
+          type: string
+          description: The ID of the input file for the batch.
+        completion_window:
+          type: string
+          description: The time frame within which the batch should be processed.
+        status:
+          type: string
+          description: The current status of the batch.
+          enum:
+          - validating
+          - failed
+          - in_progress
+          - finalizing
+          - completed
+          - expired
+          - cancelling
+          - cancelled
+        output_file_id:
+          type: string
+          description: The ID of the file containing the outputs of successfully executed requests.
+        error_file_id:
+          type: string
+          description: The ID of the file containing the outputs of requests with errors.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch was created.
+        in_progress_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch started processing.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch will expire.
+        finalizing_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch started finalizing.
+        completed_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch was completed.
+        failed_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch failed.
+        expired_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch expired.
+        cancelling_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch started cancelling.
+        cancelled_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the batch was cancelled.
+        request_counts:
+          $ref: "#/components/schemas/BatchRequestCounts"
+        usage:
+          type: object
+          description: >-
+            Represents token usage details including input tokens, output tokens, a breakdown of output tokens, and the total tokens used. Only populated on batches created after September 7, 2025.
+          properties:
+            input_tokens:
+              type: integer
+              description: The number of input tokens.
+            input_tokens_details:
+              type: object
+              description: A detailed breakdown of the input tokens.
+              properties:
+                cached_tokens:
+                  type: integer
+                  description: >-
+                    The number of tokens that were retrieved from the cache. [More on prompt caching](/docs/guides/prompt-caching).
+              required:
+              - cached_tokens
+            output_tokens:
+              type: integer
+              description: The number of output tokens.
+            output_tokens_details:
+              type: object
+              description: A detailed breakdown of the output tokens.
+              properties:
+                reasoning_tokens:
+                  type: integer
+                  description: The number of reasoning tokens.
+              required:
+              - reasoning_tokens
+            total_tokens:
+              type: integer
+              description: The total number of tokens used.
+          required:
+          - input_tokens
+          - input_tokens_details
+          - output_tokens
+          - output_tokens_details
+          - total_tokens
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+      required:
+      - id
+      - object
+      - endpoint
+      - input_file_id
+      - completion_window
+      - status
+      - created_at
+    BatchError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: An error code identifying the error type.
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        param:
+          anyOf:
+          - type: string
+            description: The name of the parameter that caused the error, if applicable.
+          - type: "null"
+        line:
+          anyOf:
+          - type: integer
+            description: The line number of the input file where the error occurred, if applicable.
+          - type: "null"
+    BatchFileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for the output and/or error file that are generated for a batch.
+      properties:
+        anchor:
+          description: "Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`. Note that the anchor is the file creation time, not the time the batch is created."
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
+    BatchRequestCounts:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of requests in the batch.
+        completed:
+          type: integer
+          description: Number of requests that have been completed successfully.
+        failed:
+          type: integer
+          description: Number of requests that have failed.
+      required:
+      - total
+      - completed
+      - failed
+      description: The request counts for different statuses within the batch.
+    CreateBatchRequest:
+      type: object
+      required:
+      - input_file_id
+      - endpoint
+      - completion_window
+      properties:
+        input_file_id:
+          type: string
+          description: >-
+            The ID of an uploaded file that contains requests for the new batch.
+
+            See [upload file](/docs/api-reference/files/create) for how to upload a file.
+
+            Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/request-input), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
+        endpoint:
+          type: string
+          enum:
+          - /v1/responses
+          - /v1/chat/completions
+          - /v1/embeddings
+          - /v1/completions
+          - /v1/moderations
+          - /v1/images/generations
+          - /v1/images/edits
+          - /v1/videos
+          description: The endpoint to be used for all requests in the batch. Currently `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`, and `/v1/videos` are supported. Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000 embedding inputs across all requests in the batch.
+        completion_window:
+          type: string
+          enum:
+          - 24h
+          description: The time frame within which the batch should be processed. Currently only `24h` is supported.
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        output_expires_after:
+          $ref: "#/components/schemas/BatchFileExpirationAfter"
+    ListBatchesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Batch"
+        first_id:
+          type: string
+          example: batch_abc123
+        last_id:
+          type: string
+          example: batch_abc456
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+    Metadata:
+      anyOf:
+      - type: object
+        description: >-
+          Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format, and querying for objects via API or the dashboard.
+
+          Keys are strings with a maximum length of 64 characters. Values are strings with a maximum length of 512 characters.
+        additionalProperties:
+          type: string
+      - type: "null"
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
