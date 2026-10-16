@@ -695,6 +695,31 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [TestCase("xhigh")]
+    public async Task ReasoningEffortLevelsWork(string expectedValue)
+    {
+        ChatReasoningEffortLevel effortLevel = expectedValue switch
+        {
+            "xhigh" => ChatReasoningEffortLevel.ExtraHigh,
+            _ => throw new ArgumentOutOfRangeException(nameof(expectedValue)),
+        };
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-5.6");
+        ChatCompletionOptions options = new()
+        {
+            MaxOutputTokenCount = 256,
+            ReasoningEffortLevel = effortLevel,
+        };
+
+        Assert.That(ModelReaderWriter.Write(options).ToString(), Does.Contain($@"""reasoning_effort"":""{expectedValue}"""));
+
+        ChatCompletion completion = await client.CompleteChatAsync([new UserChatMessage("Reply with OK.")], options);
+
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.Usage, Is.Not.Null);
+        Assert.That(completion.Usage.OutputTokenCount, Is.GreaterThan(0));
+    }
+
+    [RecordedTest]
     public async Task PredictedOutputsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();

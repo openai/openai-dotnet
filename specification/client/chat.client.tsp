@@ -26,6 +26,7 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(ChatCompletionMessageCollectionOptions.after, "AfterId");
 @@clientName(ChatCompletionMessageCollectionOptions.limit, "PageSizeLimit");
+@@clientName(ChatReasoningEffort.xhigh, "ExtraHigh");
 
 @@alternateType(CreateChatCompletionRequest.service_tier, DotNetChatServiceTier);
 @@alternateType(CreateChatCompletionResponse.service_tier, DotNetChatServiceTier);
