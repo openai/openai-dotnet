@@ -19,6 +19,14 @@ namespace OpenAILibraryPlugin.Tests.TestHelpers
         private static readonly string _configFilePath = Path.Combine(AppContext.BaseDirectory, TestHelpersFolder);
         private const string TestHelpersFolder = "TestHelpers";
 
+        public static Mock<GeneratorContext> CreateMockGeneratorContext(string? configurationJson = null)
+        {
+            var loadMethod = typeof(Configuration).GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
+            object?[] parameters = [_configFilePath, configurationJson];
+            var config = loadMethod?.Invoke(null, parameters);
+            return new Mock<GeneratorContext>(config!);
+        }
+
         public static Mock<ScmCodeModelGenerator> LoadMockGenerator(
             Func<InputType, TypeProvider, IReadOnlyList<TypeProvider>>? createSerializationsCore = null,
             Func<InputType, CSharpType>? createCSharpTypeCore = null,
@@ -68,11 +76,7 @@ namespace OpenAILibraryPlugin.Tests.TestHelpers
 
             // initialize the mock singleton instance of the plugin
             var codeModelInstance = typeof(CodeModelGenerator).GetField("_instance", BindingFlags.Static | BindingFlags.NonPublic);
-            // invoke the load method with the config file path
-            var loadMethod = typeof(Configuration).GetMethod("Load", BindingFlags.Static | BindingFlags.NonPublic);
-            object?[] parameters = [_configFilePath, configurationJson];
-            var config = loadMethod?.Invoke(null, parameters);
-            var mockGeneratorContext = new Mock<GeneratorContext>(config!);
+            var mockGeneratorContext = CreateMockGeneratorContext(configurationJson);
             var mockGeneratorInstance = new Mock<ScmCodeModelGenerator>(mockGeneratorContext.Object) { CallBase = true };
             codeModelInstance!.SetValue(null, mockGeneratorInstance.Object);
             mockGeneratorInstance.SetupGet(p => p.InputLibrary).Returns(mockInputLibrary.Object);
