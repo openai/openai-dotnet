@@ -1,58 +1,31 @@
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
-[Experimental("OPENAI001")]
+[CodeGenType("DotNetResponseToolChoice")]
+[CodeGenVisibility(nameof(ResponseToolChoice), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class ResponseToolChoice
 {
-    public ResponseToolChoiceKind Kind
-        => _toolChoiceOption?.ToResponseToolChoiceKind()
-        ?? _toolChoiceObject?.Kind.ToResponseToolChoiceKind()
-        ?? ResponseToolChoiceKind.Unknown;
-
-    public string FunctionName
-        => (_toolChoiceObject as InternalToolChoiceObjectFunction)?.Name;
-
-    private readonly InternalToolChoiceObject _toolChoiceObject;
-    private readonly InternalToolChoiceOptions? _toolChoiceOption;
-
-    public static ResponseToolChoice CreateFunctionChoice(string functionName)
-        => new(new InternalToolChoiceObjectFunction(functionName));
-
-    public static ResponseToolChoice CreateFileSearchChoice()
-        => new(new InternalToolChoiceObjectFileSearch());
-
-    public static ResponseToolChoice CreateWebSearchChoice()
-        => new(new InternalToolChoiceObjectWebSearch());
-
-    [Experimental("OPENAI001")]
-    public static ResponseToolChoice CreateComputerChoice()
-        => new(new InternalToolChoiceObjectComputer());
-
-    public static ResponseToolChoice CreateAutoChoice()
-        => new(InternalToolChoiceOptions.Auto);
-
-    public static ResponseToolChoice CreateNoneChoice()
-        => new(InternalToolChoiceOptions.None);
-
-    public static ResponseToolChoice CreateRequiredChoice()
-        => new(InternalToolChoiceOptions.Required);
-
-    internal ResponseToolChoice(InternalToolChoiceObject toolChoiceObject)
+    public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice)
     {
-        _toolChoiceObject = toolChoiceObject;
+        DefaultToolChoice = defaultToolChoice;
     }
 
-    internal ResponseToolChoice(InternalToolChoiceOptions toolChoiceOption)
+    public ResponseToolChoice(ResponseCustomToolChoice customToolChoice)
     {
-        _toolChoiceOption = toolChoiceOption;
+        Argument.AssertNotNull(customToolChoice, nameof(customToolChoice));
+
+        CustomToolChoice = customToolChoice;
     }
 
-    // CUSTOM: Supply an internal default constructor for serialization and mocking.
-    internal ResponseToolChoice()
-    { }
+    [CodeGenMember("DefaultToolChoice")]
+    public ResponseDefaultToolChoice? DefaultToolChoice { get; }
 
+    [CodeGenMember("CustomToolChoice")]
+    public ResponseCustomToolChoice CustomToolChoice { get; }
+
+    public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice) => new(defaultToolChoice);
+
+    public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
 }
