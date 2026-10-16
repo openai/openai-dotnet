@@ -6,8 +6,13 @@
 
 ### Features Added
 
+- OpenAI.Chat and OpenAI.Responses:
+  - Expanded latest-mode OpenTelemetry span attributes for request settings, response metadata, and token-usage details.
+  - Added privacy-conscious operation exception logs through the existing client logging configuration. Records contain the exception type without exception messages, stack traces, or request/response content.
+
 - OpenAI.Responses:
   - Added experimental OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations. The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
+  - Added experimental OpenTelemetry support for synchronous and asynchronous `CreateResponseStreaming` enumeration, including terminal usage, errors, cancellation, and early disposal. The latest semantic-convention opt-in adds request streaming attributes and first-chunk/output-chunk timing histograms. Streaming content is not captured.
   - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, and `AllTurns`.
 
 ### Bugs Fixed
@@ -16,7 +21,20 @@
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
 
+- OpenAI.Chat and OpenAI.Responses:
+  - Latest-mode operation exception logs now include final API errors and rate limiting.
+  - Latest-mode spans and metrics omit cache or reasoning token subsets that exceed their reported totals.
+
+- OpenAI.Responses:
+  - Raw-page streaming enumeration no longer reports response handoff as cancellation.
+  - Latest-mode raw-page streaming spans remain open through response-body EOF, stream disposal, or a read/disposal failure.
+  - Latest-mode raw-page streaming records operation duration once at the observed body completion boundary, including the span's error type for failures.
+  - Latest-mode streaming spans now retain observed response metadata across interruption, record abnormal finish reasons and first-chunk latency, and omit the streaming attribute on buffered requests.
+
 ### Other Changes
+
+- OpenAI.Chat and OpenAI.Responses:
+  - With `gen_ai_latest_experimental`, replaced `gen_ai.client.token.usage` with the current OpenTelemetry inference usage counters and per-operation token histograms. Counters include token modality and available cache/reasoning subsets. The default semantic-convention mode remains unchanged.
 
 ## 2.14.0 (2026-09-15)
 
