@@ -4,6 +4,8 @@
 
 ### Acknowledgments
 
+- Sylvester Kaczmarek _([GitHub](https://github.com/sylvesterkaczmarek))_
+
 ### Features Added
 
 - OpenAI.Chat and OpenAI.Responses:
@@ -17,6 +19,8 @@
 
 ### Bugs Fixed
 
+- OpenAI.Chat:
+  - Fixed `JsonPatch` precedence for message content and content-part properties, preventing patched values from being emitted alongside modeled values as duplicate JSON properties. _(A community contribution, courtesy of [sylvesterkaczmarek](https://github.com/sylvesterkaczmarek))_
 - OpenAI.Assistants:
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
