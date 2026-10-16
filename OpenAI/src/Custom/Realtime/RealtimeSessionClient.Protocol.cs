@@ -11,8 +11,6 @@ namespace OpenAI.Realtime;
 public partial class RealtimeSessionClient
 {
     private readonly SemaphoreSlim _clientSendSemaphore = new(initialCount: 1, maxCount: 1);
-    private readonly object _singleReceiveLock = new();
-    private AsyncWebsocketMessageCollectionResult _receiveCollectionResult;
 
     /// <summary>
     /// Initializes an underlying <see cref="WebSocket"/> instance for communication with the /realtime endpoint and
@@ -88,11 +86,9 @@ public partial class RealtimeSessionClient
 
     public virtual async IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options)
     {
-        lock (_singleReceiveLock)
-        {
-            _receiveCollectionResult ??= new(WebSocket, options?.CancellationToken ?? default);
-        }
-        await foreach (ClientResult result in _receiveCollectionResult)
+        // The socket and cancellation token belong to this receive operation.
+        AsyncWebsocketMessageCollectionResult receiveCollectionResult = new(WebSocket, options?.CancellationToken ?? default);
+        await foreach (ClientResult result in receiveCollectionResult)
         {
             BinaryData incomingMessage = result?.GetRawResponse()?.Content;
             if (incomingMessage is not null)
