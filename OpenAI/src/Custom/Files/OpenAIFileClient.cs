@@ -269,6 +269,38 @@ public partial class OpenAIFileClient
         return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
     }
 
+    /// <summary> Gets the files belonging to the user's organization as a pageable collection. </summary>
+    /// <param name="options"> The options to configure file filtering and pagination. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    public virtual CollectionResult<OpenAIFile> GetFiles(FileCollectionOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+
+        return new OpenAIFileClientGetFilesCollectionResultOfT(
+            this,
+            options.Purpose?.ToSerialString(),
+            options.PageSizeLimit,
+            options.Order?.ToString(),
+            options.AfterId,
+            cancellationToken.ToRequestOptions());
+    }
+
+    /// <summary> Gets the files belonging to the user's organization as an asynchronously pageable collection. </summary>
+    /// <param name="options"> The options to configure file filtering and pagination. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    public virtual AsyncCollectionResult<OpenAIFile> GetFilesAsync(FileCollectionOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+
+        return new OpenAIFileClientGetFilesAsyncCollectionResultOfT(
+            this,
+            options.Purpose?.ToSerialString(),
+            options.PageSizeLimit,
+            options.Order?.ToString(),
+            options.AfterId,
+            cancellationToken.ToRequestOptions());
+    }
+
     /// <summary> Gets basic information about the specified file. </summary>
     /// <param name="fileId"> The ID of the desired file. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>

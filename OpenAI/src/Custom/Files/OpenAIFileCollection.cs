@@ -6,25 +6,18 @@ using System.Collections.ObjectModel;
 namespace OpenAI.Files;
 
 [CodeGenType("ListFilesResponse")]
-[CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIFileCollection))]
-[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool))]
-[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
+[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(IEnumerable<OpenAIFile>), typeof(string), typeof(string), typeof(bool))]
+[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(IList<OpenAIFile>), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
+[CodeGenVisibility(nameof(FirstId), CodeGenVisibility.Internal)]
+[CodeGenVisibility(nameof(LastId), CodeGenVisibility.Internal)]
+[CodeGenVisibility(nameof(HasMore), CodeGenVisibility.Internal)]
+[CodeGenVisibility(nameof(Data), CodeGenVisibility.Internal)]
 public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     [CodeGenMember("Object")]
     private string Object { get; } = "list";
-
-    // CUSTOM: Internalizing pending standardized pagination representation for the list operation.
-    [CodeGenMember("FirstId")]
-    internal string FirstId { get; }
-
-    [CodeGenMember("LastId")]
-    internal string LastId { get; }
-
-    [CodeGenMember("HasMore")]
-    internal bool HasMore { get; }
 
     /// <summary> Initializes a new instance of <see cref="OpenAIFileCollection"/>. </summary>
     /// <param name="data"></param>
@@ -33,6 +26,7 @@ public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
         : base([.. data])
     {
         Argument.AssertNotNull(data, nameof(data));
+        Data = [.. data];
         FirstId = firstId;
         LastId = lastId;
         HasMore = hasMore;
@@ -41,12 +35,13 @@ public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
     /// <summary> Initializes a new instance of <see cref="OpenAIFileCollection"/>. </summary>
     /// <param name="data"></param>
     /// <param name="object"></param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal OpenAIFileCollection(IReadOnlyList<OpenAIFile> data, string @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
+    internal OpenAIFileCollection(string @object, IReadOnlyList<OpenAIFile> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         : base([.. data])
     {
         Object = @object;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        Data = [.. data];
+        SerializedAdditionalRawData = additionalBinaryDataProperties;
         FirstId = firstId;
         LastId = lastId;
         HasMore = hasMore;

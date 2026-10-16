@@ -4,6 +4,7 @@ using NUnit.Framework;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -295,6 +296,139 @@ public class FilesMockTests : ClientTestBase
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+    }
+
+    [Test]
+    [TestCaseSource(nameof(s_purposeSource))]
+    public async Task GetFilesPaginatesWithCollectionOptions((string stringValue, FilePurpose expectedValue) purpose)
+    {
+        string[] responseContents =
+        [
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_1" }],
+                "first_id": "file_1",
+                "last_id": "file_1",
+                "has_more": true
+            }
+            """,
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_2" }],
+                "first_id": "file_2",
+                "last_id": "file_2",
+                "has_more": false
+            }
+            """
+        ];
+        List<Uri> requestUris = [];
+        int responseIndex = 0;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                requestUris.Add(message.Request.Uri);
+                return new MockPipelineResponse(200).WithContent(responseContents[responseIndex++]);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        OpenAIFileClient client = new(s_fakeCredential, clientOptions);
+        FileCollectionOptions options = new()
+        {
+            Purpose = purpose.expectedValue,
+            PageSizeLimit = 1,
+            Order = FileCollectionOrder.Ascending,
+            AfterId = "file_start"
+        };
+        List<OpenAIFile> files = [];
+
+        if (IsAsync)
+        {
+            await foreach (OpenAIFile file in client.GetFilesAsync(options))
+            {
+                files.Add(file);
+            }
+        }
+        else
+        {
+            files.AddRange(client.GetFiles(options));
+        }
+
+        Assert.That(files.Select(file => file.Id), Is.EqualTo(new[] { "file_1", "file_2" }));
+        Assert.That(requestUris, Has.Count.EqualTo(2));
+        Assert.That(requestUris[0].Query, Does.Contain($"purpose={purpose.stringValue}"));
+        Assert.That(requestUris[0].Query, Does.Contain("limit=1"));
+        Assert.That(requestUris[0].Query, Does.Contain("order=asc"));
+        Assert.That(requestUris[0].Query, Does.Contain("after=file_start"));
+        Assert.That(requestUris[1].Query, Does.Contain("after=file_1"));
+    }
+
+    [Test]
+    public async Task GetFilesReturnsNoContinuationTokenForFinalPage()
+    {
+        string[] responseContents =
+        [
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_1" }],
+                "first_id": "file_1",
+                "last_id": "file_1",
+                "has_more": true
+            }
+            """,
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_2" }],
+                "first_id": "file_2",
+                "last_id": "file_2",
+                "has_more": false
+            }
+            """
+        ];
+        int responseIndex = 0;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ =>
+                new MockPipelineResponse(200).WithContent(responseContents[responseIndex++]))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        OpenAIFileClient client = new(s_fakeCredential, clientOptions);
+        FileCollectionOptions options = new()
+        {
+            Purpose = FilePurpose.Assistants,
+            PageSizeLimit = 1
+        };
+
+        if (IsAsync)
+        {
+            AsyncCollectionResult<OpenAIFile> result = client.GetFilesAsync(options);
+            List<ClientResult> pages = [];
+            await foreach (ClientResult page in result.GetRawPagesAsync())
+            {
+                pages.Add(page);
+            }
+
+            Assert.That(pages, Has.Count.EqualTo(2));
+            Assert.That(result.GetContinuationToken(pages[0]), Is.Not.Null);
+            Assert.That(result.GetContinuationToken(pages[1]), Is.Null);
+        }
+        else
+        {
+            CollectionResult<OpenAIFile> result = client.GetFiles(options);
+            List<ClientResult> pages = [.. result.GetRawPages()];
+
+            Assert.That(pages, Has.Count.EqualTo(2));
+            Assert.That(result.GetContinuationToken(pages[0]), Is.Not.Null);
+            Assert.That(result.GetContinuationToken(pages[1]), Is.Null);
+        }
     }
 
     [Test]

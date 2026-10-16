@@ -1,8 +1,10 @@
 import "@typespec/http";
 import "@typespec/openapi";
+import "@azure-tools/typespec-client-generator-core";
 import "./models.tsp";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
+using Azure.ClientGenerator.Core;
 namespace OpenAI;
 /** Returns a list of files. */
 #suppress "@azure-tools/typespec-azure-core/use-standard-names" "Auto-suppressed warnings non-applicable rules during import."
@@ -134,6 +136,7 @@ namespace OpenAI;
   }
 )
 @tag("Files")
+@list
 op listFiles(
   /** Only return files with the given purpose. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
@@ -155,6 +158,7 @@ op listFiles(
   /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
+  @continuationToken
   after?: string,
 ): ListFilesResponse;
 

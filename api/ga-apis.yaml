@@ -61,6 +61,8 @@ stableClasses:
   - OpenAI.Embeddings.OpenAIEmbeddingCollection
   - OpenAI.Embeddings.OpenAIEmbeddingsModelFactory
   - OpenAI.Files.FileDeletionResult
+  - OpenAI.Files.FileCollectionOptions
+  - OpenAI.Files.FileCollectionOrder
   - OpenAI.Files.FilePurpose
   - OpenAI.Files.FileStatus
   - OpenAI.Files.FileUploadPurpose
@@ -203,6 +205,12 @@ stableProperties:
   - EmbeddingGenerationOptions.EndUserId
   - EmbeddingTokenUsage.InputTokenCount
   - EmbeddingTokenUsage.TotalTokenCount
+  - FileCollectionOptions.AfterId
+  - FileCollectionOptions.Order
+  - FileCollectionOptions.PageSizeLimit
+  - FileCollectionOptions.Purpose
+  - FileCollectionOrder.Ascending
+  - FileCollectionOrder.Descending
   - FileDeletionResult.Deleted
   - FileDeletionResult.FileId
   - FileUploadPurpose.Assistants
@@ -414,6 +422,13 @@ stableMethods:
   - EmbeddingClient.GenerateEmbeddingsAsync|BinaryContent|RequestOptions
   - EmbeddingClient.GenerateEmbeddingsAsync|IEnumerable<ReadOnlyMemory<int>>|EmbeddingGenerationOptions|CancellationToken
   - EmbeddingClient.GenerateEmbeddingsAsync|IEnumerable<string>|EmbeddingGenerationOptions|CancellationToken
+  - FileCollectionOrder.Equals|FileCollectionOrder
+  - FileCollectionOrder.Equals|object
+  - FileCollectionOrder.GetHashCode
+  - FileCollectionOrder.operator !=|FileCollectionOrder|FileCollectionOrder
+  - FileCollectionOrder.operator ==|FileCollectionOrder|FileCollectionOrder
+  - FileCollectionOrder.operator implicit FileCollectionOrder|string
+  - FileCollectionOrder.ToString
   - FileUploadPurpose.Equals|FileUploadPurpose
   - FileUploadPurpose.Equals|object
   - FileUploadPurpose.GetHashCode
@@ -541,9 +556,11 @@ stableMethods:
   - OpenAIFileClient.GetFileAsync|string|CancellationToken
   - OpenAIFileClient.GetFileAsync|string|RequestOptions
   - OpenAIFileClient.GetFiles|CancellationToken
+  - OpenAIFileClient.GetFiles|FileCollectionOptions|CancellationToken
   - OpenAIFileClient.GetFiles|FilePurpose|CancellationToken
   - OpenAIFileClient.GetFiles|string|RequestOptions
   - OpenAIFileClient.GetFilesAsync|CancellationToken
+  - OpenAIFileClient.GetFilesAsync|FileCollectionOptions|CancellationToken
   - OpenAIFileClient.GetFilesAsync|FilePurpose|CancellationToken
   - OpenAIFileClient.GetFilesAsync|string|RequestOptions
   - OpenAIFileClient.UploadFile|BinaryContent|string|RequestOptions
