@@ -15,15 +15,15 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseTextFormat(InternalResponsesTextFormatType internalType)
+        public ResponseTextFormat(ResponseTextFormatKind kind)
         {
-            InternalType = internalType;
+            Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseTextFormat(InternalResponsesTextFormatType internalType, in JsonPatch patch)
+        internal ResponseTextFormat(ResponseTextFormatKind kind, in JsonPatch patch)
         {
-            InternalType = internalType;
+            Kind = kind;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

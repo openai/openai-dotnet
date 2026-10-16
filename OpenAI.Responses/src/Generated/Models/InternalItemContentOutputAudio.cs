@@ -8,14 +8,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputAudio : ResponseContentPart
     {
-        public InternalItemContentOutputAudio(string data, string transcript) : base(InternalItemContentType.OutputAudio)
+        public InternalItemContentOutputAudio(string data, string transcript) : base(ResponseContentPartKind.OutputAudio)
         {
             Data = data;
             Transcript = transcript;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentOutputAudio(InternalItemContentType internalType, in JsonPatch patch, string data, string transcript) : base(internalType, patch)
+        internal InternalItemContentOutputAudio(ResponseContentPartKind kind, in JsonPatch patch, string data, string transcript) : base(kind, patch)
         {
             Data = data;
             Transcript = transcript;

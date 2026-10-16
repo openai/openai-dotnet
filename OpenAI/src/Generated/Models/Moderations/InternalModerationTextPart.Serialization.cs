@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationTextPart : ModerationInputPart, IJsonModel<InternalModerationTextPart>
     {
-        internal InternalModerationTextPart() : this(default, null, null)
+        internal InternalModerationTextPart() : this(ModerationInputPartKind.Text, null, null)
         {
         }
 
@@ -97,7 +97,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToModerationInputPartKind();
+                    kind = new ModerationInputPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

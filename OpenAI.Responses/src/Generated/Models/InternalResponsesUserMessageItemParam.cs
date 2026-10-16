@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     internal partial class InternalResponsesUserMessageItemParam : InternalResponsesMessageItemParam
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public InternalResponsesUserMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalResponsesMessageRole.User)
+        public InternalResponsesUserMessageItemParam(IEnumerable<ResponseContentPart> content) : base(MessageRole.User)
         {
             Content = content.ToList();
             Patch.SetPropagators(PropagateSet, PropagateGet);
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesUserMessageItemParam(ResponseItemKind kind, in JsonPatch patch, InternalResponsesMessageRole role, IList<ResponseContentPart> content) : base(kind, patch, role)
+        internal InternalResponsesUserMessageItemParam(ResponseItemKind kind, in JsonPatch patch, MessageRole role, IList<ResponseContentPart> content) : base(kind, patch, role)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<ResponseContentPart>();

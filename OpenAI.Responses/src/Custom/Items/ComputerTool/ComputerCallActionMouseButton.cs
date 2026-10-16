@@ -4,15 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ComputerActionClickButton")]
-public enum ComputerCallActionMouseButton
-{
-    Left,
-    Right,
-    Wheel,
-    Back,
-    Forward
-}
+// - Converted to extensible enum.
+[CodeGenType("ComputerCallActionMouseButton")]
+public readonly partial struct ComputerCallActionMouseButton { }

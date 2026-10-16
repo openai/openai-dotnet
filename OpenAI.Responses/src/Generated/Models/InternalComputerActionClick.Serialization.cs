@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.button"u8))
             {
                 writer.WritePropertyName("button"u8);
-                writer.WriteStringValue(Button.ToSerialString());
+                writer.WriteStringValue(Button.ToString());
             }
             if (!Patch.Contains("$.x"u8))
             {
@@ -123,12 +123,12 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToComputerCallActionKind();
+                    kind = new ComputerCallActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("button"u8))
                 {
-                    button = prop.Value.GetString().ToComputerCallActionMouseButton();
+                    button = new ComputerCallActionMouseButton(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("x"u8))

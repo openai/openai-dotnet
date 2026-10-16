@@ -78,6 +78,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
