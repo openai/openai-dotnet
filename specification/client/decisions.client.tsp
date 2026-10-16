@@ -1,0 +1,58 @@
+import "../base/typespec/decisions/main.tsp";
+import "@azure-tools/typespec-client-generator-core";
+import "@typespec/http-client-csharp";
+
+using Azure.ClientGenerator.Core;
+using TypeSpec.HttpClient.CSharp;
+
+namespace OpenAI.Decisions;
+
+@@clientName(createDecision_request_object, "DecisionCreationOptions");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator, "DecisionsItemKind");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage, "DecisionsMessageItem");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject, "DecisionsContentPart");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_discriminator, "DecisionsContentPartKind");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage, "DecisionsInputImageContentPart");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum, "DecisionsImageDetailLevel");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextContentPart");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject, "DecisionsQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_discriminator, "DecisionsQuestionKind");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice, "DecisionsChoiceQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object, "DecisionsChoice");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate, "DecisionsPredicateQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore, "DecisionsScoreQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Levels_array_item_object, "DecisionsScoreLevel");
+@@clientName(createDecision_response_200_object, "DecisionResource");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject, "DecisionsAnswer");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator, "DecisionsAnswerKind");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice, "DecisionsChoiceAnswer");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object, "DecisionsChoiceProbability");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfPredicate, "DecisionsPredicateAnswer");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfRefusal, "DecisionsRefusalAnswer");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore, "DecisionsScoreAnswer");
+@@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object, "DecisionsScoreProbability");
+@@clientName(createDecision_response_200_object_Usage_object, "DecisionsUsage");
+@@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object, "DecisionsInputTokenUsageDetails");
+@@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
+
+// This property is a non-discriminated union between a string and an array of items.
+// The string component is shorthand notation for the array component.
+// Specifically, the string represents an array with a single message item where its content is equal to the string value provided.
+@@alternateType(createDecision_request_object.input, createDecision_request_object_Input_union_array_item_discriminatedObject[]);
+
+// This property is a non-discriminated union between a string and an array of content parts.
+// The string component is shorthand notation for the array component.
+// Specifically, the string represents an array with a single input text content part where its text is equal to the string value provided.
+@@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject[]);
+
+// These properties are non-discriminated unions.
+// To represent them in .NET, we use a wrapper model.
+model dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union
+{
+    component_1?: string,
+    component_2?: boolean
+}
+@@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.choice, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
