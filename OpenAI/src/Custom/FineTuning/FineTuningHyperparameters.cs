@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace OpenAI.FineTuning;
@@ -34,7 +35,7 @@ public readonly partial struct FineTuningHyperparameters
 
         try
         {
-            return float.Parse(data.ToString());
+            return float.Parse(data.ToString(), CultureInfo.InvariantCulture);
         }
         catch (FormatException)
         {
