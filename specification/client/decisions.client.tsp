@@ -7,6 +7,9 @@ using TypeSpec.HttpClient.CSharp;
 
 namespace OpenAI.Decisions;
 
+@@clientName(OpenAI.Decisions, "DecisionsClient", "csharp");
+@@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
+
 @@clientName(createDecision_request_object, "DecisionCreationOptions");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator, "DecisionsItemKind");
