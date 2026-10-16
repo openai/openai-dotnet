@@ -158,7 +158,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         private readonly Func<SseItem<byte[]>, IEnumerable<U>> _deserializerFunc;
 
         private U? _current;
-        private bool _started;
+        private bool _disposed;
 
         public AsyncSseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> deserializerFunc,
@@ -178,14 +178,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
         async ValueTask<bool> IAsyncEnumerator<U>.MoveNextAsync()
         {
-            if (_events is null && _started)
+            if (_disposed)
             {
                 throw new ObjectDisposedException(nameof(AsyncSseUpdateEnumerator<U>));
             }
 
             _cancellationToken.ThrowIfCancellationRequested();
             _events ??= CreateEventEnumeratorAsync();
-            _started = true;
 
             if (_updates is not null && _updates.MoveNext())
             {
@@ -253,13 +252,24 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
         private async ValueTask DisposeAsyncCore()
         {
-            if (_events is not null)
+            if (_disposed)
             {
-                await _events.DisposeAsync().ConfigureAwait(false);
-                _events = null;
+                return;
+            }
+            _disposed = true;
 
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+            try
+            {
+                if (_events is not null)
+                {
+                    await _events.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                _events = null;
+                // The response is owned even if cancellation prevented the first read.
+                _response.Dispose();
             }
 
             foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])

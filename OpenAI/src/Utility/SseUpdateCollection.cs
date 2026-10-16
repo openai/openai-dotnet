@@ -126,7 +126,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         private readonly Func<SseItem<byte[]>, IEnumerable<U>> _eventDeserializerFunc;
 
         private U? _current;
-        private bool _started;
+        private bool _disposed;
 
         public SseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> eventDeserializerFunc,
@@ -149,14 +149,13 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         public bool MoveNext()
         {
-            if (_events is null && _started)
+            if (_disposed)
             {
                 throw new ObjectDisposedException(typeof(U).Name);
             }
 
             _cancellationToken.ThrowIfCancellationRequested();
             _events ??= CreateEventEnumerator();
-            _started = true;
 
             if (_updates is not null && _updates.MoveNext())
             {
@@ -226,13 +225,21 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         private void Dispose(bool disposing)
         {
-            if (disposing && _events is not null)
+            if (!disposing || _disposed)
             {
-                _events.Dispose();
-                _events = null;
+                return;
+            }
+            _disposed = true;
 
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+            try
+            {
+                _events?.Dispose();
+            }
+            finally
+            {
+                _events = null;
+                // The response is owned even if cancellation prevented the first read.
+                _response.Dispose();
             }
 
             foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
