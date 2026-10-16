@@ -18,6 +18,7 @@ namespace OpenAI.Audio
             Logprobs = new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateTranscriptionResponseJson(string text, IList<InternalCreateTranscriptionResponseJsonLogprob> logprobs, AudioTranscriptionUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -26,12 +27,15 @@ namespace OpenAI.Audio
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Text { get; }
 
         internal IList<InternalCreateTranscriptionResponseJsonLogprob> Logprobs { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public AudioTranscriptionUsage Usage { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

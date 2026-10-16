@@ -241,7 +241,7 @@ namespace OpenAI.Chat
             }
             return new ChatCompletion(
                 id,
-                choices,
+                choices ?? new ChangeTrackingList<InternalCreateChatCompletionResponseChoice>(),
                 createdAt,
                 model,
                 serviceTier,

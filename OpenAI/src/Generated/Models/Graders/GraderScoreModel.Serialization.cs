@@ -194,7 +194,7 @@ namespace OpenAI.Graders
                 name,
                 model,
                 samplingParams,
-                input,
+                input ?? new ChangeTrackingList<InternalEvalItem>(),
                 range ?? new ChangeTrackingList<float>());
         }
     }

@@ -8,6 +8,7 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this VectorStoreStatus value) => value switch
         {
             VectorStoreStatus.Expired => "expired",
@@ -15,7 +16,9 @@ namespace OpenAI.VectorStores
             VectorStoreStatus.Completed => "completed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static VectorStoreStatus ToVectorStoreStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "expired"))
@@ -32,5 +35,6 @@ namespace OpenAI.VectorStores
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

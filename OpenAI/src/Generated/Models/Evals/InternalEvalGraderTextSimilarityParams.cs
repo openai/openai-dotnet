@@ -10,6 +10,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderTextSimilarityParams : InternalEvalGraderParams
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalEvalGraderTextSimilarityParams(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(GraderType.TextSimilarity)
         {
             Name = name;
@@ -18,7 +19,9 @@ namespace OpenAI.Evals
             EvaluationMetric = evaluationMetric;
             PassThreshold = passThreshold;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalEvalGraderTextSimilarityParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
@@ -27,6 +30,7 @@ namespace OpenAI.Evals
             EvaluationMetric = evaluationMetric;
             PassThreshold = passThreshold;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Name { get; }
 
@@ -34,7 +38,9 @@ namespace OpenAI.Evals
 
         public string Reference { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public GraderTextSimilarityEvaluationMetric EvaluationMetric { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public float PassThreshold { get; }
     }

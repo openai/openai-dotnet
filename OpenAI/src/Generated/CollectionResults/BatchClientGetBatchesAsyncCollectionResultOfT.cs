@@ -8,6 +8,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Batch
 {
     internal partial class BatchClientGetBatchesAsyncCollectionResultOfT : AsyncCollectionResult<BatchJob>
@@ -74,3 +75,4 @@ namespace OpenAI.Batch
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

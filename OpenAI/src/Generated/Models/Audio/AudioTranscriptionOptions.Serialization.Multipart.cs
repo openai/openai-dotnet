@@ -49,20 +49,24 @@ namespace OpenAI.Audio
             {
                 content.Add("stream", Stream.Value);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(ChunkingStrategy))
             {
                 content.Add<AudioTranscriptionChunkingStrategy>("chunking_strategy", ChunkingStrategy, OpenAIContext.Default, ModelSerializationExtensions.WireOptions, "application/json");
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsCollectionDefined(KnownSpeakerNames))
             {
                 BinaryData knownSpeakerNamesData = MultipartFormDataHelper.FromEnumerable(KnownSpeakerNames, "application/json");
                 content.Add("known_speaker_names", knownSpeakerNamesData);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris))
             {
                 BinaryData knownSpeakerReferencesData = MultipartFormDataHelper.FromEnumerable(KnownSpeakerReferenceUris, "application/json");
                 content.Add("known_speaker_references", knownSpeakerReferencesData);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
             return content;
         }

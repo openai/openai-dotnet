@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputFile : ResponseContentPart, IJsonModel<InternalItemContentInputFile>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -96,6 +98,7 @@ namespace OpenAI.Responses
 
         InternalItemContentInputFile IJsonModel<InternalItemContentInputFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentInputFile)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -106,6 +109,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalItemContentInputFile(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalItemContentInputFile DeserializeInternalItemContentInputFile(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

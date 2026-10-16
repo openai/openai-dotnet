@@ -186,7 +186,7 @@ namespace OpenAI.Assistants
             }
             return new InternalListMessagesResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<ThreadMessage>(),
                 firstId,
                 lastId,
                 hasMore,

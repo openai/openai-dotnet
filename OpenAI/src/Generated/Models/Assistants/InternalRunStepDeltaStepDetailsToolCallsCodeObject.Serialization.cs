@@ -94,6 +94,7 @@ namespace OpenAI.Assistants
             return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeObject(document.RootElement, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalRunStepDeltaStepDetailsToolCallsCodeObject DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeObject(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -136,5 +137,6 @@ namespace OpenAI.Assistants
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeObject(kind, additionalBinaryDataProperties, index, id, codeInterpreter);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

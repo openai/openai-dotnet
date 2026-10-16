@@ -168,7 +168,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerUsePreviewToolCallItemParam(kind, patch, callId, action, pendingSafetyChecks);
+            return new InternalComputerUsePreviewToolCallItemParam(kind, patch, callId, action, pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -260,6 +260,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ComputerCallSafetyCheck> ActivePendingSafetyChecks()
         {
             if (!Optional.IsCollectionDefined(PendingSafetyChecks))
@@ -276,5 +277,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

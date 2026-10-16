@@ -13,12 +13,15 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListFineTuningJobEventsResponse(IEnumerable<FineTuningEvent> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListFineTuningJobEventsResponse(IList<FineTuningEvent> data, string @object, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -27,8 +30,11 @@ namespace OpenAI.FineTuning
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<FineTuningEvent> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Object { get; } = "list";
 

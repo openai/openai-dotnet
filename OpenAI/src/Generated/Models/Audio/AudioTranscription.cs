@@ -20,9 +20,12 @@ namespace OpenAI.Audio
             Text = text;
             Words = new ChangeTrackingList<TranscribedWord>();
             Segments = new ChangeTrackingList<TranscribedSegment>();
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal AudioTranscription(string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, AudioTranscriptionUsage usage, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -32,9 +35,10 @@ namespace OpenAI.Audio
             Words = words ?? new ChangeTrackingList<TranscribedWord>();
             Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
             Usage = usage;
-            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Language { get; }
 

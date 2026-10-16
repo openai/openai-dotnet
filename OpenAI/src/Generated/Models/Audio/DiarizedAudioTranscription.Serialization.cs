@@ -192,7 +192,7 @@ namespace OpenAI.Audio
                 task,
                 duration,
                 text,
-                segments,
+                segments ?? new ChangeTrackingList<DiarizedTranscriptionSegment>(),
                 usage,
                 additionalBinaryDataProperties);
         }

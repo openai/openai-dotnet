@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override RunStepCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
                     throw new FormatException($"The model {nameof(RunStepCodeInterpreterOutput)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<RunStepCodeInterpreterOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         RunStepCodeInterpreterOutput IPersistableModel<RunStepCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<RunStepCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -66,8 +70,11 @@ namespace OpenAI.Assistants
             base.JsonModelWriteCore(writer, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         RunStepCodeInterpreterOutput IJsonModel<RunStepCodeInterpreterOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override RunStepCodeInterpreterOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -78,6 +85,7 @@ namespace OpenAI.Assistants
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRunStepCodeInterpreterOutput(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject DeserializeUnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(JsonElement element, ModelReaderWriterOptions options)
         {
