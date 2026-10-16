@@ -10,6 +10,8 @@ namespace OpenAI.Audio {
         protected AudioClient();
         public AudioClient(AudioClientSettings settings);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public AudioClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public AudioClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

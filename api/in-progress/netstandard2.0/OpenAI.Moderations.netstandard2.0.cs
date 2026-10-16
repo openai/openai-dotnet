@@ -22,6 +22,8 @@ namespace OpenAI.Moderations {
         protected ModerationClient();
         public ModerationClient(ModerationClientSettings settings);
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ModerationClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public ModerationClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

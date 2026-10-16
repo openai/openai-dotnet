@@ -11,6 +11,8 @@ namespace OpenAI.Evals {
         protected EvaluationClient();
         [Experimental("SCME0002")]
         public EvaluationClient(EvaluationClientSettings settings);
+        public EvaluationClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public EvaluationClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
         public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

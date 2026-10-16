@@ -34,15 +34,10 @@ public partial class RealtimeClient
     {
         options ??= new();
 
-        ApiKeyCredential credential = _keyCredential;
+        ApiKeyCredential credential = await GetSessionCredentialAsync(options, cancellationToken).ConfigureAwait(false);
 
-        // If we have an ephemeral client secret, we should use that to create the WebSocket session.
-        // Otherwise, we should use the OpenAI API key that this client initialized with, if any.
-        if (!string.IsNullOrEmpty(options.ClientSecret))
-        {
-            credential = new ApiKeyCredential(options.ClientSecret);
-        }
-
+        // Resolve an ephemeral client secret, a workload-identity access token, or the API key
+        // that initialized this client, in that order.
         RealtimeSessionClient sessionClient = new(
             credential: credential,
             endpoint: _webSocketEndpoint,
@@ -61,5 +56,25 @@ public partial class RealtimeClient
         {
             sessionClient?.Dispose();
         }
+    }
+
+    internal async ValueTask<ApiKeyCredential> GetSessionCredentialAsync(
+        RealtimeSessionClientOptions options,
+        CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrEmpty(options?.ClientSecret))
+        {
+            return new ApiKeyCredential(options.ClientSecret);
+        }
+
+        if (_workloadIdentityTokenProvider is not null)
+        {
+            string accessToken = await _workloadIdentityTokenProvider
+                .GetAccessTokenAsync(cancellationToken)
+                .ConfigureAwait(false);
+            return new ApiKeyCredential(accessToken);
+        }
+
+        return _keyCredential;
     }
 }

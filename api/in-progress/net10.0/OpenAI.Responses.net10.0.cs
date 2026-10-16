@@ -1348,6 +1348,8 @@ namespace OpenAI.Responses {
         protected ResponsesClient();
         [Experimental("SCME0002")]
         public ResponsesClient(ResponsesClientSettings settings);
+        public ResponsesClient(WorkloadIdentityFederationOptions workloadIdentityOptions, ResponsesClientOptions options);
+        public ResponsesClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(ApiKeyCredential credential);
         public ResponsesClient(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);

@@ -1203,6 +1203,8 @@ namespace OpenAI.Responses {
     public class ResponsesClient {
         protected ResponsesClient();
         public ResponsesClient(ResponsesClientSettings settings);
+        public ResponsesClient(WorkloadIdentityFederationOptions workloadIdentityOptions, ResponsesClientOptions options);
+        public ResponsesClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(ApiKeyCredential credential);
         public ResponsesClient(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);
