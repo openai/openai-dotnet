@@ -84,7 +84,7 @@ public partial class RealtimeExamples
 
         string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using Stream inputAudioStream = File.OpenRead(inputAudioFilePath);
-        _ = sessionClient.SendInputAudioAsync(inputAudioStream);
+        await sessionClient.SendInputAudioAsync(inputAudioStream);
 
         string outputAudioFilePath = Path.Join("output.raw");
         using Stream outputAudioStream = File.OpenWrite(outputAudioFilePath);
