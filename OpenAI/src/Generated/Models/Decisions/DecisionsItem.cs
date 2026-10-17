@@ -2,34 +2,37 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public abstract partial class DecisionsItem
+    public partial class DecisionsItem
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        private protected DecisionsItem(DecisionsItemKind kind)
+        protected internal DecisionsItem(DecisionsItemKind kind)
         {
             Kind = kind;
         }
 
-        internal DecisionsItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsItem(DecisionsItemKind kind, in JsonPatch patch)
         {
             Kind = kind;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsItemKind Kind { get; set; }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public DecisionsItemKind Kind { get; }
     }
 }

@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +13,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsScoreAnswer : DecisionsAnswer, IJsonModel<DecisionsScoreAnswer>
     {
-        internal DecisionsScoreAnswer() : this(DecisionsAnswerKind.Score, null, default, null, null, default)
+        public DecisionsScoreAnswer() : this(DecisionsAnswerKind.Score, default, default, null, null, default)
         {
         }
 
@@ -24,7 +25,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsScoreAnswer(document.RootElement, options);
+                        return DeserializeDecisionsScoreAnswer(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsScoreAnswer)} does not support reading '{options.Format}' format.");
@@ -51,6 +52,14 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsScoreAnswer>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -64,38 +73,53 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsScoreAnswer)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("confidence") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.confidence"u8))
             {
                 writer.WritePropertyName("confidence"u8);
                 writer.WriteNumberValue(Confidence);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
             {
-                if (Optional.IsDefined(Name))
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            else if (!Patch.Contains("$.name"u8))
+            {
+                writer.WriteNull("name"u8);
+            }
+            if (Patch.Contains("$.probabilities"u8))
+            {
+                if (!Patch.IsRemoved("$.probabilities"u8))
                 {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name"u8);
+                    writer.WritePropertyName("probabilities"u8);
+                    Patch.WriteTo(writer, "$.probabilities"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("probabilities") != true)
+            else
             {
                 writer.WritePropertyName("probabilities"u8);
                 writer.WriteStartArray();
-                foreach (DecisionsScoreProbability item in Probabilities)
+                bool hasPatch = Patch.Contains("$"u8, "probabilities"u8);
+                for (int i = 0; i < Probabilities.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.probabilities[{i}]")) || Probabilities[i] != null && Probabilities[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Probabilities[i], options);
                 }
+                Patch.WriteTo(writer, "$.probabilities"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("score") != true)
+            if (!Patch.Contains("$.score"u8))
             {
                 writer.WritePropertyName("score"u8);
                 writer.WriteNumberValue(Score);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsScoreAnswer IJsonModel<DecisionsScoreAnswer>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsScoreAnswer)JsonModelCreateCore(ref reader, options);
@@ -108,17 +132,19 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsScoreAnswer)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsScoreAnswer(document.RootElement, options);
+            return DeserializeDecisionsScoreAnswer(document.RootElement, null, options);
         }
 
-        internal static DecisionsScoreAnswer DeserializeDecisionsScoreAnswer(JsonElement element, ModelReaderWriterOptions options)
+        internal static DecisionsScoreAnswer DeserializeDecisionsScoreAnswer(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsAnswerKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             float confidence = default;
             string name = default;
             IList<DecisionsScoreProbability> probabilities = default;
@@ -150,7 +176,7 @@ namespace OpenAI.Decisions
                     List<DecisionsScoreProbability> array = new List<DecisionsScoreProbability>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(DecisionsScoreProbability.DeserializeDecisionsScoreProbability(item, options));
+                        array.Add(DecisionsScoreProbability.DeserializeDecisionsScoreProbability(item, item.GetUtf8Bytes(), options));
                     }
                     probabilities = array;
                     continue;
@@ -160,16 +186,104 @@ namespace OpenAI.Decisions
                     score = prop.Value.GetSingle();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new DecisionsScoreAnswer(
                 kind,
-                additionalBinaryDataProperties,
+                patch,
                 confidence,
                 name,
                 probabilities,
                 score);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("probabilities"u8))
+            {
+                int propertyLength = "probabilities"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Probabilities == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveProbabilitiesArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Probabilities.Count)
+                {
+                    return false;
+                }
+                if (Probabilities[index] == null)
+                {
+                    return false;
+                }
+                return Probabilities[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("probabilities"u8))
+            {
+                int propertyLength = "probabilities"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Probabilities == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Probabilities.Count)
+                {
+                    return false;
+                }
+                if (Probabilities[index] == null)
+                {
+                    return false;
+                }
+                Probabilities[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveProbabilitiesArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveProbabilities(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<DecisionsScoreProbability> ActiveProbabilities()
+        {
+            if (!Optional.IsCollectionDefined(Probabilities))
+            {
+                yield break;
+            }
+            bool hasPatch = Patch.Contains("$"u8, "probabilities"u8);
+            for (int i = 0; i < Probabilities.Count; i++)
+            {
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.probabilities[{i}]"))) && (Probabilities[i] == null || !Probabilities[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return Probabilities[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

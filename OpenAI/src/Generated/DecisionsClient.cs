@@ -21,12 +21,6 @@ namespace OpenAI.Decisions
         {
         }
 
-        internal DecisionsClient(ClientPipeline pipeline, Uri endpoint)
-        {
-            _endpoint = endpoint;
-            Pipeline = pipeline;
-        }
-
         public ClientPipeline Pipeline { get; }
 
         public virtual ClientResult CreateDecision(BinaryContent content, RequestOptions options = null)
@@ -49,7 +43,7 @@ namespace OpenAI.Decisions
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = this.CreateDecision(body, cancellationToken.ToRequestOptions());
+            ClientResult result = CreateDecision(body, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((DecisionResource)result, result.GetRawResponse());
         }
 
@@ -57,7 +51,7 @@ namespace OpenAI.Decisions
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = await this.CreateDecisionAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            ClientResult result = await CreateDecisionAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((DecisionResource)result, result.GetRawResponse());
         }
     }

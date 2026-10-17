@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,6 +13,7 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceQuestion : DecisionsQuestion
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsChoiceQuestion(IEnumerable<DecisionsChoice> choices, string instructions) : base(DecisionsQuestionKind.Choice)
         {
             Argument.AssertNotNull(choices, nameof(choices));
@@ -20,19 +21,24 @@ namespace OpenAI.Decisions
 
             Choices = choices.ToList();
             Instructions = instructions;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<DecisionsChoice> choices, string instructions, string name) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsChoice> choices, string instructions, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Choices = choices ?? new ChangeTrackingList<DecisionsChoice>();
             Instructions = instructions;
             Name = name;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsChoice> Choices { get; }
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
         public string Name { get; set; }
     }

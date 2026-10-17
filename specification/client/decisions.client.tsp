@@ -53,9 +53,12 @@ namespace OpenAI.Decisions;
 // To represent them in .NET, we use a wrapper model.
 model dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union
 {
-    component_1?: string,
-    component_2?: boolean
+    string_value?: string,
+    boolean_value?: boolean
 }
+@@clientName(dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union, "DecisionsChoiceValue");
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.choice, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
+
+@@dynamicModel(OpenAI.Decisions);
