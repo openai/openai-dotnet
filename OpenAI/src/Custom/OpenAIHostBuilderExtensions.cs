@@ -182,6 +182,7 @@ public static class OpenAIHostBuilderExtensions
         return builder.AddKeyedClient<ConversationClient, ConversationClientSettings>(serviceKey, sectionName);
     }
 
+    // CUSTOM: Register a Decisions client using configuration-bound client settings.
     public static IClientBuilder AddDecisionsClient(
         this IHostApplicationBuilder builder,
         string sectionName)
@@ -194,6 +195,7 @@ public static class OpenAIHostBuilderExtensions
         return builder.AddClient<DecisionsClient, DecisionsClientSettings>(sectionName);
     }
 
+    // CUSTOM: Register a keyed Decisions client using configuration-bound client settings.
     public static IClientBuilder AddKeyedDecisionsClient(
         this IHostApplicationBuilder builder,
         string serviceKey,

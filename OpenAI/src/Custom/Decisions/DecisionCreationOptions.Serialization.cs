@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Accept string shorthand input and normalize it into a user message containing an input text part.
 [CodeGenSerialization(nameof(Input), DeserializationValueHook = nameof(DeserializeInputValue))]
 public partial class DecisionCreationOptions
 {

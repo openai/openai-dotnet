@@ -4,6 +4,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Replace the generated writer so external subclasses serialize patches as well as their discriminator.
 [CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Decisions.DecisionsItem>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
 public partial class DecisionsItem : IJsonModel<DecisionsItem>
 {
@@ -17,7 +18,7 @@ public partial class DecisionsItem : IJsonModel<DecisionsItem>
 
         writer.WriteStartObject();
         JsonModelWriteCore(writer, options);
-        // Generated derived cores already flush the patch; external subclasses inherit the base core, which does not.
+        // CUSTOM: Avoid duplicating patches already written by generated derived cores.
         if (this is not DecisionsMessageItem and not UnknownDecisionsItem)
         {
             Patch.WriteTo(writer);

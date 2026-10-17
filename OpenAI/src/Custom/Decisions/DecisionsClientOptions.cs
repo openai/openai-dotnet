@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Added client-specific endpoint and header options with the standard pipeline freezing behavior.
 /// <summary> The options to configure the <see cref="DecisionsClient"/>. </summary>
 [Experimental("OPENAI001")]
 public class DecisionsClientOptions : ClientPipelineOptions
@@ -62,6 +63,7 @@ public class DecisionsClientOptions : ClientPipelineOptions
     {
     }
 
+    // CUSTOM: Bind client-specific options from the nested configuration section.
     [Experimental("SCME0002")]
     internal DecisionsClientOptions(IConfigurationSection section) : base(section)
     {

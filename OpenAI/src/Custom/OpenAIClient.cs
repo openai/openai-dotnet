@@ -44,6 +44,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedLegacyCompletionClient")]
 [CodeGenSuppress("_cachedContainerClient")]
 [CodeGenSuppress("_cachedConversationClient")]
+// CUSTOM: Match other subclients by creating Decisions clients on demand rather than caching them.
 [CodeGenSuppress("_cachedDecisionsClient")]
 [CodeGenSuppress("_cachedEmbeddingClient")]
 [CodeGenSuppress("_cachedEvaluationClient")]
@@ -69,6 +70,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetLegacyCompletionClient")]
 [CodeGenSuppress("GetContainerClient")]
 [CodeGenSuppress("GetConversationClient")]
+// CUSTOM: Replace the generated factory to reuse the configured OpenAI pipeline and endpoint.
 [CodeGenSuppress("GetDecisionsClient")]
 [CodeGenSuppress("GetEmbeddingClient")]
 [CodeGenSuppress("GetEvaluationClient")]
@@ -243,6 +245,7 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual ConversationClient GetConversationClient() => new(Pipeline, _options);
 
+    // CUSTOM: Share authentication, headers, and transport through the existing pipeline while retaining the endpoint.
     /// <summary>
     /// Gets a new instance of <see cref="DecisionsClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.

@@ -4,8 +4,10 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Serialize the union as its active scalar component rather than as a synthetic JSON object.
 public partial class DecisionsChoiceValue
 {
+    // CUSTOM: Preserve whole-value patches and omit the generated object's start/end delimiters.
     void IJsonModel<DecisionsChoiceValue>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
 #pragma warning disable SCME0001
@@ -18,6 +20,7 @@ public partial class DecisionsChoiceValue
         JsonModelWriteCore(writer, options);
     }
 
+    // CUSTOM: Write exactly one string or boolean component and reject an uninitialized union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         string format = options.Format == "W" ? ((IPersistableModel<DecisionsChoiceValue>)this).GetFormatFromOptions(options) : options.Format;
@@ -40,6 +43,7 @@ public partial class DecisionsChoiceValue
         }
     }
 
+    // CUSTOM: Select the component by JSON shape, preserve null, and reject unsupported union values.
     internal static DecisionsChoiceValue DeserializeDecisionsChoiceValue(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
@@ -69,12 +73,14 @@ public partial class DecisionsChoiceValue
     }
 
 #pragma warning disable SCME0001
+    // CUSTOM: Scalar components have no nested paths; retain patches on the union itself.
     private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
     {
         value = default;
         return false;
     }
 
+    // CUSTOM: Retain root replacements locally instead of propagating into scalar components.
     private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value) => false;
 #pragma warning restore SCME0001
 }
