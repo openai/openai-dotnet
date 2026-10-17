@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,29 +13,35 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsScoreAnswer : DecisionsAnswer
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionsScoreAnswer(float confidence, string name, IEnumerable<DecisionsScoreProbability> probabilities, float score) : base(DecisionsAnswerKind.Score)
         {
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities.ToList();
             Score = score;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, float confidence, string name, IList<DecisionsScoreProbability> probabilities, float score) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, in JsonPatch patch, float confidence, string name, IList<DecisionsScoreProbability> probabilities, float score) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities ?? new ChangeTrackingList<DecisionsScoreProbability>();
             Score = score;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public float Confidence { get; }
+        public float Confidence { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
         public IList<DecisionsScoreProbability> Probabilities { get; }
 
-        public float Score { get; }
+        public float Score { get; set; }
     }
 }

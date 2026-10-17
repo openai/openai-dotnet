@@ -52,6 +52,8 @@ public class OpenAITestEnvironment : TestEnvironment
         GetRecordedOptionalVariable(EnvironmentVariables.OpenAIKey, options => options.IsSecret("api-key"))
         ?? GetVariable(EnvironmentVariables.OpenAIKey);
 
+    public string DecisionsModel => GetRecordedOptionalVariable("OPENAI_DECISIONS_MODEL") ?? "gpt-6-luna";
+
     static OpenAITestEnvironment()
     {
         // In order to ensure that the environment is configured in the expected way,

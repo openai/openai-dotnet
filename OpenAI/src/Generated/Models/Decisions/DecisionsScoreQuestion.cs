@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,6 +13,7 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsScoreQuestion : DecisionsQuestion
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsScoreQuestion(string instructions, IEnumerable<DecisionsScoreLevel> levels) : base(DecisionsQuestionKind.Score)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
@@ -20,17 +21,22 @@ namespace OpenAI.Decisions
 
             Instructions = instructions;
             Levels = levels.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, in JsonPatch patch, string instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Instructions = instructions;
             Levels = levels ?? new ChangeTrackingList<DecisionsScoreLevel>();
             Name = name;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
         public IList<DecisionsScoreLevel> Levels { get; }
 

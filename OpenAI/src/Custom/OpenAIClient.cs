@@ -5,6 +5,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Conversations;
+using OpenAI.Decisions;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
@@ -43,6 +44,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedLegacyCompletionClient")]
 [CodeGenSuppress("_cachedContainerClient")]
 [CodeGenSuppress("_cachedConversationClient")]
+[CodeGenSuppress("_cachedDecisionsClient")]
 [CodeGenSuppress("_cachedEmbeddingClient")]
 [CodeGenSuppress("_cachedEvaluationClient")]
 [CodeGenSuppress("_cachedOpenAIFileClient")]
@@ -67,6 +69,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetLegacyCompletionClient")]
 [CodeGenSuppress("GetContainerClient")]
 [CodeGenSuppress("GetConversationClient")]
+[CodeGenSuppress("GetDecisionsClient")]
 [CodeGenSuppress("GetEmbeddingClient")]
 [CodeGenSuppress("GetEvaluationClient")]
 [CodeGenSuppress("GetOpenAIFileClient")]
@@ -239,6 +242,18 @@ public partial class OpenAIClient
     /// <returns></returns>
     [Experimental("OPENAI001")]
     public virtual ConversationClient GetConversationClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="DecisionsClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns> A new <see cref="DecisionsClient"/>. </returns>
+    [Experimental("OPENAI001")]
+    public virtual DecisionsClient GetDecisionsClient() => new(Pipeline, new DecisionsClientOptions
+    {
+        // Authentication, headers, and transport settings are already applied to the shared pipeline.
+        Endpoint = _options.Endpoint,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="EmbeddingClient"/> that reuses the client configuration details provided to

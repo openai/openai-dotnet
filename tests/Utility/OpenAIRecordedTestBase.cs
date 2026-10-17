@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
+using OpenAI.Decisions;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 
@@ -58,8 +59,21 @@ namespace OpenAI.Tests.Utility
             options ??= new OpenAIClientOptions();
 
             OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
-            T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
+            T client = typeof(T) == typeof(DecisionsClient)
+                ? TestEnvironment.GetTestClient<OpenAIClient>(overrideModel, instrumentedOptions).GetDecisionsClient() as T
+                : TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
+
+            return proxiedClient;
+        }
+
+        internal DecisionsClient GetProxiedDecisionsClient(DecisionsClientOptions options = default)
+        {
+            options ??= new DecisionsClientOptions();
+
+            DecisionsClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            DecisionsClient client = new(TestEnvironment.ApiKeyCredential, instrumentedOptions);
+            DecisionsClient proxiedClient = CreateProxyFromClient<DecisionsClient>(client, null);
 
             return proxiedClient;
         }

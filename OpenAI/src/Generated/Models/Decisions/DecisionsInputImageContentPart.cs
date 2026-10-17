@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +18,15 @@ namespace OpenAI.Decisions
             ImageUrl = imageUrl;
         }
 
-        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, DecisionsImageDetailLevel? detail) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string imageUrl, DecisionsImageDetailLevel? detail) : base(kind, patch)
         {
             ImageUrl = imageUrl;
             Detail = detail;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ImageUrl { get; }
+        public string ImageUrl { get; set; }
 
         public DecisionsImageDetailLevel? Detail { get; set; }
     }
