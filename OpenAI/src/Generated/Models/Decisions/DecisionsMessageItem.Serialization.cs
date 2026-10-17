@@ -13,10 +13,6 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsMessageItem : DecisionsItem, IJsonModel<DecisionsMessageItem>
     {
-        public DecisionsMessageItem() : this(DecisionsItemKind.Message, default, null, null)
-        {
-        }
-
         protected override DecisionsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsMessageItem>)this).GetFormatFromOptions(options) : options.Format;

@@ -73,9 +73,7 @@ namespace OpenAI.Tests.Utility
 
             DecisionsClientOptions instrumentedOptions = InstrumentClientOptions(options);
             DecisionsClient client = new(TestEnvironment.ApiKeyCredential, instrumentedOptions);
-            DecisionsClient proxiedClient = CreateProxyFromClient<DecisionsClient>(client, null);
-
-            return proxiedClient;
+            return CreateProxyFromClient<DecisionsClient>(client, null);
         }
 
         internal ResponsesClient GetProxiedResponsesClient(ResponsesClientOptions options = default)

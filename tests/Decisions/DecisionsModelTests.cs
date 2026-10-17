@@ -78,7 +78,7 @@ public class DecisionsModelTests
     }
 
     [TestCaseSource(nameof(ProtocolModels))]
-    public void ProtocolModelsRoundTripUnknownPropertiesAndSupportBinaryContent(Type modelType, string json)
+    public void ProtocolModelsRoundTripUnknownPropertiesAndSupportJsonPatch(Type modelType, string json)
     {
         string extendedJson = """{"future_property":{"nested":[true,"value",7]},""" + json.Substring(1);
         object model = ModelReaderWriter.Read(BinaryData.FromString(extendedJson), modelType);
@@ -92,18 +92,14 @@ public class DecisionsModelTests
         AssertJsonContains(actual.RootElement, reserialized.RootElement);
         GetPatch(model).Set("$.patched_property"u8, 42);
 
-        MethodInfo factory = typeof(BinaryContent).GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .Single(method => method.Name == nameof(BinaryContent.Create) && method.IsGenericMethodDefinition);
-        using BinaryContent content = (BinaryContent)factory.MakeGenericMethod(modelType).Invoke(null, [model, null]);
-        using MemoryStream stream = new();
-        content.WriteTo(stream);
-        using JsonDocument wireJson = JsonDocument.Parse(stream.ToArray());
-        AssertJsonContains(expected.RootElement, wireJson.RootElement);
-        Assert.That(wireJson.RootElement.GetProperty("patched_property").GetInt32(), Is.EqualTo(42));
+        using JsonDocument patched = JsonDocument.Parse(ModelReaderWriter.Write(model));
+        AssertJsonContains(expected.RootElement, patched.RootElement);
+        Assert.That(patched.RootElement.GetProperty("patched_property").GetInt32(), Is.EqualTo(42));
     }
 
-    [Test]
-    public void CreationOptionsConvertImplicitlyToBinaryContent()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void CreationOptionsConvertImplicitlyToBinaryContent(bool fromJson)
     {
         DecisionCreationOptions options = new()
         {
@@ -111,6 +107,12 @@ public class DecisionsModelTests
             Input = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "hello" } } } },
             Questions = { new DecisionsPredicateQuestion { Instructions = "evaluate" } }
         };
+        if (fromJson)
+        {
+            options = Read<DecisionCreationOptions>("""
+                {"model":"test","input":"hello","questions":[{"type":"predicate","instructions":"evaluate"}],"future_received":{"enabled":true}}
+                """);
+        }
         options.Patch.Set("$.future_property"u8, true);
         using BinaryContent content = options;
         using MemoryStream stream = new();
@@ -118,6 +120,11 @@ public class DecisionsModelTests
         using JsonDocument expected = JsonDocument.Parse(ModelReaderWriter.Write(options));
         using JsonDocument actual = JsonDocument.Parse(stream.ToArray());
         AssertJsonContains(expected.RootElement, actual.RootElement);
+        Assert.That(actual.RootElement.GetProperty("future_property").GetBoolean(), Is.True);
+        if (fromJson)
+        {
+            Assert.That(actual.RootElement.GetProperty("future_received").GetProperty("enabled").GetBoolean(), Is.True);
+        }
         DecisionCreationOptions nullOptions = null;
         BinaryContent nullContent = nullOptions;
         Assert.That(nullContent, Is.Null);
