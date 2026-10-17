@@ -60,7 +60,7 @@ public class DecisionsExtensibilityTests
     [TestCase("question", "W")]
     [TestCase("answer", "J")]
     [TestCase("answer", "W")]
-    public void ExternalSubclassesPreservePatches(string hierarchy, string format)
+    public void ExternalSubclassesCanImplementPatchSerialization(string hierarchy, string format)
     {
         object model = hierarchy switch
         {
@@ -202,8 +202,39 @@ public class DecisionsExtensibilityTests
         }
     }
 
-    private sealed class CustomItem() : DecisionsItem(new DecisionsItemKind("custom"));
-    private sealed class CustomContentPart() : DecisionsContentPart(new DecisionsContentPartKind("custom"));
-    private sealed class CustomQuestion() : DecisionsQuestion(new DecisionsQuestionKind("custom"));
-    private sealed class CustomAnswer() : DecisionsAnswer(new DecisionsAnswerKind("custom"));
+    private sealed class CustomItem() : DecisionsItem(new DecisionsItemKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomContentPart() : DecisionsContentPart(new DecisionsContentPartKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomQuestion() : DecisionsQuestion(new DecisionsQuestionKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomAnswer() : DecisionsAnswer(new DecisionsAnswerKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
 }

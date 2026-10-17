@@ -19,7 +19,6 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     {
         "OpenAI.Containers",
         "OpenAI.Conversations",
-        // CUSTOM: Give Decisions models mutable scalar properties and public parameterless constructors.
         "OpenAI.Decisions",
         "OpenAI.Realtime",
         "OpenAI.Responses",

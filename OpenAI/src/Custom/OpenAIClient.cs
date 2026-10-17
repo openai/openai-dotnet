@@ -254,7 +254,8 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual DecisionsClient GetDecisionsClient() => new(Pipeline, new DecisionsClientOptions
     {
-        // Authentication, headers, and transport settings are already applied to the shared pipeline.
+        // CUSTOM: The shared-pipeline constructor only consumes the endpoint. Authentication, headers,
+        // transport, retry, and timeout settings are already applied to the reused pipeline.
         Endpoint = _options.Endpoint,
     });
 

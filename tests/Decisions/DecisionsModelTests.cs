@@ -137,7 +137,7 @@ public class DecisionsModelTests
     {
         string encodedText = JsonSerializer.Serialize(text);
         DecisionCreationOptions shorthand = Read<DecisionCreationOptions>($$"""{"input":{{encodedText}},"model":"test","questions":[]}""");
-        DecisionCreationOptions longhand = Read<DecisionCreationOptions>($$"""{"input":[{"type":"message","content":[{"type":"input_text","text":{{encodedText}}}]}],"model":"test","questions":[]}""");
+        DecisionCreationOptions longhand = Read<DecisionCreationOptions>($$"""{"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}],"model":"test","questions":[]}""");
 
         Assert.That(shorthand.Input, Has.Count.EqualTo(1));
         DecisionsMessageItem message = shorthand.Input.Single() as DecisionsMessageItem;

@@ -95,7 +95,7 @@ public class DecisionsClientTests
         MockPipelineTransport transport = new(message =>
         {
             requestUri = message.Request.Uri;
-            foreach (string name in new[] { "Authorization", "OpenAI-Organization", "OpenAI-Project", "X-Custom" })
+            foreach (string name in new[] { "Authorization", "OpenAI-Organization", "OpenAI-Project", "User-Agent", "X-Custom" })
             {
                 message.Request.Headers.TryGetValue(name, out string value);
                 headers[name] = value;
@@ -115,6 +115,7 @@ public class DecisionsClientTests
                 Endpoint = s_endpoint,
                 OrganizationId = "org-test",
                 ProjectId = "proj-test",
+                UserAgentApplicationId = "decisions-test-app",
                 Transport = transport,
             };
             options.AddPolicy(policy, PipelinePosition.PerCall);
@@ -127,6 +128,7 @@ public class DecisionsClientTests
                 Endpoint = s_endpoint,
                 OrganizationId = "org-test",
                 ProjectId = "proj-test",
+                UserAgentApplicationId = "decisions-test-app",
                 Transport = transport,
             };
             options.AddPolicy(policy, PipelinePosition.PerCall);
@@ -147,6 +149,7 @@ public class DecisionsClientTests
         Assert.That(headers["Authorization"], Does.StartWith("Bearer ").And.EndWith("not-a-real-key"));
         Assert.That(headers["OpenAI-Organization"], Is.EqualTo("org-test"));
         Assert.That(headers["OpenAI-Project"], Is.EqualTo("proj-test"));
+        Assert.That(headers["User-Agent"], Does.Contain("decisions-test-app"));
         Assert.That(headers["X-Custom"], Is.EqualTo("custom-value"));
     }
 
