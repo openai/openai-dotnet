@@ -71,6 +71,17 @@ public class DecisionsClientTests
     }
 
     [Test]
+    public void TestEnvironmentCreatesDecisionsClient()
+    {
+        OpenAIClientOptions options = new() { Endpoint = s_endpoint };
+        DecisionsClient client = new OpenAITestEnvironment().GetTestClient<DecisionsClient>(options: options);
+
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client.Endpoint, Is.EqualTo(s_endpoint));
+        Assert.That(client.Pipeline, Is.Not.Null);
+    }
+
+    [Test]
     public void FactoryCreatesNewClientsWithSharedPipeline()
     {
         OpenAIClient topLevelClient = new(s_credential, new OpenAIClientOptions { Endpoint = s_endpoint });

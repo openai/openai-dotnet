@@ -194,7 +194,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
     {
         return new DecisionCreationOptions
         {
-            Model = TestEnvironment.DecisionsModel,
+            Model = TestModel.Decisions,
             Input =
             {
                 new DecisionsMessageItem

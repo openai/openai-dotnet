@@ -15,6 +15,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Conversations;
+using OpenAI.Decisions;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -51,8 +52,6 @@ public class OpenAITestEnvironment : TestEnvironment
     public string OpenApiKey =>
         GetRecordedOptionalVariable(EnvironmentVariables.OpenAIKey, options => options.IsSecret("api-key"))
         ?? GetVariable(EnvironmentVariables.OpenAIKey);
-
-    public string DecisionsModel => GetRecordedOptionalVariable("OPENAI_DECISIONS_MODEL") ?? "gpt-6-luna";
 
     static OpenAITestEnvironment()
     {
@@ -148,6 +147,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(ChatClient) => new ChatClient(modelName ?? TestModel.Chat, credential, options),
             nameof(ContainerClient) => new ContainerClient(credential, options),
             nameof(ConversationClient) => new ConversationClient(credential, options),
+            nameof(DecisionsClient) => new OpenAIClient(credential, options).GetDecisionsClient(),
             nameof(EmbeddingClient) => new EmbeddingClient(modelName ?? TestModel.Embeddings, credential, options),
             nameof(OpenAIFileClient) => new OpenAIFileClient(credential, options),
             nameof(FineTuningClient) => new FineTuningClient(credential, options),

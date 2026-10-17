@@ -59,9 +59,7 @@ namespace OpenAI.Tests.Utility
             options ??= new OpenAIClientOptions();
 
             OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
-            T client = typeof(T) == typeof(DecisionsClient)
-                ? TestEnvironment.GetTestClient<OpenAIClient>(overrideModel, instrumentedOptions).GetDecisionsClient() as T
-                : TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
+            T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
 
             return proxiedClient;
