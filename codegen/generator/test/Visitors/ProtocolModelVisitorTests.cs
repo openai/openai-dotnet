@@ -22,6 +22,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
 
         [TestCase("OpenAI.Containers")]
         [TestCase("OpenAI.Conversations")]
+        [TestCase("OpenAI.Decisions")]
         [TestCase("OpenAI.Realtime")]
         [TestCase("OpenAI.Responses")]
         public void PreVisitProperty_AddsSetterForProtocolNamespace(string modelNamespace)
@@ -59,10 +60,11 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             Assert.That(body!.InitializationExpression, Is.SameAs(initializationExpression));
         }
 
-        [Test]
-        public void VisitType_MakesRealtimeParameterlessConstructorPublic()
+        [TestCase("OpenAI.Realtime")]
+        [TestCase("OpenAI.Decisions")]
+        public void VisitType_MakesParameterlessConstructorPublic(string modelNamespace)
         {
-            var inputType = InputFactory.Model("RealtimeModel", "OpenAI.Realtime");
+            var inputType = InputFactory.Model("ProtocolModel", modelNamespace);
             var model = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(inputType);
             Assert.That(model, Is.Not.Null);
 
