@@ -75,7 +75,7 @@ namespace OpenAI.Decisions
             if (!Patch.Contains("$.reasoning_tokens"u8))
             {
                 writer.WritePropertyName("reasoning_tokens"u8);
-                writer.WriteNumberValue(ReasoningTokens);
+                writer.WriteNumberValue(ReasoningTokenCount);
             }
 
             Patch.WriteTo(writer);
@@ -101,7 +101,7 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int reasoningTokens = default;
+            int reasoningTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -109,12 +109,12 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("reasoning_tokens"u8))
                 {
-                    reasoningTokens = prop.Value.GetInt32();
+                    reasoningTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsOutputTokenUsageDetails(reasoningTokens, patch);
+            return new DecisionsOutputTokenUsageDetails(reasoningTokenCount, patch);
         }
     }
 }

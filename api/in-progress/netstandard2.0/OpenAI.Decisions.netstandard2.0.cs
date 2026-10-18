@@ -8,8 +8,8 @@
 namespace OpenAI.Decisions {
     public class DecisionCreationOptions : IJsonModel<DecisionCreationOptions>, IPersistableModel<DecisionCreationOptions> {
         public DecisionCreationOptions();
-        public DecisionCreationOptions(IEnumerable<DecisionsItem> input, string model, IEnumerable<DecisionsQuestion> questions);
-        public IList<DecisionsItem> Input { get; }
+        public DecisionCreationOptions(IEnumerable<DecisionsItem> inputItems, string model, IEnumerable<DecisionsQuestion> questions);
+        public IList<DecisionsItem> InputItems { get; }
         public string Model { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -156,9 +156,9 @@ namespace OpenAI.Decisions {
     }
     public class DecisionsInputImageContentPart : DecisionsContentPart, IJsonModel<DecisionsInputImageContentPart>, IPersistableModel<DecisionsInputImageContentPart> {
         public DecisionsInputImageContentPart() : base(default);
-        public DecisionsInputImageContentPart(string imageUrl) : base(default);
-        public DecisionsImageDetailLevel? Detail { get; set; }
-        public string ImageUrl { get; set; }
+        public DecisionsInputImageContentPart(string imageUri) : base(default);
+        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+        public string ImageUri { get; set; }
     }
     public class DecisionsInputTextContentPart : DecisionsContentPart, IJsonModel<DecisionsInputTextContentPart>, IPersistableModel<DecisionsInputTextContentPart> {
         public DecisionsInputTextContentPart() : base(default);
@@ -166,8 +166,8 @@ namespace OpenAI.Decisions {
         public string Text { get; set; }
     }
     public class DecisionsInputTokenUsageDetails : IJsonModel<DecisionsInputTokenUsageDetails>, IPersistableModel<DecisionsInputTokenUsageDetails> {
-        public int CachedTokens { get; set; }
-        public int CacheWriteTokens { get; set; }
+        public int CachedTokenCount { get; set; }
+        public int CacheWriteTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -202,7 +202,7 @@ namespace OpenAI.Decisions {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int ReasoningTokens { get; set; }
+        public int ReasoningTokenCount { get; set; }
     }
     public class DecisionsPredicateAnswer : DecisionsAnswer, IJsonModel<DecisionsPredicateAnswer>, IPersistableModel<DecisionsPredicateAnswer> {
         public DecisionsPredicateAnswer() : base(default);
@@ -274,13 +274,13 @@ namespace OpenAI.Decisions {
         public string Name { get; set; }
     }
     public class DecisionsUsage : IJsonModel<DecisionsUsage>, IPersistableModel<DecisionsUsage> {
-        public int InputTokens { get; set; }
-        public DecisionsInputTokenUsageDetails InputTokensDetails { get; set; }
-        public int OutputTokens { get; set; }
-        public DecisionsOutputTokenUsageDetails OutputTokensDetails { get; set; }
+        public int InputTokenCount { get; set; }
+        public DecisionsInputTokenUsageDetails InputTokenDetails { get; set; }
+        public int OutputTokenCount { get; set; }
+        public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int TotalTokens { get; set; }
+        public int TotalTokenCount { get; set; }
     }
 }

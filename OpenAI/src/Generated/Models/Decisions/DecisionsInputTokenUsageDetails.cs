@@ -15,17 +15,17 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal DecisionsInputTokenUsageDetails(int cacheWriteTokens, int cachedTokens)
+        internal DecisionsInputTokenUsageDetails(int cacheWriteTokenCount, int cachedTokenCount)
         {
-            CacheWriteTokens = cacheWriteTokens;
-            CachedTokens = cachedTokens;
+            CacheWriteTokenCount = cacheWriteTokenCount;
+            CachedTokenCount = cachedTokenCount;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputTokenUsageDetails(int cacheWriteTokens, int cachedTokens, in JsonPatch patch)
+        internal DecisionsInputTokenUsageDetails(int cacheWriteTokenCount, int cachedTokenCount, in JsonPatch patch)
         {
-            CacheWriteTokens = cacheWriteTokens;
-            CachedTokens = cachedTokens;
+            CacheWriteTokenCount = cacheWriteTokenCount;
+            CachedTokenCount = cachedTokenCount;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -35,8 +35,8 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public int CacheWriteTokens { get; set; }
+        public int CacheWriteTokenCount { get; set; }
 
-        public int CachedTokens { get; set; }
+        public int CachedTokenCount { get; set; }
     }
 }

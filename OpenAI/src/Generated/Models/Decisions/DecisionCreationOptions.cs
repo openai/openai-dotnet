@@ -19,13 +19,13 @@ namespace OpenAI.Decisions
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionCreationOptions(IEnumerable<DecisionsItem> input, string model, IEnumerable<DecisionsQuestion> questions)
+        public DecisionCreationOptions(IEnumerable<DecisionsItem> inputItems, string model, IEnumerable<DecisionsQuestion> questions)
         {
-            Argument.AssertNotNull(input, nameof(input));
+            Argument.AssertNotNull(inputItems, nameof(inputItems));
             Argument.AssertNotNull(model, nameof(model));
             Argument.AssertNotNull(questions, nameof(questions));
 
-            Input = input.ToList();
+            InputItems = inputItems.ToList();
             Model = model;
             Questions = questions.ToList();
             _patch.SetPropagators(PropagateSet, PropagateGet);
@@ -33,10 +33,10 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionCreationOptions(IList<DecisionsItem> input, string model, IList<DecisionsQuestion> questions, string safetyIdentifier, in JsonPatch patch)
+        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string safetyIdentifier, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Input = input ?? new ChangeTrackingList<DecisionsItem>();
+            InputItems = inputItems ?? new ChangeTrackingList<DecisionsItem>();
             Model = model;
             Questions = questions ?? new ChangeTrackingList<DecisionsQuestion>();
             SafetyIdentifier = safetyIdentifier;
@@ -50,7 +50,7 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IList<DecisionsItem> Input { get; }
+        public IList<DecisionsItem> InputItems { get; }
 
         public string Model { get; set; }
 

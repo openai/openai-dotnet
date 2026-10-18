@@ -75,27 +75,27 @@ namespace OpenAI.Decisions
             if (!Patch.Contains("$.input_tokens"u8))
             {
                 writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokens);
+                writer.WriteNumberValue(InputTokenCount);
             }
             if (!Patch.Contains("$.input_tokens_details"u8))
             {
                 writer.WritePropertyName("input_tokens_details"u8);
-                writer.WriteObjectValue(InputTokensDetails, options);
+                writer.WriteObjectValue(InputTokenDetails, options);
             }
             if (!Patch.Contains("$.output_tokens"u8))
             {
                 writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokens);
+                writer.WriteNumberValue(OutputTokenCount);
             }
             if (!Patch.Contains("$.output_tokens_details"u8))
             {
                 writer.WritePropertyName("output_tokens_details"u8);
-                writer.WriteObjectValue(OutputTokensDetails, options);
+                writer.WriteObjectValue(OutputTokenDetails, options);
             }
             if (!Patch.Contains("$.total_tokens"u8))
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
+                writer.WriteNumberValue(TotalTokenCount);
             }
 
             Patch.WriteTo(writer);
@@ -121,11 +121,11 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int inputTokens = default;
-            DecisionsInputTokenUsageDetails inputTokensDetails = default;
-            int outputTokens = default;
-            DecisionsOutputTokenUsageDetails outputTokensDetails = default;
-            int totalTokens = default;
+            int inputTokenCount = default;
+            DecisionsInputTokenUsageDetails inputTokenDetails = default;
+            int outputTokenCount = default;
+            DecisionsOutputTokenUsageDetails outputTokenDetails = default;
+            int totalTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -133,37 +133,37 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("input_tokens"u8))
                 {
-                    inputTokens = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("input_tokens_details"u8))
                 {
-                    inputTokensDetails = DecisionsInputTokenUsageDetails.DeserializeDecisionsInputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    inputTokenDetails = DecisionsInputTokenUsageDetails.DeserializeDecisionsInputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
                 {
-                    outputTokens = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens_details"u8))
                 {
-                    outputTokensDetails = DecisionsOutputTokenUsageDetails.DeserializeDecisionsOutputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    outputTokenDetails = DecisionsOutputTokenUsageDetails.DeserializeDecisionsOutputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("total_tokens"u8))
                 {
-                    totalTokens = prop.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new DecisionsUsage(
-                inputTokens,
-                inputTokensDetails,
-                outputTokens,
-                outputTokensDetails,
-                totalTokens,
+                inputTokenCount,
+                inputTokenDetails,
+                outputTokenCount,
+                outputTokenDetails,
+                totalTokenCount,
                 patch);
         }
 
@@ -175,19 +175,19 @@ namespace OpenAI.Decisions
 
             if (local.StartsWith("input_tokens_details"u8))
             {
-                if (InputTokensDetails == null)
+                if (InputTokenDetails == null)
                 {
                     return false;
                 }
-                return InputTokensDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], out value);
+                return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], out value);
             }
             if (local.StartsWith("output_tokens_details"u8))
             {
-                if (OutputTokensDetails == null)
+                if (OutputTokenDetails == null)
                 {
                     return false;
                 }
-                return OutputTokensDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], out value);
+                return OutputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], out value);
             }
             return false;
         }
@@ -200,20 +200,20 @@ namespace OpenAI.Decisions
 
             if (local.StartsWith("input_tokens_details"u8))
             {
-                if (InputTokensDetails == null)
+                if (InputTokenDetails == null)
                 {
                     return false;
                 }
-                InputTokensDetails.Patch.Set([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], value);
+                InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("output_tokens_details"u8))
             {
-                if (OutputTokensDetails == null)
+                if (OutputTokenDetails == null)
                 {
                     return false;
                 }
-                OutputTokensDetails.Patch.Set([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], value);
+                OutputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], value);
                 return true;
             }
             return false;

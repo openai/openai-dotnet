@@ -195,7 +195,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         return new DecisionCreationOptions
         {
             Model = TestModel.Decisions,
-            Input =
+            InputItems =
             {
                 new DecisionsMessageItem
                 {
@@ -208,11 +208,11 @@ public class DecisionsTests : OpenAIRecordedTestBase
     private DecisionCreationOptions CreateImageOptions(string imageUrl, string instructions)
     {
         DecisionCreationOptions options = CreateTextOptions("Evaluate the supplied image.");
-        DecisionsMessageItem message = (DecisionsMessageItem)options.Input[0];
+        DecisionsMessageItem message = (DecisionsMessageItem)options.InputItems[0];
         message.Content.Add(new DecisionsInputImageContentPart
         {
-            ImageUrl = imageUrl,
-            Detail = DecisionsImageDetailLevel.Low,
+            ImageUri = imageUrl,
+            ImageDetailLevel = DecisionsImageDetailLevel.Low,
         });
         options.Questions.Add(new DecisionsPredicateQuestion
         {
@@ -243,15 +243,15 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(decision.Model, Does.StartWith(options.Model));
         Assert.That(decision.Answers, Has.Count.EqualTo(options.Questions.Count));
         Assert.That(decision.Usage, Is.Not.Null);
-        Assert.That(decision.Usage.InputTokens, Is.GreaterThan(0));
-        Assert.That(decision.Usage.OutputTokens, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.TotalTokens,
-            Is.EqualTo(decision.Usage.InputTokens + decision.Usage.OutputTokens));
-        Assert.That(decision.Usage.InputTokensDetails, Is.Not.Null);
-        Assert.That(decision.Usage.InputTokensDetails.CachedTokens, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.InputTokensDetails.CacheWriteTokens, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.OutputTokensDetails, Is.Not.Null);
-        Assert.That(decision.Usage.OutputTokensDetails.ReasoningTokens, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision.Usage.InputTokenCount, Is.GreaterThan(0));
+        Assert.That(decision.Usage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision.Usage.TotalTokenCount,
+            Is.EqualTo(decision.Usage.InputTokenCount + decision.Usage.OutputTokenCount));
+        Assert.That(decision.Usage.InputTokenDetails, Is.Not.Null);
+        Assert.That(decision.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision.Usage.InputTokenDetails.CacheWriteTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision.Usage.OutputTokenDetails, Is.Not.Null);
+        Assert.That(decision.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThanOrEqualTo(0));
     }
 
     private static void AssertSentimentAnswer(DecisionsScoreAnswer answer, string name)

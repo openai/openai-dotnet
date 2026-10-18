@@ -75,12 +75,12 @@ namespace OpenAI.Decisions
             if (!Patch.Contains("$.cache_write_tokens"u8))
             {
                 writer.WritePropertyName("cache_write_tokens"u8);
-                writer.WriteNumberValue(CacheWriteTokens);
+                writer.WriteNumberValue(CacheWriteTokenCount);
             }
             if (!Patch.Contains("$.cached_tokens"u8))
             {
                 writer.WritePropertyName("cached_tokens"u8);
-                writer.WriteNumberValue(CachedTokens);
+                writer.WriteNumberValue(CachedTokenCount);
             }
 
             Patch.WriteTo(writer);
@@ -106,8 +106,8 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int cacheWriteTokens = default;
-            int cachedTokens = default;
+            int cacheWriteTokenCount = default;
+            int cachedTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -115,17 +115,17 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("cache_write_tokens"u8))
                 {
-                    cacheWriteTokens = prop.Value.GetInt32();
+                    cacheWriteTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("cached_tokens"u8))
                 {
-                    cachedTokens = prop.Value.GetInt32();
+                    cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputTokenUsageDetails(cacheWriteTokens, cachedTokens, patch);
+            return new DecisionsInputTokenUsageDetails(cacheWriteTokenCount, cachedTokenCount, patch);
         }
     }
 }

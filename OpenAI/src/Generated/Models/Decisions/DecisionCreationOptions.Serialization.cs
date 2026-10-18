@@ -96,13 +96,13 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("input"u8);
                 writer.WriteStartArray();
                 bool hasPatch = Patch.Contains("$"u8, "input"u8);
-                for (int i = 0; i < Input.Count; i++)
+                for (int i = 0; i < InputItems.Count; i++)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) || Input[i] != null && Input[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) || InputItems[i] != null && InputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(Input[i], options);
+                    writer.WriteObjectValue(InputItems[i], options);
                 }
                 Patch.WriteTo(writer, "$.input"u8);
                 writer.WriteEndArray();
@@ -165,7 +165,7 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            IList<DecisionsItem> input = default;
+            IList<DecisionsItem> inputItems = default;
             string model = default;
             IList<DecisionsQuestion> questions = default;
             string safetyIdentifier = default;
@@ -176,7 +176,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("input"u8))
                 {
-                    DeserializeInputValue(prop, ref input, options);
+                    DeserializeInputValue(prop, ref inputItems, options);
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -206,7 +206,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionCreationOptions(input, model, questions, safetyIdentifier, patch);
+            return new DecisionCreationOptions(inputItems, model, questions, safetyIdentifier, patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -219,23 +219,23 @@ namespace OpenAI.Decisions
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Input == null)
+                if (InputItems == null)
                 {
                     return false;
                 }
                 if (currentSlice.IsEmpty)
                 {
-                    return TryResolveInputArray(out value);
+                    return TryResolveInputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Input.Count)
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
                 {
                     return false;
                 }
-                if (Input[index] == null)
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
-                return Input[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return InputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             if (local.StartsWith("questions"u8))
             {
@@ -272,19 +272,19 @@ namespace OpenAI.Decisions
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Input == null)
+                if (InputItems == null)
                 {
                     return false;
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Input.Count)
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
                 {
                     return false;
                 }
-                if (Input[index] == null)
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
-                Input[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                InputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             if (local.StartsWith("questions"u8))
@@ -311,10 +311,10 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveInputArray(out JsonPatch.EncodedValue value)
+        private bool TryResolveInputItemsArray(out JsonPatch.EncodedValue value)
         {
             value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveInput(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            BinaryData data = ModelReaderWriter.Write(ActiveInputItems(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
             JsonPatch tempPatch = new JsonPatch();
             tempPatch.Set("$"u8, data.ToMemory().Span);
             return tempPatch.TryGetEncodedValue("$"u8, out value);
@@ -322,18 +322,18 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsItem> ActiveInput()
+        private IEnumerable<DecisionsItem> ActiveInputItems()
         {
-            if (!Optional.IsCollectionDefined(Input))
+            if (!Optional.IsCollectionDefined(InputItems))
             {
                 yield break;
             }
             bool hasPatch = Patch.Contains("$"u8, "input"u8);
-            for (int i = 0; i < Input.Count; i++)
+            for (int i = 0; i < InputItems.Count; i++)
             {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]"))) && (Input[i] == null || !Input[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]"))) && (InputItems[i] == null || !InputItems[i].Patch.IsRemoved("$"u8)))
                 {
-                    yield return Input[i];
+                    yield return InputItems[i];
                 }
             }
         }

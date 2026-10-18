@@ -16,25 +16,25 @@ namespace OpenAI.Decisions
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUsage(int inputTokens, DecisionsInputTokenUsageDetails inputTokensDetails, int outputTokens, DecisionsOutputTokenUsageDetails outputTokensDetails, int totalTokens)
+        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount)
         {
-            InputTokens = inputTokens;
-            InputTokensDetails = inputTokensDetails;
-            OutputTokens = outputTokens;
-            OutputTokensDetails = outputTokensDetails;
-            TotalTokens = totalTokens;
+            InputTokenCount = inputTokenCount;
+            InputTokenDetails = inputTokenDetails;
+            OutputTokenCount = outputTokenCount;
+            OutputTokenDetails = outputTokenDetails;
+            TotalTokenCount = totalTokenCount;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUsage(int inputTokens, DecisionsInputTokenUsageDetails inputTokensDetails, int outputTokens, DecisionsOutputTokenUsageDetails outputTokensDetails, int totalTokens, in JsonPatch patch)
+        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount, in JsonPatch patch)
         {
-            InputTokens = inputTokens;
-            InputTokensDetails = inputTokensDetails;
-            OutputTokens = outputTokens;
-            OutputTokensDetails = outputTokensDetails;
-            TotalTokens = totalTokens;
+            InputTokenCount = inputTokenCount;
+            InputTokenDetails = inputTokenDetails;
+            OutputTokenCount = outputTokenCount;
+            OutputTokenDetails = outputTokenDetails;
+            TotalTokenCount = totalTokenCount;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -45,14 +45,14 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public int InputTokens { get; set; }
+        public int InputTokenCount { get; set; }
 
-        public DecisionsInputTokenUsageDetails InputTokensDetails { get; set; }
+        public DecisionsInputTokenUsageDetails InputTokenDetails { get; set; }
 
-        public int OutputTokens { get; set; }
+        public int OutputTokenCount { get; set; }
 
-        public DecisionsOutputTokenUsageDetails OutputTokensDetails { get; set; }
+        public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
 
-        public int TotalTokens { get; set; }
+        public int TotalTokenCount { get; set; }
     }
 }

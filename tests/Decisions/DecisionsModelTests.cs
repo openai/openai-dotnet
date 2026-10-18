@@ -17,6 +17,63 @@ namespace OpenAI.Tests.Decisions;
 [Category("Smoke")]
 public class DecisionsModelTests
 {
+    [Test]
+    public void RenamedUsagePropertiesPreserveWireNames()
+    {
+        const string json = """
+            {"input_tokens":10,"output_tokens":5,"total_tokens":15,
+             "input_tokens_details":{"cached_tokens":3,"cache_write_tokens":2},
+             "output_tokens_details":{"reasoning_tokens":4}}
+            """;
+        DecisionsUsage usage = Read<DecisionsUsage>(json);
+
+        Assert.That(usage.InputTokenCount, Is.EqualTo(10));
+        Assert.That(usage.OutputTokenCount, Is.EqualTo(5));
+        Assert.That(usage.TotalTokenCount, Is.EqualTo(15));
+        Assert.That(usage.InputTokenDetails.CachedTokenCount, Is.EqualTo(3));
+        Assert.That(usage.InputTokenDetails.CacheWriteTokenCount, Is.EqualTo(2));
+        Assert.That(usage.OutputTokenDetails.ReasoningTokenCount, Is.EqualTo(4));
+
+        using JsonDocument expected = JsonDocument.Parse(json);
+        using JsonDocument actual = JsonDocument.Parse(ModelReaderWriter.Write(usage));
+        AssertJsonContains(expected.RootElement, actual.RootElement);
+        Assert.That(actual.RootElement.EnumerateObject().Count(), Is.EqualTo(5));
+    }
+
+    [Test]
+    public void RenamedInputAndImagePropertiesPreserveWireNames()
+    {
+        DecisionCreationOptions options = new()
+        {
+            Model = "test",
+            InputItems =
+            {
+                new DecisionsMessageItem
+                {
+                    Content =
+                    {
+                        new DecisionsInputImageContentPart
+                        {
+                            ImageUri = "https://example.invalid/image.png",
+                            ImageDetailLevel = DecisionsImageDetailLevel.High
+                        }
+                    }
+                }
+            }
+        };
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        JsonElement image = json.RootElement.GetProperty("input")[0].GetProperty("content")[0];
+        Assert.That(image.GetProperty("image_url").GetString(), Is.EqualTo("https://example.invalid/image.png"));
+        Assert.That(image.GetProperty("detail").GetString(), Is.EqualTo("high"));
+        Assert.That(image.EnumerateObject().Count(), Is.EqualTo(3));
+        Assert.That(json.RootElement.TryGetProperty("input_items", out _), Is.False);
+
+        DecisionCreationOptions roundTrip = ModelReaderWriter.Read<DecisionCreationOptions>(ModelReaderWriter.Write(options));
+        DecisionsInputImageContentPart part = (DecisionsInputImageContentPart)((DecisionsMessageItem)roundTrip.InputItems.Single()).Content.Single();
+        Assert.That(part.ImageUri, Is.EqualTo("https://example.invalid/image.png"));
+        Assert.That(part.ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
+    }
+
     private static IEnumerable<TestCaseData> ProtocolModels()
     {
         yield return Model<DecisionCreationOptions>("""{"input":[],"model":"test-model","questions":[],"safety_identifier":"user"}""");
@@ -104,7 +161,7 @@ public class DecisionsModelTests
         DecisionCreationOptions options = new()
         {
             Model = "test",
-            Input = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "hello" } } } },
+            InputItems = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "hello" } } } },
             Questions = { new DecisionsPredicateQuestion { Instructions = "evaluate" } }
         };
         if (fromJson)
@@ -139,8 +196,8 @@ public class DecisionsModelTests
         DecisionCreationOptions shorthand = Read<DecisionCreationOptions>($$"""{"input":{{encodedText}},"model":"test","questions":[]}""");
         DecisionCreationOptions longhand = Read<DecisionCreationOptions>($$"""{"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}],"model":"test","questions":[]}""");
 
-        Assert.That(shorthand.Input, Has.Count.EqualTo(1));
-        DecisionsMessageItem message = shorthand.Input.Single() as DecisionsMessageItem;
+        Assert.That(shorthand.InputItems, Has.Count.EqualTo(1));
+        DecisionsMessageItem message = shorthand.InputItems.Single() as DecisionsMessageItem;
         Assert.That(message, Is.Not.Null);
         Assert.That(message.Kind, Is.EqualTo(DecisionsItemKind.Message));
         Assert.That(message.Content, Has.Count.EqualTo(1));
@@ -182,10 +239,10 @@ public class DecisionsModelTests
             ],"model":"test","questions":[]}
             """;
         DecisionCreationOptions options = Read<DecisionCreationOptions>(json);
-        Assert.That(options.Input, Has.Count.EqualTo(2));
-        DecisionsMessageItem message = (DecisionsMessageItem)options.Input[0];
+        Assert.That(options.InputItems, Has.Count.EqualTo(2));
+        DecisionsMessageItem message = (DecisionsMessageItem)options.InputItems[0];
         Assert.That(message.Content, Has.Count.EqualTo(2));
-        Assert.That(((DecisionsInputImageContentPart)message.Content[1]).Detail, Is.EqualTo(DecisionsImageDetailLevel.High));
+        Assert.That(((DecisionsInputImageContentPart)message.Content[1]).ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
         using JsonDocument serialized = JsonDocument.Parse(ModelReaderWriter.Write(options));
         JsonElement firstMessage = serialized.RootElement.GetProperty("input")[0];
         Assert.That(firstMessage.GetProperty("future_message").GetInt32(), Is.EqualTo(42));
@@ -207,7 +264,7 @@ public class DecisionsModelTests
     [Test]
     public void EmptyLonghandCollectionsRemainEmpty()
     {
-        Assert.That(Read<DecisionCreationOptions>("""{"input":[],"model":"test","questions":[]}""").Input, Is.Empty);
+        Assert.That(Read<DecisionCreationOptions>("""{"input":[],"model":"test","questions":[]}""").InputItems, Is.Empty);
         Assert.That(Read<DecisionsMessageItem>("""{"type":"message","content":[]}""").Content, Is.Empty);
     }
 
@@ -344,14 +401,14 @@ public class DecisionsModelTests
         DecisionCreationOptions options = new()
         {
             Model = "test",
-            Input = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
+            InputItems = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
             Questions = { new DecisionsChoiceQuestion { Instructions = "choose", Choices = { new DecisionsChoice { Value = true } } } }
         };
         if (fromJson)
         {
             options = ModelReaderWriter.Read<DecisionCreationOptions>(ModelReaderWriter.Write(options));
         }
-        ((DecisionsMessageItem)options.Input[0]).Content[0].Patch.Set("$.text"u8, "patched text");
+        ((DecisionsMessageItem)options.InputItems[0]).Content[0].Patch.Set("$.text"u8, "patched text");
         DecisionsChoiceQuestion question = (DecisionsChoiceQuestion)options.Questions[0];
         question.Choices[0].Patch.Set("$.value"u8, "\"patched choice\""u8);
         question.Patch.Set("$.future_question"u8, "preserved");
@@ -363,7 +420,7 @@ public class DecisionsModelTests
         DecisionResource resource = new()
         {
             Answers = { new DecisionsChoiceAnswer { Choice = true, Probabilities = { new DecisionsChoiceProbability { Value = "original" } } } },
-            Usage = new DecisionsUsage { InputTokensDetails = new DecisionsInputTokenUsageDetails() }
+            Usage = new DecisionsUsage { InputTokenDetails = new DecisionsInputTokenUsageDetails() }
         };
         if (fromJson)
         {

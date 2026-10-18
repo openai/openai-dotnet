@@ -38,7 +38,7 @@ public class DecisionsExtensibilityTests
         DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(
             BinaryData.FromString("""{"input":"hello","model":"test","questions":[]}"""));
 
-        AssertUserMessage((DecisionsMessageItem)options.Input.Single());
+        AssertUserMessage((DecisionsMessageItem)options.InputItems.Single());
         using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(options));
         Assert.That(document.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
     }

@@ -76,12 +76,12 @@ namespace OpenAI.Decisions
             if (!Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl);
+                writer.WriteStringValue(ImageUri);
             }
-            if (Optional.IsDefined(Detail) && !Patch.Contains("$.detail"u8))
+            if (Optional.IsDefined(ImageDetailLevel) && !Patch.Contains("$.detail"u8))
             {
                 writer.WritePropertyName("detail"u8);
-                writer.WriteStringValue(Detail.Value.ToString());
+                writer.WriteStringValue(ImageDetailLevel.Value.ToString());
             }
 
             Patch.WriteTo(writer);
@@ -111,8 +111,8 @@ namespace OpenAI.Decisions
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string imageUrl = default;
-            DecisionsImageDetailLevel? detail = default;
+            string imageUri = default;
+            DecisionsImageDetailLevel? imageDetailLevel = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -122,22 +122,22 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("image_url"u8))
                 {
-                    imageUrl = prop.Value.GetString();
+                    imageUri = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("detail"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        detail = null;
+                        imageDetailLevel = null;
                         continue;
                     }
-                    detail = new DecisionsImageDetailLevel(prop.Value.GetString());
+                    imageDetailLevel = new DecisionsImageDetailLevel(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageContentPart(kind, patch, imageUrl, detail);
+            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel);
         }
     }
 }
