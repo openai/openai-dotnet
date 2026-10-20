@@ -132,7 +132,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             InternalToolChoiceAllowedMode mode = default;
-            IList<ResponseCustomToolChoice> tools = default;
+            IList<ResponseTool> tools = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -147,10 +147,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tools"u8))
                 {
-                    List<ResponseCustomToolChoice> array = new List<ResponseCustomToolChoice>();
+                    List<ResponseTool> array = new List<ResponseTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(DeserializeResponseCustomToolChoice(item, item.GetUtf8Bytes(), options));
+                        array.Add(ResponseTool.DeserializeResponseTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
@@ -232,7 +232,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<ResponseCustomToolChoice> ActiveTools()
+        private IEnumerable<ResponseTool> ActiveTools()
         {
             if (!Optional.IsCollectionDefined(Tools))
             {
