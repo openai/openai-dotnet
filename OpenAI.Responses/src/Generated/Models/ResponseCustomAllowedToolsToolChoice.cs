@@ -14,7 +14,7 @@ namespace OpenAI.Responses
     public partial class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public ResponseCustomAllowedToolsToolChoice(InternalToolChoiceAllowedMode mode, IEnumerable<ResponseCustomToolChoice> tools) : base(InternalResponseCustomToolChoiceKind.AllowedTools)
+        internal ResponseCustomAllowedToolsToolChoice(InternalToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools) : base(InternalResponseCustomToolChoiceKind.AllowedTools)
         {
             Argument.AssertNotNull(tools, nameof(tools));
 
@@ -25,17 +25,17 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomAllowedToolsToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, InternalToolChoiceAllowedMode mode, IList<ResponseCustomToolChoice> tools) : base(kind, patch)
+        internal ResponseCustomAllowedToolsToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, InternalToolChoiceAllowedMode mode, IList<ResponseTool> tools) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Mode = mode;
-            Tools = tools ?? new ChangeTrackingList<ResponseCustomToolChoice>();
+            Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public InternalToolChoiceAllowedMode Mode { get; set; }
+        internal InternalToolChoiceAllowedMode Mode { get; set; }
 
-        public IList<ResponseCustomToolChoice> Tools { get; }
+        public IList<ResponseTool> Tools { get; }
     }
 }

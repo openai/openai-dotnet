@@ -11,12 +11,10 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomMcpToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomMcpToolChoice(string toolName, string serverLabel) : base(InternalResponseCustomToolChoiceKind.Mcp)
+        public ResponseCustomMcpToolChoice(string serverLabel) : base(InternalResponseCustomToolChoiceKind.Mcp)
         {
-            Argument.AssertNotNull(toolName, nameof(toolName));
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 
-            ToolName = toolName;
             ServerLabel = serverLabel;
         }
 

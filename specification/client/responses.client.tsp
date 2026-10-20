@@ -105,7 +105,7 @@ namespace OpenAI.Responses;
 // ------------ Tool Choice Objects ------------
 @@clientName(ToolChoiceObjectCustom.name, "ToolName");
 @@clientName(ToolChoiceObjectMCP.name, "ToolName");
-@@clientName(ToolChoiceObjectCustom.name, "ToolName");
+@@clientName(ToolChoiceObjectFunction.name, "FunctionName");
 
 
 // ------------ Streaming ------------

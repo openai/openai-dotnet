@@ -1159,4 +1159,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             """),
         strictModeEnabled: true);
+
+    private static readonly ResponseTool s_FileSearchTool = ResponseTool.CreateFileSearchTool(
 }
