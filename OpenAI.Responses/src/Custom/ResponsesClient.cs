@@ -274,14 +274,15 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to false when calling {nameof(CreateResponseStreamingAsync)}.");
         }
 
-        ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
-        return SseStreamingResult.Create(
-            result.GetRawResponse(),
+        return await new SseStreamingResult<StreamingResponseUpdate>(
+            () => CreateResponseAsync((BinaryContent)options, requestOptions),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken)
         {
             LifecycleFactory = () => _telemetry?.StartResponsesStreamingScope(options),
-        };
+        }
+        .CreateAsync()
+        .ConfigureAwait(false);
     }
 
     // CUSTOM: Added convenience method with no options.

@@ -206,9 +206,11 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateGenerateSpeechStreamingRequest(content, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         return SseStreamingResult.Create(
-            result.GetRawResponse(),
+            response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
@@ -430,9 +432,11 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
 
-        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         return SseStreamingResult.Create(
-            result.GetRawResponse(),
+            response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
@@ -452,9 +456,11 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(inputStream, audioFilePath);
 
-        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         return SseStreamingResult.Create(
-            result.GetRawResponse(),
+            response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001

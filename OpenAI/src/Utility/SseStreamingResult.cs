@@ -7,6 +7,7 @@ using System.Net.ServerSentEvents;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 #nullable enable
 
@@ -20,7 +21,8 @@ internal static class SseStreamingResult
         PipelineResponse response,
         Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null)
+        IEnumerable<Action>? additionalDisposalActions = null,
+        SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
 
@@ -32,14 +34,16 @@ internal static class SseStreamingResult
                 return [jsonSingleDeserializerFunc(document.RootElement, ModelSerializationExtensions.WireOptions)];
             }),
             cancellationToken,
-            additionalDisposalActions);
+            additionalDisposalActions,
+            lifecycle);
     }
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null)
+        IEnumerable<Action>? additionalDisposalActions = null,
+        SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
 
@@ -51,14 +55,16 @@ internal static class SseStreamingResult
                 return [jsonSingleDeserializerFunc(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions)];
             }),
                 cancellationToken,
-                additionalDisposalActions);
+                additionalDisposalActions,
+                lifecycle);
     }
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null)
+        IEnumerable<Action>? additionalDisposalActions = null,
+        SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
 
@@ -70,21 +76,23 @@ internal static class SseStreamingResult
                 return jsonMultiDeserializerFunc(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions);
             }),
             cancellationToken,
-            additionalDisposalActions);
+            additionalDisposalActions,
+            lifecycle);
     }
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
         PipelineResponse response,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null)
+        IEnumerable<Action>? additionalDisposalActions = null,
+        SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(response, nameof(response));
         Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
 
         return AsyncStreamingResult.Create<SseItem<T>>(
             response,
-            (stream, producerCancellationToken) => EnumerateAsync(stream, eventDeserializerFunc, additionalDisposalActions, producerCancellationToken),
+            (stream, producerCancellationToken) => EnumerateAsync(stream, eventDeserializerFunc, additionalDisposalActions, lifecycle, producerCancellationToken),
             cancellationToken);
     }
 
@@ -92,36 +100,183 @@ internal static class SseStreamingResult
         Stream stream,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         IEnumerable<Action>? additionalDisposalActions,
+        SseLifecycle<T>? lifecycle,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        SseCompletionKind completionKind = SseCompletionKind.Disposed;
+        lifecycle?.OnTypedResponse();
+
         try
         {
-            await foreach (SseItem<byte[]> item in SseParser.Create(stream, (_, bytes) => bytes.ToArray()).EnumerateAsync(cancellationToken))
+            await using IAsyncEnumerator<SseItem<byte[]>> events = SseParser
+                .Create(stream, (_, bytes) => bytes.ToArray())
+                .EnumerateAsync(cancellationToken)
+                .GetAsyncEnumerator(cancellationToken);
+
+            while (true)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                SseItem<byte[]> item;
+                try
+                {
+                    using (lifecycle?.Enter())
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (!await events.MoveNextAsync().ConfigureAwait(false))
+                        {
+                            completionKind = SseCompletionKind.EndOfStream;
+                            yield break;
+                        }
+
+                        item = events.Current;
+                        lifecycle?.OnEvent();
+                    }
+                }
+
+                catch (Exception exception)
+                {
+                    lifecycle?.OnException(exception);
+                    throw;
+                }
 
                 if (item.Data.AsSpan().SequenceEqual(TerminalData))
                 {
+                    completionKind = SseCompletionKind.EndOfStream;
                     yield break;
                 }
 
-                foreach (T update in eventDeserializerFunc(item))
+                IEnumerator<T>? updates = null;
+                try
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    yield return new SseItem<T>(update, item.EventType)
+                    try
                     {
-                        EventId = item.EventId,
-                        ReconnectionInterval = item.ReconnectionInterval,
-                    };
+                        using (lifecycle?.Enter())
+                        {
+                            updates = eventDeserializerFunc(item).GetEnumerator();
+                        }
+                    }
+
+                    catch (Exception exception)
+                    {
+                        lifecycle?.OnException(exception);
+                        throw;
+                    }
+
+                    while (true)
+                    {
+                        T update;
+                        try
+                        {
+                            using (lifecycle?.Enter())
+                            {
+                                cancellationToken.ThrowIfCancellationRequested();
+                                if (!updates.MoveNext())
+                                {
+                                    break;
+                                }
+
+                                update = updates.Current;
+                                lifecycle?.OnUpdate(update);
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            lifecycle?.OnException(exception);
+                            throw;
+                        }
+
+                        yield return new SseItem<T>(update, item.EventType)
+                        {
+                            EventId = item.EventId,
+                            ReconnectionInterval = item.ReconnectionInterval,
+                        };
+                    }
+                }
+                finally
+                {
+                    try
+                    {
+                        updates?.Dispose();
+                    }
+                    catch (Exception exception)
+                    {
+                        lifecycle?.OnException(exception);
+                        throw;
+                    }
                 }
             }
         }
         finally
         {
-            foreach (Action additionalDisposalAction in additionalDisposalActions ?? [])
+            using (lifecycle?.Enter())
             {
-                additionalDisposalAction.Invoke();
+                try
+                {
+                    foreach (Action additionalDisposalAction in additionalDisposalActions ?? [])
+                    {
+                        additionalDisposalAction.Invoke();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    lifecycle?.OnException(exception);
+                    throw;
+                }
+                finally
+                {
+                    lifecycle?.Complete(completionKind);
+                }
             }
         }
+    }
+}
+
+internal sealed class SseStreamingResult<T>
+{
+    private readonly Func<Task<ClientResult>> _sendRequestAsync;
+    private readonly Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> _jsonSingleDeserializerFunc;
+    private readonly CancellationToken _cancellationToken;
+
+    internal Func<SseLifecycle<T>?>? LifecycleFactory { get; set; }
+
+    public List<Action> AdditionalDisposalActions { get; } = [];
+
+    public SseStreamingResult(
+        Func<Task<ClientResult>> sendRequestAsync,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(sendRequestAsync, nameof(sendRequestAsync));
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+
+        _sendRequestAsync = sendRequestAsync;
+        _jsonSingleDeserializerFunc = jsonSingleDeserializerFunc;
+        _cancellationToken = cancellationToken;
+    }
+
+    public async Task<AsyncStreamingResult<SseItem<T>>> CreateAsync()
+    {
+        SseLifecycle<T>? lifecycle = LifecycleFactory?.Invoke();
+        ClientResult result;
+
+        try
+        {
+            using (lifecycle?.Enter())
+            {
+                result = await _sendRequestAsync().ConfigureAwait(false);
+                lifecycle?.OnResponse(result.GetRawResponse());
+            }
+        }
+        catch (Exception exception)
+        {
+            lifecycle?.OnException(exception);
+            throw;
+        }
+
+        return SseStreamingResult.Create(
+            result.GetRawResponse(),
+            _jsonSingleDeserializerFunc,
+            _cancellationToken,
+            AdditionalDisposalActions,
+            lifecycle);
     }
 }

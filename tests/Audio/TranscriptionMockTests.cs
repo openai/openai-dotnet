@@ -189,6 +189,46 @@ public partial class TranscriptionMockTests : ClientTestBase
     }
 
     [Test]
+    [AsyncOnly]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task TranscribeAudioStreamingUsesStreamingRequest(AudioSourceKind audioSourceKind)
+    {
+        string acceptHeader = null;
+        bool? bufferResponse = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                message.Request.Headers.TryGetValue("Accept", out acceptHeader);
+                bufferResponse = message.BufferResponse;
+                return new MockPipelineResponse(200).WithContent("data: [DONE]\n\n");
+            })
+            {
+                ExpectSyncPipeline = false
+            }
+        };
+        AudioClient client = new("model", s_fakeCredential, clientOptions);
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            using Stream audio = new MemoryStream([0x01, 0x02, 0x03, 0x04, 0x05]);
+            await foreach (var _ in await client.TranscribeAudioStreamingAsync(audio, "audio.mp3"))
+            {
+            }
+        }
+        else
+        {
+            await foreach (var _ in await client.TranscribeAudioStreamingAsync(Path.Combine("Assets", "audio_hello_world.mp3")))
+            {
+            }
+        }
+
+        Assert.That(acceptHeader, Is.EqualTo("text/event-stream"));
+        Assert.That(bufferResponse, Is.False);
+    }
+
+    [Test]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]
