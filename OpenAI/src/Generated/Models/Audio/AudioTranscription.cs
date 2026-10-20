@@ -35,7 +35,7 @@ namespace OpenAI.Audio
             Words = words ?? new ChangeTrackingList<TranscribedWord>();
             Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
             Usage = usage;
-            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities;
+            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

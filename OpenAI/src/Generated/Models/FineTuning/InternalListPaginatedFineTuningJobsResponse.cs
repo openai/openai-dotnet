@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -23,7 +24,8 @@ namespace OpenAI.FineTuning
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListPaginatedFineTuningJobsResponse(IList<InternalFineTuningJob> data, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Data = data;
+            // Plugin customization: ensure initialization of collections
+            Data = data ?? new ChangeTrackingList<InternalFineTuningJob>();
             HasMore = hasMore;
             Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

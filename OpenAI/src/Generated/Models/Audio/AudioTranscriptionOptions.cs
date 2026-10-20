@@ -28,7 +28,7 @@ namespace OpenAI.Audio
             Stream = stream;
             ChunkingStrategy = chunkingStrategy;
             KnownSpeakerNames = knownSpeakerNames ?? new ChangeTrackingList<string>();
-            KnownSpeakerReferenceUris = knownSpeakerReferenceUris;
+            KnownSpeakerReferenceUris = knownSpeakerReferenceUris ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
