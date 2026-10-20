@@ -24,9 +24,8 @@ model ChatErrorResponse {
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. Reducing
-  reasoning effort can result in faster responses and fewer tokens used
-  on reasoning in a response.
+  Reducing reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response. Not all reasoning models support every value.
   """)
 union ChatReasoningEffort {
   string,
