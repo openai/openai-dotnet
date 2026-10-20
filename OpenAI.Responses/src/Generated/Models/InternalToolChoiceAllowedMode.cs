@@ -4,13 +4,10 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAI001")]
-    public readonly partial struct InternalToolChoiceAllowedMode : IEquatable<InternalToolChoiceAllowedMode>
+    internal readonly partial struct InternalToolChoiceAllowedMode : IEquatable<InternalToolChoiceAllowedMode>
     {
         private readonly string _value;
         private const string AutoValue = "auto";
@@ -18,14 +15,12 @@ namespace OpenAI.Responses
 
         public InternalToolChoiceAllowedMode(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 
-        public static InternalToolChoiceAllowedMode Auto { get; } = new InternalToolChoiceAllowedMode(AutoValue);
+        internal static InternalToolChoiceAllowedMode Auto { get; } = new InternalToolChoiceAllowedMode(AutoValue);
 
-        public static InternalToolChoiceAllowedMode Required { get; } = new InternalToolChoiceAllowedMode(RequiredValue);
+        internal static InternalToolChoiceAllowedMode Required { get; } = new InternalToolChoiceAllowedMode(RequiredValue);
 
         public static bool operator ==(InternalToolChoiceAllowedMode left, InternalToolChoiceAllowedMode right) => left.Equals(right);
 

@@ -109,8 +109,10 @@ namespace OpenAI.Responses
                         return ResponseCustomApplyPatchToolChoice.DeserializeResponseCustomApplyPatchToolChoice(element, data, options);
                     case "code_interpreter":
                         return ResponseCustomCodeInterpreterToolChoice.DeserializeResponseCustomCodeInterpreterToolChoice(element, data, options);
-                    case "computer_use_preview":
+                    case "computer":
                         return ResponseCustomComputerToolChoice.DeserializeResponseCustomComputerToolChoice(element, data, options);
+                    case "computer_use_preview":
+                        return ResponseCustomComputerUsePreviewToolChoice.DeserializeResponseCustomComputerUsePreviewToolChoice(element, data, options);
                     case "custom":
                         return ResponseCustomCustomToolChoice.DeserializeResponseCustomCustomToolChoice(element, data, options);
                     case "file_search":
@@ -126,6 +128,8 @@ namespace OpenAI.Responses
                     case "shell":
                         return ResponseCustomShellToolChoice.DeserializeResponseCustomShellToolChoice(element, data, options);
                     case "web_search_preview":
+                        return ResponseCustomWebSearchPreviewToolChoice.DeserializeResponseCustomWebSearchPreviewToolChoice(element, data, options);
+                    case "web_search":
                         return ResponseCustomWebSearchToolChoice.DeserializeResponseCustomWebSearchToolChoice(element, data, options);
                 }
             }
