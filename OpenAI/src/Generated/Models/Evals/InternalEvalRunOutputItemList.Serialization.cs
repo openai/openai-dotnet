@@ -185,7 +185,7 @@ namespace OpenAI.Evals
             }
             return new InternalEvalRunOutputItemList(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<InternalEvalRunOutputItem>(),
                 firstId,
                 lastId,
                 hasMore,

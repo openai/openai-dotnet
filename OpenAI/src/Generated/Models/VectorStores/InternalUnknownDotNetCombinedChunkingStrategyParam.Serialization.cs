@@ -16,6 +16,7 @@ namespace OpenAI.VectorStores
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.VectorStores
                     throw new FormatException($"The model {nameof(FileChunkingStrategy)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.VectorStores
 
         BinaryData IPersistableModel<FileChunkingStrategy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         FileChunkingStrategy IPersistableModel<FileChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<FileChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -66,8 +70,11 @@ namespace OpenAI.VectorStores
             base.JsonModelWriteCore(writer, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         FileChunkingStrategy IJsonModel<FileChunkingStrategy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
@@ -78,6 +85,7 @@ namespace OpenAI.VectorStores
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeFileChunkingStrategy(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownDotNetCombinedChunkingStrategyParam DeserializeInternalUnknownDotNetCombinedChunkingStrategyParam(JsonElement element, ModelReaderWriterOptions options)
         {

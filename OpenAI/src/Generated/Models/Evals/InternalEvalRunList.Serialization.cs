@@ -185,7 +185,7 @@ namespace OpenAI.Evals
             }
             return new InternalEvalRunList(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<InternalEvalRun>(),
                 firstId,
                 lastId,
                 hasMore,

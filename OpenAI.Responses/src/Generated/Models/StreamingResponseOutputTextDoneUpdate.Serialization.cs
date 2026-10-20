@@ -204,7 +204,7 @@ namespace OpenAI.Responses
                 outputIndex,
                 contentIndex,
                 text,
-                tokenLogProbabilities);
+                tokenLogProbabilities ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -185,7 +185,7 @@ namespace OpenAI.Audio
             }
             return new InternalVoiceConsentListResource(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<InternalVoiceConsentResource>(),
                 firstId,
                 lastId,
                 hasMore,

@@ -11,12 +11,15 @@ namespace OpenAI.Videos
 {
     internal partial class VideoClientGetVideosAsyncCollectionResult : AsyncCollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly VideoClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly string _afterId;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public VideoClientGetVideosAsyncCollectionResult(VideoClient client, int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
             _client = client;
@@ -25,6 +28,7 @@ namespace OpenAI.Videos
             _afterId = afterId;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {

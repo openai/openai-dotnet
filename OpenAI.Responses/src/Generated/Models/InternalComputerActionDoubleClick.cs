@@ -15,12 +15,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerActionDoubleClick(ComputerCallActionKind kind, in JsonPatch patch, int x, int y) : base(kind, patch)
         {
             X = x;
             Y = y;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int X { get; set; }
 

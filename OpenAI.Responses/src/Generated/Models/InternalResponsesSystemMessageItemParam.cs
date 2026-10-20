@@ -12,14 +12,17 @@ namespace OpenAI.Responses
     internal partial class InternalResponsesSystemMessageItemParam : InternalResponsesMessageItemParam
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalResponsesSystemMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalResponsesMessageRole.System)
         {
             Content = content.ToList();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalResponsesSystemMessageItemParam(ResponseItemKind kind, in JsonPatch patch, InternalResponsesMessageRole role, IList<ResponseContentPart> content) : base(kind, patch, role)
         {
             // Plugin customization: ensure initialization of collections
@@ -27,7 +30,10 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseContentPart> Content { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

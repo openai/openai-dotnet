@@ -16,6 +16,7 @@ namespace OpenAI.Evals
             Source = source;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalEvalGraderPythonResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string source, string imageTag, float? passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
@@ -23,6 +24,7 @@ namespace OpenAI.Evals
             ImageTag = imageTag;
             PassThreshold = passThreshold;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Name { get; }
 

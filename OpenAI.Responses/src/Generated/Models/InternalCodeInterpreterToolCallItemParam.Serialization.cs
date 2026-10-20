@@ -247,6 +247,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<CodeInterpreterCallOutput> ActiveOutputs()
         {
             if (!Optional.IsCollectionDefined(Outputs))
@@ -263,5 +264,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

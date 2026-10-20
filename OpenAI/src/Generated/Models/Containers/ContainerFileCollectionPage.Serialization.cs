@@ -194,7 +194,7 @@ namespace OpenAI.Containers
             }
             return new ContainerFileCollectionPage(
                 @object,
-                data0,
+                data0 ?? new ChangeTrackingList<ContainerFileResource>(),
                 firstId,
                 lastId,
                 hasMore,
