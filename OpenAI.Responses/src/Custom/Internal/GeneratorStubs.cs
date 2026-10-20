@@ -49,12 +49,15 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
 [CodeGenType("ResponseTextFormatConfigurationType")] internal readonly partial struct InternalResponsesTextFormatType {}
 [CodeGenType("DotNetResponseDefaultToolChoice")] public readonly partial struct ResponseDefaultToolChoice {}
-[CodeGenType("ToolChoiceAllowedMode")] public readonly partial struct InternalToolChoiceAllowedMode {}
+[CodeGenType("ToolChoiceAllowedMode")] internal readonly partial struct InternalToolChoiceAllowedMode {}
 [CodeGenType("ToolChoiceObject")] public partial class ResponseCustomToolChoice {}
+[CodeGenType("ToolChoiceObjectFunction")] public partial class ResponseCustomFunctionToolChoice {}
 [CodeGenType("ToolChoiceObjectComputer")] public partial class ResponseCustomComputerToolChoice {}
+[CodeGenType("ToolChoiceObjectComputerUsePreview")] public partial class ResponseCustomComputerUsePreviewToolChoice {}
 [CodeGenType("ToolChoiceObjectFileSearch")] public partial class ResponseCustomFileSearchToolChoice {}
 [CodeGenType("ToolChoiceObjectType")] internal readonly partial struct InternalResponseCustomToolChoiceKind {}
 [CodeGenType("ToolChoiceObjectWebSearch")] public partial class ResponseCustomWebSearchToolChoice {}
+[CodeGenType("ToolChoiceObjectWebSearchPreview")] public partial class ResponseCustomWebSearchPreviewToolChoice {}
 [CodeGenType("UnknownAnnotation")] internal partial class InternalUnknownAnnotation {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}

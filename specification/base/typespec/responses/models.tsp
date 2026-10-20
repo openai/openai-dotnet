@@ -542,8 +542,10 @@ union ToolChoiceObjectType {
   string,
   file_search: "file_search",
   function: "function",
-  computer: "computer_use_preview",
-  web_search: "web_search_preview",
+  computer: "computer",
+  computer_use_preview: "computer_use_preview",
+  web_search: "web_search",
+  web_search_preview: "web_search_preview",
   image_generation: "image_generation",
   code_interpreter: "code_interpreter",
   mcp: "mcp",
@@ -563,8 +565,14 @@ model ToolChoiceObjectFileSearch extends ToolChoiceObject {
 model ToolChoiceObjectComputer extends ToolChoiceObject {
   type: ToolChoiceObjectType.computer;
 }
+model ToolChoiceObjectComputerUsePreview extends ToolChoiceObject {
+  type: ToolChoiceObjectType.computer_use_preview;
+}
 model ToolChoiceObjectWebSearch extends ToolChoiceObject {
   type: ToolChoiceObjectType.web_search;
+}
+model ToolChoiceObjectWebSearchPreview extends ToolChoiceObject {
+  type: ToolChoiceObjectType.web_search_preview;
 }
 model ToolChoiceObjectImageGen extends ToolChoiceObject {
   type: ToolChoiceObjectType.image_generation;
@@ -574,7 +582,7 @@ model ToolChoiceObjectCodeInterpreter extends ToolChoiceObject {
 }
 model ToolChoiceObjectMCP extends ToolChoiceObject {
   type: ToolChoiceObjectType.mcp;
-  name: string;
+  name?: string;
   server_label: string;
 }
 model ToolChoiceObjectCustom extends ToolChoiceObject {
@@ -593,7 +601,7 @@ model ToolChoiceObjectShell extends ToolChoiceObject {
 model ToolChoiceObjectAllowedTools extends ToolChoiceObject {
   type: ToolChoiceObjectType.allowed_tools;
   mode: ToolChoiceAllowedMode;
-  tools: ToolChoiceObject[];
+  tools: Tool[];
 }
 // Tool customization (apply_discriminator): Apply discriminated type base
 /** Use this option to force the model to call a specific function. */

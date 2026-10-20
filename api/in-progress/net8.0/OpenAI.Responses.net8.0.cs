@@ -775,22 +775,6 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct InternalToolChoiceAllowedMode : IEquatable<InternalToolChoiceAllowedMode> {
-        public InternalToolChoiceAllowedMode(string value);
-        public static InternalToolChoiceAllowedMode Auto { get; }
-        public static InternalToolChoiceAllowedMode Required { get; }
-        public readonly bool Equals(InternalToolChoiceAllowedMode other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(InternalToolChoiceAllowedMode left, InternalToolChoiceAllowedMode right);
-        public static implicit operator InternalToolChoiceAllowedMode(string value);
-        public static implicit operator InternalToolChoiceAllowedMode?(string value);
-        public static bool operator !=(InternalToolChoiceAllowedMode left, InternalToolChoiceAllowedMode right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
         public McpTool() : base(default);
         public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(default);
@@ -1001,9 +985,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
         public ResponseCustomAllowedToolsToolChoice();
-        public ResponseCustomAllowedToolsToolChoice(InternalToolChoiceAllowedMode mode, IEnumerable<ResponseCustomToolChoice> tools);
-        public InternalToolChoiceAllowedMode Mode { get; set; }
-        public IList<ResponseCustomToolChoice> Tools { get; }
+        public IList<ResponseTool> Tools { get; }
     }
     [Experimental("OPENAI001")]
     public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
@@ -1016,6 +998,10 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseCustomComputerToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerToolChoice>, IPersistableModel<ResponseCustomComputerToolChoice> {
         public ResponseCustomComputerToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomComputerUsePreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerUsePreviewToolChoice>, IPersistableModel<ResponseCustomComputerUsePreviewToolChoice> {
+        public ResponseCustomComputerUsePreviewToolChoice();
     }
     [Experimental("OPENAI001")]
     public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
@@ -1040,7 +1026,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
         public ResponseCustomMcpToolChoice();
-        public ResponseCustomMcpToolChoice(string toolName, string serverLabel);
+        public ResponseCustomMcpToolChoice(string serverLabel);
         public string ServerLabel { get; set; }
         public string ToolName { get; set; }
     }
@@ -1058,6 +1044,10 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchPreviewToolChoice>, IPersistableModel<ResponseCustomWebSearchPreviewToolChoice> {
+        public ResponseCustomWebSearchPreviewToolChoice();
     }
     [Experimental("OPENAI001")]
     public class ResponseCustomWebSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchToolChoice>, IPersistableModel<ResponseCustomWebSearchToolChoice> {

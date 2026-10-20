@@ -73,7 +73,7 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.name"u8))
+            if (Optional.IsDefined(ToolName) && !Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);

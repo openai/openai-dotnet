@@ -12,8 +12,10 @@ namespace OpenAI.Responses
         private readonly string _value;
         private const string FileSearchValue = "file_search";
         private const string FunctionValue = "function";
-        private const string ComputerValue = "computer_use_preview";
-        private const string WebSearchValue = "web_search_preview";
+        private const string ComputerValue = "computer";
+        private const string ComputerUsePreviewValue = "computer_use_preview";
+        private const string WebSearchValue = "web_search";
+        private const string WebSearchPreviewValue = "web_search_preview";
         private const string ImageGenerationValue = "image_generation";
         private const string CodeInterpreterValue = "code_interpreter";
         private const string McpValue = "mcp";
@@ -34,7 +36,11 @@ namespace OpenAI.Responses
 
         internal static InternalResponseCustomToolChoiceKind Computer { get; } = new InternalResponseCustomToolChoiceKind(ComputerValue);
 
+        internal static InternalResponseCustomToolChoiceKind ComputerUsePreview { get; } = new InternalResponseCustomToolChoiceKind(ComputerUsePreviewValue);
+
         internal static InternalResponseCustomToolChoiceKind WebSearch { get; } = new InternalResponseCustomToolChoiceKind(WebSearchValue);
+
+        internal static InternalResponseCustomToolChoiceKind WebSearchPreview { get; } = new InternalResponseCustomToolChoiceKind(WebSearchPreviewValue);
 
         internal static InternalResponseCustomToolChoiceKind ImageGeneration { get; } = new InternalResponseCustomToolChoiceKind(ImageGenerationValue);
 
