@@ -29,6 +29,7 @@ model ChatErrorResponse {
   on reasoning in a response.
   """)
 union ChatReasoningEffort {
+  string,
   none: "none",
   minimal: "minimal",
   low: "low",

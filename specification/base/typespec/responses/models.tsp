@@ -16,6 +16,7 @@ namespace OpenAI;
   on reasoning in a response.
   """)
 union ResponsesReasoningEffort {
+  string,
   none: "none",
   minimal: "minimal",
   low: "low",

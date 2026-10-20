@@ -29,6 +29,7 @@ model RunsErrorResponse {
   on reasoning in a response. Not all reasoning models support every value.
   """)
 union RunsReasoningEffort {
+  string,
   none: "none",
   minimal: "minimal",
   low: "low",

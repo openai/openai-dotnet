@@ -16,6 +16,7 @@ namespace OpenAI;
   on reasoning in a response. Not all reasoning models support every value.
   """)
 union EvalsReasoningEffort {
+  string,
   none: "none",
   minimal: "minimal",
   low: "low",
