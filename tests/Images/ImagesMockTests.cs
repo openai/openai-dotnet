@@ -468,6 +468,57 @@ public class ImagesMockTests : ClientTestBase
             Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [Test]
+    public async Task GenerateImageEditWithPathsUsesFileNamesOnly()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = GetClientOptionsCapturingRequestBody("""
+        {
+            "data": [
+                {
+                    "revised_prompt": "new prompt"
+                }
+            ]
+        }
+        """, body => requestBody = body);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        string originalImagePath = Path.Combine("Assets", "images_empty_room.png");
+        string maskImagePath = Path.Combine("Assets", "images_empty_room_with_mask.png");
+
+        await client.GenerateImageEditAsync(originalImagePath, "prompt", maskImagePath);
+
+        string imageContentDisposition = GetContentDisposition(requestBody, "image");
+        Assert.That(imageContentDisposition, Does.Contain("filename=images_empty_room.png"));
+        Assert.That(imageContentDisposition, Does.Not.Contain("Assets"));
+
+        string maskContentDisposition = GetContentDisposition(requestBody, "mask");
+        Assert.That(maskContentDisposition, Does.Contain("filename=images_empty_room_with_mask.png"));
+        Assert.That(maskContentDisposition, Does.Not.Contain("Assets"));
+    }
+
+    [Test]
+    public async Task GenerateImageVariationWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = GetClientOptionsCapturingRequestBody("""
+        {
+            "data": [
+                {
+                    "revised_prompt": "new prompt"
+                }
+            ]
+        }
+        """, body => requestBody = body);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        string imagePath = Path.Combine("Assets", "images_dog_and_cat.png");
+
+        await client.GenerateImageVariationAsync(imagePath);
+
+        string imageContentDisposition = GetContentDisposition(requestBody, "image");
+        Assert.That(imageContentDisposition, Does.Contain("filename=images_dog_and_cat.png"));
+        Assert.That(imageContentDisposition, Does.Not.Contain("Assets"));
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
@@ -479,5 +530,31 @@ public class ImagesMockTests : ClientTestBase
                 ExpectSyncPipeline = !IsAsync,
             }
         };
+    }
+
+    private OpenAIClientOptions GetClientOptionsCapturingRequestBody(string content, Action<string> onRequestBody)
+    {
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(content);
+
+        return new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                onRequestBody(BinaryData.FromBytes(stream.ToArray()).ToString());
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+    }
+
+    private static string GetContentDisposition(string requestBody, string partName)
+    {
+        return requestBody
+            .Split(["\r\n", "\n"], StringSplitOptions.None)
+            .Single(line => line.StartsWith($"Content-Disposition: form-data; name={partName};", StringComparison.Ordinal));
     }
 }

@@ -24,6 +24,8 @@
 - OpenAI.Assistants:
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
+- OpenAI.Audio and OpenAI.Images:
+  - Fixed the `AudioClient` and `ImageClient` overloads that take a file path sending the full local path, including its directories, as the multipart file name. They now send only the file name, matching `OpenAIFileClient.UploadFile`.
 
 - OpenAI.Chat and OpenAI.Responses:
   - Latest-mode operation exception logs now include final API errors and rate limiting.

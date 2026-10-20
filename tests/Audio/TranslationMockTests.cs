@@ -125,6 +125,23 @@ public partial class TranslationMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [Test]
+    public async Task TranslateAudioWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = GetClientOptionsCapturingRequestBody("""
+        {
+            "text": "The quick brown fox got lost."
+        }
+        """, body => requestBody = body);
+
+        await InvokeTranslateAudioSyncOrAsync(clientOptions, AudioSourceKind.UsingFilePath);
+
+        string fileContentDisposition = GetContentDisposition(requestBody, "file");
+        Assert.That(fileContentDisposition, Does.Contain("filename=audio_hello_world.mp3"));
+        Assert.That(fileContentDisposition, Does.Not.Contain("Assets"));
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content = null)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content ?? "{}");
@@ -157,5 +174,31 @@ public partial class TranslationMockTests : ClientTestBase
 
         Assert.Fail("Invalid source kind.");
         return null;
+    }
+
+    private OpenAIClientOptions GetClientOptionsCapturingRequestBody(string content, Action<string> onRequestBody)
+    {
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(content);
+
+        return new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                onRequestBody(BinaryData.FromBytes(stream.ToArray()).ToString());
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+    }
+
+    private static string GetContentDisposition(string requestBody, string partName)
+    {
+        return requestBody
+            .Split(["\r\n", "\n"], StringSplitOptions.None)
+            .Single(line => line.StartsWith($"Content-Disposition: form-data; name={partName};", StringComparison.Ordinal));
     }
 }
