@@ -10,11 +10,14 @@ namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : ChatMessage
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal AssistantChatMessage() : this(ChatMessageRole.Assistant, null, default, null, null, null, null, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal AssistantChatMessage(ChatMessageRole role, ChatMessageContent content, in JsonPatch patch, string refusal, string participantName, ChatOutputAudioReference outputAudioReference, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall) : base(role, content, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -26,6 +29,7 @@ namespace OpenAI.Chat
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Refusal { get; set; }
     }

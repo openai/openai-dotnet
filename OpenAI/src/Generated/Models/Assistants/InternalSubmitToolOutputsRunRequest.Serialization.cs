@@ -145,9 +145,9 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalSubmitToolOutputsRunRequest(toolOutputs, stream, additionalBinaryDataProperties);
+            return new InternalSubmitToolOutputsRunRequest(toolOutputs ?? new ChangeTrackingList<ToolOutput>(), stream, additionalBinaryDataProperties);
         }
     }
 }

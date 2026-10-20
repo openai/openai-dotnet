@@ -18,15 +18,21 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalConversationItemCollection(IEnumerable<ResponseItem> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -39,6 +45,7 @@ namespace OpenAI.Conversations
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -47,7 +54,9 @@ namespace OpenAI.Conversations
 
         internal string Object { get; set; } = "list";
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseItem> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FirstId { get; set; }
 

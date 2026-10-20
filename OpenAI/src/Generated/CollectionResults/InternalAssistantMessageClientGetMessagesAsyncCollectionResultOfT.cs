@@ -8,32 +8,33 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT : AsyncCollectionResult<ThreadMessage>
     {
         private readonly InternalAssistantMessageClient _client;
         private readonly string _threadId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly RequestOptions _options;
 
-        internal InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(InternalAssistantMessageClient client, string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        internal InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(InternalAssistantMessageClient client, string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
             _threadId = threadId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetMessagesRequest(_threadId, _limit, _order, _after, _before, _options);
+            PipelineMessage message = _client.CreateGetMessagesRequest(_threadId, _pageSizeLimit, _order, _afterId, _beforeId, _options);
             string nextToken = null;
             while (true)
             {
@@ -48,7 +49,7 @@ namespace OpenAI.Assistants
                 {
                     yield break;
                 }
-                message = _client.CreateGetMessagesRequest(_threadId, _limit, _order, nextToken, _before, _options);
+                message = _client.CreateGetMessagesRequest(_threadId, _pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
 
@@ -80,3 +81,4 @@ namespace OpenAI.Assistants
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

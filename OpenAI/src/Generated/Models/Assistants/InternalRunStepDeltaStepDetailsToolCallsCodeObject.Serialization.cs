@@ -94,6 +94,7 @@ namespace OpenAI.Assistants
             return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeObject(document.RootElement, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalRunStepDeltaStepDetailsToolCallsCodeObject DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeObject(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -132,9 +133,10 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeObject(kind, additionalBinaryDataProperties, index, id, codeInterpreter);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

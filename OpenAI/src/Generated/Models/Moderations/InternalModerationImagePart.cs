@@ -14,10 +14,12 @@ namespace OpenAI.Moderations
             ImageUrl = imageUrl;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalModerationImagePart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalModerationImagePartImageUrl imageUrl) : base(kind, additionalBinaryDataProperties)
         {
             ImageUrl = imageUrl;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalModerationImagePartImageUrl ImageUrl { get; }
     }

@@ -7,32 +7,34 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Responses
 {
     internal partial class ResponsesClientGetResponseInputItemsCollectionResultOfT : CollectionResult<ResponseItem>
     {
         private readonly ResponsesClient _client;
         private readonly string _responseId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly RequestOptions _options;
 
-        public ResponsesClientGetResponseInputItemsCollectionResultOfT(ResponsesClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponsesClientGetResponseInputItemsCollectionResultOfT(ResponsesClient client, string responseId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
             _responseId = responseId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _options = options;
         }
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, _after, _before, _options);
+            PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, _afterId, _beforeId, _options);
             string nextToken = null;
             while (true)
             {
@@ -47,10 +49,12 @@ namespace OpenAI.Responses
                 {
                     yield break;
                 }
-                message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, nextToken, _before, _options);
+                message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ResponseItemCollectionPage)page).LastId;
@@ -63,15 +67,21 @@ namespace OpenAI.Responses
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         protected override IEnumerable<ResponseItem> GetValuesFromPage(ClientResult page)
         {
             return ((ResponseItemCollectionPage)page).Data;
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private ClientResult GetNextResponse(PipelineMessage message)
         {
             return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

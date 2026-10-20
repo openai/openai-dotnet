@@ -11,6 +11,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Install the NuGet package](#install-the-nuget-package)
+  - [Experimental APIs](#experimental-apis)
 - [Using the client library](#using-the-client-library)
   - [Namespace organization](#namespace-organization)
   - [Using the async API](#using-the-async-api)
@@ -51,6 +52,10 @@ dotnet add package OpenAI
 ```
 
 Note that the code examples included below were written using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
+
+### Experimental APIs
+
+Some client APIs are marked with `[Experimental]` while their .NET design is still evolving. Using one produces a compiler error that you must explicitly suppress for its diagnostic ID. See [Preview APIs](https://learn.microsoft.com/dotnet/fundamentals/apicompat/preview-apis) for .NET guidance and [Feature lifecycle](./docs/FeatureLifecycle.md) for how OpenAI .NET APIs are introduced and promoted to stable.
 
 ## Using the client library
 
@@ -699,7 +704,7 @@ In this example, you have a JSON document with the monthly sales information of 
 
 To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
-Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, you must suppress the `OPENAI001` warning first.
+Important: `AssistantClient` is attributed as `[Experimental]`. See [Experimental APIs](#experimental-apis) for what this designation means and how to acknowledge its compiler error.
 
 ```C# Snippet:ReadMe_Assistants_CreateClients
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));

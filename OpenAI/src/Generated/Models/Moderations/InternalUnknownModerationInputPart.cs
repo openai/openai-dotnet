@@ -9,8 +9,10 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalUnknownModerationInputPart : ModerationInputPart
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalUnknownModerationInputPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

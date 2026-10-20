@@ -3,9 +3,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace OpenAI.Realtime;
 
+// CUSTOM:
+// - Suppressed the generated synchronous overloads (client is now async-only).
+[CodeGenSuppress("CreateRealtimeClientSecret", typeof(BinaryContent), typeof(RequestOptions))]
+[CodeGenSuppress("CreateRealtimeClientSecret", typeof(CreateClientSecretOptions), typeof(CancellationToken))]
 [CodeGenType("Realtime")]
 public partial class RealtimeClient
 {
@@ -110,10 +115,12 @@ public partial class RealtimeClient
             _ => uriBuilder.Scheme
         };
         uriBuilder.Query = "";
-        if (!uriBuilder.Path.EndsWith("/realtime"))
+        string path = uriBuilder.Path.TrimEnd('/');
+        if (!path.EndsWith("/realtime", StringComparison.Ordinal))
         {
-            uriBuilder.Path += uriBuilder.Path[uriBuilder.Path.Length - 1] == '/' ? "realtime" : "/realtime";
+            path += "/realtime";
         }
+        uriBuilder.Path = path;
 
         return uriBuilder.Uri;
     }

@@ -11,26 +11,30 @@ namespace OpenAI.VectorStores
 {
     internal partial class VectorStoreClientGetVectorStoresCollectionResult : CollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly VectorStoreClient _client;
-        private readonly int? _limit;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly RequestOptions _options;
 
-        public VectorStoreClientGetVectorStoresCollectionResult(VectorStoreClient client, int? limit, string order, string after, string before, RequestOptions options)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        public VectorStoreClientGetVectorStoresCollectionResult(VectorStoreClient client, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetVectorStoresRequest(_limit, _order, _after, _before, _options);
+            PipelineMessage message = _client.CreateGetVectorStoresRequest(_pageSizeLimit, _order, _afterId, _beforeId, _options);
             string nextToken = null;
             while (true)
             {
@@ -45,7 +49,7 @@ namespace OpenAI.VectorStores
                 {
                     yield break;
                 }
-                message = _client.CreateGetVectorStoresRequest(_limit, _order, nextToken, _before, _options);
+                message = _client.CreateGetVectorStoresRequest(_pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
 

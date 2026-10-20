@@ -17,16 +17,20 @@ namespace OpenAI.FineTuning
             Grader = grader;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalFineTuneReinforcementMethod(BinaryData grader, FineTuneReinforcementHyperparameters hyperparameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Grader = grader;
             Hyperparameters = hyperparameters;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public BinaryData Grader { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public FineTuneReinforcementHyperparameters Hyperparameters { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

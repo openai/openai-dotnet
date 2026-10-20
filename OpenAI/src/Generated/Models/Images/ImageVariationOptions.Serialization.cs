@@ -157,7 +157,7 @@ namespace OpenAI.Images
             {
                 if (prop.NameEquals("image"u8))
                 {
-                    image = BinaryData.FromString(prop.Value.GetRawText());
+                    image = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -206,7 +206,7 @@ namespace OpenAI.Images
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ImageVariationOptions(
                 image,

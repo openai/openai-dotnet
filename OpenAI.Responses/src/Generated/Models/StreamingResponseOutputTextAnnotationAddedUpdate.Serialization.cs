@@ -190,6 +190,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("annotation"u8))
             {
+                if (Annotation == null)
+                {
+                    return false;
+                }
                 return Annotation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("annotation"u8.Length)], out value);
             }
             return false;
@@ -203,6 +207,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("annotation"u8))
             {
+                if (Annotation == null)
+                {
+                    return false;
+                }
                 Annotation.Patch.Set([.. "$"u8, .. local.Slice("annotation"u8.Length)], value);
                 return true;
             }

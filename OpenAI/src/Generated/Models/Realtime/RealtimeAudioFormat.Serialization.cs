@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeAudioFormatGA))]
     public partial class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>
     {
         internal RealtimeAudioFormat()
@@ -105,10 +104,10 @@ namespace OpenAI.Realtime
                 {
                     case "audio/pcm":
                         return RealtimePcmAudioFormat.DeserializeRealtimePcmAudioFormat(element, data, options);
-                    case "audio/pcmu":
-                        return RealtimePcmuAudioFormat.DeserializeRealtimePcmuAudioFormat(element, data, options);
                     case "audio/pcma":
                         return RealtimePcmaAudioFormat.DeserializeRealtimePcmaAudioFormat(element, data, options);
+                    case "audio/pcmu":
+                        return RealtimePcmuAudioFormat.DeserializeRealtimePcmuAudioFormat(element, data, options);
                 }
             }
             return InternalUnknownRealtimeAudioFormatGA.DeserializeInternalUnknownRealtimeAudioFormatGA(element, data, options);

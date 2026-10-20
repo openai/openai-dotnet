@@ -18,6 +18,7 @@ namespace OpenAI.VectorStores
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateVectorStoreFileRequest(string fileId, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -26,6 +27,7 @@ namespace OpenAI.VectorStores
             Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FileId { get; }
 

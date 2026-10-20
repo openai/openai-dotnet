@@ -58,6 +58,7 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownAnnotation")] internal partial class InternalUnknownAnnotation {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}
+[CodeGenType("UnknownCustomToolFormat")] internal partial class InternalUnknownCustomToolFormat {}
 [CodeGenType("UnknownItemContent")] internal partial class InternalUnknownItemContent {}
 [CodeGenType("UnknownItemParam")] internal partial class InternalUnknownItemParam {}
 [CodeGenType("UnknownItemResource")] internal partial class InternalUnknownItemResource {}
@@ -109,3 +110,14 @@ namespace OpenAI.Responses;
 [CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity {}
 [CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
 [CodeGenType("GetResponseContentType")] internal readonly partial struct InternalGetResponseContentType {}
+
+// Multi-agent.
+[CodeGenType("BetaAgentTag")] internal partial class InternalBetaAgentTag { }
+
+// Programmatic tool calling.
+[CodeGenType("CallableToolAllowedCaller")] internal readonly partial struct InternalCallableToolAllowedCaller { }
+[CodeGenType("ToolCallCallerType")] internal readonly partial struct InternalToolCallCallerType { }
+[CodeGenType("ToolCallCaller")] internal partial class InternalToolCallCaller { }
+[CodeGenType("UnknownToolCallCaller")] internal partial class InternalUnknownToolCallCaller { }
+[CodeGenType("DirectToolCallCaller")] internal partial class InternalDirectToolCallCaller { }
+[CodeGenType("ProgramToolCallCaller")] internal partial class InternalProgramToolCallCaller { }

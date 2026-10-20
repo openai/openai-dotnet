@@ -12,6 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, bool? stream, int? partialImages, GeneratedImageSize? size, GeneratedImageModerationLevel? moderationLevel, GeneratedImageBackground? background, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Prompt = prompt;
@@ -30,6 +31,7 @@ namespace OpenAI.Images
             EndUserId = endUserId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public GeneratedImageQuality? Quality { get; set; }
 

@@ -11,15 +11,19 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls) : base(InternalRunStepDetailsType.ToolCalls)
         {
             InternalToolCalls = internalToolCalls.ToList();
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDetailsToolCallsObject(InternalRunStepDetailsType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             InternalToolCalls = internalToolCalls ?? new ChangeTrackingList<RunStepToolCall>();
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

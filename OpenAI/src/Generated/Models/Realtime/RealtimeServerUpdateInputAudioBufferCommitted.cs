@@ -10,14 +10,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateInputAudioBufferCommitted : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateInputAudioBufferCommitted(string eventId, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferCommitted)
+        internal RealtimeServerUpdateInputAudioBufferCommitted(string eventId, string itemId) : base(RealtimeServerUpdateKind.InputAudioBufferCommitted)
         {
             EventId = eventId;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferCommitted(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string previousItemId, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferCommitted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string previousItemId, string itemId) : base(kind, patch)
         {
             EventId = eventId;
             PreviousItemId = previousItemId;
@@ -25,10 +25,10 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string PreviousItemId { get; }
+        public string PreviousItemId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
 }

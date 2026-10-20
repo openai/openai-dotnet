@@ -13,7 +13,7 @@ namespace OpenAI.Realtime;
 public partial class RealtimeMcpTool
 {
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
-    public RealtimeMcpTool(string serverLabel, Uri serverUri) : base(InternalRealtimeToolBaseTypeGA.Mcp)
+    public RealtimeMcpTool(string serverLabel, Uri serverUri) : base(RealtimeToolKind.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
         Argument.AssertNotNull(serverUri, nameof(serverUri));
@@ -24,7 +24,7 @@ public partial class RealtimeMcpTool
     }
 
     // CUSTOM: Added a constructor that takes the connector ID in addition to the server label.
-    public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId) : base(InternalRealtimeToolBaseTypeGA.Mcp)
+    public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId) : base(RealtimeToolKind.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 

@@ -52,7 +52,33 @@ internal static partial class DataEncodingHelpers
     {
         ReadOnlyMemory<byte> memory = bytes.ToMemory();
 #if NET8_0_OR_GREATER
-        string base64Bytes = Convert.ToBase64String(memory.Span);
+        const string dataPrefix = "data:";
+        const string base64Prefix = ";base64,";
+        int base64Length = checked(((memory.Length + 2) / 3) * 4);
+        int prefixLength = checked(dataPrefix.Length + bytesMediaType.Length + base64Prefix.Length);
+
+        return string.Create(
+            checked(prefixLength + base64Length),
+            (memory, bytesMediaType, base64Length),
+            static (destination, state) =>
+            {
+                int offset = 0;
+                dataPrefix.AsSpan().CopyTo(destination);
+                offset += dataPrefix.Length;
+                state.bytesMediaType.AsSpan().CopyTo(destination[offset..]);
+                offset += state.bytesMediaType.Length;
+                base64Prefix.AsSpan().CopyTo(destination[offset..]);
+                offset += base64Prefix.Length;
+
+                if (!Convert.TryToBase64Chars(
+                    state.memory.Span,
+                    destination[offset..],
+                    out int charsWritten)
+                    || charsWritten != state.base64Length)
+                {
+                    throw new InvalidOperationException("Base64 encoding did not produce the expected output.");
+                }
+            });
 #else
         string base64Bytes;
         if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment)
@@ -67,7 +93,7 @@ internal static partial class DataEncodingHelpers
         {
             base64Bytes = Convert.ToBase64String(memory.ToArray());
         }
-#endif
         return $"data:{bytesMediaType};base64,{base64Bytes}";
+#endif
     }
 }

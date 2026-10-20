@@ -86,9 +86,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("queries"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "queries"u8);
                 for (int i = 0; i < Queries.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
                     {
                         continue;
                     }
@@ -114,9 +115,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("results"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "results"u8);
                 for (int i = 0; i < Results.Count; i++)
                 {
-                    if (Results[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) || Results[i] != null && Results[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -195,7 +197,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
+            return new InternalFileSearchToolCallItemParam(kind, patch, queries ?? new ChangeTrackingList<string>(), results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -208,11 +210,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Results == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveResultsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -231,7 +241,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Results == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -254,20 +272,23 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<FileSearchCallResult> ActiveResults()
         {
             if (!Optional.IsCollectionDefined(Results))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "results"u8);
             for (int i = 0; i < Results.Count; i++)
             {
-                if (!Results[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]"))) && (Results[i] == null || !Results[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Results[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

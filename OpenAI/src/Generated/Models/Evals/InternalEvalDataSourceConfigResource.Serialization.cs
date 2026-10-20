@@ -115,10 +115,10 @@ namespace OpenAI.Evals
                 {
                     case "custom":
                         return InternalEvalCustomDataSourceConfigResource.DeserializeInternalEvalCustomDataSourceConfigResource(element, options);
-                    case "stored_completions":
-                        return InternalEvalStoredCompletionsDataSourceConfigResource.DeserializeInternalEvalStoredCompletionsDataSourceConfigResource(element, options);
                     case "logs":
                         return InternalEvalLogsDataSourceConfigResource.DeserializeInternalEvalLogsDataSourceConfigResource(element, options);
+                    case "stored_completions":
+                        return InternalEvalStoredCompletionsDataSourceConfigResource.DeserializeInternalEvalStoredCompletionsDataSourceConfigResource(element, options);
                 }
             }
             return InternalUnknownEvalDataSourceConfigResource.DeserializeInternalUnknownEvalDataSourceConfigResource(element, options);

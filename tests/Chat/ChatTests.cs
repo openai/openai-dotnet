@@ -642,6 +642,7 @@ public class ChatTests : OpenAIRecordedTestBase
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(false);
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 
@@ -650,11 +651,11 @@ public class ChatTests : OpenAIRecordedTestBase
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
 
         Assert.That(activityListener.Activities.Count, Is.EqualTo(1));
-        TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value);
+        TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value, useLatestSemconv: false);
 
         List<TestMeasurement> durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.That(durations.Count, Is.EqualTo(1));
-        ValidateChatMetricTags(durations.Single(), result.Value);
+        ValidateChatMetricTags(durations.Single(), result.Value, useLatestSemconv: false);
 
         List<TestMeasurement> usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
         Assert.That(usages.Count, Is.EqualTo(2));
@@ -691,6 +692,31 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Usage.OutputTokenCount, Is.LessThanOrEqualTo(options.MaxOutputTokenCount));
         Assert.That(completion.Usage.OutputTokenDetails?.ReasoningTokenCount, Is.GreaterThan(0));
         Assert.That(completion.Usage.OutputTokenDetails?.ReasoningTokenCount, Is.LessThan(completion.Usage.OutputTokenCount));
+    }
+
+    [RecordedTest]
+    [TestCase("xhigh")]
+    public async Task ReasoningEffortLevelsWork(string expectedValue)
+    {
+        ChatReasoningEffortLevel effortLevel = expectedValue switch
+        {
+            "xhigh" => ChatReasoningEffortLevel.ExtraHigh,
+            _ => throw new ArgumentOutOfRangeException(nameof(expectedValue)),
+        };
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-5.6");
+        ChatCompletionOptions options = new()
+        {
+            MaxOutputTokenCount = 256,
+            ReasoningEffortLevel = effortLevel,
+        };
+
+        Assert.That(ModelReaderWriter.Write(options).ToString(), Does.Contain($@"""reasoning_effort"":""{expectedValue}"""));
+
+        ChatCompletion completion = await client.CompleteChatAsync([new UserChatMessage("Reply with OK.")], options);
+
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.Usage, Is.Not.Null);
+        Assert.That(completion.Usage.OutputTokenCount, Is.GreaterThan(0));
     }
 
     [RecordedTest]
@@ -771,7 +797,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-search-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-5-search-api");
 
         ChatCompletionOptions options = new()
         {
@@ -869,22 +895,26 @@ public class ChatTests : OpenAIRecordedTestBase
         ChatClient client = CreateProxyFromClient(TestEnvironment.GetTestClient<ChatClient>());
 
         // Test with null completion ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-        {
-            await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+        Assert.That(
+            async () =>
             {
-                // Should not reach here
-            }
-        });
+                await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+                {
+                    // Should not reach here
+                }
+            },
+            Throws.TypeOf<ArgumentNullException>());
 
         // Test with empty completion ID
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-        {
-            await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+        Assert.That(
+            async () =>
             {
-                // Should not reach here
-            }
-        });
+                await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+                {
+                    // Should not reach here
+                }
+            },
+            Throws.TypeOf<ArgumentException>());
     }
 
     [RecordedTest]

@@ -171,18 +171,34 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
+                if (AudioFormat == null)
+                {
+                    return false;
+                }
                 return AudioFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             if (local.StartsWith("transcription"u8))
             {
+                if (AudioTranscriptionOptions == null)
+                {
+                    return false;
+                }
                 return AudioTranscriptionOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("transcription"u8.Length)], out value);
             }
             if (local.StartsWith("noise_reduction"u8))
             {
+                if (NoiseReduction == null)
+                {
+                    return false;
+                }
                 return NoiseReduction.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("noise_reduction"u8.Length)], out value);
             }
             if (local.StartsWith("turn_detection"u8))
             {
+                if (TurnDetection == null)
+                {
+                    return false;
+                }
                 return TurnDetection.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("turn_detection"u8.Length)], out value);
             }
             return false;
@@ -196,21 +212,37 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
+                if (AudioFormat == null)
+                {
+                    return false;
+                }
                 AudioFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("transcription"u8))
             {
+                if (AudioTranscriptionOptions == null)
+                {
+                    return false;
+                }
                 AudioTranscriptionOptions.Patch.Set([.. "$"u8, .. local.Slice("transcription"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("noise_reduction"u8))
             {
+                if (NoiseReduction == null)
+                {
+                    return false;
+                }
                 NoiseReduction.Patch.Set([.. "$"u8, .. local.Slice("noise_reduction"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("turn_detection"u8))
             {
+                if (TurnDetection == null)
+                {
+                    return false;
+                }
                 TurnDetection.Patch.Set([.. "$"u8, .. local.Slice("turn_detection"u8.Length)], value);
                 return true;
             }

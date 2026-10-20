@@ -12,27 +12,28 @@ namespace OpenAI.Chat
     internal partial class ChatClientGetChatCompletionsCollectionResult : CollectionResult
     {
         private readonly ChatClient _client;
-        private readonly string _after;
-        private readonly int? _limit;
+        private readonly string _afterId;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly IDictionary<string, string> _metadata;
         private readonly string _model;
         private readonly RequestOptions _options;
 
-        public ChatClientGetChatCompletionsCollectionResult(ChatClient client, string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        public ChatClientGetChatCompletionsCollectionResult(ChatClient client, string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             _client = client;
-            _after = after;
-            _limit = limit;
+            _afterId = afterId;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
             _metadata = metadata;
             _model = model;
             _options = options;
         }
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetChatCompletionsRequest(_after, _limit, _order, _metadata, _model, _options);
+            PipelineMessage message = _client.CreateGetChatCompletionsRequest(_afterId, _pageSizeLimit, _order, _metadata, _model, _options);
             string nextToken = null;
             while (true)
             {
@@ -47,10 +48,12 @@ namespace OpenAI.Chat
                 {
                     yield break;
                 }
-                message = _client.CreateGetChatCompletionsRequest(nextToken, _limit, _order, _metadata, _model, _options);
+                message = _client.CreateGetChatCompletionsRequest(nextToken, _pageSizeLimit, _order, _metadata, _model, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalChatCompletionList)page).LastId;
@@ -63,10 +66,13 @@ namespace OpenAI.Chat
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private ClientResult GetNextResponse(PipelineMessage message)
         {
             return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }

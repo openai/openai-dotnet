@@ -8,34 +8,35 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.VectorStores
 {
     internal partial class VectorStoreClientGetVectorStoreFilesAsyncCollectionResultOfT : AsyncCollectionResult<VectorStoreFile>
     {
         private readonly VectorStoreClient _client;
         private readonly string _vectorStoreId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly string _filter;
         private readonly RequestOptions _options;
 
-        public VectorStoreClientGetVectorStoreFilesAsyncCollectionResultOfT(VectorStoreClient client, string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        public VectorStoreClientGetVectorStoreFilesAsyncCollectionResultOfT(VectorStoreClient client, string vectorStoreId, int? pageSizeLimit, string order, string afterId, string beforeId, string filter, RequestOptions options)
         {
             _client = client;
             _vectorStoreId = vectorStoreId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _filter = filter;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetVectorStoreFilesRequest(_vectorStoreId, _limit, _order, _after, _before, _filter, _options);
+            PipelineMessage message = _client.CreateGetVectorStoreFilesRequest(_vectorStoreId, _pageSizeLimit, _order, _afterId, _beforeId, _filter, _options);
             string nextToken = null;
             while (true)
             {
@@ -50,7 +51,7 @@ namespace OpenAI.VectorStores
                 {
                     yield break;
                 }
-                message = _client.CreateGetVectorStoreFilesRequest(_vectorStoreId, _limit, _order, nextToken, _before, _filter, _options);
+                message = _client.CreateGetVectorStoreFilesRequest(_vectorStoreId, _pageSizeLimit, _order, nextToken, _beforeId, _filter, _options);
             }
         }
 
@@ -82,3 +83,4 @@ namespace OpenAI.VectorStores
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

@@ -12,10 +12,11 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeToolBaseGA : RealtimeTool, IJsonModel<RealtimeTool>
     {
-        internal InternalUnknownRealtimeToolBaseGA() : this(default, default)
+        public InternalUnknownRealtimeToolBaseGA() : this(default, default)
         {
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Realtime
                     throw new FormatException($"The model {nameof(RealtimeTool)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Realtime
 
         BinaryData IPersistableModel<RealtimeTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeTool IPersistableModel<RealtimeTool>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         string IPersistableModel<RealtimeTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeTool IJsonModel<RealtimeTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Realtime
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRealtimeTool(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownRealtimeToolBaseGA DeserializeInternalUnknownRealtimeToolBaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -97,7 +105,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeToolBaseTypeGA kind = default;
+            RealtimeToolKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -105,7 +113,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeToolBaseTypeGA(prop.Value.GetString());
+                    kind = new RealtimeToolKind(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

@@ -132,6 +132,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("json_schema"u8))
             {
+                if (JsonSchema == null)
+                {
+                    return false;
+                }
                 return JsonSchema.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("json_schema"u8.Length)], out value);
             }
             return false;
@@ -145,6 +149,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("json_schema"u8))
             {
+                if (JsonSchema == null)
+                {
+                    return false;
+                }
                 JsonSchema.Patch.Set([.. "$"u8, .. local.Slice("json_schema"u8.Length)], value);
                 return true;
             }

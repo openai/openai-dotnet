@@ -69,6 +69,11 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(DiarizedTranscriptionSegment)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
@@ -135,6 +140,7 @@ namespace OpenAI.Audio
             {
                 return default;
             }
+            string kind = default;
             string id = default;
             TimeSpan startTime = default;
             TimeSpan endTime = default;
@@ -143,6 +149,11 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
@@ -169,9 +180,10 @@ namespace OpenAI.Audio
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new DiarizedTranscriptionSegment(
+                kind,
                 id,
                 startTime,
                 endTime,

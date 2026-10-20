@@ -15,13 +15,17 @@ namespace OpenAI.FineTuning
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalFineTuningJobRequestMethodSupervised(HyperparametersForSupervised hyperparameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Hyperparameters = hyperparameters;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public HyperparametersForSupervised Hyperparameters { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

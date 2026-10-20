@@ -1,7 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
 
 import "../chat";
 import "../graders/models.tsp";
@@ -15,16 +11,18 @@ namespace OpenAI;
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
-  reasoning effort can result in faster responses and fewer tokens used
-  on reasoning in a response.
+  Reducing reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response. Not all reasoning models support every value.
   """)
 union EvalsReasoningEffort {
-  "none",
-  "minimal",
-  "low",
-  "medium",
-  "high",
+  string,
+  none: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max",
 }
 
 // Tool generated type. Extracts from EvalRunFileContentDataContentSource.content

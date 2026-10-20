@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownCodeInterpreterToolOutput))]
     public partial class CodeInterpreterCallOutput : IJsonModel<CodeInterpreterCallOutput>
     {
         internal CodeInterpreterCallOutput()
@@ -103,10 +102,10 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "logs":
-                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, data, options);
                     case "image":
                         return CodeInterpreterCallImageOutput.DeserializeCodeInterpreterCallImageOutput(element, data, options);
+                    case "logs":
+                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, data, options);
                 }
             }
             return InternalUnknownCodeInterpreterToolOutput.DeserializeInternalUnknownCodeInterpreterToolOutput(element, data, options);

@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class ResponseMessageAnnotationKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ResponseMessageAnnotationKind value) => value switch
         {
             ResponseMessageAnnotationKind.FileCitation => "file_citation",
@@ -16,7 +17,9 @@ namespace OpenAI.Responses
             ResponseMessageAnnotationKind.ContainerFileCitation => "container_file_citation",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseMessageAnnotationKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ResponseMessageAnnotationKind ToResponseMessageAnnotationKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "file_citation"))
@@ -37,5 +40,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseMessageAnnotationKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

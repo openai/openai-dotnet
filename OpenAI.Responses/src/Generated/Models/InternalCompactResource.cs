@@ -13,34 +13,42 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCompactResource(string id, IEnumerable<ResponseItem> output, DateTimeOffset createdAt, ResponseTokenUsage usage)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalCompactResource(string id, IEnumerable<ResponseItem> output, DateTimeOffset createdOn, ResponseTokenUsage usage)
         {
             Id = id;
             Output = output.ToList();
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Usage = usage;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalCompactResource(string id, string @object, IList<ResponseItem> output, DateTimeOffset createdAt, ResponseTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalCompactResource(string id, string @object, IList<ResponseItem> output, DateTimeOffset createdOn, ResponseTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Output = output ?? new ChangeTrackingList<ResponseItem>();
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Id { get; set; }
 
         internal string Object { get; set; } = "response.compaction";
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseItem> Output { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseTokenUsage Usage { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

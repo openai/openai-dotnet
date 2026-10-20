@@ -13,24 +13,25 @@ namespace OpenAI.Chat
     {
         private readonly ChatClient _client;
         private readonly string _completionId;
-        private readonly string _after;
-        private readonly int? _limit;
+        private readonly string _afterId;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly RequestOptions _options;
 
-        public ChatClientGetChatCompletionMessagesCollectionResult(ChatClient client, string completionId, string after, int? limit, string order, RequestOptions options)
+        public ChatClientGetChatCompletionMessagesCollectionResult(ChatClient client, string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options)
         {
             _client = client;
             _completionId = completionId;
-            _after = after;
-            _limit = limit;
+            _afterId = afterId;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
             _options = options;
         }
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetChatCompletionMessagesRequest(_completionId, _after, _limit, _order, _options);
+            PipelineMessage message = _client.CreateGetChatCompletionMessagesRequest(_completionId, _afterId, _pageSizeLimit, _order, _options);
             string nextToken = null;
             while (true)
             {
@@ -45,10 +46,12 @@ namespace OpenAI.Chat
                 {
                     yield break;
                 }
-                message = _client.CreateGetChatCompletionMessagesRequest(_completionId, nextToken, _limit, _order, _options);
+                message = _client.CreateGetChatCompletionMessagesRequest(_completionId, nextToken, _pageSizeLimit, _order, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalChatCompletionMessageList)page).LastId;
@@ -61,10 +64,13 @@ namespace OpenAI.Chat
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private ClientResult GetNextResponse(PipelineMessage message)
         {
             return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }

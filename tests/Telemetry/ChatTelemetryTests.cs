@@ -51,10 +51,12 @@ public class ChatTelemetryTests
         Assert.That(Activity.Current, Is.Null);
     }
 
-    [Test]
-    public void MetricsOnTracingOff()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void MetricsOnTracingOff(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
 
@@ -76,14 +78,16 @@ public class ChatTelemetryTests
         scope.RecordChatCompletion(response);
         scope.Dispose();
 
-        ValidateDuration(meterListener, response, elapsedMin.Elapsed, elapsedMax.Elapsed);
-        ValidateUsage(meterListener, response, PromptTokens, CompletionTokens);
+        ValidateDuration(meterListener, response, elapsedMin.Elapsed, elapsedMax.Elapsed, useLatestSemconv);
+        ValidateUsage(meterListener, response, PromptTokens, CompletionTokens, useLatestSemconv);
     }
 
-    [Test]
-    public void MetricsOnTracingOffException()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void MetricsOnTracingOffException(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
@@ -93,14 +97,16 @@ public class ChatTelemetryTests
             scope.RecordException(new TaskCanceledException());
         }
 
-        ValidateDuration(meterListener, null, TimeSpan.MinValue, TimeSpan.MaxValue);
+        ValidateDuration(meterListener, null, TimeSpan.MinValue, TimeSpan.MaxValue, useLatestSemconv);
         Assert.That(meterListener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
     }
 
-    [Test]
-    public void TracingOnMetricsOff()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void TracingOnMetricsOff(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
@@ -108,6 +114,7 @@ public class ChatTelemetryTests
         var chatCompletion = CreateChatCompletion();
 
         Activity activity = null;
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             activity = Activity.Current;
@@ -123,13 +130,14 @@ public class ChatTelemetryTests
         Assert.That(Activity.Current, Is.Null);
         Assert.That(listener.Activities.Count, Is.EqualTo(1));
 
-        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
+        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port, useLatestSemconv: useLatestSemconv);
     }
 
     [Test]
     public void ChatTracingAllAttributes()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(false);
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
         var options = new ChatCompletionOptions()
@@ -149,20 +157,24 @@ public class ChatTelemetryTests
             Assert.That(Activity.Current.GetTagItem("gen_ai.request.max_tokens"), Is.EqualTo(options.MaxOutputTokenCount.Value));
             scope.RecordChatCompletion(chatCompletion);
         }
+
         Assert.That(Activity.Current, Is.Null);
 
-        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
+        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port, useLatestSemconv: false);
     }
 
-    [Test]
-    public void ChatTracingException()
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ChatTracingException(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
         var error = new SocketException(42, "test error");
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordException(error);
@@ -170,7 +182,18 @@ public class ChatTelemetryTests
 
         Assert.That(Activity.Current, Is.Null);
 
-        ValidateChatActivity(listener.Activities.Single(), error, RequestModel, Host, Port);
+        ValidateChatActivity(listener.Activities.Single(), error, RequestModel, Host, Port, useLatestSemconv: useLatestSemconv);
+    }
+
+    [TestCase("gen_ai_latest_experimental", true)]
+    [TestCase("http/dup, gen_ai_latest_experimental", true)]
+    [TestCase("http/dup", false)]
+    [TestCase("", false)]
+    public void SemanticConventionStabilityOptInParsing(string value, bool expected)
+    {
+        using var _ = TestSemanticConventionOptIn.SetSemanticConventionOptIn(value);
+
+        Assert.That(OpenTelemetrySemanticConventionStabilityOptIn.IsLatestGenAiSemanticConventionEnabled, Is.EqualTo(expected));
     }
 
     [Test]
@@ -188,6 +211,7 @@ public class ChatTelemetryTests
         var tasks = new Task[5];
         int numberOfSuccessfulResponses = 3;
         int totalPromptTokens = 0, totalCompletionTokens = 0;
+
         for (int i = 0; i < tasks.Length; i++)
         {
             int t = i;
@@ -196,6 +220,7 @@ public class ChatTelemetryTests
             {
                 using var scope = source.StartChatScope(options);
                 await Task.Delay(10);
+
                 if (t < numberOfSuccessfulResponses)
                 {
                     var promptTokens = Random.Shared.Next(100);
@@ -234,17 +259,44 @@ public class ChatTelemetryTests
             .Sum(u => (long)u.value), Is.EqualTo(totalCompletionTokens));
     }
 
+    [Test]
+    public void ModelFactoryTotalsRemainAvailableWithoutInventingOptionalDetails()
+    {
+        var usage = OpenTelemetryTokenUsage.FromChat(OpenAIChatModelFactory.ChatTokenUsage(
+            inputTokenCount: 12, outputTokenCount: 34,
+            inputTokenDetails: OpenAIChatModelFactory.ChatInputTokenUsageDetails(),
+            outputTokenDetails: OpenAIChatModelFactory.ChatOutputTokenUsageDetails()));
+        Assert.That(usage.InputTokens, Is.EqualTo(12L));
+        Assert.That(usage.OutputTokens, Is.EqualTo(34L));
+        Assert.That(usage.InputAudioTokens, Is.Null);
+        Assert.That(usage.OutputAudioTokens, Is.Null);
+        Assert.That(usage.CacheReadInputTokens, Is.Null);
+        Assert.That(usage.CacheWriteInputTokens, Is.Null);
+        Assert.That(usage.ReasoningOutputTokens, Is.Null);
+    }
+
+    [Test]
+    public void ModelFactoryDefaultCountsDoNotInventAvailability()
+    {
+        var usage = OpenTelemetryTokenUsage.FromChat(OpenAIChatModelFactory.ChatTokenUsage());
+        Assert.That(usage.InputTokens, Is.Null);
+        Assert.That(usage.OutputTokens, Is.Null);
+    }
+
     private void SetMessages(ChatCompletionOptions options, params ChatMessage[] messages)
     {
         var messagesProperty = typeof(ChatCompletionOptions).GetProperty("Messages", BindingFlags.Instance | BindingFlags.NonPublic);
         messagesProperty.SetValue(options, messages.ToList());
     }
 
-    private void ValidateDuration(TestMeterListener listener, ChatCompletion response, TimeSpan durationMin, TimeSpan durationMax)
+    private void ValidateDuration(TestMeterListener listener, ChatCompletion response, TimeSpan durationMin, TimeSpan durationMax, bool useLatestSemconv = false)
     {
         var duration = listener.GetInstrument("gen_ai.client.operation.duration");
         Assert.That(duration, Is.Not.Null);
         Assert.That(duration, Is.InstanceOf<Histogram<double>>());
+        Assert.That(
+            ((Histogram<double>)duration).Advice.HistogramBucketBoundaries,
+            Is.EqualTo(new double[] { 0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48, 40.96, 81.92 }));
 
         var measurements = listener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.That(measurements, Is.Not.Null);
@@ -255,14 +307,37 @@ public class ChatTelemetryTests
         Assert.That((double)measurement.value, Is.GreaterThanOrEqualTo(durationMin.TotalSeconds));
         Assert.That((double)measurement.value, Is.LessThanOrEqualTo(durationMax.TotalSeconds));
 
-        ValidateChatMetricTags(measurement, response, RequestModel, Host, Port);
+        ValidateChatMetricTags(measurement, response, RequestModel, Host, Port, useLatestSemconv: useLatestSemconv);
     }
 
-    private void ValidateUsage(TestMeterListener listener, ChatCompletion response, int inputTokens, int outputTokens)
+    private void ValidateUsage(TestMeterListener listener, ChatCompletion response, int inputTokens, int outputTokens, bool useLatestSemconv = false)
     {
+        if (useLatestSemconv)
+        {
+            Assert.That(listener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
+
+            foreach (var direction in new[] { "input", "output" })
+            {
+                var expected = direction == "input" ? inputTokens : outputTokens;
+                var counter = listener.GetMeasurements($"gen_ai.client.inference.usage.{direction}_tokens").Single();
+                var histogram = listener.GetMeasurements($"gen_ai.client.inference.operation.{direction}_tokens").Single();
+                Assert.That(counter.value, Is.EqualTo(expected));
+                Assert.That(counter.tags["gen_ai.token.modality"], Is.EqualTo("unknown"));
+                Assert.That(histogram.value, Is.EqualTo(expected));
+                Assert.That(histogram.tags.ContainsKey("gen_ai.token.modality"), Is.False);
+                ValidateChatMetricTags(counter, response, RequestModel, Host, Port, useLatestSemconv: true);
+                ValidateChatMetricTags(histogram, response, RequestModel, Host, Port, useLatestSemconv: true);
+            }
+
+            return;
+        }
+
         var usage = listener.GetInstrument("gen_ai.client.token.usage");
         Assert.That(usage, Is.Not.Null);
         Assert.That(usage, Is.InstanceOf<Histogram<long>>());
+        Assert.That(
+            ((Histogram<long>)usage).Advice.HistogramBucketBoundaries,
+            Is.EqualTo(new long[] { 1, 4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864 }));
 
         var measurements = listener.GetMeasurements("gen_ai.client.token.usage");
         Assert.That(measurements, Is.Not.Null);
@@ -271,7 +346,7 @@ public class ChatTelemetryTests
         foreach (var measurement in measurements)
         {
             Assert.That(measurement.value, Is.InstanceOf<long>());
-            ValidateChatMetricTags(measurement, response, RequestModel, Host, Port);
+            ValidateChatMetricTags(measurement, response, RequestModel, Host, Port, useLatestSemconv: useLatestSemconv);
         }
 
         Assert.That(measurements[0].tags.TryGetValue("gen_ai.token.type", out var type));

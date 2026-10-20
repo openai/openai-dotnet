@@ -14,11 +14,11 @@ public partial class RealtimeServerUpdateResponseFunctionCallArgumentsDone
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Name")]
-    public string FunctionName { get; }
+    public string FunctionName { get; set; }
 
     // CUSTOM:
     // - Renamed.
     // - Changed type.
     [CodeGenMember("Arguments")]
-    public BinaryData FunctionArguments { get; }
+    public BinaryData FunctionArguments { get; set; }
 }

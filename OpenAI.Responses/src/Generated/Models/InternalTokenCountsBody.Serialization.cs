@@ -212,7 +212,7 @@ namespace OpenAI.Responses
                         input = null;
                         continue;
                     }
-                    input = BinaryData.FromString(prop.Value.GetRawText());
+                    input = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("previous_response_id"u8))
@@ -285,7 +285,7 @@ namespace OpenAI.Responses
                         conversation = null;
                         continue;
                     }
-                    conversation = BinaryData.FromString(prop.Value.GetRawText());
+                    conversation = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("tool_choice"u8))
@@ -295,7 +295,7 @@ namespace OpenAI.Responses
                         toolChoice = null;
                         continue;
                     }
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
+                    toolChoice = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
@@ -309,7 +309,7 @@ namespace OpenAI.Responses
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalTokenCountsBody(
                 model,

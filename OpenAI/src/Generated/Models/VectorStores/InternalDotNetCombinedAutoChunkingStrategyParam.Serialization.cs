@@ -12,6 +12,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalDotNetCombinedAutoChunkingStrategyParam : FileChunkingStrategy, IJsonModel<InternalDotNetCombinedAutoChunkingStrategyParam>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCombinedAutoChunkingStrategyParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.VectorStores
                     throw new FormatException($"The model {nameof(InternalDotNetCombinedAutoChunkingStrategyParam)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -64,6 +66,7 @@ namespace OpenAI.VectorStores
 
         InternalDotNetCombinedAutoChunkingStrategyParam IJsonModel<InternalDotNetCombinedAutoChunkingStrategyParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalDotNetCombinedAutoChunkingStrategyParam)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override FileChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCombinedAutoChunkingStrategyParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -74,6 +77,7 @@ namespace OpenAI.VectorStores
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalDotNetCombinedAutoChunkingStrategyParam(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalDotNetCombinedAutoChunkingStrategyParam DeserializeInternalDotNetCombinedAutoChunkingStrategyParam(JsonElement element, ModelReaderWriterOptions options)
         {
@@ -91,7 +95,7 @@ namespace OpenAI.VectorStores
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalDotNetCombinedAutoChunkingStrategyParam(kind, additionalBinaryDataProperties);
         }

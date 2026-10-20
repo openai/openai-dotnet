@@ -18,6 +18,8 @@ namespace OpenAI.Responses
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
+        private const string ExtraHighValue = "xhigh";
+        private const string MaxValue = "max";
 
         public ResponseReasoningEffortLevel(string value)
         {
@@ -35,6 +37,10 @@ namespace OpenAI.Responses
         public static ResponseReasoningEffortLevel Medium { get; } = new ResponseReasoningEffortLevel(MediumValue);
 
         public static ResponseReasoningEffortLevel High { get; } = new ResponseReasoningEffortLevel(HighValue);
+
+        public static ResponseReasoningEffortLevel ExtraHigh { get; } = new ResponseReasoningEffortLevel(ExtraHighValue);
+
+        public static ResponseReasoningEffortLevel Max { get; } = new ResponseReasoningEffortLevel(MaxValue);
 
         public static bool operator ==(ResponseReasoningEffortLevel left, ResponseReasoningEffortLevel right) => left.Equals(right);
 

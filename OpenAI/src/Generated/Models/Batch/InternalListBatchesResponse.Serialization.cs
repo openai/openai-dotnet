@@ -181,10 +181,10 @@ namespace OpenAI.Batch
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalListBatchesResponse(
-                data,
+                data ?? new ChangeTrackingList<BatchJob>(),
                 firstId,
                 lastId,
                 hasMore,

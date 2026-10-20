@@ -183,7 +183,7 @@ namespace OpenAI.Evals
                         }
                         else
                         {
-                            array.Add(BinaryData.FromString(item.GetRawText()));
+                            array.Add(item.GetUtf8Bytes());
                         }
                     }
                     input = array;
@@ -224,16 +224,16 @@ namespace OpenAI.Evals
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalGraderLabelModelParams(
                 kind,
                 additionalBinaryDataProperties,
                 name,
                 model,
-                input,
-                labels,
-                passingLabels);
+                input ?? new ChangeTrackingList<BinaryData>(),
+                labels ?? new ChangeTrackingList<string>(),
+                passingLabels ?? new ChangeTrackingList<string>());
         }
     }
 }

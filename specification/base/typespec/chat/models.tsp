@@ -1,7 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
 
 import "@azure-tools/typespec-client-generator-core";
 
@@ -28,16 +24,18 @@ model ChatErrorResponse {
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
-  reasoning effort can result in faster responses and fewer tokens used
-  on reasoning in a response.
+  Reducing reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response. Not all reasoning models support every value.
   """)
 union ChatReasoningEffort {
-  "none",
-  "minimal",
-  "low",
-  "medium",
-  "high",
+  string,
+  none: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max",
 }
 
 // Tool generated type. Extracts from CreateChatCompletionResponse.choices
@@ -1294,13 +1292,13 @@ model ChatCompletionMessageCollectionOptions {
    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
    */
-  @query @continuationToken afterId?: string;
+  @query @continuationToken after?: string;
 
   /**
    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
    * default is 20.
    */
-  @query pageSizeLimit?: int32 = 20;
+  @query limit?: int32 = 20;
 
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
@@ -1399,13 +1397,13 @@ model ChatCompletionCollectionOptions {
    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
    */
-  @query @continuationToken afterId?: string;
+  @query @continuationToken after?: string;
 
   /**
    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
    * default is 20.
    */
-  @query pageSizeLimit?: int32 = 20;
+  @query limit?: int32 = 20;
 
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`

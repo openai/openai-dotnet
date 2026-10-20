@@ -2,8 +2,12 @@ using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Assistants;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Assistants;
@@ -19,6 +23,136 @@ public class AssistantsMockTests : ClientTestBase
 
     public AssistantsMockTests(bool isAsync) : base(isAsync)
     {
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ModifyAssistantRespectsTheCancellationToken(bool canceled)
+    {
+        using CancellationTokenSource cancellationSource = new();
+        if (canceled)
+        {
+            cancellationSource.Cancel();
+        }
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                {"id":"asst_abc","object":"assistant","created_at":0,"model":"gpt-4o","name":"updated","tools":[]}
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+        AssistantModificationOptions modificationOptions = new() { Name = "updated" };
+
+        if (canceled)
+        {
+            if (IsAsync)
+            {
+                Assert.That(async () => await client.ModifyAssistantAsync("asst_abc", modificationOptions, cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+            else
+            {
+                Assert.That(() => client.ModifyAssistant("asst_abc", modificationOptions, cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+        }
+        else
+        {
+            Assistant assistant = IsAsync
+                ? await client.ModifyAssistantAsync("asst_abc", modificationOptions, cancellationSource.Token)
+                : client.ModifyAssistant("asst_abc", modificationOptions, cancellationSource.Token);
+            Assert.That(assistant.Name, Is.EqualTo("updated"));
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task CreateThreadAndRunRespectsTheCancellationToken(bool canceled)
+    {
+        using CancellationTokenSource cancellationSource = new();
+        if (canceled)
+        {
+            cancellationSource.Cancel();
+        }
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                {"id":"run_abc","object":"thread.run","status":"queued"}
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        if (canceled)
+        {
+            if (IsAsync)
+            {
+                Assert.That(async () => await client.CreateThreadAndRunAsync("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+            else
+            {
+                Assert.That(() => client.CreateThreadAndRun("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+        }
+        else
+        {
+            ThreadRun run = IsAsync
+                ? await client.CreateThreadAndRunAsync("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token)
+                : client.CreateThreadAndRun("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token);
+            Assert.That(run.Id, Is.EqualTo("run_abc"));
+        }
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunStreamingDoesNotBufferTheResponse()
+    {
+        bool? bufferResponse = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                bufferResponse = message.BufferResponse;
+                return new MockPipelineResponse(200).WithContent("""
+                    event: thread.run.created
+                    data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+                    event: done
+                    data: [DONE]
+                    """);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        List<StreamingUpdate> updates = new();
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc", new ThreadCreationOptions()))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc", new ThreadCreationOptions()))
+            {
+                updates.Add(update);
+            }
+        }
+
+        Assert.That(updates, Has.Count.EqualTo(1));
+        Assert.That(bufferResponse, Is.False);
     }
 
     [Test]
@@ -56,26 +190,36 @@ public class AssistantsMockTests : ClientTestBase
         int updateCount = 0;
 
         // The run.created event surfaces normally, then the error event throws.
-        ClientResultException exception = IsAsync
-            ? Assert.ThrowsAsync<ClientResultException>(async () =>
-            {
-                await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+        if (IsAsync)
+        {
+            Assert.That(
+                async () =>
                 {
-                    updateCount++;
-                }
-            })
-            : Assert.Throws<ClientResultException>(() =>
-            {
-                foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+                    await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+                    {
+                        updateCount++;
+                    }
+                },
+                Throws.TypeOf<ClientResultException>()
+                    .With.Message.Contains("server_error")
+                    .And.Message.Contains("The server had an error processing your request."));
+        }
+        else
+        {
+            Assert.That(
+                () =>
                 {
-                    updateCount++;
-                }
-            });
+                    foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+                    {
+                        updateCount++;
+                    }
+                },
+                Throws.TypeOf<ClientResultException>()
+                    .With.Message.Contains("server_error")
+                    .And.Message.Contains("The server had an error processing your request."));
+        }
 
         Assert.That(updateCount, Is.EqualTo(1));
-        Assert.That(exception, Is.Not.Null);
-        Assert.That(exception!.Message, Does.Contain("server_error"));
-        Assert.That(exception.Message, Does.Contain("The server had an error processing your request."));
     }
 
     [Test]
@@ -189,5 +333,72 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
         Assert.That(updates[1].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunInProgress));
         Assert.That(updates[2].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCompleted));
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunWithoutThreadOptions()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = Encoding.UTF8.GetString(stream.ToArray());
+                return new MockPipelineResponse(200).WithContent("""
+                    {"id":"run_abc","object":"thread.run","status":"queued"}
+                    """);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        ThreadRun run = IsAsync
+            ? await client.CreateThreadAndRunAsync("asst_abc")
+            : client.CreateThreadAndRun("asst_abc");
+
+        Assert.That(run.Id, Is.EqualTo("run_abc"));
+        Assert.That(requestBody, Does.Contain("\"assistant_id\":\"asst_abc\""));
+        Assert.That(requestBody, Does.Not.Contain("\"thread\""));
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunStreamingWithoutThreadOptions()
+    {
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                event: thread.run.created
+                data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+                event: done
+                data: [DONE]
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        List<StreamingUpdate> updates = new();
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+
+        Assert.That(updates, Has.Count.EqualTo(1));
     }
 }

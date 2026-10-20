@@ -96,11 +96,13 @@ namespace OpenAI.Images
                 }
 #endif
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
@@ -121,16 +123,20 @@ namespace OpenAI.Images
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
                 writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
             {
                 writer.WritePropertyName("output_compression"u8);
                 writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
@@ -151,11 +157,13 @@ namespace OpenAI.Images
                 writer.WritePropertyName("partial_images"u8);
                 writer.WriteNumberValue(PartialImages.Value);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
                 writer.WriteStringValue(Quality.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -218,7 +226,7 @@ namespace OpenAI.Images
             {
                 if (prop.NameEquals("image"u8))
                 {
-                    image = BinaryData.FromString(prop.Value.GetRawText());
+                    image = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("prompt"u8))
@@ -232,7 +240,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    mask = BinaryData.FromString(prop.Value.GetRawText());
+                    mask = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -351,7 +359,7 @@ namespace OpenAI.Images
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ImageEditOptions(
                 image,

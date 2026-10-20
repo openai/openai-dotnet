@@ -1,8 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
-
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -16,16 +11,18 @@ namespace OpenAI;
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
-  reasoning effort can result in faster responses and fewer tokens used
-  on reasoning in a response.
+  Reducing reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response. Not all reasoning models support every value.
   """)
 union ResponsesReasoningEffort {
-  "none",
-  "minimal",
-  "low",
-  "medium",
-  "high",
+  string,
+  none: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max"
 }
 
 /** Controls how much reasoning context is preserved across turns. */
@@ -1093,6 +1090,12 @@ model ResponseUsage {
      * [More on prompt caching](/docs/guides/prompt-caching).
      */
     cached_tokens: int32;
+
+    /**
+     * The number of input tokens newly written to the cache.
+     * [More on prompt caching](/docs/guides/prompt-caching).
+     */
+    cache_write_tokens: int32;
   };
 
   /** The number of output tokens. */
@@ -1622,27 +1625,15 @@ union DotNetResponseItemCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model DotNetResponseItemCollectionOptions {
-  @path response_id: string;
-
-  /**
-   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
-   */
-  @query @continuationToken afterId?: string;
-
-  /**
-   * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-   * For instance, if you make a list request and receive 100 objects, starting with obj_foo, your
-   * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-   */
-  @query beforeId?: string;
+  @path
+  @example("resp_677efb5139a88190b512bc3fef8e535d")
+  response_id: string;
 
   /**
    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
    * default is 20.
    */
-  @query pageSizeLimit?: int32 = 20;
+  @query limit?: int32 = 20;
 
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
@@ -1650,6 +1641,19 @@ model DotNetResponseItemCollectionOptions {
    */
   @query order?: DotNetResponseItemCollectionOrder;
 
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken after?: string;
+
+  /**
+   * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, starting with obj_foo, your
+   * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+   */
+  @query before?: string;
 }
 
 @error
@@ -1674,7 +1678,6 @@ model DeleteResponseResponse {
   deleted: boolean;
 }
 
-
 @access(Access.public)
 @usage(Usage.input)
 model DotNetGetResponseOptions {
@@ -1687,7 +1690,7 @@ model DotNetGetResponseOptions {
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-union DotNetGlobalToolCallApprovalPolicy {
+union DotNetDefaultToolCallApprovalPolicy {
   string,
   AlwaysRequireApproval: "always",
   NeverRequireApproval: "never",
@@ -1706,7 +1709,7 @@ model DotNetCustomToolCallApprovalPolicy {
 @access(Access.public)
 @usage(Usage.input | Usage.output)
 model DotNetToolCallApprovalPolicy {
-  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  default_policy?: DotNetDefaultToolCallApprovalPolicy;
   custom_policy?: DotNetCustomToolCallApprovalPolicy;
 }
 

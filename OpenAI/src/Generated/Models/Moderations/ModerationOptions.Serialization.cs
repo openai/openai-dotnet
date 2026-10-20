@@ -124,7 +124,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("input"u8))
                 {
-                    input = BinaryData.FromString(prop.Value.GetRawText());
+                    input = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -137,7 +137,7 @@ namespace OpenAI.Moderations
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ModerationOptions(input, model, additionalBinaryDataProperties);
         }

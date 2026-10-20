@@ -104,7 +104,9 @@ public class BatchTests : OpenAIRecordedTestBase
 
         var collection = client.GetBatchesAsync(options, cts.Token);
         var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
-        Assert.ThrowsAsync<TaskCanceledException>(async () => await enumerator.MoveNextAsync().AsTask());
+        Assert.That(
+            async () => await enumerator.MoveNextAsync().AsTask(),
+            Throws.TypeOf<TaskCanceledException>());
     }
 
     [RecordedTest]

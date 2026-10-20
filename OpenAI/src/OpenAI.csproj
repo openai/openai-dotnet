@@ -4,6 +4,7 @@
     <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
 
     <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
+    <ApiCompatVersion>2.13.0</ApiCompatVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,11 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.ClientModel" />
-    <PackageReference Include="System.Net.ServerSentEvents" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="System.Net.ServerSentEvents" />
   </ItemGroup>
 
   <!-- Build-only dependencies -->
