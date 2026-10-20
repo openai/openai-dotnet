@@ -293,7 +293,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return await GenerateImageEditAsync(imageStream, imageFilePath, prompt, options).ConfigureAwait(false);
+        return await GenerateImageEditAsync(imageStream, Path.GetFileName(imageFilePath), prompt, options).ConfigureAwait(false);
     }
 
     /// <summary> Generates an edited or extended image based on an original image and a prompt. </summary>
@@ -313,7 +313,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageEdit(imageStream, imageFilePath, prompt, options);
+        return GenerateImageEdit(imageStream, Path.GetFileName(imageFilePath), prompt, options);
     }
 
     /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
@@ -415,7 +415,7 @@ public partial class ImageClient
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
         using FileStream maskStream = File.OpenRead(maskFilePath);
-        return await GenerateImageEditAsync(imageStream, imageFilePath, prompt, maskStream, maskFilePath, options).ConfigureAwait(false);
+        return await GenerateImageEditAsync(imageStream, Path.GetFileName(imageFilePath), prompt, maskStream, Path.GetFileName(maskFilePath), options).ConfigureAwait(false);
     }
 
     /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
@@ -443,7 +443,7 @@ public partial class ImageClient
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
         using FileStream maskStream = File.OpenRead(maskFilePath);
-        return GenerateImageEdit(imageStream, imageFilePath, prompt, maskStream, maskFilePath, options);
+        return GenerateImageEdit(imageStream, Path.GetFileName(imageFilePath), prompt, maskStream, Path.GetFileName(maskFilePath), options);
     }
 
     /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
@@ -524,7 +524,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return await GenerateImageEditsAsync(imageStream, imageFilePath, prompt, imageCount, options).ConfigureAwait(false);
+        return await GenerateImageEditsAsync(imageStream, Path.GetFileName(imageFilePath), prompt, imageCount, options).ConfigureAwait(false);
     }
 
     /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
@@ -545,7 +545,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageEdits(imageStream, imageFilePath, prompt, imageCount, options);
+        return GenerateImageEdits(imageStream, Path.GetFileName(imageFilePath), prompt, imageCount, options);
     }
 
     /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
@@ -650,7 +650,7 @@ public partial class ImageClient
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
         using FileStream maskStream = File.OpenRead(maskFilePath);
-        return await GenerateImageEditsAsync(imageStream, imageFilePath, prompt, maskStream, maskFilePath, imageCount, options).ConfigureAwait(false);
+        return await GenerateImageEditsAsync(imageStream, Path.GetFileName(imageFilePath), prompt, maskStream, Path.GetFileName(maskFilePath), imageCount, options).ConfigureAwait(false);
     }
 
     /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
@@ -679,7 +679,7 @@ public partial class ImageClient
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
         using FileStream maskStream = File.OpenRead(maskFilePath);
-        return GenerateImageEdits(imageStream, imageFilePath, prompt, maskStream, maskFilePath, imageCount, options);
+        return GenerateImageEdits(imageStream, Path.GetFileName(imageFilePath), prompt, maskStream, Path.GetFileName(maskFilePath), imageCount, options);
     }
 
     #endregion
@@ -749,7 +749,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return await GenerateImageVariationAsync(imageStream, imageFilePath, options).ConfigureAwait(false);
+        return await GenerateImageVariationAsync(imageStream, Path.GetFileName(imageFilePath), options).ConfigureAwait(false);
     }
 
     /// <summary> Generates a variation of a given image. </summary>
@@ -767,7 +767,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageVariation(imageStream, imageFilePath, options);
+        return GenerateImageVariation(imageStream, Path.GetFileName(imageFilePath), options);
     }
 
     /// <summary> Generates variations of a given image. </summary>
@@ -836,7 +836,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return await GenerateImageVariationsAsync(imageStream, imageFilePath, imageCount, options).ConfigureAwait(false);
+        return await GenerateImageVariationsAsync(imageStream, Path.GetFileName(imageFilePath), imageCount, options).ConfigureAwait(false);
     }
 
     /// <summary> Generates variations of a given image. </summary>
@@ -855,7 +855,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageVariations(imageStream, imageFilePath, imageCount, options);
+        return GenerateImageVariations(imageStream, Path.GetFileName(imageFilePath), imageCount, options);
     }
 
     #endregion

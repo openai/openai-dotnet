@@ -190,6 +190,45 @@ public partial class TranscriptionMockTests : ClientTestBase
         Assert.Throws<InvalidOperationException>(() => client.TranscribeAudioDiarized(path, options));
     }
 
+    [Test]
+    public async Task TranscribeAudioWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = GetClientOptionsCapturingRequestBody("""
+        {
+            "text": "The quick brown fox got lost."
+        }
+        """, body => requestBody = body);
+
+        await InvokeTranscribeAudioSyncOrAsync(clientOptions, AudioSourceKind.UsingFilePath);
+
+        string fileContentDisposition = GetContentDisposition(requestBody, "file");
+        Assert.That(fileContentDisposition, Does.Contain("filename=audio_hello_world.mp3"));
+        Assert.That(fileContentDisposition, Does.Not.Contain("Assets"));
+    }
+
+    [Test]
+    public async Task TranscribeAudioStreamingWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = GetClientOptionsCapturingRequestBody("data: [DONE]\n\n", body => requestBody = body);
+        AudioClient client = new("model", s_fakeCredential, clientOptions);
+        string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+        if (IsAsync)
+        {
+            Assert.That(await client.TranscribeAudioStreamingAsync(path).ToListAsync(), Is.Empty);
+        }
+        else
+        {
+            Assert.That(client.TranscribeAudioStreaming(path).ToList(), Is.Empty);
+        }
+
+        string fileContentDisposition = GetContentDisposition(requestBody, "file");
+        Assert.That(fileContentDisposition, Does.Contain("filename=audio_hello_world.mp3"));
+        Assert.That(fileContentDisposition, Does.Not.Contain("Assets"));
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
@@ -222,5 +261,31 @@ public partial class TranscriptionMockTests : ClientTestBase
 
         Assert.Fail("Invalid source kind.");
         return null;
+    }
+
+    private OpenAIClientOptions GetClientOptionsCapturingRequestBody(string content, Action<string> onRequestBody)
+    {
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(content);
+
+        return new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                onRequestBody(BinaryData.FromBytes(stream.ToArray()).ToString());
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+    }
+
+    private static string GetContentDisposition(string requestBody, string partName)
+    {
+        return requestBody
+            .Split(["\r\n", "\n"], StringSplitOptions.None)
+            .Single(line => line.StartsWith($"Content-Disposition: form-data; name={partName};", StringComparison.Ordinal));
     }
 }

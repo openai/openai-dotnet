@@ -314,7 +314,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return await TranscribeAudioAsync(audioStream, audioFilePath, options).ConfigureAwait(false);
+        return await TranscribeAudioAsync(audioStream, Path.GetFileName(audioFilePath), options).ConfigureAwait(false);
     }
 
     /// <summary> Transcribes the input audio. </summary>
@@ -331,7 +331,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return TranscribeAudio(audioStream, audioFilePath, options);
+        return TranscribeAudio(audioStream, Path.GetFileName(audioFilePath), options);
     }
 
     /// <summary> Transcribes the input audio with diarization. </summary>
@@ -415,7 +415,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return await TranscribeAudioDiarizedAsync(audioStream, audioFilePath, options).ConfigureAwait(false);
+        return await TranscribeAudioDiarizedAsync(audioStream, Path.GetFileName(audioFilePath), options).ConfigureAwait(false);
     }
 
     /// <summary> Transcribes the input audio with diarization. </summary>
@@ -433,7 +433,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return TranscribeAudioDiarized(audioStream, audioFilePath, options);
+        return TranscribeAudioDiarized(audioStream, Path.GetFileName(audioFilePath), options);
     }
 
     // CUSTOM: Added Experimental attribute.
@@ -467,7 +467,7 @@ public partial class AudioClient
 
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+                .ToMultipartContent(inputStream, Path.GetFileName(audioFilePath));
 
         AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
             async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
@@ -508,7 +508,7 @@ public partial class AudioClient
 
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+                .ToMultipartContent(inputStream, Path.GetFileName(audioFilePath));
 
         SseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
             () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
@@ -613,7 +613,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return TranslateAudio(audioStream, audioFilePath, options);
+        return TranslateAudio(audioStream, Path.GetFileName(audioFilePath), options);
     }
 
     /// <summary> Translates the input audio into English. </summary>
@@ -630,7 +630,7 @@ public partial class AudioClient
         Argument.AssertNotNull(audioFilePath, nameof(audioFilePath));
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
-        return await TranslateAudioAsync(audioStream, audioFilePath, options);
+        return await TranslateAudioAsync(audioStream, Path.GetFileName(audioFilePath), options);
     }
 
     #endregion
