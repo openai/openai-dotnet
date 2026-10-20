@@ -1307,7 +1307,7 @@ namespace OpenAI.Responses {
     public class ResponseResult : IJsonModel<ResponseResult>, IPersistableModel<ResponseResult> {
         public bool? BackgroundModeEnabled { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public string EndUserId { get; set; }
         public ResponseError Error { get; set; }
         public string Id { get; set; }

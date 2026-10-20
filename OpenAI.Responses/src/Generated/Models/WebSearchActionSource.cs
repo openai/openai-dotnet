@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal WebSearchActionSource(InternalWebSearchActionSearchSourcesType kind)
+        private protected WebSearchActionSource(InternalWebSearchActionSearchSourcesType kind)
         {
             Kind = kind;
         }

@@ -13,18 +13,18 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal FineTuningEvent(string id, DateTimeOffset createdAt, string message, string level)
+        internal FineTuningEvent(string id, DateTimeOffset createdOn, string message, string level)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Message = message;
             Level = level;
         }
 
-        internal FineTuningEvent(string id, DateTimeOffset createdAt, string message, FineTuningJobEventKind? kind, BinaryData data, string level, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningEvent(string id, DateTimeOffset createdOn, string message, FineTuningJobEventKind? kind, BinaryData data, string level, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Message = message;
             Kind = kind;
             Data = data;
@@ -35,7 +35,7 @@ namespace OpenAI.FineTuning
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string Message { get; }
 

@@ -11,6 +11,9 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem
     {
+        private string _reason;
+        private bool _reasonIsDefined;
+
         public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(RealtimeItemKind.McpApprovalResponse)
         {
             Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
@@ -25,7 +28,7 @@ namespace OpenAI.Realtime
             Id = id;
             ApprovalRequestId = approvalRequestId;
             Approved = approved;
-            Reason = reason;
+            _reason = reason;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -33,6 +36,17 @@ namespace OpenAI.Realtime
 
         public string ApprovalRequestId { get; set; }
 
-        public string Reason { get; set; }
+        public string Reason
+        {
+            get
+            {
+                return _reason;
+            }
+            set
+            {
+                _reason = value;
+                _reasonIsDefined = true;
+            }
+        }
     }
 }

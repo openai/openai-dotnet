@@ -11,6 +11,22 @@ namespace OpenAI.Assistants
     internal partial class InternalCreateThreadAndRunRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _instructions;
+        private bool _instructionsIsDefined;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
+        private float? _topP;
+        private bool _topPIsDefined;
+        private bool? _stream;
+        private bool _streamIsDefined;
+        private int? _maxPromptTokens;
+        private bool _maxPromptTokensIsDefined;
+        private int? _maxCompletionTokens;
+        private bool _maxCompletionTokensIsDefined;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private RunTruncationStrategy _truncationStrategy;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _truncationStrategyIsDefined;
 
         public InternalCreateThreadAndRunRequest(string assistantId)
         {
@@ -26,16 +42,16 @@ namespace OpenAI.Assistants
             AssistantId = assistantId;
             Thread = thread;
             Model = model;
-            Instructions = instructions;
+            _instructions = instructions;
             Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
-            TopP = topP;
-            Stream = stream;
-            MaxPromptTokens = maxPromptTokens;
-            MaxCompletionTokens = maxCompletionTokens;
-            TruncationStrategy = truncationStrategy;
+            _temperature = temperature;
+            _topP = topP;
+            _stream = stream;
+            _maxPromptTokens = maxPromptTokens;
+            _maxCompletionTokens = maxCompletionTokens;
+            _truncationStrategy = truncationStrategy;
             ToolChoice = toolChoice;
             ParallelToolCalls = parallelToolCalls;
             ResponseFormat = responseFormat;
@@ -49,7 +65,18 @@ namespace OpenAI.Assistants
         public ThreadCreationOptions Thread { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ToolDefinition> Tools { get; set; }
@@ -57,18 +84,84 @@ namespace OpenAI.Assistants
 
         public IDictionary<string, string> Metadata { get; }
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
-        public float? TopP { get; set; }
+        public float? TopP
+        {
+            get
+            {
+                return _topP;
+            }
+            set
+            {
+                _topP = value;
+                _topPIsDefined = true;
+            }
+        }
 
-        public bool? Stream { get; set; }
+        public bool? Stream
+        {
+            get
+            {
+                return _stream;
+            }
+            set
+            {
+                _stream = value;
+                _streamIsDefined = true;
+            }
+        }
 
-        public int? MaxPromptTokens { get; set; }
+        public int? MaxPromptTokens
+        {
+            get
+            {
+                return _maxPromptTokens;
+            }
+            set
+            {
+                _maxPromptTokens = value;
+                _maxPromptTokensIsDefined = true;
+            }
+        }
 
-        public int? MaxCompletionTokens { get; set; }
+        public int? MaxCompletionTokens
+        {
+            get
+            {
+                return _maxCompletionTokens;
+            }
+            set
+            {
+                _maxCompletionTokens = value;
+                _maxCompletionTokensIsDefined = true;
+            }
+        }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        public RunTruncationStrategy TruncationStrategy { get; set; }
+        public RunTruncationStrategy TruncationStrategy
+        {
+            get
+            {
+                return _truncationStrategy;
+            }
+            set
+            {
+                _truncationStrategy = value;
+                _truncationStrategyIsDefined = true;
+            }
+        }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public bool? ParallelToolCalls { get; set; }

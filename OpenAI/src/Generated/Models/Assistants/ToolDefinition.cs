@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ToolDefinition(InternalAssistantToolDefinitionType kind)
+        private protected ToolDefinition(InternalAssistantToolDefinitionType kind)
         {
             Kind = kind;
         }

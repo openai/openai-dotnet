@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeTranscriptionUsage(InternalTranscriptionTokenUsageBaseTypeGA kind)
+        private protected RealtimeTranscriptionUsage(InternalTranscriptionTokenUsageBaseTypeGA kind)
         {
             Kind = kind;
         }

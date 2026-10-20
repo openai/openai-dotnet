@@ -69,20 +69,41 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("reasoning_effort"u8);
                 writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name, _nameIsDefined) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                if (Name != null)
+                {
+                    writer.WritePropertyName("name"u8);
+                    writer.WriteStringValue(Name);
+                }
+                else
+                {
+                    writer.WriteNull("name"u8);
+                }
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            if (Optional.IsDefined(Description, _descriptionIsDefined) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
             {
-                writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(Description);
+                if (Description != null)
+                {
+                    writer.WritePropertyName("description"u8);
+                    writer.WriteStringValue(Description);
+                }
+                else
+                {
+                    writer.WriteNull("description"u8);
+                }
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
             }
             if (Optional.IsCollectionDefined(DefaultTools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
@@ -115,10 +136,17 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
             if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
@@ -173,12 +201,16 @@ namespace OpenAI.Assistants
             }
             string model = default;
             AssistantReasoningEffortLevel? reasoningEffortLevel = default;
+            bool nameIsDefined = false;
             string name = default;
+            bool descriptionIsDefined = false;
             string description = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
             IList<ToolDefinition> defaultTools = default;
             ToolResources toolResources = default;
             IDictionary<string, string> metadata = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
             float? nucleusSamplingFactor = default;
             AssistantResponseFormat responseFormat = default;
@@ -202,6 +234,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("name"u8))
                 {
+                    nameIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         name = null;
@@ -212,6 +245,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("description"u8))
                 {
+                    descriptionIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         description = null;
@@ -222,6 +256,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -277,6 +312,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -320,7 +356,13 @@ namespace OpenAI.Assistants
                 temperature,
                 nucleusSamplingFactor,
                 responseFormat,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _nameIsDefined = nameIsDefined,
+                _descriptionIsDefined = descriptionIsDefined,
+                _instructionsIsDefined = instructionsIsDefined,
+                _temperatureIsDefined = temperatureIsDefined
+            };
         }
     }
 }

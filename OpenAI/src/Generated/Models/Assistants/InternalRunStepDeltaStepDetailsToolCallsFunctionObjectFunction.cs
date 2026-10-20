@@ -10,6 +10,8 @@ namespace OpenAI.Assistants
     internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _output;
+        private bool _outputIsDefined;
 
         internal InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction()
         {
@@ -19,7 +21,7 @@ namespace OpenAI.Assistants
         {
             Name = name;
             Arguments = arguments;
-            Output = output;
+            _output = output;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -27,7 +29,13 @@ namespace OpenAI.Assistants
 
         public string Arguments { get; }
 
-        public string Output { get; }
+        public string Output
+        {
+            get
+            {
+                return _output;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

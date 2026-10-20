@@ -15,6 +15,10 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private ChatOutputAudio _audio;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _audioIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
@@ -39,7 +43,7 @@ namespace OpenAI.Chat
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
             FunctionCall = functionCall;
-            Audio = audio;
+            _audio = audio;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -60,7 +64,13 @@ namespace OpenAI.Chat
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        public ChatOutputAudio Audio { get; }
+        public ChatOutputAudio Audio
+        {
+            get
+            {
+                return _audio;
+            }
+        }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

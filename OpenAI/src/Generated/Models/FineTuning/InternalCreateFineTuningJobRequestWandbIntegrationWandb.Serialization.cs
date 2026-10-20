@@ -68,15 +68,29 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("project"u8);
                 writer.WriteStringValue(Project);
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name, _nameIsDefined) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                if (Name != null)
+                {
+                    writer.WritePropertyName("name"u8);
+                    writer.WriteStringValue(Name);
+                }
+                else
+                {
+                    writer.WriteNull("name"u8);
+                }
             }
-            if (Optional.IsDefined(Entity) && _additionalBinaryDataProperties?.ContainsKey("entity") != true)
+            if (Optional.IsDefined(Entity, _entityIsDefined) && _additionalBinaryDataProperties?.ContainsKey("entity") != true)
             {
-                writer.WritePropertyName("entity"u8);
-                writer.WriteStringValue(Entity);
+                if (Entity != null)
+                {
+                    writer.WritePropertyName("entity"u8);
+                    writer.WriteStringValue(Entity);
+                }
+                else
+                {
+                    writer.WriteNull("entity"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Tags) && _additionalBinaryDataProperties?.ContainsKey("tags") != true)
             {
@@ -135,7 +149,9 @@ namespace OpenAI.FineTuning
                 return null;
             }
             string project = default;
+            bool nameIsDefined = false;
             string name = default;
+            bool entityIsDefined = false;
             string entity = default;
             IList<string> tags = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -148,6 +164,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("name"u8))
                 {
+                    nameIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         name = null;
@@ -158,6 +175,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("entity"u8))
                 {
+                    entityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         entity = null;
@@ -190,7 +208,11 @@ namespace OpenAI.FineTuning
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
+            return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties)
+            {
+                _nameIsDefined = nameIsDefined,
+                _entityIsDefined = entityIsDefined
+            };
         }
     }
 }

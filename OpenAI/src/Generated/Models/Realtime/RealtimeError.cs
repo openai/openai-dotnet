@@ -14,6 +14,10 @@ namespace OpenAI.Realtime
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _code;
+        private bool _codeIsDefined;
+        private string _eventId;
+        private bool _eventIdIsDefined;
 
         public RealtimeError()
         {
@@ -23,10 +27,10 @@ namespace OpenAI.Realtime
         internal RealtimeError(string kind, string code, string message, string parameterName, string eventId, in JsonPatch patch)
         {
             Kind = kind;
-            Code = code;
+            _code = code;
             Message = message;
             ParameterName = parameterName;
-            EventId = eventId;
+            _eventId = eventId;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,10 +42,32 @@ namespace OpenAI.Realtime
 
         public string Kind { get; set; }
 
-        public string Code { get; set; }
+        public string Code
+        {
+            get
+            {
+                return _code;
+            }
+            set
+            {
+                _code = value;
+                _codeIsDefined = true;
+            }
+        }
 
         public string Message { get; set; }
 
-        public string EventId { get; set; }
+        public string EventId
+        {
+            get
+            {
+                return _eventId;
+            }
+            set
+            {
+                _eventId = value;
+                _eventIdIsDefined = true;
+            }
+        }
     }
 }

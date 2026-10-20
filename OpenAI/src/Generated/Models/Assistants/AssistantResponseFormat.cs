@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AssistantResponseFormat(InternalAssistantsResponseFormatType kind)
+        private protected AssistantResponseFormat(InternalAssistantsResponseFormatType kind)
         {
             Kind = kind;
         }

@@ -88,10 +88,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (Optional.IsDefined(Agent) && !Patch.Contains("$.agent"u8))
+            if (Optional.IsDefined(Agent, _agentIsDefined) && !Patch.Contains("$.agent"u8))
             {
-                writer.WritePropertyName("agent"u8);
-                writer.WriteObjectValue(Agent, options);
+                if (Agent != null)
+                {
+                    writer.WritePropertyName("agent"u8);
+                    writer.WriteObjectValue(Agent, options);
+                }
+                else
+                {
+                    writer.WriteNull("agent"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -125,6 +132,7 @@ namespace OpenAI.Responses
             string inputDelta = default;
             string itemId = default;
             int outputIndex = default;
+            bool agentIsDefined = false;
             InternalBetaAgentTag agent = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -155,6 +163,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("agent"u8))
                 {
+                    agentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         agent = null;
@@ -172,7 +181,10 @@ namespace OpenAI.Responses
                 inputDelta,
                 itemId,
                 outputIndex,
-                agent);
+                agent)
+            {
+                _agentIsDefined = agentIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

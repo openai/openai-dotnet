@@ -10,6 +10,10 @@ namespace OpenAI.Batch
     internal partial class InternalBatchRequestOutput
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private InternalBatchRequestOutputResponse _response;
+        private bool _responseIsDefined;
+        private InternalBatchRequestOutputError _error;
+        private bool _errorIsDefined;
 
         internal InternalBatchRequestOutput()
         {
@@ -19,8 +23,8 @@ namespace OpenAI.Batch
         {
             Id = id;
             CustomId = customId;
-            Response = response;
-            Error = error;
+            _response = response;
+            _error = error;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -28,9 +32,21 @@ namespace OpenAI.Batch
 
         public string CustomId { get; }
 
-        internal InternalBatchRequestOutputResponse Response { get; }
+        internal InternalBatchRequestOutputResponse Response
+        {
+            get
+            {
+                return _response;
+            }
+        }
 
-        internal InternalBatchRequestOutputError Error { get; }
+        internal InternalBatchRequestOutputError Error
+        {
+            get
+            {
+                return _error;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

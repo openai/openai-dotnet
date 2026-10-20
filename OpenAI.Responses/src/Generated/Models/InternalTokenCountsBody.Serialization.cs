@@ -59,86 +59,156 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model, _modelIsDefined) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(Input) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+                if (Model != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("model"u8);
+                    writer.WriteStringValue(Model);
                 }
-#endif
+                else
+                {
+                    writer.WriteNull("model"u8);
+                }
             }
-            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
+            if (Optional.IsDefined(Input, _inputIsDefined) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
+                if (Input != null)
+                {
+                    writer.WritePropertyName("input"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Input);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Input))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("input"u8);
+                }
+            }
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
+            {
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ResponseTool item in Tools)
+                if (Tools != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    foreach (ResponseTool item in Tools)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
             }
-            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (Optional.IsDefined(Text, _textIsDefined) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteObjectValue(Text, options);
+                if (Text != null)
+                {
+                    writer.WritePropertyName("text"u8);
+                    writer.WriteObjectValue(Text, options);
+                }
+                else
+                {
+                    writer.WriteNull("text"u8);
+                }
             }
-            if (Optional.IsDefined(Reasoning) && _additionalBinaryDataProperties?.ContainsKey("reasoning") != true)
+            if (Optional.IsDefined(Reasoning, _reasoningIsDefined) && _additionalBinaryDataProperties?.ContainsKey("reasoning") != true)
             {
-                writer.WritePropertyName("reasoning"u8);
-                writer.WriteObjectValue(Reasoning, options);
+                if (Reasoning != null)
+                {
+                    writer.WritePropertyName("reasoning"u8);
+                    writer.WriteObjectValue(Reasoning, options);
+                }
+                else
+                {
+                    writer.WriteNull("reasoning"u8);
+                }
             }
             if (Optional.IsDefined(Truncation) && _additionalBinaryDataProperties?.ContainsKey("truncation") != true)
             {
                 writer.WritePropertyName("truncation"u8);
                 writer.WriteStringValue(Truncation.Value.ToString());
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
-            if (Optional.IsDefined(Conversation) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
-            {
-                writer.WritePropertyName("conversation"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Conversation);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Conversation))
+                if (Instructions != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
                 }
-#endif
-            }
-            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
-            {
-                writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                else
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WriteNull("instructions"u8);
                 }
-#endif
             }
-            if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            if (Optional.IsDefined(Conversation, _conversationIsDefined) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
             {
-                writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(ParallelToolCalls.Value);
+                if (Conversation != null)
+                {
+                    writer.WritePropertyName("conversation"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Conversation);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Conversation))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("conversation"u8);
+                }
+            }
+            if (Optional.IsDefined(ToolChoice, _toolChoiceIsDefined) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            {
+                if (ToolChoice != null)
+                {
+                    writer.WritePropertyName("tool_choice"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(ToolChoice);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("tool_choice"u8);
+                }
+            }
+            if (Optional.IsDefined(ParallelToolCalls, _parallelToolCallsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            {
+                if (ParallelToolCalls != null)
+                {
+                    writer.WritePropertyName("parallel_tool_calls"u8);
+                    writer.WriteBooleanValue(ParallelToolCalls.Value);
+                }
+                else
+                {
+                    writer.WriteNull("parallel_tool_calls"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -181,22 +251,32 @@ namespace OpenAI.Responses
             {
                 return null;
             }
+            bool modelIsDefined = false;
             string model = default;
+            bool inputIsDefined = false;
             BinaryData input = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
-            IList<ResponseTool> tools = default;
+            IList<ResponseTool> tools = new ChangeTrackingList<ResponseTool>();
+            bool textIsDefined = false;
             InternalResponseTextParam text = default;
+            bool reasoningIsDefined = false;
             ResponseReasoningOptions reasoning = default;
             InternalTruncationEnum? truncation = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
+            bool conversationIsDefined = false;
             BinaryData conversation = default;
+            bool toolChoiceIsDefined = false;
             BinaryData toolChoice = default;
+            bool parallelToolCallsIsDefined = false;
             bool? parallelToolCalls = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("model"u8))
                 {
+                    modelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         model = null;
@@ -207,6 +287,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    inputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         input = null;
@@ -217,6 +298,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -229,6 +311,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        tools = null;
                         continue;
                     }
                     List<ResponseTool> array = new List<ResponseTool>();
@@ -241,6 +324,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("text"u8))
                 {
+                    textIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         text = null;
@@ -251,6 +335,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("reasoning"u8))
                 {
+                    reasoningIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reasoning = null;
@@ -270,6 +355,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -280,6 +366,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("conversation"u8))
                 {
+                    conversationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         conversation = null;
@@ -290,6 +377,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tool_choice"u8))
                 {
+                    toolChoiceIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         toolChoice = null;
@@ -300,6 +388,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
                 {
+                    parallelToolCallsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         parallelToolCalls = null;
@@ -315,7 +404,7 @@ namespace OpenAI.Responses
                 model,
                 input,
                 previousResponseId,
-                tools ?? new ChangeTrackingList<ResponseTool>(),
+                tools,
                 text,
                 reasoning,
                 truncation,
@@ -323,7 +412,18 @@ namespace OpenAI.Responses
                 conversation,
                 toolChoice,
                 parallelToolCalls,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _modelIsDefined = modelIsDefined,
+                _inputIsDefined = inputIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _textIsDefined = textIsDefined,
+                _reasoningIsDefined = reasoningIsDefined,
+                _instructionsIsDefined = instructionsIsDefined,
+                _conversationIsDefined = conversationIsDefined,
+                _toolChoiceIsDefined = toolChoiceIsDefined,
+                _parallelToolCallsIsDefined = parallelToolCallsIsDefined
+            };
         }
     }
 }

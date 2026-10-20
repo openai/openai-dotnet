@@ -101,23 +101,41 @@ namespace OpenAI.Realtime
             }
             if (Optional.IsCollectionDefined(Headers) && !Patch.Contains("$.headers"u8))
             {
-                writer.WritePropertyName("headers"u8);
-                writer.WriteStartObject();
-                bool hasPatch = Patch.Contains("$"u8, "headers"u8);
-                if (hasPatch)
+                if (Headers != null)
                 {
-#if NET8_0_OR_GREATER
-                    global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                    foreach (var item in Headers)
+                    writer.WritePropertyName("headers"u8);
+                    writer.WriteStartObject();
+                    bool hasPatch = Patch.Contains("$"u8, "headers"u8);
+                    if (hasPatch)
                     {
 #if NET8_0_OR_GREATER
-                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.headers"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.headers"u8, buffer.Slice(0, bytesWritten));
-#else
-                        bool patchContains = Patch.Contains("$.headers"u8, Encoding.UTF8.GetBytes(item.Key));
+                        global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                        if (!patchContains)
+                        foreach (var item in Headers)
+                        {
+#if NET8_0_OR_GREATER
+                            int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                            bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.headers"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.headers"u8, buffer.Slice(0, bytesWritten));
+#else
+                            bool patchContains = Patch.Contains("$.headers"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                            if (!patchContains)
+                            {
+                                writer.WritePropertyName(item.Key);
+                                if (item.Value == null)
+                                {
+                                    writer.WriteNullValue();
+                                    continue;
+                                }
+                                writer.WriteStringValue(item.Value);
+                            }
+                        }
+
+                        Patch.WriteTo(writer, "$.headers"u8);
+                    }
+                    else
+                    {
+                        foreach (var item in Headers)
                         {
                             writer.WritePropertyName(item.Key);
                             if (item.Value == null)
@@ -128,28 +146,24 @@ namespace OpenAI.Realtime
                             writer.WriteStringValue(item.Value);
                         }
                     }
-
-                    Patch.WriteTo(writer, "$.headers"u8);
+                    writer.WriteEndObject();
                 }
                 else
                 {
-                    foreach (var item in Headers)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-                        writer.WriteStringValue(item.Value);
-                    }
+                    writer.WriteNull("headers"u8);
                 }
-                writer.WriteEndObject();
             }
-            if (Optional.IsDefined(AllowedTools) && !Patch.Contains("$.allowed_tools"u8))
+            if (Optional.IsDefined(AllowedTools, _allowedToolsIsDefined) && !Patch.Contains("$.allowed_tools"u8))
             {
-                writer.WritePropertyName("allowed_tools"u8);
-                writer.WriteObjectValue(AllowedTools, options);
+                if (AllowedTools != null)
+                {
+                    writer.WritePropertyName("allowed_tools"u8);
+                    writer.WriteObjectValue(AllowedTools, options);
+                }
+                else
+                {
+                    writer.WriteNull("allowed_tools"u8);
+                }
             }
             if (Optional.IsDefined(ToolCallApprovalPolicy) && !Patch.Contains("$.require_approval"u8))
             {
@@ -189,7 +203,8 @@ namespace OpenAI.Realtime
             RealtimeMcpToolConnectorId? connectorId = default;
             string authorizationToken = default;
             string serverDescription = default;
-            IDictionary<string, string> headers = default;
+            IDictionary<string, string> headers = new ChangeTrackingDictionary<string, string>();
+            bool allowedToolsIsDefined = false;
             RealtimeMcpToolFilter allowedTools = default;
             RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy = default;
             foreach (var prop in element.EnumerateObject())
@@ -236,6 +251,7 @@ namespace OpenAI.Realtime
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        headers = null;
                         continue;
                     }
                     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -255,6 +271,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("allowed_tools"u8))
                 {
+                    allowedToolsIsDefined = true;
                     DeserializeAllowedToolsValue(prop, ref allowedTools, options);
                     continue;
                 }
@@ -278,9 +295,12 @@ namespace OpenAI.Realtime
                 connectorId,
                 authorizationToken,
                 serverDescription,
-                headers ?? new ChangeTrackingDictionary<string, string>(),
+                headers,
                 allowedTools,
-                toolCallApprovalPolicy);
+                toolCallApprovalPolicy)
+            {
+                _allowedToolsIsDefined = allowedToolsIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

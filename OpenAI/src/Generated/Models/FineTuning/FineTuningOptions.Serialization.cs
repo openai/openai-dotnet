@@ -88,13 +88,20 @@ namespace OpenAI.FineTuning
             }
             if (Optional.IsCollectionDefined(Integrations) && _additionalBinaryDataProperties?.ContainsKey("integrations") != true)
             {
-                writer.WritePropertyName("integrations"u8);
-                writer.WriteStartArray();
-                foreach (FineTuningIntegration item in Integrations)
+                if (Integrations != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("integrations"u8);
+                    writer.WriteStartArray();
+                    foreach (FineTuningIntegration item in Integrations)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("integrations"u8);
+                }
             }
             if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
@@ -168,7 +175,7 @@ namespace OpenAI.FineTuning
             HyperparameterOptions hyperparameters = default;
             string suffix = default;
             string validationFile = default;
-            IList<FineTuningIntegration> integrations = default;
+            IList<FineTuningIntegration> integrations = new ChangeTrackingList<FineTuningIntegration>();
             int? seed = default;
             FineTuningTrainingMethod trainingMethod = default;
             IDictionary<string, string> metadata = default;
@@ -218,6 +225,7 @@ namespace OpenAI.FineTuning
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        integrations = null;
                         continue;
                     }
                     List<FineTuningIntegration> array = new List<FineTuningIntegration>();
@@ -277,7 +285,7 @@ namespace OpenAI.FineTuning
                 hyperparameters,
                 suffix,
                 validationFile,
-                integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
+                integrations,
                 seed,
                 trainingMethod,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),

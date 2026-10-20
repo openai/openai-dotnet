@@ -73,10 +73,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind);
             }
-            if (Optional.IsDefined(Code) && !Patch.Contains("$.code"u8))
+            if (Optional.IsDefined(Code, _codeIsDefined) && !Patch.Contains("$.code"u8))
             {
-                writer.WritePropertyName("code"u8);
-                writer.WriteStringValue(Code);
+                if (Code != null)
+                {
+                    writer.WritePropertyName("code"u8);
+                    writer.WriteStringValue(Code);
+                }
+                else
+                {
+                    writer.WriteNull("code"u8);
+                }
             }
             if (Optional.IsDefined(Message) && !Patch.Contains("$.message"u8))
             {
@@ -88,10 +95,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(ParameterName);
             }
-            if (Optional.IsDefined(EventId) && !Patch.Contains("$.event_id"u8))
+            if (Optional.IsDefined(EventId, _eventIdIsDefined) && !Patch.Contains("$.event_id"u8))
             {
-                writer.WritePropertyName("event_id"u8);
-                writer.WriteStringValue(EventId);
+                if (EventId != null)
+                {
+                    writer.WritePropertyName("event_id"u8);
+                    writer.WriteStringValue(EventId);
+                }
+                else
+                {
+                    writer.WriteNull("event_id"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -118,9 +132,11 @@ namespace OpenAI.Realtime
                 return null;
             }
             string kind = default;
+            bool codeIsDefined = false;
             string code = default;
             string message = default;
             string parameterName = default;
+            bool eventIdIsDefined = false;
             string eventId = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -134,6 +150,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("code"u8))
                 {
+                    codeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         code = null;
@@ -159,6 +176,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("event_id"u8))
                 {
+                    eventIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         eventId = null;
@@ -175,7 +193,11 @@ namespace OpenAI.Realtime
                 message,
                 parameterName,
                 eventId,
-                patch);
+                patch)
+            {
+                _codeIsDefined = codeIsDefined,
+                _eventIdIsDefined = eventIdIsDefined
+            };
         }
     }
 }

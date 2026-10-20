@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseContentPart(InternalItemContentType internalType)
+        private protected ResponseContentPart(InternalItemContentType internalType)
         {
             InternalType = internalType;
         }

@@ -13,33 +13,85 @@ namespace OpenAI.Assistants
     public partial class AssistantCreationOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _name;
+        private bool _nameIsDefined;
+        private string _description;
+        private bool _descriptionIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
 
         internal AssistantCreationOptions(string model, string name, string description, string instructions, AssistantReasoningEffortLevel? reasoningEffortLevel, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Model = model;
-            Name = name;
-            Description = description;
-            Instructions = instructions;
+            _name = name;
+            _description = description;
+            _instructions = instructions;
             ReasoningEffortLevel = reasoningEffortLevel;
             Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
+            _temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                _nameIsDefined = true;
+            }
+        }
 
-        public string Description { get; set; }
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                _descriptionIsDefined = true;
+            }
+        }
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
 
         public IDictionary<string, string> Metadata { get; }
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

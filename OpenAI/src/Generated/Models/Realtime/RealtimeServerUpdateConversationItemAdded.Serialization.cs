@@ -78,10 +78,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (Optional.IsDefined(PreviousItemId) && !Patch.Contains("$.previous_item_id"u8))
+            if (Optional.IsDefined(PreviousItemId, _previousItemIdIsDefined) && !Patch.Contains("$.previous_item_id"u8))
             {
-                writer.WritePropertyName("previous_item_id"u8);
-                writer.WriteStringValue(PreviousItemId);
+                if (PreviousItemId != null)
+                {
+                    writer.WritePropertyName("previous_item_id"u8);
+                    writer.WriteStringValue(PreviousItemId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_item_id"u8);
+                }
             }
             if (!Patch.Contains("$.item"u8))
             {
@@ -117,6 +124,7 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string eventId = default;
+            bool previousItemIdIsDefined = false;
             string previousItemId = default;
             RealtimeItem item = default;
             foreach (var prop in element.EnumerateObject())
@@ -133,6 +141,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("previous_item_id"u8))
                 {
+                    previousItemIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousItemId = null;
@@ -148,7 +157,10 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateConversationItemAdded(kind, patch, eventId, previousItemId, item);
+            return new RealtimeServerUpdateConversationItemAdded(kind, patch, eventId, previousItemId, item)
+            {
+                _previousItemIdIsDefined = previousItemIdIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -78,20 +78,34 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ToolDefinition item in Tools)
+                if (Tools != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    foreach (ToolDefinition item in Tools)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
             }
             if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
             {
@@ -114,35 +128,77 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP, _topPIsDefined) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP.Value);
+                if (TopP != null)
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            if (Optional.IsDefined(Stream, _streamIsDefined) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
-                writer.WritePropertyName("stream"u8);
-                writer.WriteBooleanValue(Stream.Value);
+                if (Stream != null)
+                {
+                    writer.WritePropertyName("stream"u8);
+                    writer.WriteBooleanValue(Stream.Value);
+                }
+                else
+                {
+                    writer.WriteNull("stream"u8);
+                }
             }
-            if (Optional.IsDefined(MaxPromptTokens) && _additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
+            if (Optional.IsDefined(MaxPromptTokens, _maxPromptTokensIsDefined) && _additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
             {
-                writer.WritePropertyName("max_prompt_tokens"u8);
-                writer.WriteNumberValue(MaxPromptTokens.Value);
+                if (MaxPromptTokens != null)
+                {
+                    writer.WritePropertyName("max_prompt_tokens"u8);
+                    writer.WriteNumberValue(MaxPromptTokens.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_prompt_tokens"u8);
+                }
             }
-            if (Optional.IsDefined(MaxCompletionTokens) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
+            if (Optional.IsDefined(MaxCompletionTokens, _maxCompletionTokensIsDefined) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
             {
-                writer.WritePropertyName("max_completion_tokens"u8);
-                writer.WriteNumberValue(MaxCompletionTokens.Value);
+                if (MaxCompletionTokens != null)
+                {
+                    writer.WritePropertyName("max_completion_tokens"u8);
+                    writer.WriteNumberValue(MaxCompletionTokens.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_completion_tokens"u8);
+                }
             }
-            if (Optional.IsDefined(TruncationStrategy) && _additionalBinaryDataProperties?.ContainsKey("truncation_strategy") != true)
+            if (Optional.IsDefined(TruncationStrategy, _truncationStrategyIsDefined) && _additionalBinaryDataProperties?.ContainsKey("truncation_strategy") != true)
             {
-                writer.WritePropertyName("truncation_strategy"u8);
-                writer.WriteObjectValue(TruncationStrategy, options);
+                if (TruncationStrategy != null)
+                {
+                    writer.WritePropertyName("truncation_strategy"u8);
+                    writer.WriteObjectValue(TruncationStrategy, options);
+                }
+                else
+                {
+                    writer.WriteNull("truncation_strategy"u8);
+                }
             }
             if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
@@ -203,15 +259,22 @@ namespace OpenAI.Assistants
             string assistantId = default;
             ThreadCreationOptions thread = default;
             string model = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
-            IList<ToolDefinition> tools = default;
+            IList<ToolDefinition> tools = new ChangeTrackingList<ToolDefinition>();
             ToolResources toolResources = default;
             IDictionary<string, string> metadata = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
+            bool topPIsDefined = false;
             float? topP = default;
+            bool streamIsDefined = false;
             bool? stream = default;
+            bool maxPromptTokensIsDefined = false;
             int? maxPromptTokens = default;
+            bool maxCompletionTokensIsDefined = false;
             int? maxCompletionTokens = default;
+            bool truncationStrategyIsDefined = false;
             RunTruncationStrategy truncationStrategy = default;
             ToolConstraint toolChoice = default;
             bool? parallelToolCalls = default;
@@ -245,6 +308,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -257,6 +321,7 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        tools = null;
                         continue;
                     }
                     List<ToolDefinition> array = new List<ToolDefinition>();
@@ -300,6 +365,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -310,6 +376,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("top_p"u8))
                 {
+                    topPIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
@@ -320,6 +387,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("stream"u8))
                 {
+                    streamIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stream = null;
@@ -330,6 +398,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("max_prompt_tokens"u8))
                 {
+                    maxPromptTokensIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         maxPromptTokens = null;
@@ -340,6 +409,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("max_completion_tokens"u8))
                 {
+                    maxCompletionTokensIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         maxCompletionTokens = null;
@@ -350,6 +420,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("truncation_strategy"u8))
                 {
+                    truncationStrategyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         truncationStrategy = null;
@@ -395,7 +466,7 @@ namespace OpenAI.Assistants
                 thread,
                 model,
                 instructions,
-                tools ?? new ChangeTrackingList<ToolDefinition>(),
+                tools,
                 toolResources,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
@@ -407,7 +478,16 @@ namespace OpenAI.Assistants
                 toolChoice,
                 parallelToolCalls,
                 responseFormat,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _instructionsIsDefined = instructionsIsDefined,
+                _temperatureIsDefined = temperatureIsDefined,
+                _topPIsDefined = topPIsDefined,
+                _streamIsDefined = streamIsDefined,
+                _maxPromptTokensIsDefined = maxPromptTokensIsDefined,
+                _maxCompletionTokensIsDefined = maxCompletionTokensIsDefined,
+                _truncationStrategyIsDefined = truncationStrategyIsDefined
+            };
         }
     }
 }

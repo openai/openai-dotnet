@@ -12,6 +12,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FunctionTool : ResponseTool
     {
+        private string _functionDescription;
+        private bool _functionDescriptionIsDefined;
+
         public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(ResponseToolKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
@@ -25,7 +28,7 @@ namespace OpenAI.Responses
         internal FunctionTool(ResponseToolKind kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, patch)
         {
             FunctionName = functionName;
-            FunctionDescription = functionDescription;
+            _functionDescription = functionDescription;
             FunctionParameters = functionParameters;
             StrictModeEnabled = strictModeEnabled;
         }
@@ -33,7 +36,18 @@ namespace OpenAI.Responses
 
         public string FunctionName { get; set; }
 
-        public string FunctionDescription { get; set; }
+        public string FunctionDescription
+        {
+            get
+            {
+                return _functionDescription;
+            }
+            set
+            {
+                _functionDescription = value;
+                _functionDescriptionIsDefined = true;
+            }
+        }
 
         public BinaryData FunctionParameters { get; set; }
 

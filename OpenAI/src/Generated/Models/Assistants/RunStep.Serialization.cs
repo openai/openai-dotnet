@@ -84,7 +84,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
             {
@@ -132,10 +132,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("expired_at") != true)
             {
-                if (Optional.IsDefined(ExpiredAt))
+                if (Optional.IsDefined(ExpiredOn))
                 {
                     writer.WritePropertyName("expired_at"u8);
-                    writer.WriteNumberValue(ExpiredAt.Value, "U");
+                    writer.WriteNumberValue(ExpiredOn.Value, "U");
                 }
                 else
                 {
@@ -144,10 +144,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
             {
-                if (Optional.IsDefined(CancelledAt))
+                if (Optional.IsDefined(CancelledOn))
                 {
                     writer.WritePropertyName("cancelled_at"u8);
-                    writer.WriteNumberValue(CancelledAt.Value, "U");
+                    writer.WriteNumberValue(CancelledOn.Value, "U");
                 }
                 else
                 {
@@ -156,10 +156,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
             {
-                if (Optional.IsDefined(FailedAt))
+                if (Optional.IsDefined(FailedOn))
                 {
                     writer.WritePropertyName("failed_at"u8);
-                    writer.WriteNumberValue(FailedAt.Value, "U");
+                    writer.WriteNumberValue(FailedOn.Value, "U");
                 }
                 else
                 {
@@ -168,10 +168,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
-                if (Optional.IsDefined(CompletedAt))
+                if (Optional.IsDefined(CompletedOn))
                 {
                     writer.WritePropertyName("completed_at"u8);
-                    writer.WriteNumberValue(CompletedAt.Value, "U");
+                    writer.WriteNumberValue(CompletedOn.Value, "U");
                 }
                 else
                 {
@@ -250,7 +250,7 @@ namespace OpenAI.Assistants
             }
             string id = default;
             string @object = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string assistantId = default;
             string threadId = default;
             string runId = default;
@@ -258,10 +258,10 @@ namespace OpenAI.Assistants
             RunStepStatus status = default;
             RunStepDetails details = default;
             RunStepError lastError = default;
-            DateTimeOffset? expiredAt = default;
-            DateTimeOffset? cancelledAt = default;
-            DateTimeOffset? failedAt = default;
-            DateTimeOffset? completedAt = default;
+            DateTimeOffset? expiredOn = default;
+            DateTimeOffset? cancelledOn = default;
+            DateTimeOffset? failedOn = default;
+            DateTimeOffset? completedOn = default;
             IReadOnlyDictionary<string, string> metadata = default;
             RunStepTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -279,7 +279,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("assistant_id"u8))
@@ -326,40 +326,40 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        expiredAt = null;
+                        expiredOn = null;
                         continue;
                     }
-                    expiredAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiredOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("cancelled_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        cancelledAt = null;
+                        cancelledOn = null;
                         continue;
                     }
-                    cancelledAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    cancelledOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("failed_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        failedAt = null;
+                        failedOn = null;
                         continue;
                     }
-                    failedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    failedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("completed_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        completedAt = null;
+                        completedOn = null;
                         continue;
                     }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    completedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -400,7 +400,7 @@ namespace OpenAI.Assistants
             return new RunStep(
                 id,
                 @object,
-                createdAt,
+                createdOn,
                 assistantId,
                 threadId,
                 runId,
@@ -408,10 +408,10 @@ namespace OpenAI.Assistants
                 status,
                 details,
                 lastError,
-                expiredAt,
-                cancelledAt,
-                failedAt,
-                completedAt,
+                expiredOn,
+                cancelledOn,
+                failedOn,
+                completedOn,
                 metadata,
                 usage,
                 additionalBinaryDataProperties);

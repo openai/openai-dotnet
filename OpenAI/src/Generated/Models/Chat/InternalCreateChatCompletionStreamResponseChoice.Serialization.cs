@@ -61,10 +61,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("delta"u8);
                 writer.WriteObjectValue(Delta, options);
             }
-            if (Optional.IsDefined(Logprobs) && !Patch.Contains("$.logprobs"u8))
+            if (Optional.IsDefined(Logprobs, _logprobsIsDefined) && !Patch.Contains("$.logprobs"u8))
             {
-                writer.WritePropertyName("logprobs"u8);
-                writer.WriteObjectValue(Logprobs, options);
+                if (Logprobs != null)
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteObjectValue(Logprobs, options);
+                }
+                else
+                {
+                    writer.WriteNull("logprobs"u8);
+                }
             }
             if (Optional.IsDefined(FinishReason) && !Patch.Contains("$.finish_reason"u8))
             {
