@@ -59,10 +59,17 @@ namespace OpenAI.Chat
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
+            if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                if (Refusal != null)
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
             }
             if (Optional.IsDefined(ParticipantName) && !Patch.Contains("$.name"u8))
             {
@@ -133,6 +140,7 @@ namespace OpenAI.Chat
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool refusalIsDefined = false;
             string refusal = default;
             string participantName = default;
             ChatOutputAudioReference outputAudioReference = default;
@@ -152,6 +160,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("refusal"u8))
                 {
+                    refusalIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         refusal = null;
@@ -209,7 +218,10 @@ namespace OpenAI.Chat
                 participantName,
                 outputAudioReference,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall);
+                functionCall)
+            {
+                _refusalIsDefined = refusalIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

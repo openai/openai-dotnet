@@ -11,6 +11,9 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemParam : InternalItemParam
     {
+        private string _error;
+        private bool _errorIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(ResponseItemKind.McpListTools)
@@ -29,7 +32,7 @@ namespace OpenAI.Responses
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             Tools = tools ?? new ChangeTrackingList<McpToolDefinition>();
-            Error = error;
+            _error = error;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -41,6 +44,17 @@ namespace OpenAI.Responses
         public IList<McpToolDefinition> Tools { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public string Error { get; set; }
+        public string Error
+        {
+            get
+            {
+                return _error;
+            }
+            set
+            {
+                _error = value;
+                _errorIsDefined = true;
+            }
+        }
     }
 }

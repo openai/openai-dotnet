@@ -119,47 +119,47 @@ namespace OpenAI.Batch
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
-            if (Optional.IsDefined(InProgressAt) && _additionalBinaryDataProperties?.ContainsKey("in_progress_at") != true)
+            if (Optional.IsDefined(InProgressOn) && _additionalBinaryDataProperties?.ContainsKey("in_progress_at") != true)
             {
                 writer.WritePropertyName("in_progress_at"u8);
-                writer.WriteNumberValue(InProgressAt.Value, "U");
+                writer.WriteNumberValue(InProgressOn.Value, "U");
             }
-            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
-            if (Optional.IsDefined(FinalizingAt) && _additionalBinaryDataProperties?.ContainsKey("finalizing_at") != true)
+            if (Optional.IsDefined(FinalizingOn) && _additionalBinaryDataProperties?.ContainsKey("finalizing_at") != true)
             {
                 writer.WritePropertyName("finalizing_at"u8);
-                writer.WriteNumberValue(FinalizingAt.Value, "U");
+                writer.WriteNumberValue(FinalizingOn.Value, "U");
             }
-            if (Optional.IsDefined(CompletedAt) && _additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
+            if (Optional.IsDefined(CompletedOn) && _additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
                 writer.WritePropertyName("completed_at"u8);
-                writer.WriteNumberValue(CompletedAt.Value, "U");
+                writer.WriteNumberValue(CompletedOn.Value, "U");
             }
-            if (Optional.IsDefined(FailedAt) && _additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
+            if (Optional.IsDefined(FailedOn) && _additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
             {
                 writer.WritePropertyName("failed_at"u8);
-                writer.WriteNumberValue(FailedAt.Value, "U");
+                writer.WriteNumberValue(FailedOn.Value, "U");
             }
-            if (Optional.IsDefined(ExpiredAt) && _additionalBinaryDataProperties?.ContainsKey("expired_at") != true)
+            if (Optional.IsDefined(ExpiredOn) && _additionalBinaryDataProperties?.ContainsKey("expired_at") != true)
             {
                 writer.WritePropertyName("expired_at"u8);
-                writer.WriteNumberValue(ExpiredAt.Value, "U");
+                writer.WriteNumberValue(ExpiredOn.Value, "U");
             }
-            if (Optional.IsDefined(CancellingAt) && _additionalBinaryDataProperties?.ContainsKey("cancelling_at") != true)
+            if (Optional.IsDefined(CancellingOn) && _additionalBinaryDataProperties?.ContainsKey("cancelling_at") != true)
             {
                 writer.WritePropertyName("cancelling_at"u8);
-                writer.WriteNumberValue(CancellingAt.Value, "U");
+                writer.WriteNumberValue(CancellingOn.Value, "U");
             }
-            if (Optional.IsDefined(CancelledAt) && _additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
+            if (Optional.IsDefined(CancelledOn) && _additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
             {
                 writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteNumberValue(CancelledAt.Value, "U");
+                writer.WriteNumberValue(CancelledOn.Value, "U");
             }
             if (Optional.IsDefined(RequestCounts) && _additionalBinaryDataProperties?.ContainsKey("request_counts") != true)
             {
@@ -239,15 +239,15 @@ namespace OpenAI.Batch
             InternalBatchStatus status = default;
             string outputFileId = default;
             string errorFileId = default;
-            DateTimeOffset createdAt = default;
-            DateTimeOffset? inProgressAt = default;
-            DateTimeOffset? expiresAt = default;
-            DateTimeOffset? finalizingAt = default;
-            DateTimeOffset? completedAt = default;
-            DateTimeOffset? failedAt = default;
-            DateTimeOffset? expiredAt = default;
-            DateTimeOffset? cancellingAt = default;
-            DateTimeOffset? cancelledAt = default;
+            DateTimeOffset createdOn = default;
+            DateTimeOffset? inProgressOn = default;
+            DateTimeOffset? expiresOn = default;
+            DateTimeOffset? finalizingOn = default;
+            DateTimeOffset? completedOn = default;
+            DateTimeOffset? failedOn = default;
+            DateTimeOffset? expiredOn = default;
+            DateTimeOffset? cancellingOn = default;
+            DateTimeOffset? cancelledOn = default;
             InternalBatchRequestCounts requestCounts = default;
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -304,7 +304,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("in_progress_at"u8))
@@ -313,7 +313,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    inProgressAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    inProgressOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("expires_at"u8))
@@ -322,7 +322,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("finalizing_at"u8))
@@ -331,7 +331,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    finalizingAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    finalizingOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("completed_at"u8))
@@ -340,7 +340,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    completedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("failed_at"u8))
@@ -349,7 +349,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    failedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    failedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("expired_at"u8))
@@ -358,7 +358,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    expiredAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiredOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("cancelling_at"u8))
@@ -367,7 +367,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    cancellingAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    cancellingOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("cancelled_at"u8))
@@ -376,7 +376,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    cancelledAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    cancelledOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("request_counts"u8))
@@ -423,15 +423,15 @@ namespace OpenAI.Batch
                 status,
                 outputFileId,
                 errorFileId,
-                createdAt,
-                inProgressAt,
-                expiresAt,
-                finalizingAt,
-                completedAt,
-                failedAt,
-                expiredAt,
-                cancellingAt,
-                cancelledAt,
+                createdOn,
+                inProgressOn,
+                expiresOn,
+                finalizingOn,
+                completedOn,
+                failedOn,
+                expiredOn,
+                cancellingOn,
+                cancelledOn,
                 requestCounts,
                 metadata,
                 additionalBinaryDataProperties);

@@ -96,7 +96,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("vector_store_id") != true)
             {
@@ -129,26 +129,33 @@ namespace OpenAI.VectorStores
             }
             if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
-                writer.WritePropertyName("attributes"u8);
-                writer.WriteStartObject();
-                foreach (var item in Attributes)
+                if (Attributes != null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
+                    writer.WritePropertyName("attributes"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Attributes)
                     {
-                        writer.WriteNullValue();
-                        continue;
-                    }
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
+                        writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                        using (JsonDocument document = JsonDocument.Parse(item.Value))
+                        {
+                            JsonSerializer.Serialize(writer, document.RootElement);
+                        }
 #endif
+                    }
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("attributes"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -194,12 +201,12 @@ namespace OpenAI.VectorStores
             string fileId = default;
             string @object = default;
             long? usageInBytes = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string vectorStoreId = default;
             VectorStoreFileStatus status = default;
             VectorStoreFileError lastError = default;
             FileChunkingStrategy chunkingStrategy = default;
-            IDictionary<string, BinaryData> attributes = default;
+            IDictionary<string, BinaryData> attributes = new ChangeTrackingDictionary<string, BinaryData>();
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -225,7 +232,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("vector_store_id"u8))
@@ -261,6 +268,7 @@ namespace OpenAI.VectorStores
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        attributes = null;
                         continue;
                     }
                     Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
@@ -285,12 +293,12 @@ namespace OpenAI.VectorStores
                 fileId,
                 @object,
                 usageInBytes,
-                createdAt,
+                createdOn,
                 vectorStoreId,
                 status,
                 lastError,
                 chunkingStrategy,
-                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
+                attributes,
                 additionalBinaryDataProperties);
         }
     }

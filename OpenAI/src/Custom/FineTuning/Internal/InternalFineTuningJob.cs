@@ -50,17 +50,11 @@ internal partial class InternalFineTuningJob
     [CodeGenMember("UserProvidedSuffix")]
     public string UserProvidedSuffix { get; }
 
-    [CodeGenMember("CreatedAt")]
-    public DateTimeOffset CreatedAt { get; }
-
     [CodeGenMember("Error")]
     public FineTuningError Error { get; }
 
     [CodeGenMember("FineTunedModel")]
     public string FineTunedModel { get; }
-
-    [CodeGenMember("FinishedAt")]
-    public DateTimeOffset? FinishedAt { get; }
 
     [CodeGenMember("OrganizationId")]
     public string OrganizationId { get; }
@@ -73,6 +67,6 @@ internal partial class InternalFineTuningJob
 
     public override string ToString()
     {
-        return $"FineTuningJob<{JobId}, {Status}, {CreatedAt}>";
+        return $"FineTuningJob<{JobId}, {Status}, {CreatedOn}>";
     }
 }

@@ -103,15 +103,29 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Agent) && !Patch.Contains("$.agent"u8))
+            if (Optional.IsDefined(Agent, _agentIsDefined) && !Patch.Contains("$.agent"u8))
             {
-                writer.WritePropertyName("agent"u8);
-                writer.WriteObjectValue(Agent, options);
+                if (Agent != null)
+                {
+                    writer.WritePropertyName("agent"u8);
+                    writer.WriteObjectValue(Agent, options);
+                }
+                else
+                {
+                    writer.WriteNull("agent"u8);
+                }
             }
-            if (Optional.IsDefined(Caller) && !Patch.Contains("$.caller"u8))
+            if (Optional.IsDefined(Caller, _callerIsDefined) && !Patch.Contains("$.caller"u8))
             {
-                writer.WritePropertyName("caller"u8);
-                writer.WriteObjectValue(Caller, options);
+                if (Caller != null)
+                {
+                    writer.WritePropertyName("caller"u8);
+                    writer.WriteObjectValue(Caller, options);
+                }
+                else
+                {
+                    writer.WriteNull("caller"u8);
+                }
             }
             if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
             {
@@ -154,7 +168,9 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             IList<ResponseContentPart> output = default;
+            bool agentIsDefined = false;
             InternalBetaAgentTag agent = default;
+            bool callerIsDefined = false;
             InternalToolCallCaller caller = default;
             string createdBy = default;
             CustomToolCallOutputStatus? status = default;
@@ -182,6 +198,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("agent"u8))
                 {
+                    agentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         agent = null;
@@ -192,6 +209,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("caller"u8))
                 {
+                    callerIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         caller = null;
@@ -225,7 +243,11 @@ namespace OpenAI.Responses
                 agent,
                 caller,
                 createdBy,
-                status);
+                status)
+            {
+                _agentIsDefined = agentIsDefined,
+                _callerIsDefined = callerIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

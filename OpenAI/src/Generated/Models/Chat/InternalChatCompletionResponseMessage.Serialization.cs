@@ -149,10 +149,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
-            if (Optional.IsDefined(Audio) && !Patch.Contains("$.audio"u8))
+            if (Optional.IsDefined(Audio, _audioIsDefined) && !Patch.Contains("$.audio"u8))
             {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(Audio, options);
+                if (Audio != null)
+                {
+                    writer.WritePropertyName("audio"u8);
+                    writer.WriteObjectValue(Audio, options);
+                }
+                else
+                {
+                    writer.WriteNull("audio"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -184,6 +191,7 @@ namespace OpenAI.Chat
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
             ChatMessageRole role = default;
             ChatFunctionCall functionCall = default;
+            bool audioIsDefined = false;
             ChatOutputAudio audio = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -249,6 +257,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("audio"u8))
                 {
+                    audioIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         audio = null;
@@ -267,7 +276,10 @@ namespace OpenAI.Chat
                 role,
                 functionCall,
                 audio,
-                patch);
+                patch)
+            {
+                _audioIsDefined = audioIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

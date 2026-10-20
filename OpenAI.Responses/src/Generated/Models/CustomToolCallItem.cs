@@ -11,6 +11,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomToolCallItem : ResponseItem
     {
+        private InternalBetaAgentTag _agent;
+        private bool _agentIsDefined;
+        private InternalToolCallCaller _caller;
+        private bool _callerIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CustomToolCallItem(string callId, string input, string toolName) : base(ResponseItemKind.CustomToolCall)
         {
@@ -31,8 +36,8 @@ namespace OpenAI.Responses
             CallId = callId;
             Input = input;
             ToolName = toolName;
-            Agent = agent;
-            Caller = caller;
+            _agent = agent;
+            _caller = caller;
             CreatedBy = createdBy;
             Namespace = @namespace;
             Status = status;
@@ -46,9 +51,31 @@ namespace OpenAI.Responses
 
         public string ToolName { get; set; }
 
-        internal InternalBetaAgentTag Agent { get; set; }
+        internal InternalBetaAgentTag Agent
+        {
+            get
+            {
+                return _agent;
+            }
+            set
+            {
+                _agent = value;
+                _agentIsDefined = true;
+            }
+        }
 
-        internal InternalToolCallCaller Caller { get; set; }
+        internal InternalToolCallCaller Caller
+        {
+            get
+            {
+                return _caller;
+            }
+            set
+            {
+                _caller = value;
+                _callerIsDefined = true;
+            }
+        }
 
         internal string CreatedBy { get; set; }
 

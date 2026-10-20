@@ -113,17 +113,24 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("ranking_options"u8);
                 writer.WriteObjectValue(RankingOptions, options);
             }
-            if (Optional.IsDefined(Filters) && !Patch.Contains("$.filters"u8))
+            if (Optional.IsDefined(Filters, _filtersIsDefined) && !Patch.Contains("$.filters"u8))
             {
-                writer.WritePropertyName("filters"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Filters);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Filters))
+                if (Filters != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    writer.WritePropertyName("filters"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Filters);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Filters))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("filters"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -156,6 +163,7 @@ namespace OpenAI.Responses
             IList<string> vectorStoreIds = default;
             int? maxResultCount = default;
             FileSearchToolRankingOptions rankingOptions = default;
+            bool filtersIsDefined = false;
             BinaryData filters = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -201,6 +209,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("filters"u8))
                 {
+                    filtersIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         filters = null;
@@ -217,7 +226,10 @@ namespace OpenAI.Responses
                 vectorStoreIds ?? new ChangeTrackingList<string>(),
                 maxResultCount,
                 rankingOptions,
-                filters);
+                filters)
+            {
+                _filtersIsDefined = filtersIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

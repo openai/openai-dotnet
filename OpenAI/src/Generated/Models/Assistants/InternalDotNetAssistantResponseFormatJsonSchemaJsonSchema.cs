@@ -10,6 +10,8 @@ namespace OpenAI.Assistants
     internal partial class InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private bool? _strict;
+        private bool _strictIsDefined;
 
         public InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema(string name)
         {
@@ -21,7 +23,7 @@ namespace OpenAI.Assistants
             Description = description;
             Name = name;
             Schema = schema;
-            Strict = strict;
+            _strict = strict;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -31,7 +33,18 @@ namespace OpenAI.Assistants
 
         public BinaryData Schema { get; set; }
 
-        public bool? Strict { get; set; }
+        public bool? Strict
+        {
+            get
+            {
+                return _strict;
+            }
+            set
+            {
+                _strict = value;
+                _strictIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

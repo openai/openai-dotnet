@@ -84,7 +84,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -138,32 +138,53 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            if (Optional.IsDefined(ToolResources, _toolResourcesIsDefined) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
             {
-                writer.WritePropertyName("tool_resources"u8);
-                writer.WriteObjectValue(ToolResources, options);
+                if (ToolResources != null)
+                {
+                    writer.WritePropertyName("tool_resources"u8);
+                    writer.WriteObjectValue(ToolResources, options);
+                }
+                else
+                {
+                    writer.WriteNull("tool_resources"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                if (Metadata != null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
                     }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
             if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
@@ -218,14 +239,16 @@ namespace OpenAI.Assistants
             }
             string id = default;
             string @object = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string name = default;
             string description = default;
             string model = default;
             string instructions = default;
             IReadOnlyList<ToolDefinition> tools = default;
+            bool toolResourcesIsDefined = false;
             ToolResources toolResources = default;
-            IReadOnlyDictionary<string, string> metadata = default;
+            IReadOnlyDictionary<string, string> metadata = new ChangeTrackingDictionary<string, string>();
+            bool temperatureIsDefined = false;
             float? temperature = default;
             float? nucleusSamplingFactor = default;
             AssistantResponseFormat responseFormat = default;
@@ -244,7 +267,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -294,6 +317,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("tool_resources"u8))
                 {
+                    toolResourcesIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         toolResources = null;
@@ -306,6 +330,7 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        metadata = null;
                         continue;
                     }
                     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -325,6 +350,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -359,18 +385,22 @@ namespace OpenAI.Assistants
             return new Assistant(
                 id,
                 @object,
-                createdAt,
+                createdOn,
                 name,
                 description,
                 model,
                 instructions,
                 tools ?? new ChangeTrackingList<ToolDefinition>(),
                 toolResources,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
+                metadata,
                 temperature,
                 nucleusSamplingFactor,
                 responseFormat,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _toolResourcesIsDefined = toolResourcesIsDefined,
+                _temperatureIsDefined = temperatureIsDefined
+            };
         }
     }
 }

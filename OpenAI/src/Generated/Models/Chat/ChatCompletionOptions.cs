@@ -15,6 +15,16 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
+        private float? _topP;
+        private bool _topPIsDefined;
+        private float? _frequencyPenalty;
+        private bool _frequencyPenaltyIsDefined;
+        private float? _presencePenalty;
+        private bool _presencePenaltyIsDefined;
+        private long? _seed;
+        private bool _seedIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
@@ -22,9 +32,9 @@ namespace OpenAI.Chat
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
+            _temperature = temperature;
             TopLogProbabilityCount = topLogProbabilityCount;
-            TopP = topP;
+            _topP = topP;
             EndUserId = endUserId;
             SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
@@ -33,8 +43,8 @@ namespace OpenAI.Chat
             InternalModalities = internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
             ReasoningEffortLevel = reasoningEffortLevel;
             MaxOutputTokenCount = maxOutputTokenCount;
-            FrequencyPenalty = frequencyPenalty;
-            PresencePenalty = presencePenalty;
+            _frequencyPenalty = frequencyPenalty;
+            _presencePenalty = presencePenalty;
             WebSearchOptions = webSearchOptions;
             ResponseFormat = responseFormat;
             AudioOptions = audioOptions;
@@ -46,7 +56,7 @@ namespace OpenAI.Chat
             _deprecatedMaxTokens = deprecatedMaxTokens;
             N = n;
             OutputPrediction = outputPrediction;
-            Seed = seed;
+            _seed = seed;
             StreamOptions = streamOptions;
             Tools = tools ?? new ChangeTrackingList<ChatTool>();
             ToolChoice = toolChoice;
@@ -64,9 +74,31 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
-        public float? TopP { get; set; }
+        public float? TopP
+        {
+            get
+            {
+                return _topP;
+            }
+            set
+            {
+                _topP = value;
+                _topPIsDefined = true;
+            }
+        }
 
         [Experimental("OPENAI001")]
         public string SafetyIdentifier { get; set; }
@@ -74,15 +106,48 @@ namespace OpenAI.Chat
         [Experimental("OPENAI001")]
         public ChatServiceTier? ServiceTier { get; set; }
 
-        public float? FrequencyPenalty { get; set; }
+        public float? FrequencyPenalty
+        {
+            get
+            {
+                return _frequencyPenalty;
+            }
+            set
+            {
+                _frequencyPenalty = value;
+                _frequencyPenaltyIsDefined = true;
+            }
+        }
 
-        public float? PresencePenalty { get; set; }
+        public float? PresencePenalty
+        {
+            get
+            {
+                return _presencePenalty;
+            }
+            set
+            {
+                _presencePenalty = value;
+                _presencePenaltyIsDefined = true;
+            }
+        }
 
         [Experimental("OPENAI001")]
         public ChatWebSearchOptions WebSearchOptions { get; set; }
 
         [Experimental("OPENAI001")]
-        public long? Seed { get; set; }
+        public long? Seed
+        {
+            get
+            {
+                return _seed;
+            }
+            set
+            {
+                _seed = value;
+                _seedIsDefined = true;
+            }
+        }
 
         public IList<ChatTool> Tools { get; }
     }

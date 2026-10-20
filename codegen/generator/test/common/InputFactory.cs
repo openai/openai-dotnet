@@ -604,7 +604,6 @@ namespace OpenAILibraryPlugin.Tests.Common
             var operation = new InputOperation(
                 name,
                 null,
-                "",
                 $"{name} description",
                 null,
                 access,
