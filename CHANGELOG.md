@@ -24,6 +24,7 @@
 - OpenAI.Assistants:
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
+  - Fixed `TextAnnotationUpdate.EndIndex` returning the start index for streamed text annotations of a type that the library does not model.
 
 - OpenAI.Chat and OpenAI.Responses:
   - Latest-mode operation exception logs now include final API errors and rate limiting.
