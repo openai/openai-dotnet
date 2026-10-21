@@ -17,7 +17,7 @@ public class AssistantPaginationQueryOrderMockTests
         Uri requestUri = null;
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
             """{"object":"list","data":[],"first_id":null,"last_id":null,"has_more":false}""");
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Endpoint = new Uri("https://example.invalid/v1"),
             Transport = new MockPipelineTransport(message =>

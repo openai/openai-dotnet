@@ -9,7 +9,7 @@ public sealed class ImageClientSettings : ClientSettings
 {
     public string Model { get; set; }
 
-    public OpenAIClientOptions Options { get; set; }
+    public ImageClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
@@ -18,7 +18,7 @@ public sealed class ImageClientSettings : ClientSettings
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
-            Options ??= new OpenAIClientOptions(optionsSection);
+            Options ??= new ImageClientOptions(optionsSection);
         }
     }
 }

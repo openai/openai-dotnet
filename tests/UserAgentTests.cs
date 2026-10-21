@@ -28,7 +28,7 @@ public class UserAgentTests
     {
         // The application id is echoed in the user agent of every request, so it is bounded to keep an
         // oversized value from inflating each one.
-        OpenAIClientOptions options = new() { UserAgentApplicationId = new string('a', 513), };
+        ChatClientOptions options = new() { UserAgentApplicationId = new string('a', 513), };
 
         Assert.Throws<ArgumentOutOfRangeException>(() => TestEnvironment.GetTestClient<ChatClient>(options: options));
     }
@@ -41,7 +41,7 @@ public class UserAgentTests
             _ = m?.Request?.Headers?.TryGetValue("User-Agent", out userAgent);
         });
 
-        OpenAIClientOptions options = applicationId is not null
+        ChatClientOptions options = applicationId is not null
             ? new() { UserAgentApplicationId = applicationId, }
             : new();
 

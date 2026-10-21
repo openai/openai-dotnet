@@ -24,11 +24,11 @@ namespace OpenAI.Assistants {
     public class AssistantClient {
         protected AssistantClient();
         public AssistantClient(AssistantClientSettings settings);
-        public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public AssistantClient(ApiKeyCredential credential, AssistantClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
-        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options);
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
-        protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal AssistantClient(ClientPipeline pipeline, AssistantClientOptions options);
         public AssistantClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -129,8 +129,14 @@ namespace OpenAI.Assistants {
         public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
     }
+    public class AssistantClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class AssistantClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public AssistantClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class AssistantCollectionOptions : IJsonModel<AssistantCollectionOptions>, IPersistableModel<AssistantCollectionOptions> {

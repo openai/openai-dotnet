@@ -63,7 +63,7 @@ public class ConversationMockTests
     {
         Uri requestUri = null;
         MockPipelineResponse response = new(200);
-        OpenAIClientOptions options = new()
+        ConversationClientOptions options = new()
         {
             Endpoint = new Uri("https://example.invalid/v1"),
             Transport = new MockPipelineTransport(message =>

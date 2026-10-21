@@ -7,14 +7,14 @@ namespace OpenAI.Videos;
 [Experimental("SCME0002")]
 public sealed class VideoClientSettings : ClientSettings
 {
-    public OpenAIClientOptions Options { get; set; }
+    public VideoClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
-            Options ??= new OpenAIClientOptions(optionsSection);
+            Options ??= new VideoClientOptions(optionsSection);
         }
     }
 }
