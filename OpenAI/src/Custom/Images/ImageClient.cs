@@ -697,6 +697,7 @@ public partial class ImageClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
@@ -721,6 +722,7 @@ public partial class ImageClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
@@ -744,6 +746,7 @@ public partial class ImageClient
     /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -762,6 +765,7 @@ public partial class ImageClient
     /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -782,6 +786,7 @@ public partial class ImageClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
@@ -807,6 +812,7 @@ public partial class ImageClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
@@ -831,6 +837,7 @@ public partial class ImageClient
     /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -850,6 +857,7 @@ public partial class ImageClient
     /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, int imageCount, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
