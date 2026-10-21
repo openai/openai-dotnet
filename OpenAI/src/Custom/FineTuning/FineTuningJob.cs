@@ -90,6 +90,7 @@ public partial class FineTuningJob : OperationResult
         Value = job.FineTunedModel;
 
         BaseModel = job.BaseModel;
+        BillableTrainedTokenCount = job.BillableTrainedTokenCount ?? 0;
         EstimatedFinishAt = job.EstimatedFinishAt;
         Hyperparameters = job.Hyperparameters;
         Integrations = job.Integrations;
