@@ -22,6 +22,7 @@ launchSettings.json
 
 # Build results
 /artifacts
+/OpenAI/src/Custom/__OpenAIResponsesCustom/
 binaries/
 [Dd]ebug*/
 [Rr]elease/
