@@ -344,7 +344,7 @@ public partial class OpenAIClient
         OrganizationId = _options.OrganizationId,
         ProjectId = _options.ProjectId,
         UserAgentApplicationId = _options.UserAgentApplicationId,
-    });
+    }, _keyCredential);
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
