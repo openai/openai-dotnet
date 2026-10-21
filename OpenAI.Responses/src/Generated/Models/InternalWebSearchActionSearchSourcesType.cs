@@ -4,10 +4,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalWebSearchActionSearchSourcesType : IEquatable<InternalWebSearchActionSearchSourcesType>
+    [Experimental("OPENAI001")]
+    public readonly partial struct InternalWebSearchActionSearchSourcesType : IEquatable<InternalWebSearchActionSearchSourcesType>
     {
         private readonly string _value;
         private const string UriValue = "url";
@@ -17,7 +19,7 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalWebSearchActionSearchSourcesType Uri { get; } = new InternalWebSearchActionSearchSourcesType(UriValue);
+        public static InternalWebSearchActionSearchSourcesType Uri { get; } = new InternalWebSearchActionSearchSourcesType(UriValue);
 
         public static bool operator ==(InternalWebSearchActionSearchSourcesType left, InternalWebSearchActionSearchSourcesType right) => left.Equals(right);
 

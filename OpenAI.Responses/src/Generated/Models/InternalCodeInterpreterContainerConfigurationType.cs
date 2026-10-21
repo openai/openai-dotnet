@@ -4,10 +4,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalCodeInterpreterContainerConfigurationType : IEquatable<InternalCodeInterpreterContainerConfigurationType>
+    [Experimental("OPENAI001")]
+    public readonly partial struct InternalCodeInterpreterContainerConfigurationType : IEquatable<InternalCodeInterpreterContainerConfigurationType>
     {
         private readonly string _value;
         private const string AutoValue = "auto";
@@ -17,7 +19,7 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalCodeInterpreterContainerConfigurationType Auto { get; } = new InternalCodeInterpreterContainerConfigurationType(AutoValue);
+        public static InternalCodeInterpreterContainerConfigurationType Auto { get; } = new InternalCodeInterpreterContainerConfigurationType(AutoValue);
 
         public static bool operator ==(InternalCodeInterpreterContainerConfigurationType left, InternalCodeInterpreterContainerConfigurationType right) => left.Equals(right);
 

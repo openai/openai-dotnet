@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal WebSearchActionSource(InternalWebSearchActionSearchSourcesType kind)
+        protected internal WebSearchActionSource(InternalWebSearchActionSearchSourcesType kind)
         {
             Kind = kind;
         }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalWebSearchActionSearchSourcesType Kind { get; set; }
+        public InternalWebSearchActionSearchSourcesType Kind { get; }
     }
 }

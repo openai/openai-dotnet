@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ReasoningSummaryPart(InternalReasoningItemSummaryPartType kind)
+        protected internal ReasoningSummaryPart(InternalReasoningItemSummaryPartType kind)
         {
             Kind = kind;
         }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalReasoningItemSummaryPartType Kind { get; set; }
+        public InternalReasoningItemSummaryPartType Kind { get; }
     }
 }

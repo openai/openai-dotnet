@@ -4,10 +4,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalWebSearchUserLocationKind : IEquatable<InternalWebSearchUserLocationKind>
+    [Experimental("OPENAI001")]
+    public readonly partial struct InternalWebSearchUserLocationKind : IEquatable<InternalWebSearchUserLocationKind>
     {
         private readonly string _value;
         private const string ApproximateValue = "approximate";
@@ -17,7 +19,7 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalWebSearchUserLocationKind Approximate { get; } = new InternalWebSearchUserLocationKind(ApproximateValue);
+        public static InternalWebSearchUserLocationKind Approximate { get; } = new InternalWebSearchUserLocationKind(ApproximateValue);
 
         public static bool operator ==(InternalWebSearchUserLocationKind left, InternalWebSearchUserLocationKind right) => left.Equals(right);
 

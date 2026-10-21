@@ -4,10 +4,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalComputerUsePreviewToolCallOutputOutputType : IEquatable<InternalComputerUsePreviewToolCallOutputOutputType>
+    [Experimental("OPENAI001")]
+    public readonly partial struct InternalComputerUsePreviewToolCallOutputOutputType : IEquatable<InternalComputerUsePreviewToolCallOutputOutputType>
     {
         private readonly string _value;
         private const string ScreenshotValue = "computer_screenshot";
@@ -17,7 +19,7 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalComputerUsePreviewToolCallOutputOutputType Screenshot { get; } = new InternalComputerUsePreviewToolCallOutputOutputType(ScreenshotValue);
+        public static InternalComputerUsePreviewToolCallOutputOutputType Screenshot { get; } = new InternalComputerUsePreviewToolCallOutputOutputType(ScreenshotValue);
 
         public static bool operator ==(InternalComputerUsePreviewToolCallOutputOutputType left, InternalComputerUsePreviewToolCallOutputOutputType right) => left.Equals(right);
 

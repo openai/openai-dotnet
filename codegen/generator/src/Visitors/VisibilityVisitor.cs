@@ -92,11 +92,11 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static bool TryUpdateVisibilityFromAttributes<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
     {
-        (string targetName, IReadOnlyList<ParameterProvider> targetParameters, MethodSignatureModifiers startingModifiers) = target switch
+        (string targetName, IReadOnlyList<ParameterProvider> targetParameters) = target switch
         {
-            PropertyProvider propertyTarget => (propertyTarget.Name, (IReadOnlyList<ParameterProvider>)[], propertyTarget.Modifiers),
-            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters, constructorTarget.Signature.Modifiers),
-            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters, methodTarget.Signature.Modifiers),
+            PropertyProvider propertyTarget => (propertyTarget.Name, (IReadOnlyList<ParameterProvider>)[]),
+            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters),
+            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters),
             _ => throw new NotImplementedException()
         };
 
@@ -134,7 +134,13 @@ public class VisibilityVisitor : ScmLibraryVisitor
             _ => throw new NotImplementedException(),
         };
 
-        return modifierFromAttribute is not null && AssignModifier(target, modifierFromAttribute.Value) != startingModifiers;
+        if (modifierFromAttribute is null)
+        {
+            return false;
+        }
+
+        AssignModifier(target, modifierFromAttribute.Value);
+        return true;
     }
 
     private static bool TryUpdateDefaultVisibility<T>(T target)

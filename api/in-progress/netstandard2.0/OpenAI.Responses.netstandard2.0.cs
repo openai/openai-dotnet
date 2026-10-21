@@ -53,17 +53,19 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>, IPersistableModel<ApplyPatchCreateFileOperation> {
-        public ApplyPatchCreateFileOperation();
-        public ApplyPatchCreateFileOperation(string filePath, string diff);
+        public ApplyPatchCreateFileOperation() : base(default);
+        public ApplyPatchCreateFileOperation(string filePath, string diff) : base(default);
         public string Diff { get; set; }
         public string FilePath { get; set; }
     }
     public class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>, IPersistableModel<ApplyPatchDeleteFileOperation> {
-        public ApplyPatchDeleteFileOperation();
-        public ApplyPatchDeleteFileOperation(string filePath);
+        public ApplyPatchDeleteFileOperation() : base(default);
+        public ApplyPatchDeleteFileOperation(string filePath) : base(default);
         public string FilePath { get; set; }
     }
     public class ApplyPatchOperation : IJsonModel<ApplyPatchOperation>, IPersistableModel<ApplyPatchOperation> {
+        protected internal ApplyPatchOperation(InternalApplyPatchOperationType kind);
+        public InternalApplyPatchOperationType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -72,26 +74,28 @@ namespace OpenAI.Responses {
         public ApplyPatchTool() : base(default);
     }
     public class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>, IPersistableModel<ApplyPatchUpdateFileOperation> {
-        public ApplyPatchUpdateFileOperation();
-        public ApplyPatchUpdateFileOperation(string filePath, string diff);
+        public ApplyPatchUpdateFileOperation() : base(default);
+        public ApplyPatchUpdateFileOperation(string filePath, string diff) : base(default);
         public string Diff { get; set; }
         public string FilePath { get; set; }
     }
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
-        public AutomaticCodeInterpreterToolContainerConfiguration();
+        public AutomaticCodeInterpreterToolContainerConfiguration() : base(default);
         public IList<string> FileIds { get; }
     }
     public class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallImageOutput>, IPersistableModel<CodeInterpreterCallImageOutput> {
-        public CodeInterpreterCallImageOutput();
-        public CodeInterpreterCallImageOutput(Uri imageUri);
+        public CodeInterpreterCallImageOutput() : base(default);
+        public CodeInterpreterCallImageOutput(Uri imageUri) : base(default);
         public Uri ImageUri { get; set; }
     }
     public class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallLogsOutput>, IPersistableModel<CodeInterpreterCallLogsOutput> {
-        public CodeInterpreterCallLogsOutput();
-        public CodeInterpreterCallLogsOutput(string logs);
+        public CodeInterpreterCallLogsOutput() : base(default);
+        public CodeInterpreterCallLogsOutput(string logs) : base(default);
         public string Logs { get; set; }
     }
     public class CodeInterpreterCallOutput : IJsonModel<CodeInterpreterCallOutput>, IPersistableModel<CodeInterpreterCallOutput> {
+        protected internal CodeInterpreterCallOutput(InternalCodeInterpreterToolOutputType kind);
+        public InternalCodeInterpreterToolOutputType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -125,6 +129,8 @@ namespace OpenAI.Responses {
         public static implicit operator CodeInterpreterToolContainer(string containerId);
     }
     public class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>, IPersistableModel<CodeInterpreterToolContainerConfiguration> {
+        protected internal CodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind);
+        public InternalCodeInterpreterContainerConfigurationType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -174,6 +180,8 @@ namespace OpenAI.Responses {
         Forward = 4
     }
     public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
+        protected internal ComputerCallOutput(InternalComputerUsePreviewToolCallOutputOutputType kind);
+        public InternalComputerUsePreviewToolCallOutputOutputType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -692,6 +700,123 @@ namespace OpenAI.Responses {
         public static bool operator !=(IncludedResponseProperty left, IncludedResponseProperty right);
         public override readonly string ToString();
     }
+    public readonly partial struct InternalApplyPatchOperationType : IEquatable<InternalApplyPatchOperationType> {
+        public InternalApplyPatchOperationType(string value);
+        public static InternalApplyPatchOperationType CreateFile { get; }
+        public static InternalApplyPatchOperationType DeleteFile { get; }
+        public static InternalApplyPatchOperationType UpdateFile { get; }
+        public readonly bool Equals(InternalApplyPatchOperationType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalApplyPatchOperationType left, InternalApplyPatchOperationType right);
+        public static implicit operator InternalApplyPatchOperationType(string value);
+        public static implicit operator InternalApplyPatchOperationType?(string value);
+        public static bool operator !=(InternalApplyPatchOperationType left, InternalApplyPatchOperationType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalCodeInterpreterContainerConfigurationType : IEquatable<InternalCodeInterpreterContainerConfigurationType> {
+        public InternalCodeInterpreterContainerConfigurationType(string value);
+        public static InternalCodeInterpreterContainerConfigurationType Auto { get; }
+        public readonly bool Equals(InternalCodeInterpreterContainerConfigurationType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalCodeInterpreterContainerConfigurationType left, InternalCodeInterpreterContainerConfigurationType right);
+        public static implicit operator InternalCodeInterpreterContainerConfigurationType(string value);
+        public static implicit operator InternalCodeInterpreterContainerConfigurationType?(string value);
+        public static bool operator !=(InternalCodeInterpreterContainerConfigurationType left, InternalCodeInterpreterContainerConfigurationType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalCodeInterpreterToolOutputType : IEquatable<InternalCodeInterpreterToolOutputType> {
+        public InternalCodeInterpreterToolOutputType(string value);
+        public static InternalCodeInterpreterToolOutputType Image { get; }
+        public static InternalCodeInterpreterToolOutputType Logs { get; }
+        public readonly bool Equals(InternalCodeInterpreterToolOutputType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalCodeInterpreterToolOutputType left, InternalCodeInterpreterToolOutputType right);
+        public static implicit operator InternalCodeInterpreterToolOutputType(string value);
+        public static implicit operator InternalCodeInterpreterToolOutputType?(string value);
+        public static bool operator !=(InternalCodeInterpreterToolOutputType left, InternalCodeInterpreterToolOutputType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalComputerUsePreviewToolCallOutputOutputType : IEquatable<InternalComputerUsePreviewToolCallOutputOutputType> {
+        public InternalComputerUsePreviewToolCallOutputOutputType(string value);
+        public static InternalComputerUsePreviewToolCallOutputOutputType Screenshot { get; }
+        public readonly bool Equals(InternalComputerUsePreviewToolCallOutputOutputType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalComputerUsePreviewToolCallOutputOutputType left, InternalComputerUsePreviewToolCallOutputOutputType right);
+        public static implicit operator InternalComputerUsePreviewToolCallOutputOutputType(string value);
+        public static implicit operator InternalComputerUsePreviewToolCallOutputOutputType?(string value);
+        public static bool operator !=(InternalComputerUsePreviewToolCallOutputOutputType left, InternalComputerUsePreviewToolCallOutputOutputType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalReasoningItemSummaryPartType : IEquatable<InternalReasoningItemSummaryPartType> {
+        public InternalReasoningItemSummaryPartType(string value);
+        public static InternalReasoningItemSummaryPartType SummaryText { get; }
+        public readonly bool Equals(InternalReasoningItemSummaryPartType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalReasoningItemSummaryPartType left, InternalReasoningItemSummaryPartType right);
+        public static implicit operator InternalReasoningItemSummaryPartType(string value);
+        public static implicit operator InternalReasoningItemSummaryPartType?(string value);
+        public static bool operator !=(InternalReasoningItemSummaryPartType left, InternalReasoningItemSummaryPartType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalWebSearchActionSearchSourcesType : IEquatable<InternalWebSearchActionSearchSourcesType> {
+        public InternalWebSearchActionSearchSourcesType(string value);
+        public static InternalWebSearchActionSearchSourcesType Uri { get; }
+        public readonly bool Equals(InternalWebSearchActionSearchSourcesType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalWebSearchActionSearchSourcesType left, InternalWebSearchActionSearchSourcesType right);
+        public static implicit operator InternalWebSearchActionSearchSourcesType(string value);
+        public static implicit operator InternalWebSearchActionSearchSourcesType?(string value);
+        public static bool operator !=(InternalWebSearchActionSearchSourcesType left, InternalWebSearchActionSearchSourcesType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalWebSearchActionType : IEquatable<InternalWebSearchActionType> {
+        public InternalWebSearchActionType(string value);
+        public static InternalWebSearchActionType FindInPage { get; }
+        public static InternalWebSearchActionType OpenPage { get; }
+        public static InternalWebSearchActionType Search { get; }
+        public readonly bool Equals(InternalWebSearchActionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalWebSearchActionType left, InternalWebSearchActionType right);
+        public static implicit operator InternalWebSearchActionType(string value);
+        public static implicit operator InternalWebSearchActionType?(string value);
+        public static bool operator !=(InternalWebSearchActionType left, InternalWebSearchActionType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct InternalWebSearchUserLocationKind : IEquatable<InternalWebSearchUserLocationKind> {
+        public InternalWebSearchUserLocationKind(string value);
+        public static InternalWebSearchUserLocationKind Approximate { get; }
+        public readonly bool Equals(InternalWebSearchUserLocationKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InternalWebSearchUserLocationKind left, InternalWebSearchUserLocationKind right);
+        public static implicit operator InternalWebSearchUserLocationKind(string value);
+        public static implicit operator InternalWebSearchUserLocationKind?(string value);
+        public static bool operator !=(InternalWebSearchUserLocationKind left, InternalWebSearchUserLocationKind right);
+        public override readonly string ToString();
+    }
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
         public McpTool() : base(default);
         public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(default);
@@ -818,14 +943,16 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>, IPersistableModel<ReasoningSummaryPart> {
+        protected internal ReasoningSummaryPart(InternalReasoningItemSummaryPartType kind);
+        public InternalReasoningItemSummaryPartType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public static ReasoningSummaryTextPart CreateTextPart(string text);
     }
     public class ReasoningSummaryTextPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryTextPart>, IPersistableModel<ReasoningSummaryTextPart> {
-        public ReasoningSummaryTextPart();
-        public ReasoningSummaryTextPart(string text);
+        public ReasoningSummaryTextPart() : base(default);
+        public ReasoningSummaryTextPart(string text) : base(default);
         public string Text { get; set; }
     }
     public class ReferenceResponseItem : ResponseItem, IJsonModel<ReferenceResponseItem>, IPersistableModel<ReferenceResponseItem> {
@@ -1782,18 +1909,22 @@ namespace OpenAI.Responses {
         public Uri Uri { get; set; }
     }
     public class WebSearchAction : IJsonModel<WebSearchAction>, IPersistableModel<WebSearchAction> {
+        protected internal WebSearchAction(InternalWebSearchActionType kind);
+        public InternalWebSearchActionType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class WebSearchActionSource : IJsonModel<WebSearchActionSource>, IPersistableModel<WebSearchActionSource> {
+        protected internal WebSearchActionSource(InternalWebSearchActionSearchSourcesType kind);
+        public InternalWebSearchActionSearchSourcesType Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>, IPersistableModel<WebSearchActionUriSource> {
-        public WebSearchActionUriSource();
-        public WebSearchActionUriSource(Uri uri);
+        public WebSearchActionUriSource() : base(default);
+        public WebSearchActionUriSource(Uri uri) : base(default);
         public Uri Uri { get; set; }
     }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
@@ -1808,13 +1939,13 @@ namespace OpenAI.Responses {
         Failed = 3
     }
     public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
-        public WebSearchFindInPageAction();
-        public WebSearchFindInPageAction(Uri uri, string pattern);
+        public WebSearchFindInPageAction() : base(default);
+        public WebSearchFindInPageAction(Uri uri, string pattern) : base(default);
         public string Pattern { get; set; }
         public Uri Uri { get; set; }
     }
     public class WebSearchOpenPageAction : WebSearchAction, IJsonModel<WebSearchOpenPageAction>, IPersistableModel<WebSearchOpenPageAction> {
-        public WebSearchOpenPageAction();
+        public WebSearchOpenPageAction() : base(default);
         public Uri Uri { get; set; }
     }
     public class WebSearchPreviewTool : ResponseTool, IJsonModel<WebSearchPreviewTool>, IPersistableModel<WebSearchPreviewTool> {
@@ -1823,7 +1954,7 @@ namespace OpenAI.Responses {
         public WebSearchToolLocation UserLocation { get; set; }
     }
     public class WebSearchSearchAction : WebSearchAction, IJsonModel<WebSearchSearchAction>, IPersistableModel<WebSearchSearchAction> {
-        public WebSearchSearchAction();
+        public WebSearchSearchAction() : base(default);
         public IList<string> Queries { get; }
         [Obsolete("This property is obsolete. Use the Queries property instead.")]
         public string Query { get; set; }
@@ -1836,7 +1967,7 @@ namespace OpenAI.Responses {
         public WebSearchToolLocation UserLocation { get; set; }
     }
     public class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>, IPersistableModel<WebSearchToolApproximateLocation> {
-        public WebSearchToolApproximateLocation();
+        public WebSearchToolApproximateLocation() : base(default);
         public string City { get; set; }
         public string Country { get; set; }
         public string Region { get; set; }
@@ -1865,6 +1996,8 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     public class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>, IPersistableModel<WebSearchToolLocation> {
+        protected internal WebSearchToolLocation(InternalWebSearchUserLocationKind kind);
+        public InternalWebSearchUserLocationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }

@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal WebSearchToolLocation(InternalWebSearchUserLocationKind kind)
+        protected internal WebSearchToolLocation(InternalWebSearchUserLocationKind kind)
         {
             Kind = kind;
         }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalWebSearchUserLocationKind Kind { get; set; }
+        public InternalWebSearchUserLocationKind Kind { get; }
     }
 }

@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal CodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind)
+        protected internal CodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind)
         {
             Kind = kind;
         }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalCodeInterpreterContainerConfigurationType Kind { get; set; }
+        public InternalCodeInterpreterContainerConfigurationType Kind { get; }
     }
 }

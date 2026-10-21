@@ -34,6 +34,7 @@ namespace OpenAILibraryPlugin
             AddVisitor(new MetadataQueryParamVisitor());
             AddVisitor(new ProtocolModelVisitor());
             AddVisitor(new ItemsPropertyVisitor());
+            AddVisitor(new ExtensibleModelVisitor());
             AddVisitor(new VisibilityVisitor());
         }
     }
