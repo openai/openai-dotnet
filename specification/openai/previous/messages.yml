@@ -1,0 +1,636 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Messages
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Assistants
+  description: Build Assistants that can call models and use tools.
+paths:
+  /threads/{thread_id}/messages:
+    get:
+      operationId: listMessages
+      tags:
+      - Assistants
+      summary: Returns a list of messages for a given thread.
+      parameters:
+      - in: path
+        name: thread_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the [thread](/docs/api-reference/threads) the messages belong to.
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: order
+        in: query
+        description: >-
+          Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: after
+        in: query
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+        schema:
+          type: string
+      - name: before
+        in: query
+        description: >-
+          A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+        schema:
+          type: string
+      - name: run_id
+        in: query
+        description: |-
+          Filter messages by the run ID that generated them.
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListMessagesResponse"
+    post:
+      operationId: createMessage
+      tags:
+      - Assistants
+      summary: Create a message.
+      parameters:
+      - in: path
+        name: thread_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the [thread](/docs/api-reference/threads) to create a message for.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageObject"
+  /threads/{thread_id}/messages/{message_id}:
+    get:
+      operationId: getMessage
+      tags:
+      - Assistants
+      summary: Retrieve a message.
+      parameters:
+      - in: path
+        name: thread_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the [thread](/docs/api-reference/threads) to which this message belongs.
+      - in: path
+        name: message_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the message to retrieve.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageObject"
+    post:
+      operationId: modifyMessage
+      tags:
+      - Assistants
+      summary: Modifies a message.
+      parameters:
+      - in: path
+        name: thread_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the thread to which this message belongs.
+      - in: path
+        name: message_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the message to modify.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifyMessageRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageObject"
+    delete:
+      operationId: deleteMessage
+      tags:
+      - Assistants
+      summary: Deletes a message.
+      parameters:
+      - in: path
+        name: thread_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the thread to which this message belongs.
+      - in: path
+        name: message_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the message to delete.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteMessageResponse"
+components:
+  schemas:
+    AssistantToolsCode:
+      type: object
+      title: Code interpreter tool
+      properties:
+        type:
+          type: string
+          description: "The type of tool being defined: `code_interpreter`"
+          enum:
+          - code_interpreter
+          x-stainless-const: true
+      required:
+      - type
+    AssistantToolsFileSearchTypeOnly:
+      type: object
+      title: FileSearch tool
+      properties:
+        type:
+          type: string
+          description: "The type of tool being defined: `file_search`"
+          enum:
+          - file_search
+          x-stainless-const: true
+      required:
+      - type
+    CreateMessageRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - role
+      - content
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          description: >-
+            The role of the entity that is creating the message. Allowed values include:
+
+            - `user`: Indicates the message is sent by an actual user and should be used in most cases to represent user-generated messages.
+
+            - `assistant`: Indicates the message is generated by the assistant. Use this value to insert messages from the assistant into the conversation.
+        content:
+          oneOf:
+          - type: string
+            description: The text contents of the message.
+            title: Text content
+          - type: array
+            description: An array of content parts with a defined type, each can be of type `text` or images can be passed with `image_url` or `image_file`. Image types are only supported on [Vision-compatible models](/docs/models).
+            title: Array of content parts
+            items:
+              oneOf:
+              - $ref: "#/components/schemas/MessageContentImageFileObject"
+              - $ref: "#/components/schemas/MessageContentImageUrlObject"
+              - $ref: "#/components/schemas/MessageRequestContentTextObject"
+            minItems: 1
+        attachments:
+          anyOf:
+          - type: array
+            items:
+              type: object
+              properties:
+                file_id:
+                  type: string
+                  description: The ID of the file to attach to the message.
+                tools:
+                  description: The tools to add this file to.
+                  type: array
+                  items:
+                    oneOf:
+                    - $ref: "#/components/schemas/AssistantToolsCode"
+                    - $ref: "#/components/schemas/AssistantToolsFileSearchTypeOnly"
+            description: A list of files attached to the message, and the tools they should be added to.
+            required:
+            - file_id
+            - tools
+          - type: "null"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+    DeleteMessageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - thread.message.deleted
+          x-stainless-const: true
+      required:
+      - id
+      - object
+      - deleted
+    ListMessagesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageObject"
+        first_id:
+          type: string
+          example: msg_abc123
+        last_id:
+          type: string
+          example: msg_abc123
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    MessageContentImageFileObject:
+      title: Image file
+      type: object
+      description: References an image [File](/docs/api-reference/files) in the content of a message.
+      properties:
+        type:
+          description: Always `image_file`.
+          type: string
+          enum:
+          - image_file
+          x-stainless-const: true
+        image_file:
+          type: object
+          properties:
+            file_id:
+              description: The [File](/docs/api-reference/files) ID of the image in the message content. Set `purpose="vision"` when uploading the File if you need to later display the file content.
+              type: string
+            detail:
+              type: string
+              description: Specifies the detail level of the image if specified by the user. `low` uses fewer tokens, you can opt in to high resolution using `high`.
+              enum:
+              - auto
+              - low
+              - high
+              default: auto
+          required:
+          - file_id
+      required:
+      - type
+      - image_file
+    MessageContentImageUrlObject:
+      title: Image URL
+      type: object
+      description: References an image URL in the content of a message.
+      properties:
+        type:
+          type: string
+          enum:
+          - image_url
+          description: The type of the content part.
+          x-stainless-const: true
+        image_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: "The external URL of the image, must be a supported image types: jpeg, jpg, png, gif, webp."
+              format: uri
+            detail:
+              type: string
+              description: Specifies the detail level of the image. `low` uses fewer tokens, you can opt in to high resolution using `high`. Default value is `auto`
+              enum:
+              - auto
+              - low
+              - high
+              default: auto
+          required:
+          - url
+      required:
+      - type
+      - image_url
+    MessageContentRefusalObject:
+      title: Refusal
+      type: object
+      description: The refusal content generated by the assistant.
+      properties:
+        type:
+          description: Always `refusal`.
+          type: string
+          enum:
+          - refusal
+          x-stainless-const: true
+        refusal:
+          type: string
+      required:
+      - type
+      - refusal
+    MessageContentTextAnnotationsFileCitationObject:
+      title: File citation
+      type: object
+      description: A citation within the message that points to a specific quote from a specific File associated with the assistant or the message. Generated when the assistant uses the "file_search" tool to search files.
+      properties:
+        type:
+          description: Always `file_citation`.
+          type: string
+          enum:
+          - file_citation
+          x-stainless-const: true
+        text:
+          description: The text in the message content that needs to be replaced.
+          type: string
+        file_citation:
+          type: object
+          properties:
+            file_id:
+              description: The ID of the specific File the citation is from.
+              type: string
+          required:
+          - file_id
+        start_index:
+          type: integer
+          minimum: 0
+        end_index:
+          type: integer
+          minimum: 0
+      required:
+      - type
+      - text
+      - file_citation
+      - start_index
+      - end_index
+    MessageContentTextAnnotationsFilePathObject:
+      title: File path
+      type: object
+      description: A URL for the file that's generated when the assistant used the `code_interpreter` tool to generate a file.
+      properties:
+        type:
+          description: Always `file_path`.
+          type: string
+          enum:
+          - file_path
+          x-stainless-const: true
+        text:
+          description: The text in the message content that needs to be replaced.
+          type: string
+        file_path:
+          type: object
+          properties:
+            file_id:
+              description: The ID of the file that was generated.
+              type: string
+          required:
+          - file_id
+        start_index:
+          type: integer
+          minimum: 0
+        end_index:
+          type: integer
+          minimum: 0
+      required:
+      - type
+      - text
+      - file_path
+      - start_index
+      - end_index
+    MessageContentTextObject:
+      title: Text
+      type: object
+      description: The text content that is part of a message.
+      properties:
+        type:
+          description: Always `text`.
+          type: string
+          enum:
+          - text
+          x-stainless-const: true
+        text:
+          type: object
+          properties:
+            value:
+              description: The data that makes up the text.
+              type: string
+            annotations:
+              type: array
+              items:
+                oneOf:
+                - $ref: "#/components/schemas/MessageContentTextAnnotationsFileCitationObject"
+                - $ref: "#/components/schemas/MessageContentTextAnnotationsFilePathObject"
+          required:
+          - value
+          - annotations
+      required:
+      - type
+      - text
+    MessageObject:
+      type: object
+      title: The message object
+      description: Represents a message within a [thread](/docs/api-reference/threads).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread.message`.
+          type: string
+          enum:
+          - thread.message
+          x-stainless-const: true
+        created_at:
+          description: The Unix timestamp (in seconds) for when the message was created.
+          type: integer
+          format: unixtime
+        thread_id:
+          description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
+          type: string
+        status:
+          description: The status of the message, which can be either `in_progress`, `incomplete`, or `completed`.
+          type: string
+          enum:
+          - in_progress
+          - incomplete
+          - completed
+        incomplete_details:
+          anyOf:
+          - description: On an incomplete message, details about why the message is incomplete.
+            type: object
+            properties:
+              reason:
+                type: string
+                description: The reason the message is incomplete.
+                enum:
+                - content_filter
+                - max_tokens
+                - run_cancelled
+                - run_expired
+                - run_failed
+            required:
+            - reason
+          - type: "null"
+        completed_at:
+          anyOf:
+          - description: The Unix timestamp (in seconds) for when the message was completed.
+            type: integer
+            format: unixtime
+          - type: "null"
+        incomplete_at:
+          anyOf:
+          - description: The Unix timestamp (in seconds) for when the message was marked as incomplete.
+            type: integer
+            format: unixtime
+          - type: "null"
+        role:
+          description: The entity that produced the message. One of `user` or `assistant`.
+          type: string
+          enum:
+          - user
+          - assistant
+        content:
+          description: The content of the message in array of text and/or images.
+          type: array
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/MessageContentImageFileObject"
+            - $ref: "#/components/schemas/MessageContentImageUrlObject"
+            - $ref: "#/components/schemas/MessageContentTextObject"
+            - $ref: "#/components/schemas/MessageContentRefusalObject"
+        assistant_id:
+          anyOf:
+          - description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
+            type: string
+          - type: "null"
+        run_id:
+          anyOf:
+          - description: The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
+            type: string
+          - type: "null"
+        attachments:
+          anyOf:
+          - type: array
+            items:
+              type: object
+              properties:
+                file_id:
+                  type: string
+                  description: The ID of the file to attach to the message.
+                tools:
+                  description: The tools to add this file to.
+                  type: array
+                  items:
+                    oneOf:
+                    - $ref: "#/components/schemas/AssistantToolsCode"
+                    - $ref: "#/components/schemas/AssistantToolsFileSearchTypeOnly"
+            description: A list of files attached to the message, and the tools they were added to.
+          - type: "null"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - status
+      - incomplete_details
+      - completed_at
+      - incomplete_at
+      - role
+      - content
+      - assistant_id
+      - run_id
+      - attachments
+      - metadata
+    MessageRequestContentTextObject:
+      title: Text
+      type: object
+      description: The text content that is part of a message.
+      properties:
+        type:
+          description: Always `text`.
+          type: string
+          enum:
+          - text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Text content to be sent to the model
+      required:
+      - type
+      - text
+    Metadata:
+      anyOf:
+      - type: object
+        description: >-
+          Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format, and querying for objects via API or the dashboard.
+
+          Keys are strings with a maximum length of 64 characters. Values are strings with a maximum length of 512 characters.
+        additionalProperties:
+          type: string
+      - type: "null"
+    ModifyMessageRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
