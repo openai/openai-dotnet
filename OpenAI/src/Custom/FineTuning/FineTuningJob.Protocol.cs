@@ -2,7 +2,6 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -94,11 +93,7 @@ public partial class FineTuningJob : OperationResult
     {
         options = options ?? new RequestOptions();
         ClientResult result = await GetJobAsync(options).ConfigureAwait(false);
-        var response = result.GetRawResponse();
-        SetRawResponse(response);
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
-        HasCompleted = GetHasCompleted(status);
+        ApplyUpdate(result.GetRawResponse());
         return result;
     }
 
@@ -107,12 +102,20 @@ public partial class FineTuningJob : OperationResult
     {
         options = options ?? new RequestOptions();
         ClientResult result = GetJob(options);
-        var response = result.GetRawResponse();
-        SetRawResponse(response);
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
-        HasCompleted = GetHasCompleted(status);
+        ApplyUpdate(result.GetRawResponse());
         return result;
+    }
+
+    private void ApplyUpdate(PipelineResponse response)
+    {
+        // With ClientErrorBehaviors.NoThrow, the response can be an error that contains no job.
+        if (response.IsError)
+        {
+            SetRawResponse(response);
+            return;
+        }
+
+        CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
     }
 
     internal async Task<FineTuningJob> WaitUntilAsync(bool waitUntilCompleted, RequestOptions options)

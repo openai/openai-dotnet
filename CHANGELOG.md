@@ -24,6 +24,8 @@
 - OpenAI.Assistants:
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
+- OpenAI.FineTuning:
+  - Fixed `FineTuningJob.UpdateStatus` and `UpdateStatusAsync` with `RequestOptions` updating only `HasCompleted`. They now also update `Status`, `Value`, `ResultFileIds`, and the other job properties, as the `CancellationToken` overloads do. With `ClientErrorBehaviors.NoThrow`, an error response no longer throws `KeyNotFoundException` and leaves the job properties unchanged.
 
 - OpenAI.Chat and OpenAI.Responses:
   - Latest-mode operation exception logs now include final API errors and rate limiting.
