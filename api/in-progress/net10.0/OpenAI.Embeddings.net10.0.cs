@@ -10,9 +10,15 @@ namespace OpenAI.Embeddings {
         protected EmbeddingClient();
         [Experimental("SCME0002")]
         public EmbeddingClient(EmbeddingClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal EmbeddingClient(ClientPipeline pipeline, string model, EmbeddingClientOptions options);
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, ApiKeyCredential credential, EmbeddingClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, EmbeddingClientOptions options);
         [Experimental("OPENAI001")]
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -32,10 +38,17 @@ namespace OpenAI.Embeddings {
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class EmbeddingClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class EmbeddingClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public EmbeddingClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>, IPersistableModel<EmbeddingGenerationOptions> {

@@ -37,11 +37,11 @@ namespace OpenAI.VectorStores {
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(VectorStoreClientSettings settings);
-        public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VectorStoreClient(ApiKeyCredential credential, VectorStoreClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
-        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, VectorStoreClientOptions options);
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VectorStoreClient(ClientPipeline pipeline, VectorStoreClientOptions options);
         public VectorStoreClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -106,8 +106,14 @@ namespace OpenAI.VectorStores {
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
+    public class VectorStoreClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class VectorStoreClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VectorStoreClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class VectorStoreCollectionOptions : IJsonModel<VectorStoreCollectionOptions>, IPersistableModel<VectorStoreCollectionOptions> {

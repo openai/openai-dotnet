@@ -23,11 +23,11 @@ namespace OpenAI.Graders {
         protected GraderClient();
         [Experimental("SCME0002")]
         public GraderClient(GraderClientSettings settings);
-        public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public GraderClient(ApiKeyCredential credential, GraderClientOptions options);
         public GraderClient(ApiKeyCredential credential);
-        public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public GraderClient(AuthenticationPolicy authenticationPolicy, GraderClientOptions options);
         public GraderClient(AuthenticationPolicy authenticationPolicy);
-        protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal GraderClient(ClientPipeline pipeline, GraderClientOptions options);
         public GraderClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -37,9 +37,16 @@ namespace OpenAI.Graders {
         public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> ValidateGraderAsync(BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class GraderClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class GraderClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public GraderClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]

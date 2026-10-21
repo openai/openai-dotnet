@@ -38,9 +38,15 @@ namespace OpenAI.Chat {
         protected ChatClient();
         [Experimental("SCME0002")]
         public ChatClient(ChatClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal ChatClient(ClientPipeline pipeline, string model, ChatClientOptions options);
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, ApiKeyCredential credential, ChatClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, ChatClientOptions options);
         [Experimental("OPENAI001")]
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -102,10 +108,17 @@ namespace OpenAI.Chat {
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class ChatClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ChatClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ChatClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {

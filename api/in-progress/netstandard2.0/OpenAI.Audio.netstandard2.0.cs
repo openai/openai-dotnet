@@ -9,9 +9,12 @@ namespace OpenAI.Audio {
     public class AudioClient {
         protected AudioClient();
         public AudioClient(AudioClientSettings settings);
+        protected internal AudioClient(ClientPipeline pipeline, string model, AudioClientOptions options);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public AudioClient(string model, ApiKeyCredential credential, AudioClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, AudioClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
@@ -59,9 +62,15 @@ namespace OpenAI.Audio {
         public virtual ClientResult UpdateVoiceConsent(string consentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null);
     }
+    public class AudioClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class AudioClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public AudioClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Flags]
