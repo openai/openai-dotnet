@@ -336,6 +336,62 @@ public class AssistantsMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task StreamingTextAnnotationOfUnknownTypeReportsIndices()
+    {
+        // Annotation types that the library does not model keep their raw properties, from which
+        // the start and end indices are read.
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
+            """
+            event: thread.message.delta
+            data: {"id":"msg_abc","object":"thread.message.delta","delta":{"content":[{"index":0,"type":"text","text":{"value":"abc","annotations":[{"index":0,"type":"some_future_annotation","text":"abc","start_index":5,"end_index":12}]}}]}}
+
+            event: done
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        AssistantClient client = new(s_fakeCredential, options);
+
+        List<StreamingUpdate> updates = new();
+
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+
+        TextAnnotationUpdate annotation = null;
+        foreach (StreamingUpdate update in updates)
+        {
+            if (update is MessageContentUpdate contentUpdate && contentUpdate.TextAnnotation is not null)
+            {
+                annotation = contentUpdate.TextAnnotation;
+            }
+        }
+
+        Assert.That(annotation, Is.Not.Null);
+        Assert.That(annotation.ContentIndex, Is.EqualTo(0));
+        Assert.That(annotation.StartIndex, Is.EqualTo(5));
+        Assert.That(annotation.EndIndex, Is.EqualTo(12));
+    }
+
+    [Test]
     public async Task CreateThreadAndRunWithoutThreadOptions()
     {
         string requestBody = null;
