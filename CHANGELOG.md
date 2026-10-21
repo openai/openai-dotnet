@@ -37,6 +37,9 @@
 
 ### Other Changes
 
+- OpenAI.Images:
+  - Marked the image variation convenience methods obsolete because the endpoint has been retired. Use the image edits endpoint with a GPT Image model and a prompt instead.
+
 - OpenAI.Chat and OpenAI.Responses:
   - With `gen_ai_latest_experimental`, replaced `gen_ai.client.token.usage` with the current OpenTelemetry inference usage counters and per-operation token histograms. Counters include token modality and available cache/reasoning subsets. The default semantic-convention mode remains unchanged.
 
