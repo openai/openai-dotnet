@@ -1047,7 +1047,7 @@ public class ResponsesTelemetryTests
             var update = ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(
                 $$"""{"type":"{{kind}}","sequence_number":1,"output_index":0,"delta":"c2Vuc2l0aXZlIG91dHB1dA==","partial_image_b64":"c2Vuc2l0aXZlIG91dHB1dA=="}"""));
 
-            if (kind == "response.audio_transcript.delta")
+            if (kind == "response.audio_transcript.delta" || kind == "response.audio.transcript.delta")
             {
                 Assert.That(update.Kind, Is.EqualTo(StreamingResponseUpdateKind.ResponseAudioTranscriptDelta));
             }

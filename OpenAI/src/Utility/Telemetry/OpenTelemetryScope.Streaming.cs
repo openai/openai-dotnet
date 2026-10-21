@@ -200,10 +200,8 @@ internal partial class OpenTelemetryScope
                 return _outputItems.Add(done.OutputIndex);
             }
             // Audio update types are internal, including when these sources are linked into tests.
-            // OpenAPI uses dots for transcript events; the generated contract still uses an underscore.
             return (update?.Kind == StreamingResponseUpdateKind.ResponseAudioDelta)
-                || (update?.Kind == StreamingResponseUpdateKind.ResponseAudioTranscriptDelta)
-                || (update?.Kind.ToString() == "response.audio.transcript.delta");
+                || (update?.Kind == StreamingResponseUpdateKind.ResponseAudioTranscriptDelta);
         }
 
         public override void OnException(Exception exception)
