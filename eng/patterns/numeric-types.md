@@ -11,7 +11,7 @@ The generator uses these mappings unless the client TypeSpec overrides them:
 | `integer` | `long` |
 | `numeric` | `double` |
 
-The generic TypeSpec types do not communicate the range or precision required by the API. Choose an explicit type for the .NET API whenever that requirement is known:
+The generic TypeSpec types do not communicate the range or precision required by the API. Choose an explicit type for the .NET API only when that requirement is known:
 
 | TypeSpec alternate type | C# type |
 |-------------------------|---------|
@@ -20,7 +20,7 @@ The generic TypeSpec types do not communicate the range or precision required by
 | `float32` | `float` |
 | `float64` | `double` |
 
-Do not narrow a type based only on its current examples or observed values. Preserve `int64` or `float64` when the API contract requires the larger range or precision.
+An explicit override is not required for every generic numeric type. If the requirement is unknown, leave the original `integer` or `numeric` type unchanged so it retains the broader, safer `int64` or `float64` mapping. Do not narrow a type based only on its current examples or observed values.
 
 ## Apply the mapping in client TypeSpec
 
