@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 #nullable enable
@@ -124,14 +125,16 @@ internal class FineTuningEventCollectionPageToken : ContinuationToken
     {
         PipelineResponse response = result.GetRawResponse();
         using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
-        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
-
-        if (!hasMore || lastId is null)
+        if (!doc.RootElement.GetProperty("has_more"u8).GetBoolean())
         {
             return null;
         }
 
-        return new(jobId, limit, lastId);
+        // Event pages expose their cursor through the last item's ID, not last_id.
+        JsonElement lastItem = doc.RootElement.GetProperty("data"u8).EnumerateArray().LastOrDefault();
+        string? lastId = lastItem.ValueKind == JsonValueKind.Object &&
+            lastItem.TryGetProperty("id"u8, out JsonElement id) ? id.GetString() : null;
+
+        return lastId is null ? null : new(jobId, limit, lastId);
     }
 }
