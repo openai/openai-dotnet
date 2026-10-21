@@ -150,6 +150,50 @@ public partial class TranscriptionMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task TranscribeAudioSendsExplicitContentType()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return new MockPipelineResponse(200).WithContent("""{"text":"transcribed"}""");
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential, clientOptions));
+        AudioTranscriptionOptions options = new();
+
+        using (Stream audio = new MemoryStream([0x01]))
+        {
+            await client.TranscribeAudioAsync(audio, "音声.mp3", AudioFileContentType.Mpeg, options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: audio/mpeg"));
+
+        requestBody = null;
+        using (Stream audio = new MemoryStream([0x01]))
+        {
+            await client.TranscribeAudioAsync(audio, "audio.custom", "audio/x-future", options);
+        }
+
+        Assert.That(requestBody, Does.Contain("Content-Type: audio/x-future"));
+
+        requestBody = null;
+        using (Stream audio = new MemoryStream([0x01]))
+        {
+            await client.TranscribeAudioAsync(audio, "audio.mp3", options);
+        }
+
+        Assert.That(requestBody, Does.Not.Contain("Content-Type: audio/mpeg"));
+    }
+
+    [Test]
     public void TranscribeAudioThrowsForDiarizedFormat()
     {
         AudioClient client = new("model", s_fakeCredential);

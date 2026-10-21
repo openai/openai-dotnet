@@ -15,6 +15,8 @@ public partial class AudioTranscriptionOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     internal BinaryData File { get; }
 
+    internal AudioFileContentType? FileContentType { get; set; }
+
     // CUSTOM:
     // - Made internal. The model is specified by the client.
     // - Added setter.
@@ -61,11 +63,14 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("Include")]
     internal IList<InternalTranscriptionInclude> InternalInclude { get; }
 
-    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(
+        Stream audio,
+        string audioFilename,
+        AudioFileContentType? contentType = null)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(audio, "file", audioFilename);
+        content.Add(audio, "file", audioFilename, (contentType ?? FileContentType)?.ToString());
         content.Add(Model.ToString(), "model");
 
         if (Language is not null)

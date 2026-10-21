@@ -170,22 +170,54 @@ namespace OpenAI.Images {
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, ImageFileContentType imageContentType, string prompt, ImageEditOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, ImageFileContentType imageContentType, string prompt, string maskFilePath, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, string prompt, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, ImageFileContentType imageContentType, string prompt, ImageEditOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, ImageFileContentType imageContentType, string prompt, string maskFilePath, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null);
         public virtual ClientResult GenerateImageEdits(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, ImageFileContentType imageContentType, string prompt, int imageCount, ImageEditOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, ImageFileContentType imageContentType, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
         public virtual Task<ClientResult> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, ImageFileContentType imageContentType, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, ImageFileContentType imageContentType, string prompt, int imageCount, ImageEditOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, ImageFileContentType imageContentType, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
         [Experimental("OPENAI001")]
@@ -227,6 +259,23 @@ namespace OpenAI.Images {
         public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageFileContentType : IEquatable<ImageFileContentType> {
+        public ImageFileContentType(string value);
+        public static ImageFileContentType Jpeg { get; }
+        public static ImageFileContentType Png { get; }
+        public static ImageFileContentType Webp { get; }
+        public readonly bool Equals(ImageFileContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageFileContentType left, ImageFileContentType right);
+        public static implicit operator ImageFileContentType(string value);
+        public static implicit operator ImageFileContentType?(string value);
+        public static bool operator !=(ImageFileContentType left, ImageFileContentType right);
+        public override readonly string ToString();
     }
     public class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>, IPersistableModel<ImageGenerationOptions> {
         [Experimental("OPENAI001")]
