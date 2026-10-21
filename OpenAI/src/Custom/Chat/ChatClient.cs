@@ -146,7 +146,7 @@ public partial class ChatClient
         _model = model;
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _telemetry = new OpenTelemetrySource(model, _endpoint, options.ClientLoggingOptions);
     }
 
     /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
@@ -165,7 +165,7 @@ public partial class ChatClient
         _model = model;
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _telemetry = new OpenTelemetrySource(model, _endpoint, options.ClientLoggingOptions);
     }
 
     [Experimental("SCME0002")]
