@@ -35,7 +35,7 @@ public class AssistantsMockTests : ClientTestBase
             cancellationSource.Cancel();
         }
 
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 {"id":"asst_abc","object":"assistant","created_at":0,"model":"gpt-4o","name":"updated","tools":[]}
@@ -79,7 +79,7 @@ public class AssistantsMockTests : ClientTestBase
             cancellationSource.Cancel();
         }
 
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 {"id":"run_abc","object":"thread.run","status":"queued"}
@@ -116,7 +116,7 @@ public class AssistantsMockTests : ClientTestBase
     public async Task CreateThreadAndRunStreamingDoesNotBufferTheResponse()
     {
         bool? bufferResponse = null;
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
@@ -300,7 +300,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -349,7 +349,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -395,7 +395,7 @@ public class AssistantsMockTests : ClientTestBase
     public async Task CreateThreadAndRunWithoutThreadOptions()
     {
         string requestBody = null;
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
@@ -424,7 +424,7 @@ public class AssistantsMockTests : ClientTestBase
     [Test]
     public async Task CreateThreadAndRunStreamingWithoutThreadOptions()
     {
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 event: thread.run.created

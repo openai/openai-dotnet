@@ -353,9 +353,9 @@ public class MutualTlsExamplesTests
 
         public static DisposableCertificateCollection Load(byte[] pfx, string password)
         {
-            X509KeyStorageFlags keyStorageFlags = OperatingSystem.IsWindows()
-                ? X509KeyStorageFlags.DefaultKeySet
-                : X509KeyStorageFlags.EphemeralKeySet;
+            X509KeyStorageFlags keyStorageFlags = OperatingSystem.IsLinux()
+                ? X509KeyStorageFlags.EphemeralKeySet
+                : X509KeyStorageFlags.DefaultKeySet;
             X509Certificate2Collection certificates =
                 X509CertificateLoader.LoadPkcs12Collection(
                     pfx,
