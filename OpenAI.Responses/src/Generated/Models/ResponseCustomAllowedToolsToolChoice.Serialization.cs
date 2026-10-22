@@ -131,7 +131,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            InternalToolChoiceAllowedMode mode = default;
+            ResponseToolChoiceAllowedMode mode = default;
             IList<ResponseTool> tools = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -142,7 +142,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("mode"u8))
                 {
-                    mode = new InternalToolChoiceAllowedMode(prop.Value.GetString());
+                    mode = new ResponseToolChoiceAllowedMode(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -157,7 +157,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseCustomAllowedToolsToolChoice(kind, patch, mode, tools);
+            return new ResponseCustomAllowedToolsToolChoice(kind, patch, mode, tools ?? new ChangeTrackingList<ResponseTool>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
