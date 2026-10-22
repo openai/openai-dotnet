@@ -1,3 +1,4 @@
+using Azure;
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Containers;
@@ -1649,7 +1650,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
         {
             Tools = { new WebSearchPreviewTool() },
-            ToolChoice = new ResponseCustomWebSearchToolChoice(),
+            ToolChoice = new ResponseCustomWebSearchPreviewToolChoice(),
             IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
         };
 

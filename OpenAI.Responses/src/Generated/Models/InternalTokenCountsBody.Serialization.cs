@@ -208,14 +208,7 @@ namespace OpenAI.Responses
                 if (ToolChoice != null)
                 {
                     writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(ToolChoice);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteObjectValue(ToolChoice, options);
                 }
                 else
                 {
@@ -275,7 +268,7 @@ namespace OpenAI.Responses
             bool conversationIsDefined = false;
             BinaryData conversation = default;
             bool toolChoiceIsDefined = false;
-            BinaryData toolChoice = default;
+            ResponseToolChoice toolChoice = default;
             bool parallelToolCallsIsDefined = false;
             bool? parallelToolCalls = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -456,6 +449,14 @@ namespace OpenAI.Responses
                 }
                 return Reasoning.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
+                return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -503,6 +504,15 @@ namespace OpenAI.Responses
                     return false;
                 }
                 Reasoning.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
+                ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tools"u8))

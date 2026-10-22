@@ -4,10 +4,12 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalResponseCustomToolChoiceKind : IEquatable<InternalResponseCustomToolChoiceKind>
+    [Experimental("OPENAI001")]
+    public readonly partial struct InternalResponseCustomToolChoiceKind : IEquatable<InternalResponseCustomToolChoiceKind>
     {
         private readonly string _value;
         private const string FileSearchValue = "file_search";
@@ -30,33 +32,33 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalResponseCustomToolChoiceKind FileSearch { get; } = new InternalResponseCustomToolChoiceKind(FileSearchValue);
+        public static InternalResponseCustomToolChoiceKind FileSearch { get; } = new InternalResponseCustomToolChoiceKind(FileSearchValue);
 
-        internal static InternalResponseCustomToolChoiceKind Function { get; } = new InternalResponseCustomToolChoiceKind(FunctionValue);
+        public static InternalResponseCustomToolChoiceKind Function { get; } = new InternalResponseCustomToolChoiceKind(FunctionValue);
 
-        internal static InternalResponseCustomToolChoiceKind Computer { get; } = new InternalResponseCustomToolChoiceKind(ComputerValue);
+        public static InternalResponseCustomToolChoiceKind Computer { get; } = new InternalResponseCustomToolChoiceKind(ComputerValue);
 
-        internal static InternalResponseCustomToolChoiceKind ComputerUsePreview { get; } = new InternalResponseCustomToolChoiceKind(ComputerUsePreviewValue);
+        public static InternalResponseCustomToolChoiceKind ComputerUsePreview { get; } = new InternalResponseCustomToolChoiceKind(ComputerUsePreviewValue);
 
-        internal static InternalResponseCustomToolChoiceKind WebSearch { get; } = new InternalResponseCustomToolChoiceKind(WebSearchValue);
+        public static InternalResponseCustomToolChoiceKind WebSearch { get; } = new InternalResponseCustomToolChoiceKind(WebSearchValue);
 
-        internal static InternalResponseCustomToolChoiceKind WebSearchPreview { get; } = new InternalResponseCustomToolChoiceKind(WebSearchPreviewValue);
+        public static InternalResponseCustomToolChoiceKind WebSearchPreview { get; } = new InternalResponseCustomToolChoiceKind(WebSearchPreviewValue);
 
-        internal static InternalResponseCustomToolChoiceKind ImageGeneration { get; } = new InternalResponseCustomToolChoiceKind(ImageGenerationValue);
+        public static InternalResponseCustomToolChoiceKind ImageGeneration { get; } = new InternalResponseCustomToolChoiceKind(ImageGenerationValue);
 
-        internal static InternalResponseCustomToolChoiceKind CodeInterpreter { get; } = new InternalResponseCustomToolChoiceKind(CodeInterpreterValue);
+        public static InternalResponseCustomToolChoiceKind CodeInterpreter { get; } = new InternalResponseCustomToolChoiceKind(CodeInterpreterValue);
 
-        internal static InternalResponseCustomToolChoiceKind Mcp { get; } = new InternalResponseCustomToolChoiceKind(McpValue);
+        public static InternalResponseCustomToolChoiceKind Mcp { get; } = new InternalResponseCustomToolChoiceKind(McpValue);
 
-        internal static InternalResponseCustomToolChoiceKind Custom { get; } = new InternalResponseCustomToolChoiceKind(CustomValue);
+        public static InternalResponseCustomToolChoiceKind Custom { get; } = new InternalResponseCustomToolChoiceKind(CustomValue);
 
-        internal static InternalResponseCustomToolChoiceKind ProgrammaticToolCalling { get; } = new InternalResponseCustomToolChoiceKind(ProgrammaticToolCallingValue);
+        public static InternalResponseCustomToolChoiceKind ProgrammaticToolCalling { get; } = new InternalResponseCustomToolChoiceKind(ProgrammaticToolCallingValue);
 
-        internal static InternalResponseCustomToolChoiceKind ApplyPatch { get; } = new InternalResponseCustomToolChoiceKind(ApplyPatchValue);
+        public static InternalResponseCustomToolChoiceKind ApplyPatch { get; } = new InternalResponseCustomToolChoiceKind(ApplyPatchValue);
 
-        internal static InternalResponseCustomToolChoiceKind Shell { get; } = new InternalResponseCustomToolChoiceKind(ShellValue);
+        public static InternalResponseCustomToolChoiceKind Shell { get; } = new InternalResponseCustomToolChoiceKind(ShellValue);
 
-        internal static InternalResponseCustomToolChoiceKind AllowedTools { get; } = new InternalResponseCustomToolChoiceKind(AllowedToolsValue);
+        public static InternalResponseCustomToolChoiceKind AllowedTools { get; } = new InternalResponseCustomToolChoiceKind(AllowedToolsValue);
 
         public static bool operator ==(InternalResponseCustomToolChoiceKind left, InternalResponseCustomToolChoiceKind right) => left.Equals(right);
 
