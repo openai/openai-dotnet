@@ -52,14 +52,13 @@ internal class GenerateSpeechMockTests : ClientTestBase
     {
         string acceptHeader = null;
         bool? bufferResponse = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent(string.Empty);
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
                 message.Request.Headers.TryGetValue("Accept", out acceptHeader);
                 bufferResponse = message.BufferResponse;
-                return response;
+                return new MockPipelineResponse(200).WithContent(string.Empty);
             })
             {
                 ExpectSyncPipeline = false

@@ -514,8 +514,8 @@ CreateResponseOptions streamingOptions = new()
 
 streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
-await using var responseUpdates = await client.CreateResponseStreamingAsync(streamingOptions);
-await foreach (var responseUpdate in responseUpdates)
+await foreach (var responseUpdate
+    in await client.CreateResponseStreamingAsync(streamingOptions))
 {
     StreamingResponseUpdate update = responseUpdate.Data;
 

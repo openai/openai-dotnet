@@ -154,64 +154,53 @@ internal static class SseStreamingResult
                     yield break;
                 }
 
-                IEnumerator<T>? updates = null;
-                try
+                IEnumerator<T> CreateUpdates()
                 {
                     try
                     {
                         using (lifecycle?.Enter())
                         {
-                            updates = eventDeserializerFunc(item).GetEnumerator();
+                            return new LifecycleEnumerator<T>(
+                                eventDeserializerFunc(item).GetEnumerator(),
+                                lifecycle);
                         }
                     }
-
                     catch (Exception exception)
                     {
                         lifecycle?.OnException(exception);
                         throw;
-                    }
-
-                    while (true)
-                    {
-                        T update;
-                        try
-                        {
-                            using (lifecycle?.Enter())
-                            {
-                                cancellationToken.ThrowIfCancellationRequested();
-                                if (!updates.MoveNext())
-                                {
-                                    break;
-                                }
-
-                                update = updates.Current;
-                                lifecycle?.OnUpdate(update);
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            lifecycle?.OnException(exception);
-                            throw;
-                        }
-
-                        yield return new SseItem<T>(update, item.EventType)
-                        {
-                            EventId = item.EventId,
-                            ReconnectionInterval = item.ReconnectionInterval,
-                        };
                     }
                 }
-                finally
+
+                using IEnumerator<T> updates = CreateUpdates();
+                while (true)
                 {
+                    T update;
                     try
                     {
-                        updates?.Dispose();
+                        using (lifecycle?.Enter())
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            if (!updates.MoveNext())
+                            {
+                                break;
+                            }
+
+                            update = updates.Current;
+                            lifecycle?.OnUpdate(update);
+                        }
                     }
                     catch (Exception exception)
                     {
                         lifecycle?.OnException(exception);
                         throw;
                     }
+
+                    yield return new SseItem<T>(update, item.EventType)
+                    {
+                        EventId = item.EventId,
+                        ReconnectionInterval = item.ReconnectionInterval,
+                    };
                 }
             }
         }
@@ -236,6 +225,32 @@ internal static class SseStreamingResult
                     additionalDisposalActions?.Clear();
                     lifecycle?.Complete(completionKind);
                 }
+            }
+        }
+    }
+
+    private sealed class LifecycleEnumerator<T>(
+        IEnumerator<T> inner,
+        SseLifecycle<T>? lifecycle) : IEnumerator<T>
+    {
+        public T Current => inner.Current;
+
+        object System.Collections.IEnumerator.Current => Current!;
+
+        public bool MoveNext() => inner.MoveNext();
+
+        public void Reset() => inner.Reset();
+
+        public void Dispose()
+        {
+            try
+            {
+                inner.Dispose();
+            }
+            catch (Exception exception)
+            {
+                lifecycle?.OnException(exception);
+                throw;
             }
         }
     }
