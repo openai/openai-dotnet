@@ -29,6 +29,7 @@ namespace OpenAILibraryPlugin
             AddVisitor(new ProhibitedNamespaceVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
+            AddVisitor(new ObsoleteImageVariationsVisitor());
             AddVisitor(new ModelDirectoryVisitor());
             AddVisitor(new ResponsesDirectoryVisitor());
             AddVisitor(new PaginationVisitor());

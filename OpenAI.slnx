@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/codegen/" />
+  <Folder Name="/codegen/generator/" />
+  <Folder Name="/codegen/generator/src/">
+    <Project Path="codegen/generator/src/OpenAI.Library.Plugin.csproj" />
+  </Folder>
   <Project Path="examples/OpenAI.Examples.csproj" />
   <Project Path="OpenAI/src/OpenAI.csproj" />
   <Project Path="tests/OpenAI.Tests.csproj" />
