@@ -11,7 +11,9 @@ namespace OpenAI.VectorStores
 {
     internal partial class VectorStoreClientGetVectorStoreFilesInBatchCollectionResult : CollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly VectorStoreClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly string _vectorStoreId;
         private readonly string _batchId;
         private readonly int? _pageSizeLimit;
@@ -21,6 +23,7 @@ namespace OpenAI.VectorStores
         private readonly string _filter;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public VectorStoreClientGetVectorStoreFilesInBatchCollectionResult(VectorStoreClient client, string vectorStoreId, string batchId, int? pageSizeLimit, string order, string afterId, string beforeId, string filter, RequestOptions options)
         {
             _client = client;
@@ -33,6 +36,7 @@ namespace OpenAI.VectorStores
             _filter = filter;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override IEnumerable<ClientResult> GetRawPages()
         {

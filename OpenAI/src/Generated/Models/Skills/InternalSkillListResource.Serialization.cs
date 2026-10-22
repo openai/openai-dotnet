@@ -209,7 +209,7 @@ namespace OpenAI.Skills
             }
             return new InternalSkillListResource(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<InternalSkillResource>(),
                 firstId,
                 lastId,
                 hasMore,

@@ -219,8 +219,8 @@ namespace OpenAI.VectorStores
             }
             return new InternalVectorStoreSearchResultsPage(
                 @object,
-                searchQuery,
-                data,
+                searchQuery ?? new ChangeTrackingList<string>(),
+                data ?? new ChangeTrackingList<InternalVectorStoreSearchResultItem>(),
                 hasMore,
                 nextPage,
                 additionalBinaryDataProperties);

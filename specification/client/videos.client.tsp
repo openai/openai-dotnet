@@ -6,6 +6,13 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(VideoResource.progress, int32);
+@@alternateType(VideoResource.created_at, int32);
+@@alternateType(VideoResource.completed_at, int32 | null);
+@@alternateType(VideoResource.expires_at, int32 | null);
+@@alternateType(VideoCollectionOptions.limit, int32);
+@@alternateType(ListVideos::parameters.limit, int32);
+
 // Move operations into their corresponding interface
 @@clientLocation(ListVideos, "Videos");
 @@clientLocation(createVideo, "Videos");

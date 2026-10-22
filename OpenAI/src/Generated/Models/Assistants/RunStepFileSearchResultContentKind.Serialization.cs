@@ -8,12 +8,15 @@ namespace OpenAI.Assistants
 {
     internal static partial class RunStepFileSearchResultContentKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this RunStepFileSearchResultContentKind value) => value switch
         {
             RunStepFileSearchResultContentKind.Text => "text",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepFileSearchResultContentKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static RunStepFileSearchResultContentKind ToRunStepFileSearchResultContentKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "text"))
@@ -22,5 +25,6 @@ namespace OpenAI.Assistants
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepFileSearchResultContentKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

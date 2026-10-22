@@ -5,6 +5,7 @@ import "./client/chat.client.tsp";
 import "./client/containers.client.tsp";
 import "./client/conversations.client.tsp";
 import "./client/embeddings.client.tsp";
+import "./client/evals.client.tsp";
 import "./client/files.client.tsp";
 import "./client/fine-tuning.client.tsp";
 import "./client/graders.client.tsp";

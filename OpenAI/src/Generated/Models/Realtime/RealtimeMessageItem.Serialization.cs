@@ -205,7 +205,7 @@ namespace OpenAI.Realtime
                 @object,
                 status,
                 role,
-                content);
+                content ?? new ChangeTrackingList<RealtimeMessageContentPart>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

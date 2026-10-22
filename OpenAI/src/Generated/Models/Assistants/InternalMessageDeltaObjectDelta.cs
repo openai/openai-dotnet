@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMessageDeltaObjectDelta(MessageRole? role, IList<InternalMessageDeltaContent> content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -23,6 +24,7 @@ namespace OpenAI.Assistants
             Content = content ?? new ChangeTrackingList<InternalMessageDeltaContent>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IList<InternalMessageDeltaContent> Content { get; }
 

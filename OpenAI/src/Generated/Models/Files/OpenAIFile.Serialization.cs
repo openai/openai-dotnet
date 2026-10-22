@@ -81,6 +81,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
                 if (Optional.IsDefined(SizeInBytesLong))
@@ -93,6 +94,7 @@ namespace OpenAI.Files
                     writer.WriteNull("bytes"u8);
                 }
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);

@@ -132,11 +132,13 @@ namespace OpenAI.Assistants
                     writer.WriteNull("incomplete_at"u8);
                 }
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
@@ -404,7 +406,7 @@ namespace OpenAI.Assistants
                 completedAt,
                 incompleteAt,
                 role,
-                content,
+                content ?? new ChangeTrackingList<MessageContent>(),
                 assistantId,
                 runId,
                 attachments,

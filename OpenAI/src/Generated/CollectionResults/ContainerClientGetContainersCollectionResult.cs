@@ -11,13 +11,16 @@ namespace OpenAI.Containers
 {
     internal partial class ContainerClientGetContainersCollectionResult : CollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly ContainerClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
         private readonly string _name;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ContainerClientGetContainersCollectionResult(ContainerClient client, int? limit, string order, string after, string name, RequestOptions options)
         {
             _client = client;
@@ -27,7 +30,9 @@ namespace OpenAI.Containers
             _name = name;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override IEnumerable<ClientResult> GetRawPages()
         {
             PipelineMessage message = _client.CreateGetContainersRequest(_limit, _order, _after, _name, _options);
@@ -48,7 +53,9 @@ namespace OpenAI.Containers
                 message = _client.CreateGetContainersRequest(_limit, _order, nextToken, _name, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ContainerCollectionPage)page).LastId;
@@ -61,10 +68,13 @@ namespace OpenAI.Containers
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private ClientResult GetNextResponse(PipelineMessage message)
         {
             return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }

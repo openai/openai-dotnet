@@ -63,11 +63,13 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support writing '{format}' format.");
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("anchor") != true)
             {
                 writer.WritePropertyName("anchor"u8);
                 writer.WriteStringValue(Anchor.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("days") != true)
             {
                 writer.WritePropertyName("days"u8);

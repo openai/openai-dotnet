@@ -13,6 +13,7 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, AudioTranscriptionChunkingStrategy chunkingStrategy, IList<string> knownSpeakerNames, IList<string> knownSpeakerReferenceUris, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,14 +31,13 @@ namespace OpenAI.Audio
             KnownSpeakerReferenceUris = knownSpeakerReferenceUris ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Language { get; set; }
 
         public string Prompt { get; set; }
 
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
-
-        public float? Temperature { get; set; }
 
         [Experimental("OPENAI001")]
         public IList<string> KnownSpeakerNames { get; }

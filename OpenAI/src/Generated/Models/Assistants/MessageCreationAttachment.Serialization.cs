@@ -132,7 +132,7 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new MessageCreationAttachment(fileId, tools, additionalBinaryDataProperties);
+            return new MessageCreationAttachment(fileId, tools ?? new ChangeTrackingList<ToolDefinition>(), additionalBinaryDataProperties);
         }
     }
 }

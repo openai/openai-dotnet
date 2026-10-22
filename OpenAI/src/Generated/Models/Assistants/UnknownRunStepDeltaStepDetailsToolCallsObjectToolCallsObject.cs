@@ -9,8 +9,10 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownRunStepDeltaStepDetailsToolCallsObjectToolCallsObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal UnknownRunStepDeltaStepDetailsToolCallsObjectToolCallsObject(RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

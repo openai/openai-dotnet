@@ -11,11 +11,14 @@ namespace OpenAI.Batch
 {
     internal partial class BatchClientGetBatchesCollectionResult : CollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly BatchClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly string _afterId;
         private readonly int? _pageSizeLimit;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public BatchClientGetBatchesCollectionResult(BatchClient client, string afterId, int? pageSizeLimit, RequestOptions options)
         {
             _client = client;
@@ -23,6 +26,7 @@ namespace OpenAI.Batch
             _pageSizeLimit = pageSizeLimit;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override IEnumerable<ClientResult> GetRawPages()
         {

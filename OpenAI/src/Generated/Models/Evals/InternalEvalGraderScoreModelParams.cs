@@ -20,6 +20,7 @@ namespace OpenAI.Evals
             Range = new ChangeTrackingList<float>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalEvalGraderScoreModelParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, BinaryData samplingParams, IList<InternalEvalItem> input, IList<float> range, float? passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,6 +31,7 @@ namespace OpenAI.Evals
             Range = range ?? new ChangeTrackingList<float>();
             PassThreshold = passThreshold;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Name { get; }
 

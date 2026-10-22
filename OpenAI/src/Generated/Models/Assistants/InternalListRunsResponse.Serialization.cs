@@ -186,7 +186,7 @@ namespace OpenAI.Assistants
             }
             return new InternalListRunsResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<ThreadRun>(),
                 firstId,
                 lastId,
                 hasMore,

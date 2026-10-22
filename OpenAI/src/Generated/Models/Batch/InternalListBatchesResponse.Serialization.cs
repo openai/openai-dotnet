@@ -184,7 +184,7 @@ namespace OpenAI.Batch
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalListBatchesResponse(
-                data,
+                data ?? new ChangeTrackingList<BatchJob>(),
                 firstId,
                 lastId,
                 hasMore,

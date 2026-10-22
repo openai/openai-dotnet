@@ -364,7 +364,7 @@ namespace OpenAI.Assistants
                 description,
                 model,
                 instructions,
-                tools,
+                tools ?? new ChangeTrackingList<ToolDefinition>(),
                 toolResources,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,

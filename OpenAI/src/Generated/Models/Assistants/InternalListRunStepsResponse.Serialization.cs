@@ -186,7 +186,7 @@ namespace OpenAI.Assistants
             }
             return new InternalListRunStepsResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<RunStep>(),
                 firstId,
                 lastId,
                 hasMore,

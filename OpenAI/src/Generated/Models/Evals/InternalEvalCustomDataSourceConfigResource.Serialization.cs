@@ -138,7 +138,7 @@ namespace OpenAI.Evals
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalEvalCustomDataSourceConfigResource(kind, additionalBinaryDataProperties, schema);
+            return new InternalEvalCustomDataSourceConfigResource(kind, additionalBinaryDataProperties, schema ?? new ChangeTrackingDictionary<string, BinaryData>());
         }
     }
 }

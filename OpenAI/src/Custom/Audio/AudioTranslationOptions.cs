@@ -18,6 +18,10 @@ public partial class AudioTranslationOptions
     // - Added setter.
     internal InternalCreateTranslationRequestModel Model { get; set; }
 
+    // CUSTOM: Changed type.
+    [CodeGenMember("Temperature")]
+    public float? Temperature { get; set; }
+
     internal MultiPartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
     {
         MultiPartFormDataBinaryContent content = new();

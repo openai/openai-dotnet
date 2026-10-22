@@ -20,6 +20,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerActionDrag(ComputerCallActionKind kind, in JsonPatch patch, IList<InternalCoordinate> path) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -27,6 +28,7 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IList<InternalCoordinate> Path { get; }
     }

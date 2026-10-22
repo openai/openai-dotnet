@@ -10,8 +10,10 @@ namespace OpenAI.Evals
 {
     internal partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalUnknownEvalGraderResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

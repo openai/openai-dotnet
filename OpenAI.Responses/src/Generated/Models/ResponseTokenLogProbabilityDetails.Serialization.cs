@@ -202,7 +202,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities, patch);
+            return new ResponseTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities ?? new ChangeTrackingList<ResponseTokenTopLogProbabilityDetails>(), patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

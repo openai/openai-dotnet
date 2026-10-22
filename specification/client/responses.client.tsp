@@ -6,6 +6,10 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(TokenCountsResource.input_tokens, int32);
+@@alternateType(ResponseCustomToolCallInputDeltaEvent.output_index, int32);
+@@alternateType(ResponseCustomToolCallInputDoneEvent.output_index, int32);
+
 @@alternateType(CreateResponse.conversation, `ConversationParam-2`);
 @@alternateType(CreateResponse.`model`, string);
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);

@@ -318,8 +318,8 @@ namespace OpenAI.Evals
                 createdOn,
                 status,
                 datasourceItemId,
-                datasourceItem,
-                results,
+                datasourceItem ?? new ChangeTrackingDictionary<string, BinaryData>(),
+                results ?? new ChangeTrackingList<IDictionary<string, BinaryData>>(),
                 sample,
                 additionalBinaryDataProperties);
         }
