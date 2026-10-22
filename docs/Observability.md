@@ -126,10 +126,12 @@ Latest-mode operations do not also emit the legacy token histogram. Default-mode
 
 ### Responses streaming lifecycle and timing
 
-Streaming creation is lazy. Each enumeration starts its own operation when it sends the request;
-creating a collection or disposing an enumerator before its first move emits no telemetry.
-The operation uses the ambient parent at that time, preserves baggage, and parents HTTP work beneath
-the Responses span. It restores the caller's current activity between enumeration calls.
+Awaiting streaming creation starts the operation and sends the request before returning the streaming
+result. The operation uses the ambient parent from that creation call, preserves baggage, and parents
+the HTTP work beneath the Responses span. Each result can be enumerated only once; enumeration consumes
+the response sent by the creation call instead of starting another operation or request. The SDK restores
+the caller's current activity between enumeration calls. Disposing a result without enumerating it still
+ends the operation and emits applicable duration telemetry, but no usage or chunk-timing measurements.
 
 The first `response.completed`, `response.failed`, or `response.incomplete` update ends the operation,
 using the same status, finish-reason, service-tier, and usage mappings as non-streaming creation.
