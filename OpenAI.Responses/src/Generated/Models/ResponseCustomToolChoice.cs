@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ResponseCustomToolChoice(InternalResponseCustomToolChoiceKind kind)
+        protected internal ResponseCustomToolChoice(InternalResponseCustomToolChoiceKind kind)
         {
             Kind = kind;
         }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalResponseCustomToolChoiceKind Kind { get; set; }
+        public InternalResponseCustomToolChoiceKind Kind { get; }
     }
 }
