@@ -134,13 +134,10 @@ public class SseUpdateCollectionTests
     {
         bool disposed = false;
         List<Action> disposalActions = [() => disposed = true];
-        MockPipelineResponse response = new(200, "OK")
-        {
-            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(StreamContent)),
-        };
+        AsyncStreamingResult<SseItem<BinaryData>> source = CreateRawStreamingResult(StreamContent);
         await using AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
-            response,
-            DeserializeEvent,
+            source,
+            DeserializeBinaryEvent,
             CancellationToken.None,
             disposalActions);
         List<string> updates = [];
@@ -162,13 +159,13 @@ public class SseUpdateCollectionTests
     public void StreamingResultCancellationIsNotOvertakenByBufferedTerminalEvent()
     {
         using CancellationTokenSource source = new();
-        MockPipelineResponse response = new(200, "OK")
-        {
-            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(StreamContentUnknownThenTerminal)),
-        };
+        AsyncStreamingResult<SseItem<BinaryData>> streamingSource
+            = CreateRawStreamingResult(StreamContentUnknownThenTerminal);
         AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
-            response,
-            item => DeserializeEventAndCancelOnUnknown(item, source),
+            streamingSource,
+            item => DeserializeEventAndCancelOnUnknown(
+                new SseItem<byte[]>(item.Data.ToArray(), item.EventType),
+                source),
             source.Token);
 
         Assert.That(
@@ -823,4 +820,17 @@ public class SseUpdateCollectionTests
 
         return ClientResult.FromResponse(response);
     }
+
+    private static AsyncStreamingResult<SseItem<BinaryData>> CreateRawStreamingResult(string content)
+    {
+        MockPipelineResponse response = new(200, "OK")
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(content)),
+        };
+
+        return AsyncStreamingResult.CreateSse(response);
+    }
+
+    private static IEnumerable<string> DeserializeBinaryEvent(SseItem<BinaryData> item)
+        => DeserializeEvent(new SseItem<byte[]>(item.Data.ToArray(), item.EventType));
 }

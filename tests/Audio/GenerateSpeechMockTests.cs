@@ -1,10 +1,15 @@
 ﻿#pragma warning disable OPENAI001
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
+using Moq;
 using NUnit.Framework;
 using OpenAI.Audio;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.IO;
+using System.Net.ServerSentEvents;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,5 +75,47 @@ internal class GenerateSpeechMockTests : ClientTestBase
 
         Assert.That(acceptHeader, Is.EqualTo("text/event-stream"));
         Assert.That(bufferResponse, Is.False);
+    }
+
+    [Test]
+    public async Task GenerateSpeechStreamingUsesProtocolOverride()
+    {
+        var clientMock = new Mock<AudioClient>("model", s_fakeCredential) { CallBase = true };
+        clientMock
+            .Setup(client => client.GenerateSpeechStreamingAsync(
+                It.IsAny<BinaryContent>(),
+                It.IsAny<RequestOptions>()))
+            .ReturnsAsync(CreateProtocolStreamingResult());
+
+        await using var result = await clientMock.Object.GenerateSpeechStreamingAsync(
+            "text",
+            GeneratedSpeechVoice.Alloy);
+        await foreach (var _ in result)
+        {
+            // Consume the stream to verify the protocol override result is adapted.
+        }
+
+        clientMock.Verify(
+            client => client.GenerateSpeechStreamingAsync(
+                It.IsAny<BinaryContent>(),
+                It.IsAny<RequestOptions>()),
+            Times.Once);
+    }
+
+    private static AsyncStreamingResult<SseItem<BinaryData>> CreateProtocolStreamingResult()
+    {
+        MockPipelineResponse response = new(200)
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes("data: [DONE]\n\n")),
+        };
+
+        return AsyncStreamingResult.CreateSse(response);
+    }
+
+    private sealed class NonDisposingMemoryStream(byte[] content) : MemoryStream(content)
+    {
+        protected override void Dispose(bool disposing)
+        {
+        }
     }
 }

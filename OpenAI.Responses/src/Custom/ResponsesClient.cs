@@ -436,8 +436,11 @@ public partial class ResponsesClient
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
             requestOptions).ConfigureAwait(false);
-        return SseStreamingResult.Create(
+        AsyncStreamingResult<SseItem<BinaryData>> source = AsyncStreamingResult.CreateSse(
             result.GetRawResponse(),
+            operationCancellationToken: requestOptions.CancellationToken);
+        return SseStreamingResult.Create(
+            source,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
     }

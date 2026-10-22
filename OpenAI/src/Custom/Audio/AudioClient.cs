@@ -207,10 +207,10 @@ public partial class AudioClient
 
         using BinaryContent content = options.ToBinaryContent();
         RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateGenerateSpeechStreamingRequest(content, requestOptions);
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        return SseStreamingResult.Create(
-            response,
+        AsyncStreamingResult<SseItem<BinaryData>> result
+            = await GenerateSpeechStreamingAsync(content, requestOptions).ConfigureAwait(false);
+        return SseStreamingResult.Create<StreamingSpeechUpdate>(
+            result,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
@@ -433,10 +433,10 @@ public partial class AudioClient
                 .ToMultipartContent(audio, audioFilename);
 
         RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, content.ContentType, requestOptions);
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        return SseStreamingResult.Create(
-            response,
+        AsyncStreamingResult<SseItem<BinaryData>> result
+            = await TranscribeAudioStreamingAsync(content, content.ContentType, requestOptions).ConfigureAwait(false);
+        return SseStreamingResult.Create<StreamingAudioTranscriptionUpdate>(
+            result,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
@@ -457,10 +457,10 @@ public partial class AudioClient
                 .ToMultipartContent(inputStream, audioFilePath);
 
         RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, content.ContentType, requestOptions);
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        return SseStreamingResult.Create(
-            response,
+        AsyncStreamingResult<SseItem<BinaryData>> result
+            = await TranscribeAudioStreamingAsync(content, content.ContentType, requestOptions).ConfigureAwait(false);
+        return SseStreamingResult.Create<StreamingAudioTranscriptionUpdate>(
+            result,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001

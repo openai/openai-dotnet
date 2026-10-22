@@ -1,12 +1,16 @@
 ﻿#pragma warning disable OPENAI001
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
+using Moq;
 using NUnit.Framework;
 using OpenAI.Audio;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.IO;
 using System.Linq;
+using System.Net.ServerSentEvents;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -233,6 +237,37 @@ public partial class TranscriptionMockTests : ClientTestBase
     }
 
     [Test]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task TranscribeAudioStreamingUsesProtocolOverride(AudioSourceKind audioSourceKind)
+    {
+        var clientMock = new Mock<AudioClient>("model", s_fakeCredential) { CallBase = true };
+        clientMock
+            .Setup(client => client.TranscribeAudioStreamingAsync(
+                It.IsAny<BinaryContent>(),
+                It.IsAny<string>(),
+                It.IsAny<RequestOptions>()))
+            .ReturnsAsync(CreateProtocolStreamingResult());
+        using Stream audio = new MemoryStream([0x01]);
+
+        await using AsyncStreamingResult<SseItem<StreamingAudioTranscriptionUpdate>> result
+            = audioSourceKind == AudioSourceKind.UsingStream
+                ? await clientMock.Object.TranscribeAudioStreamingAsync(audio, "audio.mp3")
+                : await clientMock.Object.TranscribeAudioStreamingAsync(Path.Join("Assets", "audio_hello_world.mp3"));
+        await foreach (var _ in result)
+        {
+            // Consume the stream to verify the protocol override result is adapted.
+        }
+
+        clientMock.Verify(
+            client => client.TranscribeAudioStreamingAsync(
+                It.IsAny<BinaryContent>(),
+                It.IsAny<string>(),
+                It.IsAny<RequestOptions>()),
+            Times.Once);
+    }
+
+    [Test]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]
@@ -270,6 +305,23 @@ public partial class TranscriptionMockTests : ClientTestBase
                 ExpectSyncPipeline = !IsAsync
             }
         };
+    }
+
+    private static AsyncStreamingResult<SseItem<BinaryData>> CreateProtocolStreamingResult()
+    {
+        MockPipelineResponse response = new(200)
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes("data: [DONE]\n\n")),
+        };
+
+        return AsyncStreamingResult.CreateSse(response);
+    }
+
+    private sealed class NonDisposingMemoryStream(byte[] content) : MemoryStream(content)
+    {
+        protected override void Dispose(bool disposing)
+        {
+        }
     }
 
     private async ValueTask<AudioTranscription> InvokeTranscribeAudioSyncOrAsync(OpenAIClientOptions clientOptions, AudioSourceKind audioSourceKind)

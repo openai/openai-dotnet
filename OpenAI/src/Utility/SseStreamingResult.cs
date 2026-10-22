@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenAI.Telemetry;
 
 #nullable enable
 
@@ -19,7 +18,7 @@ internal static class SseStreamingResult
     private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
-        PipelineResponse response,
+        AsyncStreamingResult<SseItem<BinaryData>> source,
         Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
         List<Action>? additionalDisposalActions = null,
@@ -27,105 +26,114 @@ internal static class SseStreamingResult
     {
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
 
-        return Create<T>(
-            response,
-            (Func<SseItem<byte[]>, IEnumerable<T>>)(item =>
-            {
-                using JsonDocument document = JsonDocument.Parse(item.Data);
-                return [jsonSingleDeserializerFunc(document.RootElement, ModelSerializationExtensions.WireOptions)];
-            }),
+        return Create(
+            source,
+            (element, _, options) => jsonSingleDeserializerFunc(element, options),
             cancellationToken,
             additionalDisposalActions,
             lifecycle);
     }
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
-        PipelineResponse response,
+        AsyncStreamingResult<SseItem<BinaryData>> source,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
         List<Action>? additionalDisposalActions = null,
         SseLifecycle<T>? lifecycle = null)
     {
+        Argument.AssertNotNull(source, nameof(source));
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
 
-        return Create<T>(
-            response,
-            (Func<SseItem<byte[]>, IEnumerable<T>>)(item =>
+        return Create(
+            source,
+            item =>
             {
                 using JsonDocument document = JsonDocument.Parse(item.Data);
-                return [jsonSingleDeserializerFunc(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions)];
-            }),
-                cancellationToken,
-                additionalDisposalActions,
-                lifecycle);
-    }
-
-    public static AsyncStreamingResult<SseItem<T>> Create<T>(
-        PipelineResponse response,
-        Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
-        CancellationToken cancellationToken,
-        List<Action>? additionalDisposalActions = null,
-        SseLifecycle<T>? lifecycle = null)
-    {
-        Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
-
-        return Create<T>(
-            response,
-            (Func<SseItem<byte[]>, IEnumerable<T>>)(item =>
-            {
-                using JsonDocument document = JsonDocument.Parse(item.Data);
-                return jsonMultiDeserializerFunc(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions);
-            }),
+                return [jsonSingleDeserializerFunc(
+                    document.RootElement,
+                    item.Data,
+                    ModelSerializationExtensions.WireOptions)];
+            },
             cancellationToken,
             additionalDisposalActions,
             lifecycle);
     }
 
     public static AsyncStreamingResult<SseItem<T>> Create<T>(
-        PipelineResponse response,
-        Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
+        AsyncStreamingResult<SseItem<BinaryData>> source,
+        Func<SseItem<BinaryData>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken,
         List<Action>? additionalDisposalActions = null,
-        SseLifecycle<T>? lifecycle = null,
-        OpenTelemetryResponseStream? unenumeratedResponseStream = null)
+        SseLifecycle<T>? lifecycle = null)
     {
-        Argument.AssertNotNull(response, nameof(response));
+        Argument.AssertNotNull(source, nameof(source));
         Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
 
+        var response = new SourceStreamingResponse(
+            source,
+            exception => CompleteSource(
+                exception,
+                additionalDisposalActions,
+                lifecycle,
+                SseCompletionKind.Disposed));
         return AsyncStreamingResult.Create<SseItem<T>>(
             response,
-            (stream, producerCancellationToken) => EnumerateAsync(
-                stream,
+            (_, producerCancellationToken) => EnumerateSourceAsync(
+                source,
                 eventDeserializerFunc,
                 additionalDisposalActions,
                 lifecycle,
-                unenumeratedResponseStream,
+                response,
                 producerCancellationToken),
             cancellationToken);
     }
 
-    private static async IAsyncEnumerable<SseItem<T>> EnumerateAsync<T>(
-        Stream stream,
-        Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
+    private sealed class LifecycleEnumerator<T>(
+        IEnumerator<T> inner,
+        SseLifecycle<T>? lifecycle) : IEnumerator<T>
+    {
+        public T Current => inner.Current;
+
+        object System.Collections.IEnumerator.Current => Current!;
+
+        public bool MoveNext() => inner.MoveNext();
+
+        public void Reset() => inner.Reset();
+
+        public void Dispose()
+        {
+            try
+            {
+                inner.Dispose();
+            }
+            catch (Exception exception)
+            {
+                lifecycle?.OnException(exception);
+                throw;
+            }
+        }
+    }
+
+    private static async IAsyncEnumerable<SseItem<T>> EnumerateSourceAsync<T>(
+        AsyncStreamingResult<SseItem<BinaryData>> source,
+        Func<SseItem<BinaryData>, IEnumerable<T>> eventDeserializerFunc,
         List<Action>? additionalDisposalActions,
         SseLifecycle<T>? lifecycle,
-        OpenTelemetryResponseStream? unenumeratedResponseStream,
+        SourceStreamingResponse response,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         SseCompletionKind completionKind = SseCompletionKind.Disposed;
-        unenumeratedResponseStream?.Detach();
+        response.Detach();
         lifecycle?.OnTypedResponse();
 
         try
         {
-            await using IAsyncEnumerator<SseItem<byte[]>> events = SseParser
-                .Create(stream, (_, bytes) => bytes.ToArray())
-                .EnumerateAsync(cancellationToken)
+            await using IAsyncEnumerator<SseItem<BinaryData>> events = ((IAsyncEnumerable<SseItem<BinaryData>>)source)
                 .GetAsyncEnumerator(cancellationToken);
 
             while (true)
             {
-                SseItem<byte[]> item;
+                SseItem<BinaryData> item;
                 try
                 {
                     using (lifecycle?.Enter())
@@ -141,14 +149,13 @@ internal static class SseStreamingResult
                         lifecycle?.OnEvent();
                     }
                 }
-
                 catch (Exception exception)
                 {
                     lifecycle?.OnException(exception);
                     throw;
                 }
 
-                if (item.Data.AsSpan().SequenceEqual(TerminalData))
+                if (item.Data.ToMemory().Span.SequenceEqual(TerminalData))
                 {
                     completionKind = SseCompletionKind.EndOfStream;
                     yield break;
@@ -208,50 +215,85 @@ internal static class SseStreamingResult
         {
             using (lifecycle?.Enter())
             {
-                try
-                {
-                    foreach (Action additionalDisposalAction in additionalDisposalActions ?? [])
-                    {
-                        additionalDisposalAction.Invoke();
-                    }
-                }
-                catch (Exception exception)
-                {
-                    lifecycle?.OnException(exception);
-                    throw;
-                }
-                finally
-                {
-                    additionalDisposalActions?.Clear();
-                    lifecycle?.Complete(completionKind);
-                }
+                CompleteSource(null, additionalDisposalActions, lifecycle, completionKind);
             }
         }
     }
 
-    private sealed class LifecycleEnumerator<T>(
-        IEnumerator<T> inner,
-        SseLifecycle<T>? lifecycle) : IEnumerator<T>
+    private sealed class SourceStreamingResponse(
+        AsyncStreamingResult<SseItem<BinaryData>> source,
+        Action<Exception?> complete) : PipelineResponse
     {
-        public T Current => inner.Current;
+        private static readonly BinaryData s_emptyContent = BinaryData.FromBytes([]);
+        private Action<Exception?>? _complete = complete;
 
-        object System.Collections.IEnumerator.Current => Current!;
+        public override int Status => source.Status;
 
-        public bool MoveNext() => inner.MoveNext();
+        public override string ReasonPhrase => source.ReasonPhrase;
 
-        public void Reset() => inner.Reset();
+        public override Stream? ContentStream
+        {
+            get => Stream.Null;
+            set => throw new NotSupportedException();
+        }
 
-        public void Dispose()
+        public override BinaryData Content => s_emptyContent;
+
+        protected override PipelineResponseHeaders HeadersCore => source.Headers;
+
+        public override BinaryData BufferContent(CancellationToken cancellationToken = default)
+            => s_emptyContent;
+
+        public override ValueTask<BinaryData> BufferContentAsync(CancellationToken cancellationToken = default)
+            => new(s_emptyContent);
+
+        public void Detach() => Interlocked.Exchange(ref _complete, null);
+
+        public override void Dispose()
         {
             try
             {
-                inner.Dispose();
+                source.DisposeAsync().AsTask().GetAwaiter().GetResult();
             }
             catch (Exception exception)
             {
-                lifecycle?.OnException(exception);
+                Interlocked.Exchange(ref _complete, null)?.Invoke(exception);
                 throw;
             }
+            finally
+            {
+                Interlocked.Exchange(ref _complete, null)?.Invoke(null);
+            }
+        }
+    }
+
+    private static void CompleteSource<T>(
+        Exception? exception,
+        List<Action>? additionalDisposalActions,
+        SseLifecycle<T>? lifecycle,
+        SseCompletionKind completionKind)
+    {
+        try
+        {
+            if (exception is not null)
+            {
+                lifecycle?.OnException(exception);
+            }
+
+            foreach (Action additionalDisposalAction in additionalDisposalActions ?? [])
+            {
+                additionalDisposalAction.Invoke();
+            }
+        }
+        catch (Exception disposalException)
+        {
+            lifecycle?.OnException(disposalException);
+            throw;
+        }
+        finally
+        {
+            additionalDisposalActions?.Clear();
+            lifecycle?.Complete(completionKind);
         }
     }
 }
@@ -283,7 +325,6 @@ internal sealed class SseStreamingResult<T>
     {
         SseLifecycle<T>? lifecycle = LifecycleFactory?.Invoke();
         ClientResult result;
-        OpenTelemetryResponseStream? unenumeratedResponseStream = null;
 
         try
         {
@@ -292,39 +333,6 @@ internal sealed class SseStreamingResult<T>
                 result = await _sendRequestAsync().ConfigureAwait(false);
                 PipelineResponse response = result.GetRawResponse();
                 lifecycle?.OnResponse(response);
-
-                if ((lifecycle is not null) && (response.ContentStream is { } responseStream))
-                {
-                    unenumeratedResponseStream = new OpenTelemetryResponseStream(
-                        responseStream,
-                        lifecycle.Enter,
-                        exception =>
-                        {
-                            try
-                            {
-                                if (exception is not null)
-                                {
-                                    lifecycle.OnException(exception);
-                                }
-
-                                foreach (Action additionalDisposalAction in AdditionalDisposalActions)
-                                {
-                                    additionalDisposalAction.Invoke();
-                                }
-                            }
-                            catch (Exception disposalException)
-                            {
-                                lifecycle.OnException(disposalException);
-                                throw;
-                            }
-                            finally
-                            {
-                                AdditionalDisposalActions.Clear();
-                                lifecycle.Complete(SseCompletionKind.Disposed);
-                            }
-                        });
-                    response.ContentStream = unenumeratedResponseStream;
-                }
             }
         }
         catch (Exception exception)
@@ -333,19 +341,14 @@ internal sealed class SseStreamingResult<T>
             throw;
         }
 
-        return SseStreamingResult.Create(
+        AsyncStreamingResult<SseItem<BinaryData>> source = AsyncStreamingResult.CreateSse(
             result.GetRawResponse(),
-            item =>
-            {
-                using JsonDocument document = JsonDocument.Parse(item.Data);
-                return [_jsonSingleDeserializerFunc(
-                    document.RootElement,
-                    BinaryData.FromBytes(item.Data),
-                    ModelSerializationExtensions.WireOptions)];
-            },
+            operationCancellationToken: _cancellationToken);
+        return SseStreamingResult.Create(
+            source,
+            _jsonSingleDeserializerFunc,
             _cancellationToken,
             AdditionalDisposalActions,
-            lifecycle,
-            unenumeratedResponseStream);
+            lifecycle);
     }
 }
