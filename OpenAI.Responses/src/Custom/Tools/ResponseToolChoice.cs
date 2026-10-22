@@ -2,6 +2,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
+// CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetResponseToolChoice")]
 [CodeGenVisibility(nameof(ResponseToolChoice), CodeGenVisibility.Internal)]
 [CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
