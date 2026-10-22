@@ -21,7 +21,7 @@ internal static class SseStreamingResult
         PipelineResponse response,
         Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null,
+        List<Action>? additionalDisposalActions = null,
         SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
@@ -42,7 +42,7 @@ internal static class SseStreamingResult
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null,
+        List<Action>? additionalDisposalActions = null,
         SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
@@ -63,7 +63,7 @@ internal static class SseStreamingResult
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null,
+        List<Action>? additionalDisposalActions = null,
         SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
@@ -84,7 +84,7 @@ internal static class SseStreamingResult
         PipelineResponse response,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken,
-        IEnumerable<Action>? additionalDisposalActions = null,
+        List<Action>? additionalDisposalActions = null,
         SseLifecycle<T>? lifecycle = null)
     {
         Argument.AssertNotNull(response, nameof(response));
@@ -99,7 +99,7 @@ internal static class SseStreamingResult
     private static async IAsyncEnumerable<SseItem<T>> EnumerateAsync<T>(
         Stream stream,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
-        IEnumerable<Action>? additionalDisposalActions,
+        List<Action>? additionalDisposalActions,
         SseLifecycle<T>? lifecycle,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -223,6 +223,7 @@ internal static class SseStreamingResult
                 }
                 finally
                 {
+                    additionalDisposalActions?.Clear();
                     lifecycle?.Complete(completionKind);
                 }
             }
