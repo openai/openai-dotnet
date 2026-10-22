@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "425",
+        "Content-Length": "417",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -25,7 +25,7 @@
           }
         ],
         "tool_choice": {
-          "type": "web_search_preview"
+          "type": "web_search"
         },
         "input": [
           {
@@ -52,9 +52,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a3b327edffce755d-SEA",
+        "CF-Ray": "a4eaf6f5bbed7b0b-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "7338",
+        "Content-Length": "8515",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -67,15 +67,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0559af58efd2fabc006aa8829be95887d0a0bb30de8f3ec430",
+        "id": "resp_03a9792586ce7a82006ada664b3cf887d28d03687807c1e5f8",
         "object": "response",
-        "created_at": 1789428380,
+        "created_at": 1792697931,
         "status": "completed",
+        "access_programs": null,
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1789428382,
+        "completed_at": 1792697934,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -86,7 +87,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "ws_0559af58efd2fabc006aa8829c1ca487d09f7b9f7c103cbddf",
+            "id": "ws_03a9792586ce7a82006ada664b5eec87d29024081eec3a7dc7",
             "type": "web_search_call",
             "status": "completed",
             "action": {
@@ -98,65 +99,57 @@
               "sources": [
                 {
                   "type": "url",
-                  "url": "https://www.kiowacountypress.net/content/daily-audio-newscast-september-14-2026?utm_source=openai"
+                  "url": "https://www.democracynow.org/2026/10/22/headlines?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.almanac.com/kids/calendar/date/2026-09-14?utm_source=openai"
+                  "url": "https://timesofindia.indiatimes.com/astrology/horoscope/virgo-horoscope-today-october-22-2026-academic-success-and-social-gatherings-bring-positive-energy/articleshow/135087800.cms?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.democracynow.org/2026/9/14/headlines?utm_source=openai"
+                  "url": "https://www.archynetys.com/trend/2026-10-22/horoscope-for-thursday-october-22-2026-chicago-sun-times?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.wknofm.org/podcast/wkno-daily/2026-09-14/wkno-daily-newscast-monday-september-14-2026?utm_source=openai"
+                  "url": "https://www.thehouston.org/news/october-22-2026?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.vaticannews.va/es/evangelio-de-hoy/2026/09/14.html?utm_source=openai"
+                  "url": "https://www.upliftingnewsapp.com/good-news-today/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.vaticannews.va/vi/loi-chua-hang-ngay/2026/09/14.html?utm_source=openai"
+                  "url": "https://theglobaleye.it/2026/10/22/global-news-22-ottobre-2026/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://roserambles.org/2026/09/14/restored-republic-via-a-gcr-as-of-september-14-2026/?utm_source=openai"
+                  "url": "https://news.prairiepublic.org/2026-10-22/morning-news-brief?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.theguardian.com/world/2026/sep/14/all?utm_source=openai"
+                  "url": "https://datesback.com/2026/oct/22?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.theguardian.com/us-news/2026/sep/14/all?utm_source=openai"
+                  "url": "https://gnm.org/daily-reflections/2026-10-22/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://savedelete.com/news/archive/2026/09/14/?utm_source=openai"
+                  "url": "https://www.weku.org/npr-news/2026-10-22/morning-news-brief?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.wusf.org/2026-09-14/morning-news-brief?utm_source=openai"
+                  "url": "https://next-edition.com/editions/2026-10-22?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.kunc.org/2026-09-14/morning-news-brief?utm_source=openai"
-                },
-                {
-                  "type": "url",
-                  "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
-                },
-                {
-                  "type": "url",
-                  "url": "https://www.lemonde.fr/en/economy/article/2026/09/14/trump-rejects-pause-in-ai-race-citing-competition-from-china_6757508_19.html?utm_source=openai"
+                  "url": "https://www.knkx.org/2026-10-22/morning-news-brief?utm_source=openai"
                 }
               ]
             }
           },
           {
-            "id": "msg_0559af58efd2fabc006aa8829d101c87d0bf53acef60d4783a",
+            "id": "msg_03a9792586ce7a82006ada664be83087d2b44f3901b0ac623a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -165,28 +158,42 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 810,
-                    "start_index": 698,
-                    "title": "\uD83D\uDEA6 Axios AM: Hitting AI brakes",
-                    "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
+                    "end_index": 530,
+                    "start_index": 441,
+                    "title": "Headlines for October 22, 2026 | Democracy Now!",
+                    "url": "https://www.democracynow.org/2026/10/22/headlines?utm_source=openai"
                   },
                   {
                     "type": "url_citation",
-                    "end_index": 960,
-                    "start_index": 830,
-                    "title": "\uD83D\uDEA6 Axios AM: Hitting AI brakes",
-                    "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
+                    "end_index": 945,
+                    "start_index": 856,
+                    "title": "Headlines for October 22, 2026 | Democracy Now!",
+                    "url": "https://www.democracynow.org/2026/10/22/headlines?utm_source=openai"
                   },
                   {
                     "type": "url_citation",
-                    "end_index": 1209,
-                    "start_index": 998,
-                    "title": "Trump rejects pause in AI race citing competition from China",
-                    "url": "https://www.lemonde.fr/en/economy/article/2026/09/14/trump-rejects-pause-in-ai-race-citing-competition-from-china_6757508_19.html?utm_source=openai"
+                    "end_index": 1392,
+                    "start_index": 1290,
+                    "title": "Global news (22 ottobre 2026) | The Global Eye",
+                    "url": "https://theglobaleye.it/2026/10/22/global-news-22-ottobre-2026/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1761,
+                    "start_index": 1668,
+                    "title": "Good News Today: Positive and Happy News Stories",
+                    "url": "https://www.upliftingnewsapp.com/good-news-today/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 2157,
+                    "start_index": 2064,
+                    "title": "Good News Today: Positive and Happy News Stories",
+                    "url": "https://www.upliftingnewsapp.com/good-news-today/?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "On September 13, 2026, leaders from major AI labs—including Anthropic, SpaceXAI, OpenAI, and Google DeepMind—collectively called for a slowdown in AI development. This rare industry unity was prompted by concerns over potential catastrophic scenarios arising from rapid AI progress. Anthropic CEO Dario Amodei initiated the call, warning that unchecked AI advancements could lead to significant risks within six months. His remarks were echoed by top executives such as Elon Musk, Sam Altman, and Demis Hassabis, who emphasized prioritizing safety over growth. This collective stance reflects growing public concern and legislative pressures regarding the unchecked development of AI technologies. ([axios.com](https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai))\n\n\n## Highlights:\n- [\uD83D\uDEA6 Axios AM: Hitting AI brakes](https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai), Published on Sunday, September 13\n- [Trump rejects pause in AI race citing competition from China](https://www.lemonde.fr/en/economy/article/2026/09/14/trump-rejects-pause-in-ai-race-citing-competition-from-china_6757508_19.html?utm_source=openai), Published on Monday, September 14 "
+                "text": "Certainly! Here are some positive developments from today, October 22, 2026:\n\n**1. Supreme Court Upholds Gender-Affirming Care for Inmates**\n\nThe U.S. Supreme Court has ruled that the Federal Bureau of Prisons must continue providing gender-affirming care, including hormone therapy, to transgender inmates. This decision ensures that approximately 2,000 transgender individuals in federal custody will receive necessary medical treatments. ([democracynow.org](https://www.democracynow.org/2026/10/22/headlines?utm_source=openai))\n\n**2. Meta Fined $25 Billion for Deceptive Practices**\n\nA New Mexico judge has imposed a $25 billion fine on Meta (formerly Facebook) after a trial revealed the company misrepresented user data for years. This ruling holds Meta accountable for its deceptive business practices, stemming from the Cambridge Analytica scandal. ([democracynow.org](https://www.democracynow.org/2026/10/22/headlines?utm_source=openai))\n\n**3. International Summit Focuses on Children's Wellbeing**\n\nIn Samarkand, Uzbekistan, the UN-backed World Summit Investing in Children's Wellbeing has commenced, bringing together over 600 participants from more than 100 countries. The summit aims to address challenges such as war and climate change to ensure children worldwide can thrive. ([theglobaleye.it](https://theglobaleye.it/2026/10/22/global-news-22-ottobre-2026/?utm_source=openai))\n\n**4. Coconut Oil Explored as Sustainable Jet Fuel**\n\nPioneering experiments have demonstrated that coconut oil could serve as a sustainable alternative to traditional jet fuel. This development offers a promising solution to reduce the aviation industry's carbon footprint. ([upliftingnewsapp.com](https://www.upliftingnewsapp.com/good-news-today/?utm_source=openai))\n\n**5. New Frog Species Discovered in Biodiverse Region**\n\nResearchers have identified five new frog species in one of the most biologically diverse regions on the planet. This discovery highlights the importance of preserving biodiversity and the ongoing efforts to understand our planet's ecosystems. ([upliftingnewsapp.com](https://www.upliftingnewsapp.com/good-news-today/?utm_source=openai))\n\nThese events reflect positive strides in social justice, environmental sustainability, and scientific discovery. "
               }
             ],
             "role": "assistant"
@@ -259,11 +266,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 308,
+          "output_tokens": 484,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 8819
+          "total_tokens": 8995
         },
         "user": null,
         "metadata": {}
