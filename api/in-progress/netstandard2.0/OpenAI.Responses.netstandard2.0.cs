@@ -876,6 +876,8 @@ namespace OpenAI.Responses {
     }
     public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
         public ResponseCustomAllowedToolsToolChoice();
+        public ResponseCustomAllowedToolsToolChoice(ResponseToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools);
+        public ResponseToolChoiceAllowedMode Mode { get; set; }
         public IList<ResponseTool> Tools { get; }
     }
     public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
@@ -1439,6 +1441,21 @@ namespace OpenAI.Responses {
         public ResponseDefaultToolChoice? DefaultToolChoice { get; }
         public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
         public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+    }
+    public readonly partial struct ResponseToolChoiceAllowedMode : IEquatable<ResponseToolChoiceAllowedMode> {
+        public ResponseToolChoiceAllowedMode(string value);
+        public static ResponseToolChoiceAllowedMode Auto { get; }
+        public static ResponseToolChoiceAllowedMode Required { get; }
+        public readonly bool Equals(ResponseToolChoiceAllowedMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public static implicit operator ResponseToolChoiceAllowedMode(string value);
+        public static implicit operator ResponseToolChoiceAllowedMode?(string value);
+        public static bool operator !=(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public override readonly string ToString();
     }
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
         public ResponseToolKind(string value);

@@ -547,7 +547,6 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalTodoFineTuneChatRequestInput))]
     [ModelReaderWriterBuildable(typeof(InternalTokenCountsBody))]
     [ModelReaderWriterBuildable(typeof(InternalTokenCountsResource))]
-    [ModelReaderWriterBuildable(typeof(InternalToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalToolResourcesFileSearchIdsOnly))]
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDeltaEvent))]
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDeltaEventLogprobs))]
@@ -1064,53 +1063,21 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ReferenceResponseItem))]
     [ModelReaderWriterBuildable(typeof(ResponseContentPart))]
     [ModelReaderWriterBuildable(typeof(ResponseConversationOptions))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseConversationOptions is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomAllowedToolsToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomAllowedToolsToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomAllowedToolsToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomApplyPatchToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomApplyPatchToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomApplyPatchToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomCodeInterpreterToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomCodeInterpreterToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomCodeInterpreterToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomComputerToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomComputerToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomComputerToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomComputerUsePreviewToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomComputerUsePreviewToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomComputerUsePreviewToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomCustomToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomCustomToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomCustomToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomFileSearchToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomFileSearchToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomFileSearchToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomFunctionToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomFunctionToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomFunctionToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomImageGenerationToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomImageGenerationToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomImageGenerationToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomMcpToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomMcpToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomMcpToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomProgrammaticToolCallingToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomProgrammaticToolCallingToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomProgrammaticToolCallingToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomShellToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomShellToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomShellToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomWebSearchPreviewToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomWebSearchPreviewToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomWebSearchPreviewToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseCustomWebSearchToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseCustomWebSearchToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseCustomWebSearchToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseDeletionResult))]
     [ModelReaderWriterBuildable(typeof(ResponseError))]
     [ModelReaderWriterBuildable(typeof(ResponseIncompleteStatusDetails))]
@@ -1128,11 +1095,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ResponseTokenTopLogProbabilityDetails))]
     [ModelReaderWriterBuildable(typeof(ResponseTokenUsage))]
     [ModelReaderWriterBuildable(typeof(ResponseTool))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTool is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseToolChoice))]
-#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseToolChoice is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(RunCreationOptions))]
     [ModelReaderWriterBuildable(typeof(RunError))]

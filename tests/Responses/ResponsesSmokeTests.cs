@@ -185,22 +185,29 @@ public partial class ResponsesSmokeTests
             @"{""type"":""file_search""}");
         AssertChoiceEqual(
             new ResponseCustomComputerToolChoice(),
+            @"{""type"":""computer""}");
+        AssertChoiceEqual(
+            new ResponseCustomComputerUsePreviewToolChoice(),
             @"{""type"":""computer_use_preview""}");
         AssertChoiceEqual(
             new ResponseCustomWebSearchToolChoice(),
+            @"{""type"":""web_search""}");
+        AssertChoiceEqual(
+            new ResponseCustomWebSearchPreviewToolChoice(),
             @"{""type"":""web_search_preview""}");
-
         AssertChoiceEqual(
             new ResponseCustomImageGenerationToolChoice(),
             @"{""type"":""image_generation""}");
-
         AssertChoiceEqual(
             new ResponseCustomCodeInterpreterToolChoice(),
             @"{""type"":""code_interpreter""}");
-        
+        ResponseCustomMcpToolChoice mcpToolChoice = new("foo_server")
+        {
+            ToolName = "bar_tool"
+        };
         AssertChoiceEqual(
-            new ResponseCustomMcpToolChoice("foo", "bar"),
-            @"{""type"":""mcp"",""name"":""foo"",""server_label"":""bar""}");
+            mcpToolChoice,
+            @"{""type"":""mcp"",""name"":""bar_tool"",""server_label"":""foo_server""}");
 
         AssertChoiceEqual(
             new ResponseCustomProgrammaticToolCallingToolChoice(),
@@ -216,9 +223,9 @@ public partial class ResponsesSmokeTests
 
         AssertChoiceEqual(
             new ResponseCustomAllowedToolsToolChoice(
-                InternalToolChoiceAllowedMode.Required,
-                [new ResponseCustomFunctionToolChoice("foo")]),
-            @"{""type"":""allowed_tools"",""mode"":""required"",""tools"":[{""type"":""function"",""name"":""foo""}]}");
+                ResponseToolChoiceAllowedMode.Required,
+                [ResponseTool.CreateCustomTool("foo")]),
+            @"{""type"":""allowed_tools"",""mode"":""required"",""tools"":[{""type"":""custom"",""name"":""foo""}]}");
 
         AssertChoiceEqual(
             new ResponseCustomCustomToolChoice("foo"),

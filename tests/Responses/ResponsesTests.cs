@@ -876,11 +876,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.ToolChoice, Is.Not.Null);
     ResponseCustomFunctionToolChoice responseToolChoice = response.ToolChoice.CustomToolChoice as ResponseCustomFunctionToolChoice;
     Assert.That(responseToolChoice, Is.Not.Null);
-    Assert.That(responseToolChoice.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+    Assert.That(responseToolChoice!.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
 
         FunctionCallResponseItem functionCall = response.OutputItems.FirstOrDefault() as FunctionCallResponseItem;
         Assert.That(functionCall, Is.Not.Null);
-    Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+    Assert.That(functionCall!.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
     }
 
     [RecordedTest]
@@ -1154,6 +1154,4 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             """),
         strictModeEnabled: true);
-
-    private static readonly ResponseTool s_FileSearchTool = ResponseTool.CreateFileSearchTool(
 }

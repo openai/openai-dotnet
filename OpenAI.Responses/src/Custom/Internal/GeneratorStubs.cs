@@ -49,7 +49,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
 [CodeGenType("ResponseTextFormatConfigurationType")] internal readonly partial struct InternalResponsesTextFormatType {}
 [CodeGenType("DotNetResponseDefaultToolChoice")] public readonly partial struct ResponseDefaultToolChoice {}
-[CodeGenType("ToolChoiceAllowedMode")] internal readonly partial struct InternalToolChoiceAllowedMode {}
+[CodeGenType("ToolChoiceAllowedMode")] public readonly partial struct ResponseToolChoiceAllowedMode {}
 [CodeGenType("ToolChoiceObject")] public partial class ResponseCustomToolChoice {}
 [CodeGenType("ToolChoiceObjectFunction")] public partial class ResponseCustomFunctionToolChoice {}
 [CodeGenType("ToolChoiceObjectComputer")] public partial class ResponseCustomComputerToolChoice {}

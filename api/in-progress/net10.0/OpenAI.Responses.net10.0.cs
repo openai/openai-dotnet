@@ -985,6 +985,8 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
         public ResponseCustomAllowedToolsToolChoice();
+        public ResponseCustomAllowedToolsToolChoice(ResponseToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools);
+        public ResponseToolChoiceAllowedMode Mode { get; set; }
         public IList<ResponseTool> Tools { get; }
     }
     [Experimental("OPENAI001")]
@@ -1622,6 +1624,22 @@ namespace OpenAI.Responses {
         public ResponseDefaultToolChoice? DefaultToolChoice { get; }
         public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
         public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseToolChoiceAllowedMode : IEquatable<ResponseToolChoiceAllowedMode> {
+        public ResponseToolChoiceAllowedMode(string value);
+        public static ResponseToolChoiceAllowedMode Auto { get; }
+        public static ResponseToolChoiceAllowedMode Required { get; }
+        public readonly bool Equals(ResponseToolChoiceAllowedMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public static implicit operator ResponseToolChoiceAllowedMode(string value);
+        public static implicit operator ResponseToolChoiceAllowedMode?(string value);
+        public static bool operator !=(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
