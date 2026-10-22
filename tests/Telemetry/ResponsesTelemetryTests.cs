@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
+using System.Net.ServerSentEvents;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -378,11 +379,9 @@ public class ResponsesTelemetryTests
         Assert.That(meterListener.GetMeasurements("gen_ai.client.token.usage"), Has.Count.EqualTo(2));
     }
 
-    [TestCase(false, false)]
-    [TestCase(false, true)]
-    [TestCase(true, false)]
-    [TestCase(true, true)]
-    public async Task StreamingIsLazyAndPreservesAmbientActivity(bool useAsync, bool latest)
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task StreamingPreservesAmbientActivity(bool latest)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
@@ -393,7 +392,7 @@ public class ResponsesTelemetryTests
             SseEvent("""{"type":"response.future_event","sequence_number":0}""")
             + SseEvent("""{"type":"response.output_text.delta","sequence_number":1,"output_index":0,"content_index":0,"item_id":"message","delta":"sensitive output","logprobs":[]}""")
             + SseEvent("""{"type":"response.output_text.delta","sequence_number":2,"output_index":0,"content_index":0,"item_id":"message","delta":"sensitive output","logprobs":[]}""")
-            + TerminalEvent(), useAsync, () =>
+            + TerminalEvent(), () =>
             {
                 using var child = new Activity("synthetic HTTP").Start();
                 children.Add(child);
@@ -401,8 +400,6 @@ public class ResponsesTelemetryTests
             });
         var options = CreateOptions();
         options.StreamingEnabled = true;
-        var sync = useAsync ? null : client.CreateResponseStreaming(options);
-        var async = useAsync ? client.CreateResponseStreamingAsync(options) : null;
         Assert.That(activities.Activities, Is.Empty);
         Assert.That(children, Is.Empty);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
@@ -411,23 +408,14 @@ public class ResponsesTelemetryTests
 
         for (var attempt = 0; attempt < 2; attempt++)
         {
-            if (useAsync)
-            {
-                await using var enumerator = async.GetAsyncEnumerator();
+            await using AsyncStreamingResult<SseItem<StreamingResponseUpdate>> result
+                = await client.CreateResponseStreamingAsync(options);
+            await using IAsyncEnumerator<SseItem<StreamingResponseUpdate>> enumerator
+                = ((IAsyncEnumerable<SseItem<StreamingResponseUpdate>>)result).GetAsyncEnumerator();
 
-                while (await enumerator.MoveNextAsync())
-                {
-                    Assert.That(Activity.Current, Is.SameAs(parent));
-                }
-            }
-            else
+            while (await enumerator.MoveNextAsync())
             {
-                using var enumerator = sync.GetEnumerator();
-
-                while (enumerator.MoveNext())
-                {
-                    Assert.That(Activity.Current, Is.SameAs(parent));
-                }
+                Assert.That(Activity.Current, Is.SameAs(parent));
             }
 
             Assert.That(Activity.Current, Is.SameAs(parent));
@@ -453,13 +441,11 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk")?.Count ?? 0, Is.EqualTo(latest ? 2 : 0));
     }
 
-    [TestCase(false, "completed", null, "stop", null)]
-    [TestCase(true, "completed", null, "stop", null)]
-    [TestCase(false, "failed", null, "error", "server_error")]
-    [TestCase(true, "failed", null, "error", "server_error")]
-    [TestCase(false, "incomplete", "max_output_tokens", "length", null)]
-    [TestCase(true, "incomplete", "content_filter", "content_filter", null)]
-    public async Task StreamingTerminalUpdatesAreRecordedExactlyOnce(bool useAsync, string status, string reason, string finish, string error)
+    [TestCase("completed", null, "stop", null)]
+    [TestCase("failed", null, "error", "server_error")]
+    [TestCase("incomplete", "max_output_tokens", "length", null)]
+    [TestCase("incomplete", "content_filter", "content_filter", null)]
+    public async Task StreamingTerminalUpdatesAreRecordedExactlyOnce(string status, string reason, string finish, string error)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -467,8 +453,8 @@ public class ResponsesTelemetryTests
         using var metrics = new TestMeterListener(ActivitySourceName);
         var body = CreateResponseBody(status, reason);
         var terminal = SseEvent($$"""{"type":"response.{{status}}","sequence_number":1,"response":{{body}}}""");
-        var client = CreateStreamingClient(terminal + terminal, useAsync);
-        await ConsumeStream(client, useAsync);
+        var client = CreateStreamingClient(terminal + terminal);
+        await ConsumeStream(client);
 
         var activity = activities.Activities.Single();
         Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.EqualTo(new[] { finish }));
@@ -480,15 +466,11 @@ public class ResponsesTelemetryTests
         AssertMetrics(metrics, true);
     }
 
-    [TestCase(false, "eof", "incomplete_stream")]
-    [TestCase(true, "eof", "incomplete_stream")]
-    [TestCase(false, "done", "incomplete_stream")]
-    [TestCase(true, "done", "incomplete_stream")]
-    [TestCase(false, "error", "stream_error")]
-    [TestCase(true, "error", "stream_error")]
-    [TestCase(false, "malformed", "System.Text.Json.JsonReaderException")]
-    [TestCase(true, "malformed", "System.Text.Json.JsonReaderException")]
-    public async Task StreamingMissingTerminalDoesNotInventUsage(bool useAsync, string ending, string errorType)
+    [TestCase("eof", "incomplete_stream")]
+    [TestCase("done", "incomplete_stream")]
+    [TestCase("error", "stream_error")]
+    [TestCase("malformed", "System.Text.Json.JsonReaderException")]
+    public async Task StreamingMissingTerminalDoesNotInventUsage(string ending, string errorType)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -501,15 +483,15 @@ public class ResponsesTelemetryTests
             "malformed" => "data: {invalid\n\n",
             _ => SseEvent("""{"type":"response.future_event","sequence_number":1}"""),
         };
-        var client = CreateStreamingClient(content, useAsync);
+        var client = CreateStreamingClient(content);
 
         if (ending == "malformed")
         {
-            Assert.That(async () => await ConsumeStream(client, useAsync), Throws.InstanceOf<JsonException>());
+            Assert.That(async () => await ConsumeStream(client), Throws.InstanceOf<JsonException>());
         }
         else
         {
-            await ConsumeStream(client, useAsync);
+            await ConsumeStream(client);
         }
 
         var activity = activities.Activities.Single();
@@ -522,11 +504,9 @@ public class ResponsesTelemetryTests
         AssertSensitiveDataNotCaptured(activity);
     }
 
-    [TestCase(false, false)]
-    [TestCase(false, true)]
-    [TestCase(true, false)]
-    [TestCase(true, true)]
-    public async Task StreamingDisposalAndCancellationPreserveParent(bool useAsync, bool cancel)
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task StreamingDisposalAndCancellationPreserveParent(bool cancel)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var activities = new TestActivityListener(ActivitySourceName);
@@ -534,37 +514,23 @@ public class ResponsesTelemetryTests
         using var cancellation = new CancellationTokenSource();
         using var parent = new Activity("parent").Start();
         var content = SseEvent("""{"type":"response.future_event","sequence_number":1}""") + TerminalEvent();
-        var client = CreateStreamingClient(content, useAsync);
+        var client = CreateStreamingClient(content);
         var options = CreateOptions();
         options.StreamingEnabled = true;
 
-        if (useAsync)
+        await using AsyncStreamingResult<SseItem<StreamingResponseUpdate>> result
+            = await client.CreateResponseStreamingAsync(options, cancellation.Token);
+        IAsyncEnumerator<SseItem<StreamingResponseUpdate>> enumerator
+            = ((IAsyncEnumerable<SseItem<StreamingResponseUpdate>>)result).GetAsyncEnumerator();
+        Assert.That(await enumerator.MoveNextAsync(), Is.True);
+
+        if (cancel)
         {
-            var enumerator = client.CreateResponseStreamingAsync(options, cancellation.Token).GetAsyncEnumerator();
-            Assert.That(await enumerator.MoveNextAsync(), Is.True);
-
-            if (cancel)
-            {
-                cancellation.Cancel();
-                await Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
-            }
-            await enumerator.DisposeAsync();
-            await enumerator.DisposeAsync();
+            cancellation.Cancel();
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
         }
-        else
-        {
-            var enumerator = client.CreateResponseStreaming(options, cancellation.Token).GetEnumerator();
-            Assert.That(enumerator.MoveNext(), Is.True);
-
-            if (cancel)
-            {
-                cancellation.Cancel();
-                Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
-            }
-
-            enumerator.Dispose();
-            enumerator.Dispose();
-        }
+        await enumerator.DisposeAsync();
+        await enumerator.DisposeAsync();
 
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities.Single().GetTagItem("error.type"),
@@ -573,217 +539,66 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
     }
 
-    [Test]
-    public async Task RawStreamingActivityAndDurationCoverBodyWithoutTokenOrTimingMeasurements(
-        [Values] bool useAsync, [Values] bool consumeBody, [Values] bool disposeEarly, [Values] bool latest)
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task UnenumeratedStreamingResultCompletesTelemetryOnDisposal(bool latest)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
         using var activities = new TestActivityListener(ActivitySourceName);
         using var metrics = new TestMeterListener(ActivitySourceName);
-        var client = CreateStreamingClient(TerminalEvent(), useAsync);
+        using var parent = new Activity("caller").Start();
+        var client = CreateStreamingClient(TerminalEvent());
         var options = CreateOptions();
         options.StreamingEnabled = true;
-        using var parent = new Activity("raw-caller").Start();
-        PipelineResponse retainedResponse = null;
 
-        try
+        await using (await client.CreateResponseStreamingAsync(options))
         {
-            if (useAsync)
-            {
-                await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
-                {
-                    retainedResponse = page.GetRawResponse();
-                    Assert.That(Activity.Current, Is.SameAs(parent));
-                    Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
-
-                    if (consumeBody)
-                    {
-                        await retainedResponse.ContentStream.CopyToAsync(Stream.Null);
-                    }
-
-                    if (disposeEarly)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach (var page in client.CreateResponseStreaming(options).GetRawPages())
-                {
-                    retainedResponse = page.GetRawResponse();
-                    Assert.That(Activity.Current, Is.SameAs(parent));
-                    Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
-
-                    if (consumeBody)
-                    {
-                        retainedResponse.ContentStream.CopyTo(Stream.Null);
-                    }
-
-                    if (disposeEarly)
-                    {
-                        break;
-                    }
-                }
-            }
-
             Assert.That(Activity.Current, Is.SameAs(parent));
-            Assert.That(retainedResponse, Is.Not.Null);
-            Assert.That(activities.Activities, Has.Count.EqualTo(((latest) && (!consumeBody)) ? 0 : 1));
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0,
-                Is.EqualTo(((latest) && (consumeBody)) ? 1 : 0));
-            AssertNoStreamingTokenOrTimingMeasurements(metrics);
-
-            if (!consumeBody)
-            {
-                Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
-
-                if (useAsync)
-                {
-                    await retainedResponse.ContentStream.CopyToAsync(Stream.Null);
-                }
-                else
-                {
-                    retainedResponse.ContentStream.CopyTo(Stream.Null);
-                }
-            }
-
-            var activity = activities.Activities.Single();
-            Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Unset));
-            Assert.That(activity.GetTagItem("error.type"), Is.Null);
-            Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.Null);
-            Assert.That(activity.GetTagItem("gen_ai.response.time_to_first_chunk"), Is.Null);
-            Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
-            Assert.That(Activity.Current, Is.SameAs(parent));
-            Assert.That(retainedResponse.ContentStream.Position, Is.EqualTo(retainedResponse.ContentStream.Length));
-        }
-        finally
-        {
-            retainedResponse?.Dispose();
+            Assert.That(activities.Activities, Is.Empty);
         }
 
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(latest ? 1 : 0));
-
-        if (latest)
-        {
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration").Single().tags.ContainsKey("error.type"), Is.False);
-        }
-
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
         AssertNoStreamingTokenOrTimingMeasurements(metrics);
     }
 
     [Test]
-    public async Task RawAndTypedEnumerationsHaveIndependentLifetimes([Values] bool useAsync, [Values] bool rawFirst)
+    public async Task StreamingResultSupportsOnlyOneEnumeration()
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = new TestActivityListener(ActivitySourceName);
-        using var metrics = new TestMeterListener(ActivitySourceName);
-        using var parent = new Activity("caller").Start();
-        var client = CreateStreamingClient(TerminalEvent(), useAsync);
+        var client = CreateStreamingClient(TerminalEvent());
         var options = CreateOptions();
         options.StreamingEnabled = true;
-        PipelineResponse raw = null;
+        await using AsyncStreamingResult<SseItem<StreamingResponseUpdate>> result
+            = await client.CreateResponseStreamingAsync(options);
 
-        try
+        await foreach (var update in result)
         {
-            if (useAsync)
-            {
-                var collection = client.CreateResponseStreamingAsync(options);
-                async Task ReadRaw()
-                {
-                    await foreach (var page in collection.GetRawPagesAsync())
-                    {
-                        raw = page.GetRawResponse();
-                    }
-                }
-
-                if (rawFirst)
-                {
-                    await ReadRaw();
-                    Assert.That(activities.Activities, Is.Empty);
-                }
-
-                await foreach (var update in collection)
-                {
-                }
-
-                if (!rawFirst)
-                {
-                    await ReadRaw();
-                }
-            }
-            else
-            {
-                var collection = client.CreateResponseStreaming(options);
-
-                if (rawFirst)
-                {
-                    raw = collection.GetRawPages().Single().GetRawResponse();
-                    Assert.That(activities.Activities, Is.Empty);
-                }
-
-                collection.ToList();
-
-                if (!rawFirst)
-                {
-                    raw = collection.GetRawPages().Single().GetRawResponse();
-                }
-            }
-
-            Assert.That(Activity.Current, Is.SameAs(parent));
-            Assert.That(activities.Activities, Has.Count.EqualTo(1));
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
-            Assert.That(raw.ContentStream.Position, Is.Zero);
-            raw.Dispose();
-            Assert.That(activities.Activities, Has.Count.EqualTo(2));
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(2));
-            Assert.That(activities.Activities.All(activity => activity.ParentId == parent.Id), Is.True);
-            Assert.That(Activity.Current, Is.SameAs(parent));
         }
-        finally
-        {
-            raw?.Dispose();
-        }
+
+        Assert.Throws<InvalidOperationException>(
+            () => ((IAsyncEnumerable<SseItem<StreamingResponseUpdate>>)result).GetAsyncEnumerator());
+        Assert.That(activities.Activities, Has.Count.EqualTo(1));
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task RawStreamingSendFailureRecordsOneErrorAndRestoresAmbientActivity(bool useAsync)
+    [Test]
+    public async Task StreamingSendFailureRecordsOneErrorAndRestoresAmbientActivity()
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = new TestActivityListener(ActivitySourceName);
         using var metrics = new TestMeterListener(ActivitySourceName);
         using var parent = new Activity("raw-caller").Start();
-        var client = CreateStreamingClient(TerminalEvent(), useAsync,
+        var client = CreateStreamingClient(TerminalEvent(),
             () => throw new IOException("sensitive send failure"), maxRetries: 0);
         var options = CreateOptions();
         options.StreamingEnabled = true;
 
-        if (useAsync)
-        {
-            await Assert.ThrowsAsync<IOException>(async () =>
-            {
-                await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
-                {
-                    page.GetRawResponse().Dispose();
-                }
-            });
-        }
-        else
-        {
-            Assert.Throws<IOException>(() =>
-            {
-                foreach (var page in client.CreateResponseStreaming(options).GetRawPages())
-                {
-                    page.GetRawResponse().Dispose();
-                }
-            });
-        }
+        await Assert.ThrowsAsync<IOException>(
+            async () => await client.CreateResponseStreamingAsync(options));
 
         Assert.That(Activity.Current, Is.SameAs(parent));
         var activity = activities.Activities.Single();
@@ -824,7 +639,7 @@ public class ResponsesTelemetryTests
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = trace ? new TestActivityListener(ActivitySourceName) : null;
         using var metrics = measure ? new TestMeterListener(ActivitySourceName) : null;
-        await ConsumeStream(CreateStreamingClient(TerminalEvent(), true), true);
+        await ConsumeStream(CreateStreamingClient(TerminalEvent()));
 
         if (trace)
         {
@@ -839,24 +654,21 @@ public class ResponsesTelemetryTests
         Assert.That(Activity.Current, Is.Null);
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task StreamingFeatureSwitchOffSuppressesAllSignals(bool useAsync)
+    [Test]
+    public async Task StreamingFeatureSwitchOffSuppressesAllSignals()
     {
         using var activities = new TestActivityListener(ActivitySourceName);
         using var metrics = new TestMeterListener(ActivitySourceName);
-        await ConsumeStream(CreateStreamingClient(TerminalEvent(), useAsync), useAsync);
+        await ConsumeStream(CreateStreamingClient(TerminalEvent()));
         Assert.That(activities.Activities, Is.Empty);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
     }
 
-    [TestCase(false, ActivityIdFormat.W3C)]
-    [TestCase(true, ActivityIdFormat.W3C)]
-    [TestCase(false, ActivityIdFormat.Hierarchical)]
-    [TestCase(true, ActivityIdFormat.Hierarchical)]
-    public async Task StreamingWithoutModelPreservesParentAndSamplerTags(bool useAsync, ActivityIdFormat format)
+    [TestCase(ActivityIdFormat.W3C)]
+    [TestCase(ActivityIdFormat.Hierarchical)]
+    public async Task StreamingWithoutModelPreservesParentAndSamplerTags(ActivityIdFormat format)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -882,22 +694,13 @@ public class ResponsesTelemetryTests
         };
         ActivitySource.AddActivityListener(listener);
         using var parent = new Activity("parent").SetIdFormat(format).Start();
-        var client = CreateStreamingClient(TerminalEvent(), useAsync);
+        var client = CreateStreamingClient(TerminalEvent());
         var options = CreateOptions();
         options.Model = null;
         options.StreamingEnabled = true;
 
-        if (useAsync)
+        await foreach (var update in await client.CreateResponseStreamingAsync(options))
         {
-            await foreach (var update in client.CreateResponseStreamingAsync(options))
-            {
-            }
-        }
-        else
-        {
-            foreach (var update in client.CreateResponseStreaming(options))
-            {
-            }
         }
 
         Assert.That(Activity.Current, Is.SameAs(parent));
@@ -915,13 +718,10 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration").Single().tags.ContainsKey("gen_ai.request.model"), Is.False);
     }
 
-    [TestCase(false, "send")]
-    [TestCase(true, "send")]
-    [TestCase(false, "read")]
-    [TestCase(true, "read")]
-    [TestCase(false, "cancel")]
-    [TestCase(true, "cancel")]
-    public void StreamingTransportFailuresAndPreCancellationEndTelemetry(bool useAsync, string phase)
+    [TestCase("send")]
+    [TestCase("read")]
+    [TestCase("cancel")]
+    public void StreamingTransportFailuresAndPreCancellationEndTelemetry(string phase)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var activities = new TestActivityListener(ActivitySourceName);
@@ -934,7 +734,7 @@ public class ResponsesTelemetryTests
             cancellation.Cancel();
         }
 
-        var client = CreateStreamingClient(TerminalEvent(), useAsync,
+        var client = CreateStreamingClient(TerminalEvent(),
             onSend: () =>
             {
                 if (phase == "send")
@@ -943,7 +743,7 @@ public class ResponsesTelemetryTests
                 }
             },
             streamFactory: phase == "read" ? () => new ThrowingReadStream() : null);
-        Assert.That(async () => await ConsumeStream(client, useAsync, cancellation.Token), Throws.Exception);
+        Assert.That(async () => await ConsumeStream(client, cancellation.Token), Throws.Exception);
         Assert.That(Activity.Current, Is.SameAs(parent));
         var activity = activities.Activities.Single();
         Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Error));
@@ -953,9 +753,8 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task TerminalWithoutUsageDoesNotManufactureTokenCounts(bool useAsync)
+    [Test]
+    public async Task TerminalWithoutUsageDoesNotManufactureTokenCounts()
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var activities = new TestActivityListener(ActivitySourceName);
@@ -963,8 +762,8 @@ public class ResponsesTelemetryTests
         var body = System.Text.Json.Nodes.JsonNode.Parse(CompletedResponseBody);
         body["usage"] = null;
         var content = SseEvent($$"""{"type":"response.completed","sequence_number":1,"response":{{body.ToJsonString()}}}""");
-        var client = CreateStreamingClient(content, useAsync);
-        await ConsumeStream(client, useAsync);
+        var client = CreateStreamingClient(content);
+        await ConsumeStream(client);
         Assert.That(activities.Activities.Single().GetTagItem("gen_ai.usage.input_tokens"), Is.Null);
         Assert.That(activities.Activities.Single().GetTagItem("gen_ai.usage.output_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
@@ -980,10 +779,13 @@ public class ResponsesTelemetryTests
         using var cancellation = new CancellationTokenSource();
         using var parent = new Activity("parent").Start();
         using var stream = new CancellableReadStream();
-        var client = CreateStreamingClient("", true, streamFactory: () => stream);
+        var client = CreateStreamingClient("", streamFactory: () => stream);
         var options = CreateOptions();
         options.StreamingEnabled = true;
-        await using var enumerator = client.CreateResponseStreamingAsync(options, cancellation.Token).GetAsyncEnumerator();
+        await using AsyncStreamingResult<SseItem<StreamingResponseUpdate>> result
+            = await client.CreateResponseStreamingAsync(options, cancellation.Token);
+        await using IAsyncEnumerator<SseItem<StreamingResponseUpdate>> enumerator
+            = ((IAsyncEnumerable<SseItem<StreamingResponseUpdate>>)result).GetAsyncEnumerator();
         var pendingMove = enumerator.MoveNextAsync().AsTask();
         await stream.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.That(Activity.Current, Is.SameAs(parent));
@@ -1015,7 +817,7 @@ public class ResponsesTelemetryTests
         };
         listener.SetMeasurementEventCallback<double>((_, value, _, _) => measurements.Add(value));
         listener.Start();
-        await ConsumeStream(CreateStreamingClient(TerminalEvent(), true), true);
+        await ConsumeStream(CreateStreamingClient(TerminalEvent()));
         Assert.That(measurements, Has.Count.EqualTo(1));
         Assert.That(measurements.Single(), Is.GreaterThanOrEqualTo(0));
     }
@@ -1213,7 +1015,7 @@ public class ResponsesTelemetryTests
     private static string TerminalEvent()
         => SseEvent($$"""{"type":"response.completed","sequence_number":3,"response":{{CompletedResponseBody}}}""");
 
-    private static ResponsesClient CreateStreamingClient(string content, bool useAsync, Action onSend = null,
+    private static ResponsesClient CreateStreamingClient(string content, Action onSend = null,
         Func<Stream> streamFactory = null, int? maxRetries = null)
     {
         var transport = new MockPipelineTransport(_ =>
@@ -1226,7 +1028,7 @@ public class ResponsesTelemetryTests
             };
         })
         {
-            ExpectSyncPipeline = !useAsync,
+            ExpectSyncPipeline = false,
         };
         var options = new ResponsesClientOptions
         {
@@ -1299,22 +1101,13 @@ public class ResponsesTelemetryTests
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
-    private static async Task ConsumeStream(ResponsesClient client, bool useAsync, CancellationToken cancellationToken = default)
+    private static async Task ConsumeStream(ResponsesClient client, CancellationToken cancellationToken = default)
     {
         var options = CreateOptions();
         options.StreamingEnabled = true;
 
-        if (useAsync)
+        await foreach (var update in await client.CreateResponseStreamingAsync(options, cancellationToken))
         {
-            await foreach (var update in client.CreateResponseStreamingAsync(options, cancellationToken))
-            {
-            }
-        }
-        else
-        {
-            foreach (var update in client.CreateResponseStreaming(options, cancellationToken))
-            {
-            }
         }
     }
 
