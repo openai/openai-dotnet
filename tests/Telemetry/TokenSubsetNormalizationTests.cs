@@ -28,7 +28,7 @@ public class TokenSubsetNormalizationTests
     {
         foreach (var api in new[] { "chat", "response", "stream" })
         {
-            foreach (var useAsync in new[] { false, true })
+            foreach (var useAsync in api == "stream" ? new[] { true } : new[] { false, true })
             {
                 foreach (var latest in new[] { false, true })
                 {
@@ -63,7 +63,7 @@ public class TokenSubsetNormalizationTests
             return new MockPipelineResponse(200).WithContent(body);
         })
         {
-            ExpectSyncPipeline = !useAsync,
+            ExpectSyncPipeline = api != "stream" && !useAsync,
         };
 
         if (api == "chat")
@@ -97,17 +97,8 @@ public class TokenSubsetNormalizationTests
 
             if (api == "stream")
             {
-                if (useAsync)
+                await foreach (var update in await client.CreateResponseStreamingAsync(request))
                 {
-                    await foreach (var update in client.CreateResponseStreamingAsync(request))
-                    {
-                    }
-                }
-                else
-                {
-                    foreach (var update in client.CreateResponseStreaming(request))
-                    {
-                    }
                 }
             }
             else if (useAsync)

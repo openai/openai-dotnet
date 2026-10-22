@@ -86,7 +86,7 @@ Requests without a model continue to emit a `chat` operation without `gen_ai.req
 The following sources and meters are available:
 
 - `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
-- `OpenAI.ResponsesClient` - records traces and metrics for `CreateResponse` and `CreateResponseStreaming` operations, including their asynchronous overloads. Protocol, retrieval (including streaming retrieval), cancellation, deletion, and input-item methods are not instrumented yet.
+- `OpenAI.ResponsesClient` - records traces and metrics for `CreateResponse` operations, including the asynchronous overload, and `CreateResponseStreamingAsync`. Protocol, retrieval (including streaming retrieval), cancellation, deletion, and input-item methods are not instrumented yet.
 
 ### Latest-mode token metrics
 
