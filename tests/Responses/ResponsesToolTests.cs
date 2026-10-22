@@ -1593,7 +1593,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions createResponseOptions = new("gpt-5.1", inputItems)
         {
             Tools = { new WebSearchTool() },
-            ToolChoice = new ResponseCustomWebSearchToolChoice(),
+            ToolChoice = new ResponseCustomWebSearchPreviewToolChoice(),
             ReasoningOptions = new() { ReasoningEffortLevel = ResponseReasoningEffortLevel.High },
             IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
         };
