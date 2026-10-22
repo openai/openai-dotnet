@@ -15,13 +15,13 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        protected internal WebSearchAction(InternalWebSearchActionType kind)
+        protected internal WebSearchAction(WebSearchActionKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchAction(InternalWebSearchActionType kind, in JsonPatch patch)
+        internal WebSearchAction(WebSearchActionKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public InternalWebSearchActionType Kind { get; }
+        public WebSearchActionKind Kind { get; }
     }
 }

@@ -10,7 +10,7 @@ public partial class WebSearchToolLocation
     public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null)
     {
         return new WebSearchToolApproximateLocation(
-            kind: InternalWebSearchUserLocationKind.Approximate,
+            kind: WebSearchToolLocationKind.Approximate,
             patch: default,
             country: country,
             region: region,

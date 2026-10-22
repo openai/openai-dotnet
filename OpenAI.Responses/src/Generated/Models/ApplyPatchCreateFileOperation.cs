@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchCreateFileOperation : ApplyPatchOperation
     {
-        public ApplyPatchCreateFileOperation(string filePath, string diff) : base(InternalApplyPatchOperationType.CreateFile)
+        public ApplyPatchCreateFileOperation(string filePath, string diff) : base(ApplyPatchOperationKind.CreateFile)
         {
             Argument.AssertNotNull(filePath, nameof(filePath));
             Argument.AssertNotNull(diff, nameof(diff));
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchCreateFileOperation(InternalApplyPatchOperationType kind, in JsonPatch patch, string filePath, string diff) : base(kind, patch)
+        internal ApplyPatchCreateFileOperation(ApplyPatchOperationKind kind, in JsonPatch patch, string filePath, string diff) : base(kind, patch)
         {
             FilePath = filePath;
             Diff = diff;

@@ -10,6 +10,26 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public class ResponseItemExtensibilityTests
 {
+    [TestCase(typeof(ApplyPatchOperation), typeof(ApplyPatchOperationKind))]
+    [TestCase(typeof(CodeInterpreterCallOutput), typeof(CodeInterpreterCallOutputKind))]
+    [TestCase(typeof(CodeInterpreterToolContainerConfiguration), typeof(CodeInterpreterToolContainerConfigurationKind))]
+    [TestCase(typeof(ComputerCallOutput), typeof(ComputerCallOutputKind))]
+    [TestCase(typeof(ReasoningSummaryPart), typeof(ReasoningSummaryPartKind))]
+    [TestCase(typeof(WebSearchAction), typeof(WebSearchActionKind))]
+    [TestCase(typeof(WebSearchActionSource), typeof(WebSearchActionSourceKind))]
+    [TestCase(typeof(WebSearchToolLocation), typeof(WebSearchToolLocationKind))]
+    public void PublicHierarchyDiscriminatorUsesNamedExtensibleKind(Type modelType, Type kindType)
+    {
+        var property = modelType.GetProperty("Kind");
+
+        Assert.That(kindType.IsPublic, Is.True);
+        Assert.That(kindType.Name, Does.Not.StartWith("Internal").And.EndWith("Kind"));
+        Assert.That(property.PropertyType, Is.EqualTo(kindType));
+        Assert.That(property.CanWrite, Is.False);
+        object customKind = Activator.CreateInstance(kindType, "consumer_extension");
+        Assert.That(customKind.ToString(), Is.EqualTo("consumer_extension"));
+    }
+
     [Test]
     public void ConsumerSubclassCanSupplyCustomKind()
     {

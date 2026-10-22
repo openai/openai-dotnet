@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>
     {
-        public ApplyPatchCreateFileOperation() : this(InternalApplyPatchOperationType.CreateFile, default, null, null)
+        public ApplyPatchCreateFileOperation() : this(ApplyPatchOperationKind.CreateFile, default, null, null)
         {
         }
 
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalApplyPatchOperationType kind = default;
+            ApplyPatchOperationKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,7 +117,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalApplyPatchOperationType(prop.Value.GetString());
+                    kind = new ApplyPatchOperationKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("path"u8))

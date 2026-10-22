@@ -8,13 +8,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput
     {
-        public InternalComputerToolCallOutputItemOutputComputerScreenshot() : this(InternalComputerUsePreviewToolCallOutputOutputType.Screenshot, default, null, null)
+        public InternalComputerToolCallOutputItemOutputComputerScreenshot() : this(ComputerCallOutputKind.Screenshot, default, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerToolCallOutputItemOutputComputerScreenshot(InternalComputerUsePreviewToolCallOutputOutputType kind, in JsonPatch patch, string imageUrl, string fileId) : base(kind, patch)
+        internal InternalComputerToolCallOutputItemOutputComputerScreenshot(ComputerCallOutputKind kind, in JsonPatch patch, string imageUrl, string fileId) : base(kind, patch)
         {
             ImageUrl = imageUrl;
             FileId = fileId;

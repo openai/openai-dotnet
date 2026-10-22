@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchDeleteFileOperation : ApplyPatchOperation
     {
-        public ApplyPatchDeleteFileOperation(string filePath) : base(InternalApplyPatchOperationType.DeleteFile)
+        public ApplyPatchDeleteFileOperation(string filePath) : base(ApplyPatchOperationKind.DeleteFile)
         {
             Argument.AssertNotNull(filePath, nameof(filePath));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchDeleteFileOperation(InternalApplyPatchOperationType kind, in JsonPatch patch, string filePath) : base(kind, patch)
+        internal ApplyPatchDeleteFileOperation(ApplyPatchOperationKind kind, in JsonPatch patch, string filePath) : base(kind, patch)
         {
             FilePath = filePath;
         }

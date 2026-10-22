@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningSummaryTextPart : ReasoningSummaryPart
     {
-        public ReasoningSummaryTextPart(string text) : base(InternalReasoningItemSummaryPartType.SummaryText)
+        public ReasoningSummaryTextPart(string text) : base(ReasoningSummaryPartKind.SummaryText)
         {
             Argument.AssertNotNull(text, nameof(text));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ReasoningSummaryTextPart(InternalReasoningItemSummaryPartType kind, in JsonPatch patch, string text) : base(kind, patch)
+        internal ReasoningSummaryTextPart(ReasoningSummaryPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
         {
             Text = text;
         }
