@@ -6,8 +6,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 namespace OpenAI {
+    public partial interface ISubjectTokenProvider {
+        WorkloadIdentitySubjectTokenType TokenType { get; }
+        ValueTask<string> GetTokenAsync(CancellationToken cancellationToken);
+    }
     public class OpenAIClient {
         protected OpenAIClient();
+        public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
         public OpenAIClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
@@ -83,5 +89,16 @@ namespace OpenAI {
         public static IClientBuilder AddSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
+    public sealed class WorkloadIdentityFederationOptions {
+        public WorkloadIdentityFederationOptions(ISubjectTokenProvider subjectTokenProvider, string identityProviderId, string serviceAccountId, string clientId = null);
+        public string ClientId { get; }
+        public string IdentityProviderId { get; }
+        public string ServiceAccountId { get; }
+        public ISubjectTokenProvider SubjectTokenProvider { get; }
+    }
+    public enum WorkloadIdentitySubjectTokenType {
+        Jwt = 0,
+        IdToken = 1
     }
 }

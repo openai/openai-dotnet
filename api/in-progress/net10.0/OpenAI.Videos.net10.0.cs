@@ -11,6 +11,8 @@ namespace OpenAI.Videos {
         protected VideoClient();
         [Experimental("SCME0002")]
         public VideoClient(VideoClientSettings settings);
+        public VideoClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public VideoClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public VideoClient(ApiKeyCredential credential);
         public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

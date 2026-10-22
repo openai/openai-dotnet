@@ -23,6 +23,8 @@ namespace OpenAI.Models {
         protected OpenAIModelClient();
         [Experimental("SCME0002")]
         public OpenAIModelClient(OpenAIModelClientSettings settings);
+        public OpenAIModelClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public OpenAIModelClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]

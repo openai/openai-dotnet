@@ -18,6 +18,7 @@ public partial class RealtimeClient
     public event EventHandler<BinaryData> OnReceivingCommand;
 
     private readonly ApiKeyCredential _keyCredential;
+    private readonly WorkloadIdentityAuthenticationTokenProvider _workloadIdentityTokenProvider;
     private readonly Uri _webSocketEndpoint;
 
     // CUSTOM: Added as a convenience.
@@ -91,6 +92,23 @@ public partial class RealtimeClient
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _webSocketEndpoint = GetWebSocketEndpoint(options);
+    }
+
+    internal RealtimeClient(
+        ClientPipeline pipeline,
+        RealtimeClientOptions options,
+        WorkloadIdentityAuthenticationTokenProvider workloadIdentityTokenProvider)
+        : this(pipeline, options)
+    {
+        _workloadIdentityTokenProvider = workloadIdentityTokenProvider;
+    }
+
+    private RealtimeClient(
+        WorkloadIdentityAuthenticationTokenProvider workloadIdentityTokenProvider,
+        RealtimeClientOptions options)
+        : this(OpenAIClient.CreateWorkloadIdentityAuthenticationPolicy(workloadIdentityTokenProvider), options)
+    {
+        _workloadIdentityTokenProvider = workloadIdentityTokenProvider;
     }
 
     [Experimental("SCME0002")]

@@ -11,6 +11,8 @@ namespace OpenAI.Audio {
         [Experimental("SCME0002")]
         public AudioClient(AudioClientSettings settings);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public AudioClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public AudioClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
         [Experimental("OPENAI001")]

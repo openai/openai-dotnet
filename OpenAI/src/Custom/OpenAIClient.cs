@@ -101,6 +101,7 @@ public partial class OpenAIClient
 
     private readonly OpenAIClientOptions _options;
     private readonly ApiKeyCredential _keyCredential;
+    private readonly WorkloadIdentityAuthenticationTokenProvider _workloadIdentityTokenProvider;
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
@@ -130,6 +131,35 @@ public partial class OpenAIClient
     public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
         _keyCredential = credential;
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
+    /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
+    /// <remarks>Workload identity federation and API-key authentication are mutually exclusive; use one constructor or the other.</remarks>
+    /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
+    public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions)
+        : this(workloadIdentityOptions, new OpenAIClientOptions())
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
+    /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <remarks>Workload identity federation and API-key authentication are mutually exclusive; use one constructor or the other.</remarks>
+    /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
+    public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options)
+        : this(
+            new WorkloadIdentityAuthenticationTokenProvider(
+                workloadIdentityOptions ?? throw new ArgumentNullException(nameof(workloadIdentityOptions)),
+                options ??= new OpenAIClientOptions()),
+            options)
+    {
+    }
+
+    private OpenAIClient(WorkloadIdentityAuthenticationTokenProvider tokenProvider, OpenAIClientOptions options)
+        : this(CreateWorkloadIdentityAuthenticationPolicy(tokenProvider), options)
+    {
+        _workloadIdentityTokenProvider = tokenProvider;
     }
 
     // CUSTOM: Added as a convenience.
@@ -338,13 +368,17 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns></returns>
     [Experimental("OPENAI002")]
-    public virtual RealtimeClient GetRealtimeClient() => new(Pipeline, new RealtimeClientOptions
+    public virtual RealtimeClient GetRealtimeClient()
     {
-        Endpoint = _options.Endpoint,
-        OrganizationId = _options.OrganizationId,
-        ProjectId = _options.ProjectId,
-        UserAgentApplicationId = _options.UserAgentApplicationId,
-    });
+        RealtimeClientOptions options = new()
+        {
+            Endpoint = _options.Endpoint,
+            OrganizationId = _options.OrganizationId,
+            ProjectId = _options.ProjectId,
+            UserAgentApplicationId = _options.UserAgentApplicationId,
+        };
+        return new RealtimeClient(Pipeline, options, _workloadIdentityTokenProvider);
+    }
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
@@ -393,6 +427,20 @@ public partial class OpenAIClient
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
         => OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential);
+
+    internal static AuthenticationPolicy CreateWorkloadIdentityAuthenticationPolicy(
+        WorkloadIdentityFederationOptions workloadIdentityOptions,
+        ClientPipelineOptions clientOptions)
+        => CreateWorkloadIdentityAuthenticationPolicy(
+            new WorkloadIdentityAuthenticationTokenProvider(
+                workloadIdentityOptions ?? throw new ArgumentNullException(nameof(workloadIdentityOptions)),
+                clientOptions ?? throw new ArgumentNullException(nameof(clientOptions))));
+
+    internal static AuthenticationPolicy CreateWorkloadIdentityAuthenticationPolicy(
+        WorkloadIdentityAuthenticationTokenProvider tokenProvider)
+        => new BearerTokenPolicy(
+            tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider)),
+            scope: "https://api.openai.com/.default");
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
         => OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options?.UserAgentApplicationId, options?.OrganizationId, options?.ProjectId);

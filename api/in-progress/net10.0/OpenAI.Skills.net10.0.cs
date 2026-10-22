@@ -11,6 +11,8 @@ namespace OpenAI.Skills {
         protected SkillClient();
         [Experimental("SCME0002")]
         public SkillClient(SkillClientSettings settings);
+        public SkillClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public SkillClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public SkillClient(ApiKeyCredential credential);
         public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

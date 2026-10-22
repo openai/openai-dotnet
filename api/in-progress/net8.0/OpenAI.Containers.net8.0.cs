@@ -18,6 +18,8 @@ namespace OpenAI.Containers {
         protected ContainerClient();
         [Experimental("SCME0002")]
         public ContainerClient(ContainerClientSettings settings);
+        public ContainerClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public ContainerClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
         public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
