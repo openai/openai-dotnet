@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,13 +61,22 @@ public partial class RealtimeSessionClient
         WebSocket = clientWebSocket;
     }
 
+    /// <summary> Sends a serialized command to the session. </summary>
+    /// <param name="data"> The serialized command. Its backing memory must remain valid and unchanged until the returned task completes. </param>
+    /// <param name="options"> The options for this request. </param>
     public virtual async Task SendCommandAsync(BinaryData data, RequestOptions options)
     {
         Argument.AssertNotNull(data, nameof(data));
 
         _parentClient?.RaiseOnSendingCommand(this, data);
 
-        ArraySegment<byte> messageBytes = new(data.ToArray());
+        ReadOnlyMemory<byte> messageMemory = data.ToMemory();
+#if NETSTANDARD2_0
+        if (!MemoryMarshal.TryGetArray(messageMemory, out ArraySegment<byte> messageBytes))
+        {
+            messageBytes = new ArraySegment<byte>(messageMemory.ToArray());
+        }
+#endif
 
         CancellationToken cancellationToken = options?.CancellationToken ?? default;
 
@@ -74,7 +84,11 @@ public partial class RealtimeSessionClient
         try
         {
             await WebSocket.SendAsync(
+#if NETSTANDARD2_0
                 messageBytes,
+#else
+                messageMemory,
+#endif
                 WebSocketMessageType.Text, // TODO: extensibility for binary messages -- via "content"?
                 endOfMessage: true,
                 cancellationToken)
