@@ -52,13 +52,14 @@ internal class GenerateSpeechMockTests : ClientTestBase
     {
         string acceptHeader = null;
         bool? bufferResponse = null;
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent(string.Empty);
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
                 message.Request.Headers.TryGetValue("Accept", out acceptHeader);
                 bufferResponse = message.BufferResponse;
-                return new MockPipelineResponse(200).WithContent(string.Empty);
+                return response;
             })
             {
                 ExpectSyncPipeline = false
@@ -66,7 +67,7 @@ internal class GenerateSpeechMockTests : ClientTestBase
         };
         AudioClient client = new("model", s_fakeCredential, clientOptions);
 
-        await client.GenerateSpeechStreamingAsync("text", GeneratedSpeechVoice.Alloy);
+        await using var result = await client.GenerateSpeechStreamingAsync("text", GeneratedSpeechVoice.Alloy);
 
         Assert.That(acceptHeader, Is.EqualTo("text/event-stream"));
         Assert.That(bufferResponse, Is.False);

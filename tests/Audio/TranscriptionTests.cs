@@ -321,6 +321,10 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         {
             streamingUpdates = await client.TranscribeAudioStreamingAsync(path);
         }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(audioSourceKind), audioSourceKind, null);
+        }
 
         StringBuilder deltaBuilder = new();
 
@@ -536,6 +540,10 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
             streamingUpdates = await client.TranscribeAudioStreamingAsync(path, options);
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(audioSourceKind), audioSourceKind, null);
         }
 
         string doneText = null;

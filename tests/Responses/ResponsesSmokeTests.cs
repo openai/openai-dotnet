@@ -77,7 +77,8 @@ public partial class ResponsesSmokeTests
 
             data: [DONE]
             """);
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent(BinaryContent.Create(responseContent));
+        using BinaryContent content = BinaryContent.Create(responseContent);
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent(content);
         ResponsesClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)

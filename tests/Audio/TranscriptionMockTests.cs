@@ -196,13 +196,14 @@ public partial class TranscriptionMockTests : ClientTestBase
     {
         string acceptHeader = null;
         bool? bufferResponse = null;
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("data: [DONE]\n\n");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
                 message.Request.Headers.TryGetValue("Accept", out acceptHeader);
                 bufferResponse = message.BufferResponse;
-                return new MockPipelineResponse(200).WithContent("data: [DONE]\n\n");
+                return response;
             })
             {
                 ExpectSyncPipeline = false
@@ -215,12 +216,14 @@ public partial class TranscriptionMockTests : ClientTestBase
             using Stream audio = new MemoryStream([0x01, 0x02, 0x03, 0x04, 0x05]);
             await foreach (var _ in await client.TranscribeAudioStreamingAsync(audio, "audio.mp3"))
             {
+                // Consume the stream to exercise the streaming request.
             }
         }
         else
         {
             await foreach (var _ in await client.TranscribeAudioStreamingAsync(Path.Combine("Assets", "audio_hello_world.mp3")))
             {
+                // Consume the stream to exercise the streaming request.
             }
         }
 

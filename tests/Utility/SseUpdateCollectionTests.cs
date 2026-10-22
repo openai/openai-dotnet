@@ -129,6 +129,62 @@ public class SseUpdateCollectionTests
         });
     }
 
+    [Test]
+    public async Task StreamingResultStopsAtDoneAndRunsDisposalActions()
+    {
+        bool disposed = false;
+        List<Action> disposalActions = [() => disposed = true];
+        MockPipelineResponse response = new(200, "OK")
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(StreamContent)),
+        };
+        await using AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
+            response,
+            DeserializeEvent,
+            CancellationToken.None,
+            disposalActions);
+        List<string> updates = [];
+
+        await foreach (SseItem<string> update in result)
+        {
+            updates.Add(update.Data);
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(updates, Is.EqualTo(new[] { "A", "B" }));
+            Assert.That(disposed, Is.True);
+            Assert.That(disposalActions, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void StreamingResultCancellationIsNotOvertakenByBufferedTerminalEvent()
+    {
+        using CancellationTokenSource source = new();
+        MockPipelineResponse response = new(200, "OK")
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(StreamContentUnknownThenTerminal)),
+        };
+        AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
+            response,
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        Assert.That(
+            async () =>
+            {
+                await using (result)
+                {
+                    await foreach (SseItem<string> update in result)
+                    {
+                        Assert.That(update.Data, Is.EqualTo("A"));
+                    }
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
+    }
+
     // A run of events that yield no updates, so that the skip loop stays inside a single
     // MoveNext call across several events.
     private const string StreamContentWithConsecutiveUnknownEvents =
