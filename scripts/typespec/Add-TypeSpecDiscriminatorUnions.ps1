@@ -256,6 +256,10 @@ function Read-TypeSpecDiscriminatorScope {
                     if ($header.Text -contains "is") { $unsupported.Add("model aliases") }
                     $extends = -1
                     for ($headerIndex = $headerStart; $headerIndex -lt $open; $headerIndex++) {
+                        if ($Tokens[$headerIndex].Text -eq "<") {
+                            $headerIndex = Get-TypeSpecClosingTokenIndex -Tokens $Tokens -Start $headerIndex -IncludeAngles
+                            continue
+                        }
                         if ($Tokens[$headerIndex].Text -ceq "extends") { $extends = $headerIndex }
                     }
                     if ($extends -ge 0) {

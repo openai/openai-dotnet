@@ -239,6 +239,13 @@ model A extends Base { @doc("kind") kind: /* value */ "a" /* tail */ = "a"; note
         Assert-True ($result.Text.StartsWith('model External extends Imported {} model Box<T> { value: T; }')) "Unrelated declarations were modified."
     }
 
+    Invoke-Test "unrelated template constraints are not treated as model inheritance" {
+        $helper = 'namespace GeneratedHelpers { @doc(Description) @error model DefaultResponse<Description extends valueof string = "", Body = void, Headers extends {} = {}> { @body body: Body; ...Headers; } }'
+        $result = ConvertTo-TypeSpecDiscriminatorUnionText -Text ($basicSource + $helper)
+        Assert-Equal ($basicExpected + $helper) $result.Text "Constrained helper template changed or prevented conversion."
+        Assert-Equal "2" $result.DerivedPropertyCount "Discriminator descendants were missed."
+    }
+
     Invoke-Test "duplicate alternatives and contradictory overrides fail" {
         Assert-Throws { ConvertTo-TypeSpecDiscriminatorUnionText -Text '@discriminator("kind") model Base { kind: string; } model A extends Base { kind: "a"; } model B extends Base { kind: "a"; }' } "*Ambiguous duplicate discriminator*"
         Assert-Throws { ConvertTo-TypeSpecDiscriminatorUnionText -Text '@discriminator("kind") model Base { kind: string; } model A extends Base { kind: "a"; } model B extends A { kind: "b"; }' } "*Contradictory discriminator override*"
