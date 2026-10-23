@@ -13,7 +13,7 @@ public partial class ComputerCallOutput
     {
         Argument.AssertNotNull(screenshotImageUri, nameof(screenshotImageUri));
 
-        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
+        return new ComputerCallScreenshotOutput()
         {
             ImageUrl = screenshotImageUri.AbsoluteUri,
         };
@@ -23,7 +23,7 @@ public partial class ComputerCallOutput
     {
         Argument.AssertNotNull(screenshotImageFileId, nameof(screenshotImageFileId));
 
-        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
+        return new ComputerCallScreenshotOutput()
         {
             FileId = screenshotImageFileId,
         };
@@ -34,7 +34,7 @@ public partial class ComputerCallOutput
         Argument.AssertNotNull(screenshotImageBytes, nameof(screenshotImageBytes));
         Argument.AssertNotNull(screenshotImageBytesMediaType, nameof(screenshotImageBytesMediaType));
 
-        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
+        return new ComputerCallScreenshotOutput()
         {
             ImageUrl = DataEncodingHelpers.CreateDataUri(screenshotImageBytes, screenshotImageBytesMediaType),
         };

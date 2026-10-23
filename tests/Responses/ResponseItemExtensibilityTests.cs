@@ -10,6 +10,49 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public class ResponseItemExtensibilityTests
 {
+    [TestCase("J")]
+    [TestCase("W")]
+    public void ComputerScreenshotOutputIsPublicAndRoundTrips(string format)
+    {
+        ComputerCallScreenshotOutput screenshot = new()
+        {
+            ImageUrl = "https://example.com/screenshot.png",
+            FileId = "file_screenshot",
+        };
+        ComputerCallOutput output = screenshot;
+        ModelReaderWriterOptions options = new(format);
+
+        Assert.That(typeof(ComputerCallScreenshotOutput).IsPublic, Is.True);
+        Assert.That(output.Kind, Is.EqualTo(ComputerCallOutputKind.Screenshot));
+        BinaryData data = ModelReaderWriter.Write(output, options);
+        using JsonDocument json = JsonDocument.Parse(data);
+        Assert.That(json.RootElement.GetProperty("type").GetString(), Is.EqualTo("computer_screenshot"));
+        Assert.That(json.RootElement.GetProperty("image_url").GetString(), Is.EqualTo(screenshot.ImageUrl));
+        Assert.That(json.RootElement.GetProperty("file_id").GetString(), Is.EqualTo(screenshot.FileId));
+
+        ComputerCallOutput restored = ModelReaderWriter.Read<ComputerCallOutput>(data, options);
+        Assert.That(restored, Is.TypeOf<ComputerCallScreenshotOutput>());
+        Assert.That(((ComputerCallScreenshotOutput)restored).ImageUrl, Is.EqualTo(screenshot.ImageUrl));
+        Assert.That(((ComputerCallScreenshotOutput)restored).FileId, Is.EqualTo(screenshot.FileId));
+        Assert.That(restored.Kind, Is.EqualTo(ComputerCallOutputKind.Screenshot));
+    }
+
+    [Test]
+    public void ComputerScreenshotFactoriesReturnPublicDerivedType()
+    {
+        var uri = new Uri("https://example.com/screenshot.png");
+        var uriOutput = ComputerCallOutput.CreateScreenshotOutput(uri);
+        var fileOutput = ComputerCallOutput.CreateScreenshotOutput("file_screenshot");
+        var bytesOutput = ComputerCallOutput.CreateScreenshotOutput(BinaryData.FromBytes(new byte[] { 1, 2, 3 }), "image/png");
+
+        Assert.That(uriOutput, Is.TypeOf<ComputerCallScreenshotOutput>());
+        Assert.That(fileOutput, Is.TypeOf<ComputerCallScreenshotOutput>());
+        Assert.That(bytesOutput, Is.TypeOf<ComputerCallScreenshotOutput>());
+        Assert.That(((ComputerCallScreenshotOutput)uriOutput).ImageUrl, Is.EqualTo(uri.AbsoluteUri));
+        Assert.That(((ComputerCallScreenshotOutput)fileOutput).FileId, Is.EqualTo("file_screenshot"));
+        Assert.That(((ComputerCallScreenshotOutput)bytesOutput).ImageUrl, Is.EqualTo("data:image/png;base64,AQID"));
+    }
+
     [TestCase(typeof(ApplyPatchOperation), typeof(ApplyPatchOperationKind))]
     [TestCase(typeof(CodeInterpreterCallOutput), typeof(CodeInterpreterCallOutputKind))]
     [TestCase(typeof(CodeInterpreterToolContainerConfiguration), typeof(CodeInterpreterToolContainerConfigurationKind))]

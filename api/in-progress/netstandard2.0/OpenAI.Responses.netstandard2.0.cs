@@ -279,6 +279,11 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
+    public class ComputerCallScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallScreenshotOutput>, IPersistableModel<ComputerCallScreenshotOutput> {
+        public ComputerCallScreenshotOutput() : base(default);
+        public string FileId { get; set; }
+        public string ImageUrl { get; set; }
+    }
     public enum ComputerCallStatus {
         InProgress = 0,
         Completed = 1,

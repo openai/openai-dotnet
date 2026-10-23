@@ -17,7 +17,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerActionTypeKeys")] internal partial class InternalComputerActionTypeKeys {}
 [CodeGenType("ComputerActionWait")] internal partial class InternalComputerActionWait {}
 [CodeGenType("ComputerToolCallItemParam")] internal partial class InternalComputerUsePreviewToolCallItemParam {}
-[CodeGenType("ComputerToolCallOutputItemOutputComputerScreenshot")] internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot {}
 [CodeGenType("ComputerToolCallOutputItemParam")] internal partial class InternalComputerUsePreviewToolCallOutputItemParam {}
 [CodeGenType("Coordinate")] internal partial class InternalCoordinate {}
 [CodeGenType("FileSearchToolCallItemParam")] internal partial class InternalFileSearchToolCallItemParam {}
