@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchFindInPageAction : WebSearchAction
     {
-        public WebSearchFindInPageAction(Uri uri, string pattern) : base(InternalWebSearchActionType.FindInPage)
+        public WebSearchFindInPageAction(Uri uri, string pattern) : base(WebSearchActionKind.FindInPage)
         {
             Argument.AssertNotNull(uri, nameof(uri));
             Argument.AssertNotNull(pattern, nameof(pattern));
@@ -22,7 +22,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchFindInPageAction(InternalWebSearchActionType kind, in JsonPatch patch, Uri uri, string pattern) : base(kind, patch)
+        internal WebSearchFindInPageAction(WebSearchActionKind kind, in JsonPatch patch, Uri uri, string pattern) : base(kind, patch)
         {
             Uri = uri;
             Pattern = pattern;

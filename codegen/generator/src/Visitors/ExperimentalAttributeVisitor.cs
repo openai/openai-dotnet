@@ -133,6 +133,8 @@ namespace OpenAILibraryPlugin.Visitors
         // duplicate [Experimental] attributes.
         private readonly HashSet<string> _attributedTypes = new(StringComparer.Ordinal);
 
+        internal void ApplyToType(TypeProvider type) => VisitType(type);
+
         protected override TypeProvider? VisitType(TypeProvider type)
         {
             // Decorate any public/protected generated type that isn't in the stable

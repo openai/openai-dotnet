@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>
     {
-        public WebSearchActionUriSource() : this(InternalWebSearchActionSearchSourcesType.Uri, default, null)
+        public WebSearchActionUriSource() : this(WebSearchActionSourceKind.Uri, default, null)
         {
         }
 
@@ -102,7 +102,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalWebSearchActionSearchSourcesType kind = default;
+            WebSearchActionSourceKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,7 +111,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalWebSearchActionSearchSourcesType(prop.Value.GetString());
+                    kind = new WebSearchActionSourceKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("url"u8))

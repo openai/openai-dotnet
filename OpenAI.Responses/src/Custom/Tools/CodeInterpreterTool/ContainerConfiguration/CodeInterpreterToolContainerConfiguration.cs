@@ -19,7 +19,7 @@ public partial class CodeInterpreterToolContainerConfiguration
     public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null)
     {
         return new AutomaticCodeInterpreterToolContainerConfiguration(
-            kind: InternalCodeInterpreterContainerConfigurationType.Auto,
+            kind: CodeInterpreterToolContainerConfigurationKind.Auto,
             patch: default,
             fileIds: fileIds?.ToList());
     }
