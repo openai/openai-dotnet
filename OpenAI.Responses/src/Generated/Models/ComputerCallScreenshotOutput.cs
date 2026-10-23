@@ -15,14 +15,12 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerCallScreenshotOutput(ComputerCallOutputKind kind, in JsonPatch patch, string imageUrl, string fileId) : base(kind, patch)
+        internal ComputerCallScreenshotOutput(ComputerCallOutputKind kind, in JsonPatch patch, string imageUri, string fileId) : base(kind, patch)
         {
-            ImageUrl = imageUrl;
+            ImageUri = imageUri;
             FileId = fileId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        public string ImageUrl { get; set; }
 
         public string FileId { get; set; }
     }

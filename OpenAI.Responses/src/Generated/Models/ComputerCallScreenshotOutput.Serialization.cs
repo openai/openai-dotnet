@@ -69,10 +69,10 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
+            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl);
+                writer.WriteStringValue(ImageUri);
             }
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string imageUrl = default;
+            string imageUri = default;
             string fileId = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -118,7 +118,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("image_url"u8))
                 {
-                    imageUrl = prop.Value.GetString();
+                    imageUri = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -128,7 +128,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ComputerCallScreenshotOutput(kind, patch, imageUrl, fileId);
+            return new ComputerCallScreenshotOutput(kind, patch, imageUri, fileId);
         }
     }
 }

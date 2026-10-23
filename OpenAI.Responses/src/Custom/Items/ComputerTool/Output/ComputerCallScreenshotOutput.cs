@@ -6,4 +6,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallOutputItemOutputComputerScreenshot")]
 public partial class ComputerCallScreenshotOutput
 {
+    [CodeGenMember("ImageUrl")]
+    public string ImageUri { get; set; }
 }

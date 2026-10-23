@@ -9,17 +9,17 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallOutputItemOutput")]
 public partial class ComputerCallOutput
 {
-    public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri)
+    public static ComputerCallScreenshotOutput CreateScreenshotOutput(Uri screenshotImageUri)
     {
         Argument.AssertNotNull(screenshotImageUri, nameof(screenshotImageUri));
 
         return new ComputerCallScreenshotOutput()
         {
-            ImageUrl = screenshotImageUri.AbsoluteUri,
+            ImageUri = screenshotImageUri.AbsoluteUri,
         };
     }
 
-    public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId)
+    public static ComputerCallScreenshotOutput CreateScreenshotOutput(string screenshotImageFileId)
     {
         Argument.AssertNotNull(screenshotImageFileId, nameof(screenshotImageFileId));
 
@@ -29,14 +29,14 @@ public partial class ComputerCallOutput
         };
     }
 
-    public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
+    public static ComputerCallScreenshotOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
     {
         Argument.AssertNotNull(screenshotImageBytes, nameof(screenshotImageBytes));
         Argument.AssertNotNull(screenshotImageBytesMediaType, nameof(screenshotImageBytesMediaType));
 
         return new ComputerCallScreenshotOutput()
         {
-            ImageUrl = DataEncodingHelpers.CreateDataUri(screenshotImageBytes, screenshotImageBytesMediaType),
+            ImageUri = DataEncodingHelpers.CreateDataUri(screenshotImageBytes, screenshotImageBytesMediaType),
         };
     }
 }

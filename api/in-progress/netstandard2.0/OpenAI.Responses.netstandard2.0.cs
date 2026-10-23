@@ -230,9 +230,9 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId);
-        public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
+        public static ComputerCallScreenshotOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ComputerCallScreenshotOutput CreateScreenshotOutput(string screenshotImageFileId);
+        public static ComputerCallScreenshotOutput CreateScreenshotOutput(Uri screenshotImageUri);
     }
     public readonly partial struct ComputerCallOutputKind : IEquatable<ComputerCallOutputKind> {
         public ComputerCallOutputKind(string value);
@@ -282,7 +282,7 @@ namespace OpenAI.Responses {
     public class ComputerCallScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallScreenshotOutput>, IPersistableModel<ComputerCallScreenshotOutput> {
         public ComputerCallScreenshotOutput() : base(default);
         public string FileId { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUri { get; set; }
     }
     public enum ComputerCallStatus {
         InProgress = 0,
