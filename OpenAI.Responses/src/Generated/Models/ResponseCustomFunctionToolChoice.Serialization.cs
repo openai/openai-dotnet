@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFunctionToolChoice>
     {
-        public ResponseCustomFunctionToolChoice() : this(InternalResponseCustomToolChoiceKind.Function, default, null)
+        public ResponseCustomFunctionToolChoice() : this(ResponseCustomToolChoiceKind.Function, default, null)
         {
         }
 
@@ -102,7 +102,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponseCustomToolChoiceKind kind = default;
+            ResponseCustomToolChoiceKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,7 +111,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalResponseCustomToolChoiceKind(prop.Value.GetString());
+                    kind = new ResponseCustomToolChoiceKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))

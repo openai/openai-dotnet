@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomWebSearchToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomWebSearchToolChoice() : this(InternalResponseCustomToolChoiceKind.WebSearch, default)
+        public ResponseCustomWebSearchToolChoice() : this(ResponseCustomToolChoiceKind.WebSearch, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomWebSearchToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomWebSearchToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

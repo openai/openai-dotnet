@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomFunctionToolChoice(string functionName) : base(InternalResponseCustomToolChoiceKind.Function)
+        public ResponseCustomFunctionToolChoice(string functionName) : base(ResponseCustomToolChoiceKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomFunctionToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string functionName) : base(kind, patch)
+        internal ResponseCustomFunctionToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch, string functionName) : base(kind, patch)
         {
             FunctionName = functionName;
         }

@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomShellToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomShellToolChoice() : this(InternalResponseCustomToolChoiceKind.Shell, default)
+        public ResponseCustomShellToolChoice() : this(ResponseCustomToolChoiceKind.Shell, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomShellToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomShellToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

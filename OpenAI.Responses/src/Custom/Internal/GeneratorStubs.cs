@@ -48,16 +48,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextFormatConfigurationJsonObject")] internal partial class InternalResponsesTextFormatJsonObject {}
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
 [CodeGenType("ResponseTextFormatConfigurationType")] internal readonly partial struct InternalResponsesTextFormatType {}
-[CodeGenType("DotNetResponseDefaultToolChoice")] public readonly partial struct ResponseDefaultToolChoice {}
-[CodeGenType("ToolChoiceAllowedMode")] public readonly partial struct ResponseToolChoiceAllowedMode {}
-[CodeGenType("ToolChoiceObject")] public partial class ResponseCustomToolChoice {}
-[CodeGenType("ToolChoiceObjectFunction")] public partial class ResponseCustomFunctionToolChoice {}
-[CodeGenType("ToolChoiceObjectComputer")] public partial class ResponseCustomComputerToolChoice {}
-[CodeGenType("ToolChoiceObjectComputerUsePreview")] public partial class ResponseCustomComputerUsePreviewToolChoice {}
-[CodeGenType("ToolChoiceObjectFileSearch")] public partial class ResponseCustomFileSearchToolChoice {}
-[CodeGenType("ToolChoiceObjectType")] internal readonly partial struct InternalResponseCustomToolChoiceKind {}
-[CodeGenType("ToolChoiceObjectWebSearch")] public partial class ResponseCustomWebSearchToolChoice {}
-[CodeGenType("ToolChoiceObjectWebSearchPreview")] public partial class ResponseCustomWebSearchPreviewToolChoice {}
 [CodeGenType("UnknownAnnotation")] internal partial class InternalUnknownAnnotation {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}
@@ -78,14 +68,6 @@ namespace OpenAI.Responses;
 [CodeGenType("LocalShellToolCallOutputItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallOutputItemResourceStatus {}
 [CodeGenType("LocalShellTool")] internal partial class InternalLocalShellTool {}
 [CodeGenType("MCPToolRequireApproval1")] internal partial class InternalMCPToolRequireApproval1 {}
-[CodeGenType("ToolChoiceObjectImageGen")] public partial class ResponseCustomImageGenerationToolChoice {}
-[CodeGenType("ToolChoiceObjectCodeInterpreter")] public partial class ResponseCustomCodeInterpreterToolChoice {}
-[CodeGenType("ToolChoiceObjectMCP")] public partial class ResponseCustomMcpToolChoice {}
-[CodeGenType("ToolChoiceObjectCustom")] public partial class ResponseCustomCustomToolChoice {}
-[CodeGenType("ToolChoiceObjectProgrammaticToolCalling")] public partial class ResponseCustomProgrammaticToolCallingToolChoice {}
-[CodeGenType("ToolChoiceObjectApplyPatch")] public partial class ResponseCustomApplyPatchToolChoice {}
-[CodeGenType("ToolChoiceObjectShell")] public partial class ResponseCustomShellToolChoice {}
-[CodeGenType("ToolChoiceObjectAllowedTools")] public partial class ResponseCustomAllowedToolsToolChoice { }
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
 [CodeGenType("ImageGenToolModel")] internal partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}

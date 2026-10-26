@@ -1048,6 +1048,34 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct ResponseCustomToolChoiceKind : IEquatable<ResponseCustomToolChoiceKind> {
+        public ResponseCustomToolChoiceKind(string value);
+        public static ResponseCustomToolChoiceKind AllowedTools { get; }
+        public static ResponseCustomToolChoiceKind ApplyPatch { get; }
+        public static ResponseCustomToolChoiceKind CodeInterpreter { get; }
+        public static ResponseCustomToolChoiceKind Computer { get; }
+        public static ResponseCustomToolChoiceKind ComputerUsePreview { get; }
+        public static ResponseCustomToolChoiceKind Custom { get; }
+        public static ResponseCustomToolChoiceKind FileSearch { get; }
+        public static ResponseCustomToolChoiceKind Function { get; }
+        public static ResponseCustomToolChoiceKind ImageGeneration { get; }
+        public static ResponseCustomToolChoiceKind Mcp { get; }
+        public static ResponseCustomToolChoiceKind ProgrammaticToolCalling { get; }
+        public static ResponseCustomToolChoiceKind Shell { get; }
+        public static ResponseCustomToolChoiceKind WebSearch { get; }
+        public static ResponseCustomToolChoiceKind WebSearchPreview { get; }
+        public readonly bool Equals(ResponseCustomToolChoiceKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
+        public static implicit operator ResponseCustomToolChoiceKind(string value);
+        public static implicit operator ResponseCustomToolChoiceKind?(string value);
+        public static bool operator !=(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchPreviewToolChoice>, IPersistableModel<ResponseCustomWebSearchPreviewToolChoice> {
         public ResponseCustomWebSearchPreviewToolChoice();
     }

@@ -15,13 +15,13 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ResponseCustomToolChoice(InternalResponseCustomToolChoiceKind kind)
+        private protected ResponseCustomToolChoice(ResponseCustomToolChoiceKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch)
+        internal ResponseCustomToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalResponseCustomToolChoiceKind Kind { get; set; }
+        internal ResponseCustomToolChoiceKind Kind { get; set; }
     }
 }
