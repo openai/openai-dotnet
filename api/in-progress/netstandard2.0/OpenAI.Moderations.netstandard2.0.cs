@@ -21,12 +21,9 @@ namespace OpenAI.Moderations {
     public class ModerationClient {
         protected ModerationClient();
         public ModerationClient(ModerationClientSettings settings);
-        protected internal ModerationClient(ClientPipeline pipeline, string model, ModerationClientOptions options);
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public ModerationClient(string model, ApiKeyCredential credential, ModerationClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
-        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, ModerationClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
@@ -44,15 +41,9 @@ namespace OpenAI.Moderations {
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
     }
-    public class ModerationClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     public sealed class ModerationClientSettings : ClientSettings {
         public string Model { get; set; }
-        public ModerationClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {

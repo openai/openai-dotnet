@@ -23,18 +23,12 @@ namespace OpenAI.Models {
         protected OpenAIModelClient();
         [Experimental("SCME0002")]
         public OpenAIModelClient(OpenAIModelClientSettings settings);
-        [Experimental("OPENAI001")]
-        public OpenAIModelClient(ApiKeyCredential credential, OpenAIModelClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
-        [Experimental("OPENAI001")]
-        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIModelClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
-        [Experimental("OPENAI001")]
-        protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIModelClientOptions options);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -53,16 +47,9 @@ namespace OpenAI.Models {
         public virtual Task<ClientResult> GetModelsAsync(RequestOptions options);
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
-    [Experimental("OPENAI001")]
-    public class OpenAIModelClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     [Experimental("SCME0002")]
     public sealed class OpenAIModelClientSettings : ClientSettings {
-        public OpenAIModelClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {

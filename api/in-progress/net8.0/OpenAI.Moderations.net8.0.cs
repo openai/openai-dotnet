@@ -24,15 +24,9 @@ namespace OpenAI.Moderations {
         protected ModerationClient();
         [Experimental("SCME0002")]
         public ModerationClient(ModerationClientSettings settings);
-        [Experimental("OPENAI001")]
-        protected internal ModerationClient(ClientPipeline pipeline, string model, ModerationClientOptions options);
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        [Experimental("OPENAI001")]
-        public ModerationClient(string model, ApiKeyCredential credential, ModerationClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
-        [Experimental("OPENAI001")]
-        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, ModerationClientOptions options);
         [Experimental("OPENAI001")]
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -58,17 +52,10 @@ namespace OpenAI.Moderations {
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
     }
-    [Experimental("OPENAI001")]
-    public class ModerationClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     [Experimental("SCME0002")]
     public sealed class ModerationClientSettings : ClientSettings {
         public string Model { get; set; }
-        public ModerationClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]

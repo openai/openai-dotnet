@@ -20,13 +20,10 @@ namespace OpenAI.Models {
     public class OpenAIModelClient {
         protected OpenAIModelClient();
         public OpenAIModelClient(OpenAIModelClientSettings settings);
-        public OpenAIModelClient(ApiKeyCredential credential, OpenAIModelClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
-        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIModelClientOptions options);
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
-        protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIModelClientOptions options);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         public Uri Endpoint { get; }
@@ -44,14 +41,8 @@ namespace OpenAI.Models {
         public virtual Task<ClientResult> GetModelsAsync(RequestOptions options);
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
-    public class OpenAIModelClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     public sealed class OpenAIModelClientSettings : ClientSettings {
-        public OpenAIModelClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {

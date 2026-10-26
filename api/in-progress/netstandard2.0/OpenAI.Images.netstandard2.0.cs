@@ -138,12 +138,9 @@ namespace OpenAI.Images {
     public class ImageClient {
         protected ImageClient();
         public ImageClient(ImageClientSettings settings);
-        protected internal ImageClient(ClientPipeline pipeline, string model, ImageClientOptions options);
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public ImageClient(string model, ApiKeyCredential credential, ImageClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
-        public ImageClient(string model, AuthenticationPolicy authenticationPolicy, ImageClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
@@ -187,15 +184,9 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
-    public class ImageClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     public sealed class ImageClientSettings : ClientSettings {
         public string Model { get; set; }
-        public ImageClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {

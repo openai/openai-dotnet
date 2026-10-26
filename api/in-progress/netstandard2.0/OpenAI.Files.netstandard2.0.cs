@@ -65,13 +65,10 @@ namespace OpenAI.Files {
     public class OpenAIFileClient {
         protected OpenAIFileClient();
         public OpenAIFileClient(OpenAIFileClientSettings settings);
-        public OpenAIFileClient(ApiKeyCredential credential, OpenAIFileClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
-        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options);
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
-        protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIFileClientOptions options);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         public Uri Endpoint { get; }
@@ -113,14 +110,8 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
     }
-    public class OpenAIFileClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     public sealed class OpenAIFileClientSettings : ClientSettings {
-        public OpenAIFileClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {

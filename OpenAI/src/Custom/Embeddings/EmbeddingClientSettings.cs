@@ -9,7 +9,7 @@ public sealed class EmbeddingClientSettings : ClientSettings
 {
     public string Model { get; set; }
 
-    public EmbeddingClientOptions Options { get; set; }
+    public OpenAIClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
@@ -18,7 +18,7 @@ public sealed class EmbeddingClientSettings : ClientSettings
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
-            Options ??= new EmbeddingClientOptions(optionsSection);
+            Options ??= new OpenAIClientOptions(optionsSection);
         }
     }
 }

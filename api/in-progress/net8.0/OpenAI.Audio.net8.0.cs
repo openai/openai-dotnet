@@ -10,15 +10,9 @@ namespace OpenAI.Audio {
         protected AudioClient();
         [Experimental("SCME0002")]
         public AudioClient(AudioClientSettings settings);
-        [Experimental("OPENAI001")]
-        protected internal AudioClient(ClientPipeline pipeline, string model, AudioClientOptions options);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        [Experimental("OPENAI001")]
-        public AudioClient(string model, ApiKeyCredential credential, AudioClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
-        [Experimental("OPENAI001")]
-        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, AudioClientOptions options);
         [Experimental("OPENAI001")]
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -94,17 +88,10 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null);
     }
-    [Experimental("OPENAI001")]
-    public class AudioClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     [Experimental("SCME0002")]
     public sealed class AudioClientSettings : ClientSettings {
         public string Model { get; set; }
-        public AudioClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Flags]

@@ -72,18 +72,12 @@ namespace OpenAI.Files {
         protected OpenAIFileClient();
         [Experimental("SCME0002")]
         public OpenAIFileClient(OpenAIFileClientSettings settings);
-        [Experimental("OPENAI001")]
-        public OpenAIFileClient(ApiKeyCredential credential, OpenAIFileClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
-        [Experimental("OPENAI001")]
-        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
-        [Experimental("OPENAI001")]
-        protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIFileClientOptions options);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -136,16 +130,9 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
     }
-    [Experimental("OPENAI001")]
-    public class OpenAIFileClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     [Experimental("SCME0002")]
     public sealed class OpenAIFileClientSettings : ClientSettings {
-        public OpenAIFileClientOptions Options { get; set; }
+        public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
