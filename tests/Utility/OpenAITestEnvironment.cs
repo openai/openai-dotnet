@@ -135,6 +135,7 @@ public class OpenAITestEnvironment : TestEnvironment
 
     public T GetTestClient<T>(string modelName = default, ClientPipelineOptions options = default)
     {
+        options ??= CreateClientOptions<T>();
         var credential = ApiKeyCredential;
 
         object clientObject = typeof(T).Name switch
@@ -158,6 +159,29 @@ public class OpenAITestEnvironment : TestEnvironment
         };
 
         return (T)clientObject;
+    }
+
+    internal static ClientPipelineOptions CreateClientOptions<T>()
+    {
+        return typeof(T).Name switch
+        {
+            nameof(AssistantClient) => new AssistantClientOptions(),
+            nameof(AudioClient) => new OpenAIClientOptions(),
+            nameof(BatchClient) => new BatchClientOptions(),
+            nameof(ChatClient) => new OpenAIClientOptions(),
+            nameof(ContainerClient) => new ContainerClientOptions(),
+            nameof(ConversationClient) => new ConversationClientOptions(),
+            nameof(EmbeddingClient) => new OpenAIClientOptions(),
+            nameof(OpenAIFileClient) => new OpenAIClientOptions(),
+            nameof(FineTuningClient) => new FineTuningClientOptions(),
+            nameof(ImageClient) => new OpenAIClientOptions(),
+            nameof(OpenAIModelClient) => new OpenAIClientOptions(),
+            nameof(ModerationClient) => new OpenAIClientOptions(),
+            nameof(VectorStoreClient) => new VectorStoreClientOptions(),
+            nameof(OpenAIClient) => new OpenAIClientOptions(),
+            nameof(SkillClient) => new SkillClientOptions(),
+            _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
+        };
     }
 
     private static TOptions NormalizeOptions<TOptions>(ClientPipelineOptions options)
