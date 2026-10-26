@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomImageGenerationToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomImageGenerationToolChoice() : this(InternalResponseCustomToolChoiceKind.ImageGeneration, default)
+        public ResponseCustomImageGenerationToolChoice() : this(ResponseCustomToolChoiceKind.ImageGeneration, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomImageGenerationToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomImageGenerationToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
