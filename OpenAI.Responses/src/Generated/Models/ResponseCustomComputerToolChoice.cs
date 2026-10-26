@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomComputerToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomComputerToolChoice() : this(InternalResponseCustomToolChoiceKind.Computer, default)
+        public ResponseCustomComputerToolChoice() : this(ResponseCustomToolChoiceKind.Computer, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomComputerToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomComputerToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

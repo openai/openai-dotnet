@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomCodeInterpreterToolChoice() : this(InternalResponseCustomToolChoiceKind.CodeInterpreter, default)
+        public ResponseCustomCodeInterpreterToolChoice() : this(ResponseCustomToolChoiceKind.CodeInterpreter, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomCodeInterpreterToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomCodeInterpreterToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseCustomMcpToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomMcpToolChoice(string serverLabel) : base(InternalResponseCustomToolChoiceKind.Mcp)
+        public ResponseCustomMcpToolChoice(string serverLabel) : base(ResponseCustomToolChoiceKind.Mcp)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string toolName, string serverLabel) : base(kind, patch)
+        internal ResponseCustomMcpToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch, string toolName, string serverLabel) : base(kind, patch)
         {
             ToolName = toolName;
             ServerLabel = serverLabel;
