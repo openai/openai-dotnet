@@ -1020,7 +1020,7 @@ namespace OpenAI.Responses {
         public static ResponseErrorCode InvalidImage { get; }
         public static ResponseErrorCode InvalidImageFormat { get; }
         public static ResponseErrorCode InvalidImageMode { get; }
-        public static ResponseErrorCode InvalidImageUrl { get; }
+        public static ResponseErrorCode InvalidImageUri { get; }
         public static ResponseErrorCode InvalidPrompt { get; }
         public static ResponseErrorCode RateLimitExceeded { get; }
         public static ResponseErrorCode ServerError { get; }

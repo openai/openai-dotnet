@@ -8,6 +8,4 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseErrorCode")]
 public readonly partial struct ResponseErrorCode
 {
-    [CodeGenMember("InvalidImageUri")]
-    public static ResponseErrorCode InvalidImageUrl { get; } = new("invalid_image_url");
 }
