@@ -53,6 +53,8 @@ namespace OpenAI.Responses
 
         public static ResponseErrorCode InvalidBase64Image { get; } = new ResponseErrorCode(InvalidBase64ImageValue);
 
+        public static ResponseErrorCode InvalidImageUri { get; } = new ResponseErrorCode(InvalidImageUriValue);
+
         public static ResponseErrorCode ImageTooLarge { get; } = new ResponseErrorCode(ImageTooLargeValue);
 
         public static ResponseErrorCode ImageTooSmall { get; } = new ResponseErrorCode(ImageTooSmallValue);
