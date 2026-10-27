@@ -8,8 +8,8 @@
         "Authorization": "Sanitized",
         "Content-Length": "78",
         "Content-Type": "application/json",
-        "traceparent": "00-7a0bbcdef3c67d5efd1de6583bc599dc-7e747017ef870ecb-01",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "traceparent": "00-62cfdeec77164163026860b6d4c1c66c-4a0905ab2c4fbaf2-01",
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -22,10 +22,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd100544d39a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ae23295c6c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -34,7 +38,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -42,15 +45,15 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999992",
+        "x-ratelimit-remaining-tokens": "149999995",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dVIuAyp8PEoajYZxRZ2UCFOci9U",
+        "id": "chatcmpl-Edfyitv9tIWQ4CkqAHHJEKyjP67ux",
         "object": "chat.completion",
-        "created": 1770950848,
+        "created": 1793124864,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {

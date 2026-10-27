@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "210",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "metadata": {
@@ -25,42 +25,45 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801aa642ce9b9f8-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513aaca3db30882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:21 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "23499",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "23513",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999975",
+        "x-ratelimit-remaining-tokens": "149999977",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF",
+        "id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2",
         "object": "chat.completion",
-        "created": 1758039358,
+        "created": 1793124727,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Certainly! Here’s a comprehensive overview of machine learning:\n\n### What is Machine Learning?\nMachine Learning (ML) is a subset of artificial intelligence (AI) that focuses on the development of algorithms that allow computers to learn from and make predictions or decisions based on data. Rather than being explicitly programmed to perform a specific task, machines use statistical techniques to identify patterns and improve their performance over time.\n\n### Types of Machine Learning\nMachine learning is typically categorized into three main types:\n\n1. **Supervised Learning**:\n   - In supervised learning, the model is trained on a labeled dataset, meaning that each training example is paired with an output label. The model learns to map inputs to the correct output.\n   - Common algorithms include linear regression, logistic regression, support vector machines, and neural networks.\n   - Applications: Image classification, spam detection, disease diagnosis.\n\n2. **Unsupervised Learning**:\n   - Unsupervised learning deals with unlabeled data. The model attempts to find patterns or groupings in the data without any prior knowledge of the outcomes.\n   - Common techniques include clustering (e.g., K-means) and dimensionality reduction (e.g., PCA).\n   - Applications: Market basket analysis, customer segmentation, anomaly detection.\n\n3. **Reinforcement Learning**:\n   - In reinforcement learning, an agent learns to make decisions by taking actions in an environment to maximize cumulative rewards. The learning is guided by feedback received from the environment.\n   - This method relies on exploration and exploitation.\n   - Applications: Game playing (e.g., AlphaGo), robotic control, and autonomous driving.\n\n### Machine Learning Pipeline\nThe machine learning process typically involves several steps:\n\n1. **Data Collection**:\n   - Gather relevant data that will be used to train the model. This data can be sourced from various places including databases, APIs, and sensors.\n\n2. **Data Preprocessing**:\n   - Clean and preprocess the data to ensure quality. This includes handling missing values, normalizing data, and encoding categorical variables.\n\n3. **Feature Selection/Engineering**:\n   - Identify and select the most relevant features that contribute to the predictive power of the model. This may involve creating new features based on existing data (feature engineering).\n\n4. **Model Selection**:\n   - Choose the appropriate machine learning algorithm based on the problem, the type of data, and the desired outcome.\n\n5. **Training**:\n   - Train the selected model using the prepared dataset. This involves feeding the data into the model, allowing it to learn the relationships between the features and the output.\n\n6. **Evaluation**:\n   - Assess the model's performance using metrics such as accuracy, precision, recall, F1-score, or mean squared error, depending on whether it’s a classification or regression problem.\n\n7. **Hyperparameter Tuning**:\n   - Optimize the model's hyperparameters (tuning settings that affect the learning process) to improve performance.\n\n8. **Deployment**:\n   - Once the model is tested and evaluated, it can be deployed in a real-world setting where it can make predictions on new, unseen data.\n\n9. **Monitoring and Maintenance**:\n   - Continuously monitor the model's performance over time and update it as needed with new data to ensure it remains accurate.\n\n### Challenges in Machine Learning\n- **Overfitting and Underfitting**: Striking the right balance between a model that is too complex (overfitting) and one that is too simple (underfitting).\n- **Data Quality**: The model's performance heavily depends on the quality of the input data.\n- **Bias and Fairness**: Machine learning models can unintentionally perpetuate biases present in the training data, leading to unfair or unethical outcomes.\n- **Interpretability**: Complex models, especially deep learning models, may act as \"black boxes,\" making it difficult to understand how they arrive at certain decisions.\n\n### Applications of Machine Learning\nMachine learning is used across various domains, including:\n\n- **Healthcare**: Predictive analytics for disease outbreaks, personalized medicine, and diagnostic tools.\n- **Finance**: Fraud detection, algorithmic trading, credit scoring, and risk management.\n- **Retail**: Recommendation systems, inventory management, and customer analytics.\n- **Transportation**: Self-driving cars, route optimization, and traffic prediction.\n- **Natural Language Processing**: Sentiment analysis, language translation, and chatbots.\n\n### Future of Machine Learning\nThe future of machine learning is promising, with advancements in areas such as:\n\n- **Deep Learning**: Further developments in neural networks that enable more complex learning tasks.\n- **Explainable AI**: Research aimed at making AI systems more transparent and understandable.\n- **Federated Learning**: A decentralized approach to training machine learning models across multiple devices while preserving data privacy.\n- **Ethical AI**: A more significant focus on developing fair and accountable AI systems to reduce bias and enhance societal trust.\n\nIn conclusion, machine learning is a powerful and versatile tool with the potential to transform industries, enhance decision-making, and automate processes. However, it also requires careful consideration of ethical implications, data quality, and model performance.",
+              "content": "### Overview of Machine Learning\n\nMachine Learning (ML) is a subset of artificial intelligence (AI) that involves the use of algorithms and statistical models to enable computers to perform tasks without explicit instructions. It focuses on developing systems that can learn from and make predictions or decisions based on data.\n\n### Types of Machine Learning\n\nMachine learning can be broadly categorized into three main types:\n\n1. **Supervised Learning**: \n   - In supervised learning, the algorithm is trained on a labeled dataset, meaning that each training example is paired with an output label. The objective is to learn a mapping from inputs to outputs.\n   - **Common Algorithms**: Linear Regression, Logistic Regression, Decision Trees, Support Vector Machines, Neural Networks.\n   - **Applications**: Image classification, spam detection, medical diagnosis, stock price prediction.\n\n2. **Unsupervised Learning**: \n   - Unsupervised learning involves training on a dataset without labeled responses. The goal is to identify patterns, groupings, or structures in the data.\n   - **Common Algorithms**: K-Means Clustering, Hierarchical Clustering, Principal Component Analysis (PCA), Autoencoders.\n   - **Applications**: Market segmentation, anomaly detection, customer recommendation systems, exploratory data analysis.\n\n3. **Reinforcement Learning**: \n   - In reinforcement learning, an agent learns to make decisions by taking actions in an environment to maximize cumulative rewards. It is based on a system of rewards and penalties.\n   - **Common Algorithms**: Q-Learning, Deep Q-Networks (DQN), Proximal Policy Optimization (PPO), Actor-Critic Methods.\n   - **Applications**: Game playing (e.g., AlphaGo), robotics, autonomous vehicles, recommendation engines.\n\n### Key Concepts in Machine Learning\n\n- **Features**: The individual measurable properties or characteristics used as input to the model.\n- **Training and Testing Data**: The dataset is typically split into a training set to train the model and a testing set to evaluate its performance.\n- **Overfitting and Underfitting**: \n  - **Overfitting**: A model learns noise in the training data and performs poorly on unseen data.\n  - **Underfitting**: A model is too simple to capture the underlying trend of the data.\n- **Hyperparameters**: Configurable parameters that are set before the learning process begins, which affect the model's performance (e.g., learning rate, depth of a tree).\n- **Model Evaluation**: Metrics like accuracy, precision, recall, F1-score, and ROC-AUC are used to assess model performance.\n\n### Popular Libraries and Tools\n\nThere are several libraries and frameworks commonly used for machine learning, including:\n\n- **TensorFlow**: An open-source library for numerical computation that makes machine learning faster and easier.\n- **Keras**: A high-level neural networks API, written in Python, runs on top of TensorFlow.\n- **Scikit-learn**: A library for classical machine learning algorithms in Python, offering tools for data mining and data analysis.\n- **PyTorch**: An open-source machine learning library based on the Torch library, primarily developed by Facebook's AI Research lab.\n- **Pandas and NumPy**: Libraries essential for data manipulation and numerical computation in Python.\n\n### Challenges and Future Directions\n\nMachine learning faces several challenges, including:\n\n- **Data Quality**: Poor quality data can lead to inaccurate models.\n- **Bias and Fairness**: Ensuring that ML algorithms do not reinforce societal biases present in the training data is crucial.\n- **Interpretability**: Many ML models, especially deep learning models, operate as \"black boxes,\" making it challenging to understand their decision-making processes.\n- **Scalability**: Developing algorithms that can efficiently process and analyze large datasets is a significant challenge.\n  \nThe future of machine learning is promising, with ongoing research in areas such as:\n\n- **Explainable AI (XAI)**: Making AI decisions more understandable to humans.\n- **Transfer Learning**: Adapting pre-trained models to new but related tasks.\n- **Federated Learning**: Training models across decentralized devices while keeping data localized for privacy.\n- **AutoML**: Automating the end-to-end process of applying machine learning to real-world problems.\n\n### Conclusion\n\nMachine learning has transformed various industries by enabling systems to learn from data and improve over time. As the field continues to grow, it holds the potential to drive innovation across tech, healthcare, finance, and many other sectors. Understanding its principles, applications, and the underlying algorithms is essential for anyone looking to leverage its capabilities.",
               "refusal": null,
               "annotations": []
             },
@@ -70,8 +73,8 @@
         ],
         "usage": {
           "prompt_tokens": 20,
-          "completion_tokens": 1044,
-          "total_tokens": 1064,
+          "completion_tokens": 940,
+          "total_tokens": 960,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -84,41 +87,41 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF/messages?limit=5&order=asc",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2/messages?limit=5&order=asc",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801aaf7ed27b9f8-SEA",
+        "CF-RAY": "a513aafd5cbb0882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:22 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "178",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "180",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF not found",
+          "message": "Completion chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2 not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -126,37 +129,37 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF/messages?limit=5&order=asc",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2/messages?limit=5&order=asc",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801aafe6aecb9f8-SEA",
+        "CF-RAY": "a513ab030e2a0882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:22 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "122",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "124",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF not found",
+          "message": "Completion chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2 not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -164,69 +167,31 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF/messages?limit=5&order=asc",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2/messages?limit=5&order=asc",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
-      },
-      "RequestBody": null,
-      "StatusCode": 404,
-      "ResponseHeaders": {
-        "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab091c02b9f8-SEA",
-        "Connection": "keep-alive",
-        "Content-Length": "189",
-        "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:24 GMT",
-        "openai-organization": "Sanitized",
-        "openai-processing-ms": "206",
-        "openai-project": "Sanitized",
-        "openai-version": "2020-10-01",
-        "Server": "cloudflare",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-        "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "208",
-        "x-openai-proxy-wasm": "v0.1",
-        "X-Request-ID": "Sanitized"
-      },
-      "ResponseBody": {
-        "error": {
-          "message": "Completion chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF not found",
-          "type": "invalid_request_error",
-          "param": "completion_id",
-          "code": "not_found"
-        }
-      }
-    },
-    {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF/messages?limit=5&order=asc",
-      "RequestMethod": "GET",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab1dbf8bb9f8-SEA",
+        "CF-RAY": "a513ab0d79630882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "345",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:27 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "82",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "85",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -234,44 +199,44 @@
         "object": "list",
         "data": [
           {
-            "id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
+            "id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
             "role": "user",
             "content": "Order filtering test: Please provide a comprehensive response about machine learning.",
             "content_parts": null,
             "name": null
           }
         ],
-        "first_id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
-        "last_id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
+        "first_id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
+        "last_id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
         "has_more": false
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF/messages?limit=5&order=desc",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2/messages?limit=5&order=desc",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab1ed884b9f8-SEA",
+        "CF-RAY": "a513ab0e6ace0882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "345",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:28 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "103",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "204",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -279,55 +244,55 @@
         "object": "list",
         "data": [
           {
-            "id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
+            "id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
             "role": "user",
             "content": "Order filtering test: Please provide a comprehensive response about machine learning.",
             "content_parts": null,
             "name": null
           }
         ],
-        "first_id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
-        "last_id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF-0",
+        "first_id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
+        "last_id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2-0",
         "has_more": false
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab20fa5eb9f8-SEA",
+        "CF-RAY": "a513ab0f5c1f0882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "97",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:28 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "266",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "267",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "chat.completion.deleted",
-        "id": "chatcmpl-CGSdS9xuGKOuL0v3nrLUDaEEOuYiF",
+        "id": "chatcmpl-EdfwVGR6d6j6KohddNy1DXD4byIV2",
         "deleted": true
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

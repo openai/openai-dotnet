@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "891",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -61,22 +61,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801a04d6b8508e7-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513b009fa65dfe0-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:09:05 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "535",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "665",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -87,9 +90,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSWnIzTQDWDruoo2X3qgJkQW8OFk",
+        "id": "chatcmpl-EdfzyuQpmHG1mVGV5jiFOMk88QW1R",
         "object": "chat.completion",
-        "created": 1758038945,
+        "created": 1793124942,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
@@ -99,7 +102,7 @@
               "content": null,
               "tool_calls": [
                 {
-                  "id": "call_of5sMdoBhqEZbvnNjZ3DSi1U",
+                  "id": "call_YjUYFuuIx77bOXn5kCtKCZhh",
                   "type": "function",
                   "function": {
                     "name": "get_weather_for_city",
@@ -130,7 +133,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
@@ -141,7 +144,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "1148",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -153,7 +156,7 @@
             "role": "assistant",
             "tool_calls": [
               {
-                "id": "call_of5sMdoBhqEZbvnNjZ3DSi1U",
+                "id": "call_YjUYFuuIx77bOXn5kCtKCZhh",
                 "type": "function",
                 "function": {
                   "name": "get_weather_for_city",
@@ -164,7 +167,7 @@
           },
           {
             "role": "tool",
-            "tool_call_id": "call_of5sMdoBhqEZbvnNjZ3DSi1U",
+            "tool_call_id": "call_YjUYFuuIx77bOXn5kCtKCZhh",
             "content": "rainy"
           }
         ],
@@ -212,22 +215,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801a054191f08e7-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513b00f4a96dfe0-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:09:06 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "438",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "554",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -238,9 +244,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSWowKC4SKnr67bsHnX0vJMZt3vW",
+        "id": "chatcmpl-EdfzzbglLIGdThUBnwDRNuDnWTNy7",
         "object": "chat.completion",
-        "created": 1758038946,
+        "created": 1793124943,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
@@ -250,7 +256,7 @@
               "content": null,
               "tool_calls": [
                 {
-                  "id": "call_iXYZpXHbhm5MVvEB9HN36Ywq",
+                  "id": "call_cE5EODH8yRql5mojqEpjen6B",
                   "type": "function",
                   "function": {
                     "name": "get_mood_for_weather",
@@ -281,7 +287,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
@@ -292,7 +298,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "1403",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -304,7 +310,7 @@
             "role": "assistant",
             "tool_calls": [
               {
-                "id": "call_of5sMdoBhqEZbvnNjZ3DSi1U",
+                "id": "call_YjUYFuuIx77bOXn5kCtKCZhh",
                 "type": "function",
                 "function": {
                   "name": "get_weather_for_city",
@@ -315,14 +321,14 @@
           },
           {
             "role": "tool",
-            "tool_call_id": "call_of5sMdoBhqEZbvnNjZ3DSi1U",
+            "tool_call_id": "call_YjUYFuuIx77bOXn5kCtKCZhh",
             "content": "rainy"
           },
           {
             "role": "assistant",
             "tool_calls": [
               {
-                "id": "call_iXYZpXHbhm5MVvEB9HN36Ywq",
+                "id": "call_cE5EODH8yRql5mojqEpjen6B",
                 "type": "function",
                 "function": {
                   "name": "get_mood_for_weather",
@@ -333,7 +339,7 @@
           },
           {
             "role": "tool",
-            "tool_call_id": "call_iXYZpXHbhm5MVvEB9HN36Ywq",
+            "tool_call_id": "call_cE5EODH8yRql5mojqEpjen6B",
             "content": "bored"
           }
         ],
@@ -381,22 +387,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801a0584c4808e7-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513b0165916dfe0-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:09:07 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "525",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "540",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -407,16 +416,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSWoeWd78hhKAXyd18WDeeEUsrnD",
+        "id": "chatcmpl-Edg011BLYFQB5syzevZtjOmD42ZOT",
         "object": "chat.completion",
-        "created": 1758038946,
+        "created": 1793124945,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Given that the weather in Osaka is rainy, your mood might be described as bored.",
+              "content": "Given that the weather in Osaka is rainy, your mood might be bored.",
               "refusal": null,
               "annotations": []
             },
@@ -426,8 +435,8 @@
         ],
         "usage": {
           "prompt_tokens": 185,
-          "completion_tokens": 18,
-          "total_tokens": 203,
+          "completion_tokens": 16,
+          "total_tokens": 201,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -440,11 +449,11 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

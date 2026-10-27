@@ -30,7 +30,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a4a8c3525b05032e-SEA",
+        "CF-Ray": "a513ae27a8176c9a-SEA",
         "Connection": "keep-alive",
         "Content-Length": "793",
         "Content-Type": "application/json",
@@ -45,16 +45,16 @@
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "15000",
         "x-ratelimit-limit-tokens": "40000000",
-        "x-ratelimit-remaining-requests": "14998",
-        "x-ratelimit-remaining-tokens": "39999980",
-        "x-ratelimit-reset-requests": "8ms",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999994",
+        "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-EYyKKxy2BuYbDkqxK4ZmYTK5qqRVe",
+        "id": "chatcmpl-EdfyjxT2aSTJPqqWfzMVosV16Ewey",
         "object": "chat.completion",
-        "created": 1792003756,
+        "created": 1793124865,
         "model": "gpt-5.6-sol",
         "choices": [
           {
