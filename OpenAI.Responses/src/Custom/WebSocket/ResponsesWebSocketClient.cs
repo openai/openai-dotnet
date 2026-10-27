@@ -55,12 +55,12 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// Completion means a local write, not server acceptance or response completion.
     /// Rejects sends while disconnected or reconnecting. Requests are never automatically replayed.
     /// </remarks>
-    public virtual Task SendAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual Task CreateAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
         => throw new NotImplementedException("Responses WebSocket API proposal only.");
 
     /// <summary>Creates a response with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the default-stream overload.</remarks>
-    public virtual Task SendAsync(
+    public virtual Task CreateAsync(
         CreateResponseOptions options,
         ResponsesWebSocketSendOptions webSocketOptions,
         CancellationToken cancellationToken = default)
@@ -68,7 +68,7 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Creates a response on the default stream from a model and input items, optionally continuing a previous response.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task SendAsync(
+    public virtual Task CreateAsync(
         string model,
         IEnumerable<ResponseItem> inputItems,
         string previousResponseId = null,
@@ -77,7 +77,7 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Creates a response from a model and input items with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task SendAsync(
+    public virtual Task CreateAsync(
         string model,
         IEnumerable<ResponseItem> inputItems,
         ResponsesWebSocketSendOptions webSocketOptions,
@@ -87,7 +87,7 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Creates a response on the default stream from a model and user text, optionally continuing a previous response.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task SendAsync(
+    public virtual Task CreateAsync(
         string model,
         string userInputText,
         string previousResponseId = null,
@@ -96,7 +96,7 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Creates a response from a model and user text with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task SendAsync(
+    public virtual Task CreateAsync(
         string model,
         string userInputText,
         ResponsesWebSocketSendOptions webSocketOptions,
@@ -127,7 +127,7 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Sends one UTF-8 JSON object, including fields or command types not yet modeled by the SDK.</summary>
     /// <remarks>A failed or canceled physical write has uncertain delivery. It must not be retried blindly.</remarks>
-    public virtual Task SendAsync(BinaryData command, CancellationToken cancellationToken = default)
+    public virtual Task CreateAsync(BinaryData command, CancellationToken cancellationToken = default)
         => throw new NotImplementedException("Responses WebSocket API proposal only.");
 
     /// <summary>Stops reconnecting and closes gracefully within an internal timeout. Repeated calls are safe.</summary>
