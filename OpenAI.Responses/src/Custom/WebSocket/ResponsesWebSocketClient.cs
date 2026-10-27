@@ -143,16 +143,3 @@ public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     public virtual ValueTask DisposeAsync()
         => throw new NotImplementedException("Responses WebSocket API proposal only.");
 }
-
-/// <summary>The logical state of an event-driven Responses WebSocket client.</summary>
-[Experimental("OPENAI001")]
-public enum ResponsesWebSocketConnectionState
-{
-    Created,
-    Connecting,
-    Connected,
-    Reconnecting,
-    Closing,
-    Closed,
-    Disposed
-}
