@@ -5,6 +5,7 @@ import "../responses/main.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
+using OpenAI.Responses;
 
 namespace OpenAI;
 

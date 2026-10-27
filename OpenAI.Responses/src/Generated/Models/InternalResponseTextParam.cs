@@ -2,38 +2,46 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalResponseTextParam
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalResponseTextParam()
         {
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, in JsonPatch patch)
         {
             Format = format;
             Verbosity = verbosity;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseTextFormat Format { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalTokenCountsBodyTextVerbosity? Verbosity { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }
