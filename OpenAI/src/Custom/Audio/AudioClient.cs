@@ -156,6 +156,7 @@ public partial class AudioClient
         Argument.AssertNotNull(text, nameof(text));
 
         options ??= new();
+        options.StreamFormat = null;
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
@@ -179,6 +180,7 @@ public partial class AudioClient
         Argument.AssertNotNull(text, nameof(text));
 
         options ??= new();
+        options.StreamFormat = null;
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
