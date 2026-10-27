@@ -1009,6 +1009,9 @@ namespace OpenAI.Responses {
         public string BeforeId { get; set; }
         public ResponseItemCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         public string ResponseId { get; set; }
     }
     public readonly partial struct ResponseItemCollectionOrder : IEquatable<ResponseItemCollectionOrder> {

@@ -1135,6 +1135,10 @@ namespace OpenAI.Responses {
         public string BeforeId { get; set; }
         public ResponseItemCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string ResponseId { get; set; }
     }
     [Experimental("OPENAI001")]
