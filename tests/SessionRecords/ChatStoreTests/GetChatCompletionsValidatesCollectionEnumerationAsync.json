@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "157",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "metadata": {
@@ -25,22 +25,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab6a6a7fb9f8-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ab399b1b0882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:40 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "262",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "275",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -51,9 +54,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
+        "id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
         "object": "chat.completion",
-        "created": 1758039400,
+        "created": 1793124745,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
@@ -84,7 +87,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_51db84afab"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
@@ -93,19 +96,20 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab8c3831b9f8-SEA",
+        "CF-RAY": "a513ab5cdce50882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:45 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "111",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
@@ -113,7 +117,6 @@
         "Transfer-Encoding": "chunked",
         "Vary": "Accept-Encoding",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "113",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -122,22 +125,22 @@
         "data": [
           {
             "object": "chat.completion",
-            "id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
+            "id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
             "model": "gpt-4o-mini-2024-07-18",
-            "created": 1758039400,
-            "request_id": "req_0718f405080d44c3affd9f0d166c7acf",
+            "created": 1793124745,
+            "request_id": "req_4c1dad0c34c14f63a8d74d9785d6372f",
             "tool_choice": null,
             "usage": {
               "total_tokens": 17,
               "completion_tokens": 2,
               "prompt_tokens": 15
             },
-            "seed": 2858734798483465647,
+            "seed": 4317081845969593215,
             "top_p": 1.0,
             "temperature": 1.0,
             "presence_penalty": 0.0,
             "frequency_penalty": 0.0,
-            "system_fingerprint": "fp_51db84afab",
+            "system_fingerprint": "fp_573cddfef2",
             "input_user": null,
             "service_tier": "default",
             "tools": null,
@@ -161,22 +164,22 @@
           },
           {
             "object": "chat.completion",
-            "id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+            "id": "chatcmpl-Edfvl8VTZ7Bp195oAPqwyumXV40nx",
             "model": "gpt-4o-mini-2024-07-18",
-            "created": 1758039292,
-            "request_id": "req_ca2ffd251ed245cc92b90ce35b52c482",
+            "created": 1793124681,
+            "request_id": "req_8cc13e513a9e41f48a3764a6c5a447c7",
             "tool_choice": null,
             "usage": {
-              "total_tokens": 226,
-              "completion_tokens": 205,
+              "total_tokens": 376,
+              "completion_tokens": 355,
               "prompt_tokens": 21
             },
-            "seed": 8943224875104653351,
+            "seed": 8772905170697697674,
             "top_p": 1.0,
             "temperature": 1.0,
             "presence_penalty": 0.0,
             "frequency_penalty": 0.0,
-            "system_fingerprint": "fp_51db84afab",
+            "system_fingerprint": "fp_d91fb09e94",
             "input_user": null,
             "service_tier": "default",
             "tools": null,
@@ -187,7 +190,7 @@
               {
                 "index": 0,
                 "message": {
-                  "content": "Certainly! After conducting the ID pagination test, we observed several critical factors that influence both functionality and user experience. Firstly, the implementation of ID-based pagination allows for efficient retrieval of data, as IDs typically maintain a unique and sequential nature, enabling smooth traversal through records. This method significantly reduces the time taken to fetch datasets compared to other pagination techniques, particularly when handling large volumes of information.\n\nMoreover, during the test, we noted that the user interface remained intuitive, allowing users to navigate through pages seamlessly without confusion. Additionally, the performance metrics indicated minimal latency, even as the dataset's size increased. However, we also identified some areas for improvement. For instance, implementing better error handling for out-of-bounds ID requests could enhance robustness, ensuring users receive clear feedback rather than encountering vague errors.\n\nOverall, the ID pagination test not only confirmed the efficacy of this strategy in terms of performance and usability but also highlighted the need for ongoing refinement to improve resilience and user interaction. This insight will guide further optimization efforts in our development process.",
+                  "content": "ID pagination is a technique used to manage large datasets by breaking them down into smaller, more manageable chunks, or \"pages.\" This approach is particularly beneficial when working with APIs or databases where the retrieval of large sets of data at once can lead to performance bottlenecks or excessive load times. In the context of testing ID pagination, it’s crucial to assess its functionality and efficiency.\n\nFirst, it is essential to verify that the pagination mechanism correctly retrieves the expected number of records per page. Each request should yield a consistent number of results based on the given constraints, and the last page should handle remaining records appropriately. This means if there are 103 total records and a page limit of 10, the initial requests should yield 10 records per page for the first 10 pages, while the 11th page should return just 3 records.\n\nFurthermore, testing should ensure that the navigation between different pages of data is accurate. This involves checking that the ID for the next and previous pages is correctly calculated and that no data is lost between transitions. Users should be able to move back and forth between pages seamlessly without encountering any errors or missing entries.\n\nIn addition to functional testing, performance testing is also important. The pagination mechanism should be evaluated under various load scenarios to ensure that response times remain efficient even as the dataset grows. This includes testing with both small and large datasets to confirm scalability and responsiveness.\n\nFinally, it is critical to assess the edge cases, such as what happens when an invalid page ID is requested or when the dataset is empty. Proper error handling and user-friendly messages should be in place to guide users in these situations.\n\nOverall, thorough testing of ID pagination ensures not only the correctness of the implementation but also the maintainability and user experience of the system it supports.",
                   "role": "assistant",
                   "tool_calls": null,
                   "function_call": null
@@ -199,8 +202,8 @@
             "response_format": null
           }
         ],
-        "first_id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
-        "last_id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+        "first_id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
+        "last_id": "chatcmpl-Edfvl8VTZ7Bp195oAPqwyumXV40nx",
         "has_more": true
       }
     },
@@ -210,19 +213,20 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab8d7991b9f8-SEA",
+        "CF-RAY": "a513ab5e1eb50882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:45 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "141",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
@@ -230,7 +234,6 @@
         "Transfer-Encoding": "chunked",
         "Vary": "Accept-Encoding",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "143",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -239,22 +242,22 @@
         "data": [
           {
             "object": "chat.completion",
-            "id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
+            "id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
             "model": "gpt-4o-mini-2024-07-18",
-            "created": 1758039400,
-            "request_id": "req_0718f405080d44c3affd9f0d166c7acf",
+            "created": 1793124745,
+            "request_id": "req_4c1dad0c34c14f63a8d74d9785d6372f",
             "tool_choice": null,
             "usage": {
               "total_tokens": 17,
               "completion_tokens": 2,
               "prompt_tokens": 15
             },
-            "seed": 2858734798483465647,
+            "seed": 4317081845969593215,
             "top_p": 1.0,
             "temperature": 1.0,
             "presence_penalty": 0.0,
             "frequency_penalty": 0.0,
-            "system_fingerprint": "fp_51db84afab",
+            "system_fingerprint": "fp_573cddfef2",
             "input_user": null,
             "service_tier": "default",
             "tools": null,
@@ -278,22 +281,22 @@
           },
           {
             "object": "chat.completion",
-            "id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+            "id": "chatcmpl-Edfvl8VTZ7Bp195oAPqwyumXV40nx",
             "model": "gpt-4o-mini-2024-07-18",
-            "created": 1758039292,
-            "request_id": "req_ca2ffd251ed245cc92b90ce35b52c482",
+            "created": 1793124681,
+            "request_id": "req_8cc13e513a9e41f48a3764a6c5a447c7",
             "tool_choice": null,
             "usage": {
-              "total_tokens": 226,
-              "completion_tokens": 205,
+              "total_tokens": 376,
+              "completion_tokens": 355,
               "prompt_tokens": 21
             },
-            "seed": 8943224875104653351,
+            "seed": 8772905170697697674,
             "top_p": 1.0,
             "temperature": 1.0,
             "presence_penalty": 0.0,
             "frequency_penalty": 0.0,
-            "system_fingerprint": "fp_51db84afab",
+            "system_fingerprint": "fp_d91fb09e94",
             "input_user": null,
             "service_tier": "default",
             "tools": null,
@@ -304,7 +307,7 @@
               {
                 "index": 0,
                 "message": {
-                  "content": "Certainly! After conducting the ID pagination test, we observed several critical factors that influence both functionality and user experience. Firstly, the implementation of ID-based pagination allows for efficient retrieval of data, as IDs typically maintain a unique and sequential nature, enabling smooth traversal through records. This method significantly reduces the time taken to fetch datasets compared to other pagination techniques, particularly when handling large volumes of information.\n\nMoreover, during the test, we noted that the user interface remained intuitive, allowing users to navigate through pages seamlessly without confusion. Additionally, the performance metrics indicated minimal latency, even as the dataset's size increased. However, we also identified some areas for improvement. For instance, implementing better error handling for out-of-bounds ID requests could enhance robustness, ensuring users receive clear feedback rather than encountering vague errors.\n\nOverall, the ID pagination test not only confirmed the efficacy of this strategy in terms of performance and usability but also highlighted the need for ongoing refinement to improve resilience and user interaction. This insight will guide further optimization efforts in our development process.",
+                  "content": "ID pagination is a technique used to manage large datasets by breaking them down into smaller, more manageable chunks, or \"pages.\" This approach is particularly beneficial when working with APIs or databases where the retrieval of large sets of data at once can lead to performance bottlenecks or excessive load times. In the context of testing ID pagination, it’s crucial to assess its functionality and efficiency.\n\nFirst, it is essential to verify that the pagination mechanism correctly retrieves the expected number of records per page. Each request should yield a consistent number of results based on the given constraints, and the last page should handle remaining records appropriately. This means if there are 103 total records and a page limit of 10, the initial requests should yield 10 records per page for the first 10 pages, while the 11th page should return just 3 records.\n\nFurthermore, testing should ensure that the navigation between different pages of data is accurate. This involves checking that the ID for the next and previous pages is correctly calculated and that no data is lost between transitions. Users should be able to move back and forth between pages seamlessly without encountering any errors or missing entries.\n\nIn addition to functional testing, performance testing is also important. The pagination mechanism should be evaluated under various load scenarios to ensure that response times remain efficient even as the dataset grows. This includes testing with both small and large datasets to confirm scalability and responsiveness.\n\nFinally, it is critical to assess the edge cases, such as what happens when an invalid page ID is requested or when the dataset is empty. Proper error handling and user-friendly messages should be in place to guide users in these situations.\n\nOverall, thorough testing of ID pagination ensures not only the correctness of the implementation but also the maintainability and user experience of the system it supports.",
                   "role": "assistant",
                   "tool_calls": null,
                   "function_call": null
@@ -316,48 +319,48 @@
             "response_format": null
           }
         ],
-        "first_id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
-        "last_id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+        "first_id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
+        "last_id": "chatcmpl-Edfvl8VTZ7Bp195oAPqwyumXV40nx",
         "has_more": true
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ab8eeac8b9f8-SEA",
+        "CF-RAY": "a513ab5f48a10882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "97",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:16:46 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "259",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "261",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "chat.completion.deleted",
-        "id": "chatcmpl-CGSe8MVGWxF3kJMdlznOlY9gCpcaj",
+        "id": "chatcmpl-EdfwnMMnaAo4W1QkOAu0SSqM6CHtO",
         "deleted": true
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }
