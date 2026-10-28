@@ -463,7 +463,7 @@ void PrintAudioContent()
         }
 
         Console.WriteLine($"Response audio written to file: {outputFilePath}");
-        Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresAt}");
+        Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresOn}");
     }
 }
 
