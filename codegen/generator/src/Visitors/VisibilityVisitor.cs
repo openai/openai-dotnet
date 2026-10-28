@@ -12,8 +12,8 @@ namespace OpenAILibraryPlugin.Visitors;
 /// <summary>
 /// Finalizes visibility for generated constructors, methods, and properties, including serialization partials.
 /// A matching [CodeGenVisibility] attribute is authoritative, even if it matches the current modifiers.
-/// Without an override, "default visibility" means the modifiers produced by codegen and preceding visitors,
-/// with two accessibility safeguards: public properties whose types are non-public become internal, and
+/// Without an override, two accessibility safeguards restrict the modifiers produced by codegen and preceding
+/// visitors: public properties whose types are non-public become internal, and
 /// public constructors with any non-public parameter type become internal. Other members retain their visibility.
 /// </summary>
 public class VisibilityVisitor : ScmLibraryVisitor
@@ -41,25 +41,25 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
         foreach (ConstructorProvider constructor in allConstructors)
         {
-            if (!TryUpdateVisibilityFromAttributes(constructor, visibilityAttributes))
+            if (!TryApplyVisibilityOverride(constructor, visibilityAttributes))
             {
-                _ = TryUpdateDefaultVisibility(constructor);
+                RestrictVisibilityForNonPublicTypes(constructor);
             }
         }
 
         foreach (PropertyProvider property in allProperties)
         {
-            if (!TryUpdateVisibilityFromAttributes(property, visibilityAttributes))
+            if (!TryApplyVisibilityOverride(property, visibilityAttributes))
             {
-                _ = TryUpdateDefaultVisibility(property);
+                RestrictVisibilityForNonPublicTypes(property);
             }
         }
 
         foreach (MethodProvider method in allMethods)
         {
-            if (!TryUpdateVisibilityFromAttributes(method, visibilityAttributes))
+            if (!TryApplyVisibilityOverride(method, visibilityAttributes))
             {
-                _ = TryUpdateDefaultVisibility(method);
+                RestrictVisibilityForNonPublicTypes(method);
             }
         }
 
@@ -93,7 +93,7 @@ public class VisibilityVisitor : ScmLibraryVisitor
         return matchingAttributes;
     }
 
-    private static bool TryUpdateVisibilityFromAttributes<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
+    private static bool TryApplyVisibilityOverride<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
     {
         // Match the member name and parameter types so an override only applies to the intended overload.
         // Property overrides have no parameter types; constructor overrides use the enclosing type's name.
@@ -105,6 +105,8 @@ public class VisibilityVisitor : ScmLibraryVisitor
             _ => throw new NotImplementedException()
         };
 
+        // Arguments are member name, requested visibility, then one typeof argument per target parameter.
+        // The extra two arguments explain Count + 2; matching name and arity narrows the overload candidates.
         IEnumerable<AttributeStatement> allNameMatchedVisibilityAttributes = visibilityAttributes
             .Where(attribute => attribute.Arguments[0] is LiteralExpression literalAttributeTarget
                 && attribute.Arguments.Count == targetParameters.Count + 2
@@ -114,6 +116,8 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
         foreach (AttributeStatement attribute in allNameMatchedVisibilityAttributes)
         {
+            // Compare parameter type names in declaration order, skipping the name and visibility arguments.
+            // Apply the first exact signature match; properties have no parameters to compare.
             bool mismatchFound = false;
             for (int i = 2; i < attribute.Arguments.Count; i++)
             {
@@ -145,12 +149,12 @@ public class VisibilityVisitor : ScmLibraryVisitor
         }
 
         // True means an explicit override was found, not that visibility changed. Returning false for
-        // an already-matching override would let default rules overwrite that explicit choice.
+        // an already-matching override would let accessibility safeguards overwrite that explicit choice.
         AssignModifier(target, modifierFromAttribute.Value);
         return true;
     }
 
-    private static bool TryUpdateDefaultVisibility<T>(T target)
+    private static void RestrictVisibilityForNonPublicTypes<T>(T target)
     {
         // These fallback rules only run when no explicit override matched. They prevent generated public
         // signatures from exposing types that consumers cannot name; they do not promote any member.
@@ -161,7 +165,6 @@ public class VisibilityVisitor : ScmLibraryVisitor
                 // For example, a generated public property of an internal enum type must also be internal
                 // to avoid inconsistent accessibility. This checks the property's type, not its declaring class.
                 AssignModifier(propertyTarget, MethodSignatureModifiers.Internal);
-                return true;
             }
         }
         else if (target is ConstructorProvider constructorTarget)
@@ -175,14 +178,12 @@ public class VisibilityVisitor : ScmLibraryVisitor
         }
         else if (target is MethodProvider methodTarget)
         {
-            // No current default visibility change for methods
+            // Method signatures are not currently restricted by this safeguard.
         }
         else
         {
             throw new NotImplementedException();
         }
-
-        return false;
     }
 
     private static MethodSignatureModifiers AssignModifier<T>(T target, MethodSignatureModifiers modifier)
