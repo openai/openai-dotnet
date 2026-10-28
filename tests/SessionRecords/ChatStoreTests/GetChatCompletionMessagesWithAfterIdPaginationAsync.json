@@ -6,16 +6,14 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "307",
+        "Content-Length": "214",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": {
         "metadata": {
           "test_scenario": "after_id_pagination"
         },
-        "temperature": null,
-        "top_p": null,
         "messages": [
           {
             "role": "user",
@@ -23,10 +21,7 @@
           }
         ],
         "model": "gpt-4o-mini",
-        "frequency_penalty": null,
-        "presence_penalty": null,
-        "store": true,
-        "seed": null
+        "store": true
       },
       "StatusCode": 200,
       "ResponseHeaders": {
@@ -37,7 +32,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a50d0289ed0bad72-SEA",
+        "CF-Ray": "a51bd54fbef0f01b-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -46,6 +41,7 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -59,16 +55,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv",
+        "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
         "object": "chat.completion",
-        "created": 1793054921,
+        "created": 1793210356,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Certainly! After conducting the ID pagination test, we observed a range of outcomes that highlighted both the strengths and areas for improvement in our current pagination system. Firstly, the test successfully demonstrated that using unique IDs for pagination led to more efficient data retrieval, ensuring that users experienced faster loading times even when navigating through large datasets. This is crucial for maintaining user engagement and satisfaction.\n\nHowever, we also encountered challenges related to the handling of edge cases, such as what happens when items are deleted or added while the user browses through the pages. This can lead to inconsistencies in user experience, as the data may not represent the expected state when the pagination is based solely on IDs. To address this, implementing a more robust mechanism that tracks changes in real-time or employing a time-stamped approach could enhance the reliability of our pagination system.\n\nOverall, the test has provided valuable insights that will guide us as we refine our approach, ensuring that we deliver a seamless and efficient user experience moving forward. Additionally, stakeholder feedback suggests that usability and intuitive navigation should be a priority in our next iteration, reinforcing the importance of user-centered design in our development process.",
+              "content": "ID pagination is a technique used in databases and web applications to manage the retrieval of large datasets, allowing users to navigate through pages of results efficiently. This approach typically involves using a unique identifier, such as an id field, to fetch records in chunks or \"pages.\" \n\nWhen conducting an ID pagination test, several key aspects should be considered. First, it is crucial to verify that the pagination logic correctly returns the expected records for each page request. This includes checking that the correct number of items is displayed per page and that the results correspond accurately to the requested range of IDs.\n\nAdditionally, the performance of the pagination mechanism should be assessed, especially under varying load conditions. This could involve simulating concurrent user requests to ensure that the system can handle multiple pagination queries without degrading performance or causing errors. \n\nFurthermore, edge cases such as navigating to pages that exceed the available number of records or handling scenarios where records are added or removed between requests should be tested. It is vital to ensure that the pagination remains robust and does not result in inconsistencies or errors for users.\n\nIn summary, a thorough ID pagination test helps to ensure not only functionality and accuracy but also performance and resilience of the application when handling data extraction through pagination. Such testing is critical in enhancing user experience and maintaining data integrity within the system.",
               "refusal": null,
               "annotations": []
             },
@@ -78,8 +74,8 @@
         ],
         "usage": {
           "prompt_tokens": 21,
-          "completion_tokens": 227,
-          "total_tokens": 248,
+          "completion_tokens": 259,
+          "total_tokens": 280,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -96,12 +92,12 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
@@ -109,7 +105,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a50d0297fce9ad72-SEA",
+        "CF-RAY": "a51bd56e3e54f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
@@ -126,7 +122,7 @@
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv not found",
+          "message": "Completion chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -134,12 +130,12 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
@@ -147,7 +143,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a50d029dbb1aad72-SEA",
+        "CF-RAY": "a51bd5788a86f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
@@ -164,7 +160,7 @@
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv not found",
+          "message": "Completion chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -172,12 +168,12 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -185,7 +181,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a50d02a83da9ad72-SEA",
+        "CF-RAY": "a51bd583bee6f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "345",
         "Content-Type": "application/json",
@@ -204,25 +200,25 @@
         "object": "list",
         "data": [
           {
-            "id": "chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv-0",
+            "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
             "role": "user",
             "content": "After ID pagination test: Please provide a detailed response with multiple sentences.",
             "content_parts": null,
             "name": null
           }
         ],
-        "first_id": "chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv-0",
-        "last_id": "chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv-0",
+        "first_id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
+        "last_id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
         "has_more": false
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv/messages?after=chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv-0&limit=3",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages?after=chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0&limit=3",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -230,7 +226,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a50d02aa3fdcad72-SEA",
+        "CF-RAY": "a51bd584eaddf01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "75",
         "Content-Type": "application/json",
@@ -254,12 +250,12 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -267,7 +263,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a50d02abe964ad72-SEA",
+        "CF-RAY": "a51bd586b8adf01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "97",
         "Content-Type": "application/json",
@@ -284,7 +280,7 @@
       },
       "ResponseBody": {
         "object": "chat.completion.deleted",
-        "id": "chatcmpl-EdNmbOXLc8KkEOBHnT20JHw05H5kv",
+        "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
         "deleted": true
       }
     }
