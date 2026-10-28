@@ -16,12 +16,17 @@ using System.Reflection;
 namespace OpenAILibraryPlugin.Tests.Visitors;
 
 [Category("Visitor")]
+// Synthetic generator models exercise opt-in boundaries and emitted C# without requiring a full spec build.
+// Pipeline tests combine the relevant passes; isolated visitor tests ensure unrelated behavior stays unchanged.
 public class ExtensibleModelVisitorTests
 {
+    // Reset the generator singleton and type cache so tests cannot inherit another test's promoted enum.
     [SetUp]
     public void Setup() =>
         MockHelpers.LoadMockGenerator(configurationJson: "{ \"package-name\": \"TestLibrary\" }");
 
+    // Both namespace casings must emit the same extensibility contract, retain required initialization,
+    // and leave the full serialization constructor alone. Source assertions catch stale provider caches.
     [TestCase("OpenAI.Responses")]
     [TestCase("openai.responses")]
     public void Pipeline_EmitsExtensibilityContract(string modelNamespace)
@@ -71,6 +76,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(enumSource, Does.Contain("ExperimentalAttribute"));
     }
 
+    // A later annotation pass must see the promoted enum and add exactly one experimental attribute.
     [Test]
     public void ExperimentalPassAnnotatesPromotedEnumOnce()
     {
@@ -93,6 +99,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(new TypeProviderWriter(kind).Write().Content, Does.Contain("ExperimentalAttribute"));
     }
 
+    // The ResponseItem-shaped base must keep exactly the discriminator-only initialization signature.
     [Test]
     public void Pipeline_PreservesSingleKindConstructor()
     {
@@ -103,6 +110,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(source, Does.Contain("Kind = kind;"));
     }
 
+    // Repeated visits must preserve customized enum members, their accessibility, and the output path.
     [Test]
     public void PromotingEnumPreservesInternalMembersAndIsIdempotent()
     {
@@ -124,6 +132,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(new TypeProviderWriter(model).Write().Content, Is.EqualTo(firstSource));
     }
 
+    // Simulate a handwritten discriminator suppressing its generated property while constructor metadata remains.
     [Test]
     public void CustomizedDiscriminatorStillExposesInitializationConstructor()
     {
@@ -142,6 +151,7 @@ public class ExtensibleModelVisitorTests
             Does.Contain("protected internal TestModel(global::OpenAI.Responses.TestKind kind, int sequenceNumber)"));
     }
 
+    // Both original-name and renamed handwritten internal discriminators opt out of contract promotion.
     [TestCase(false)]
     [TestCase(true)]
     public void ExplicitInternalDiscriminatorCustomizationRemainsAuthoritative(bool renamed)
@@ -164,6 +174,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(discriminator.Modifiers, Is.EqualTo(MethodSignatureModifiers.Internal));
     }
 
+    // Namespace opt-in is exact (ignoring case), not inherited from protocol-model opt-in or namespace prefixes.
     [TestCase("OpenAI.Chat")]
     [TestCase("OpenAI.Realtime")]
     [TestCase("OpenAI.Responses.Other")]
@@ -173,10 +184,10 @@ public class ExtensibleModelVisitorTests
         AssertUnchanged(model);
     }
 
-    [TestCase(false, true, "public", null)]
-    [TestCase(true, false, "public", null)]
-    [TestCase(true, true, "internal", null)]
-    [TestCase(true, true, "public", "known")]
+    [TestCase(false, true, "public", null)] // Closed enum.
+    [TestCase(true, false, "public", null)] // Ordinary property, not discriminator metadata.
+    [TestCase(true, true, "internal", null)] // Non-public base.
+    [TestCase(true, true, "public", "known")] // Fixed-discriminator leaf.
     public void LeavesIneligibleModelsUnchanged(bool isExtensible, bool isDiscriminator, string access, string? discriminatorValue)
     {
         var model = CreateModel(isExtensible: isExtensible, isDiscriminator: isDiscriminator,
@@ -184,6 +195,7 @@ public class ExtensibleModelVisitorTests
         AssertUnchanged(model);
     }
 
+    // Extensibility alone is insufficient: this contract requires string-backed values.
     [Test]
     public void LeavesNumericExtensibleDiscriminatorsUnchanged()
     {
@@ -194,6 +206,7 @@ public class ExtensibleModelVisitorTests
         AssertUnchanged(model);
     }
 
+    // A raw string is not an enum provider, so this visitor must not invent a kind type.
     [Test]
     public void LeavesRawStringDiscriminatorsUnchanged()
     {
@@ -202,6 +215,7 @@ public class ExtensibleModelVisitorTests
         AssertUnchanged(ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(input)!);
     }
 
+    // An opted-in child cannot expose or otherwise mutate a discriminator owned by a non-opted-in base.
     [Test]
     public void DoesNotMutateDiscriminatorInheritedFromNonOptedInNamespace()
     {
@@ -217,6 +231,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(model.BaseModelProvider.Properties.Single().Modifiers, Is.EqualTo(originalVisibility));
     }
 
+    // Open intermediate bases accept an inherited kind, while fixed leaves keep their original constructors.
     [Test]
     public void SupportsInheritedDiscriminatorWithoutChangingFixedLeaf()
     {
@@ -243,6 +258,7 @@ public class ExtensibleModelVisitorTests
         Assert.That(leaf.Constructors.Select(c => c.Signature.Modifiers), Is.EqualTo(leafModifiers));
     }
 
+    // Visiting a child after its base must not undo the base's explicit internal visibility override.
     [Test]
     public void InheritedDiscriminatorPreservesBaseVisibilityOverride()
     {
@@ -252,7 +268,7 @@ public class ExtensibleModelVisitorTests
         var input = InputFactory.Model("Child", "OpenAI.Responses", properties: [], baseModel: rootInput);
         var model = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(input)!;
         var root = model.BaseModelProvider!;
-        root.Update(attributes: [VisibilityAttribute("Kind", 0)]);
+        root.Update(attributes: [VisibilityAttribute("Kind", CodeGenVisibility.Internal)]);
         ApplyPipeline(root);
 
         new TestExtensibleModelVisitor().Apply(model);
@@ -260,10 +276,11 @@ public class ExtensibleModelVisitorTests
         Assert.That(root.Properties.Single(p => p.IsDiscriminator).Modifiers, Is.EqualTo(MethodSignatureModifiers.Internal));
     }
 
-    [TestCase(0)]
-    [TestCase(1)]
-    [TestCase(2)]
-    public void ExplicitVisibilityOverridesTakePrecedence(int visibility)
+    // Every supported override wins over the extensibility visitor for both property and constructor.
+    [TestCase(CodeGenVisibility.Internal)]
+    [TestCase(CodeGenVisibility.Public)]
+    [TestCase(CodeGenVisibility.ProtectedInternal)]
+    public void ExplicitVisibilityOverridesTakePrecedence(CodeGenVisibility visibility)
     {
         var model = CreateModel();
         var kindType = model.Properties.Single(p => p.IsDiscriminator).Type;
@@ -277,22 +294,25 @@ public class ExtensibleModelVisitorTests
 
         var expected = visibility switch
         {
-            0 => MethodSignatureModifiers.Internal,
-            1 => MethodSignatureModifiers.Public,
-            _ => MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
+            CodeGenVisibility.Internal => MethodSignatureModifiers.Internal,
+            CodeGenVisibility.Public => MethodSignatureModifiers.Public,
+            CodeGenVisibility.ProtectedInternal => MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
+            _ => throw new ArgumentOutOfRangeException(nameof(visibility)),
         };
         Assert.That(model.Constructors.Single(c => c.Signature.Parameters.Count == 1).Signature.Modifiers,
             Is.EqualTo(expected));
         Assert.That(model.Properties.Single(p => p.IsDiscriminator).Modifiers, Is.EqualTo(expected));
     }
 
+    // Even an override that changes no modifiers is authoritative: do not fall through to the
+    // "public property with non-public type becomes internal" default rule.
     [Test]
     public void MatchingOverrideDoesNotFallThroughToDefaultVisibility()
     {
         var model = CreateModel(enumAccess: "internal");
         var discriminator = model.Properties.Single(p => p.IsDiscriminator);
         discriminator.Update(modifiers: MethodSignatureModifiers.Public);
-        model.Update(attributes: [VisibilityAttribute(discriminator.Name, 1)]);
+        model.Update(attributes: [VisibilityAttribute(discriminator.Name, CodeGenVisibility.Public)]);
 
         new TestVisibilityVisitor().Apply(model);
 
@@ -300,10 +320,13 @@ public class ExtensibleModelVisitorTests
         Assert.That(((AutoPropertyBody)discriminator.Body).HasSetter, Is.False);
     }
 
-    private static AttributeStatement VisibilityAttribute(string name, int visibility, params ValueExpression[] parameters) =>
+    // Build the generator's attribute representation; enum arguments appear as underlying integer literals.
+    private static AttributeStatement VisibilityAttribute(string name, CodeGenVisibility visibility, params ValueExpression[] parameters) =>
         new(new CSharpType(typeof(CodeGenVisibilityAttribute)),
-            [new LiteralExpression(name), new LiteralExpression(visibility), .. parameters]);
+            [new LiteralExpression(name), new LiteralExpression((int)visibility), .. parameters]);
 
+    // Defaults describe an eligible ResponseItem-shaped model. Each argument varies one eligibility condition;
+    // the optional sequenceNumber models bases whose initialization requires more than the kind.
     private static ModelProvider CreateModel(
         string modelNamespace = "OpenAI.Responses",
         bool isExtensible = true,
@@ -324,6 +347,7 @@ public class ExtensibleModelVisitorTests
             access: access, properties: properties, discriminatedKind: discriminatorValue))!;
     }
 
+    // Exercise only extensibility, comparing property bodies/visibility and constructor modifiers before and after.
     private static void AssertUnchanged(ModelProvider model)
     {
         var properties = model.Properties.Select(p => (p.Modifiers, p.Body)).ToArray();
@@ -333,6 +357,8 @@ public class ExtensibleModelVisitorTests
         Assert.That(model.Constructors.Select(c => c.Signature.Modifiers), Is.EqualTo(constructors));
     }
 
+    // Mirror relevant production ordering: rename/protocol setters, extensibility, explicit visibility, then
+    // experimental annotations. Visit the enum explicitly because this helper does not traverse a whole library.
     private static void ApplyPipeline(ModelProvider model)
     {
         ApplyPropertyVisitors(model);
@@ -348,6 +374,7 @@ public class ExtensibleModelVisitorTests
         }
     }
 
+    // Establish the CLR Kind name and protocol setter before testing how extensibility finalizes the property.
     private static void ApplyPropertyVisitors(ModelProvider model)
     {
         foreach (var property in model.Properties)
@@ -358,6 +385,7 @@ public class ExtensibleModelVisitorTests
         }
     }
 
+    // Adapters expose protected hooks so tests can run individual passes without a full generator traversal.
     private sealed class TestExtensibleModelVisitor : ExtensibleModelVisitor
     {
         public TypeProvider? Apply(TypeProvider type) => PostVisitType(type);
@@ -383,6 +411,7 @@ public class ExtensibleModelVisitorTests
         public TypeProvider? Apply(TypeProvider type) => VisitType(type);
     }
 
+    // Stand-in for the generator's handwritten partial-class view used by customization precedence tests.
     private sealed class CustomizedDiscriminatorType(PropertyProvider discriminator) : TypeProvider
     {
         protected override string BuildName() => "TestModel";
@@ -392,4 +421,12 @@ public class ExtensibleModelVisitorTests
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
     private sealed class CodeGenVisibilityAttribute : Attribute;
+
+    // Mirror OpenAI's internal customization enum without taking a dependency on the SDK assembly.
+    public enum CodeGenVisibility
+    {
+        Internal,
+        Public,
+        ProtectedInternal,
+    }
 }

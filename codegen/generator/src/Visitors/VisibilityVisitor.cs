@@ -10,14 +10,17 @@ using System.Linq;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor updates the visibility of constructors, methods, and properties on a type:
-///   - Visibility can be customized via the [CodeGenVisibility] attribute, which will always take precedence
-///   - Default visibility is adjusted based on common patterns
+/// Finalizes visibility for generated constructors, methods, and properties, including serialization partials.
+/// A matching [CodeGenVisibility] attribute is authoritative, even if it matches the current modifiers.
+/// Without an override, "default visibility" means the modifiers produced by codegen and preceding visitors,
+/// with two accessibility safeguards: public properties whose types are non-public become internal, and
+/// public constructors with any non-public parameter type become internal. Other members retain their visibility.
 /// </summary>
 public class VisibilityVisitor : ScmLibraryVisitor
 {
     protected override TypeProvider? PostVisitType(TypeProvider type)
     {
+        // Generated and handwritten attributes can target members on either partial of the same model.
         List<AttributeStatement> visibilityAttributes = GetValidatedCodeGenVisibilityAttributes(type);
 
         IReadOnlyList<ConstructorProvider> allConstructors =
@@ -92,6 +95,8 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static bool TryUpdateVisibilityFromAttributes<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
     {
+        // Match the member name and parameter types so an override only applies to the intended overload.
+        // Property overrides have no parameter types; constructor overrides use the enclosing type's name.
         (string targetName, IReadOnlyList<ParameterProvider> targetParameters) = target switch
         {
             PropertyProvider propertyTarget => (propertyTarget.Name, (IReadOnlyList<ParameterProvider>)[]),
@@ -139,17 +144,22 @@ public class VisibilityVisitor : ScmLibraryVisitor
             return false;
         }
 
+        // True means an explicit override was found, not that visibility changed. Returning false for
+        // an already-matching override would let default rules overwrite that explicit choice.
         AssignModifier(target, modifierFromAttribute.Value);
         return true;
     }
 
     private static bool TryUpdateDefaultVisibility<T>(T target)
     {
+        // These fallback rules only run when no explicit override matched. They prevent generated public
+        // signatures from exposing types that consumers cannot name; they do not promote any member.
         if (target is PropertyProvider propertyTarget)
         {
             if (!propertyTarget.Type.IsPublic && propertyTarget.Modifiers.HasFlag(MethodSignatureModifiers.Public))
             {
-                // Generated properties reflecting internal types can default to internal visibility.
+                // For example, a generated public property of an internal enum type must also be internal
+                // to avoid inconsistent accessibility. This checks the property's type, not its declaring class.
                 AssignModifier(propertyTarget, MethodSignatureModifiers.Internal);
                 return true;
             }
@@ -159,7 +169,7 @@ public class VisibilityVisitor : ScmLibraryVisitor
             if (constructorTarget.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Public)
                 && constructorTarget.Signature.Parameters.Any(parameter => !parameter.Type.IsPublic))
             {
-                // By default, public constructors with non-public parameter types should be internal
+                // Consumers cannot call a public constructor whose signature exposes a non-public type.
                 AssignModifier(constructorTarget, MethodSignatureModifiers.Internal);
             }
         }
@@ -177,6 +187,7 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static MethodSignatureModifiers AssignModifier<T>(T target, MethodSignatureModifiers modifier)
     {
+        // Replace only accessibility flags, preserving modifiers such as static or virtual.
         const MethodSignatureModifiers visibilityMask =
             MethodSignatureModifiers.Public |
             MethodSignatureModifiers.Internal |

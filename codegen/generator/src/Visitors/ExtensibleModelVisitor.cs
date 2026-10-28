@@ -24,6 +24,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 
     protected override TypeProvider? PostVisitType(TypeProvider type)
     {
+        // Only opted-in public reference models without a fixed discriminator can be extended.
+        // Concrete leaves and generated unknown-value fallbacks retain their normal codegen behavior.
         if (type is not ModelProvider model
             || !model.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Public)
             || model.Type.IsValueType
@@ -34,7 +36,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
             return type;
         }
 
-        // A discriminator may be inherited by another open base in the hierarchy.
+        // Find the declaring model through metadata rather than assuming a CLR property name.
+        // An open intermediate base may inherit its discriminator from another eligible base.
         PropertyProvider? discriminator = null;
         ModelProvider? discriminatorModel = model;
         for (; discriminatorModel is not null; discriminatorModel = discriminatorModel.BaseModelProvider)
@@ -48,6 +51,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 
         if (discriminator is null)
         {
+            // A handwritten property can suppress the generated property list while constructor parameters
+            // still retain the original discriminator metadata. Use that metadata as the fallback.
             for (discriminatorModel = model; discriminatorModel is not null; discriminatorModel = discriminatorModel.BaseModelProvider)
             {
                 discriminator = discriminatorModel.Constructors.SelectMany(constructor => constructor.Signature.Parameters)
@@ -60,6 +65,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
             }
         }
 
+        // Both the model and discriminator owner must opt in. Only string-backed extensible enums
+        // can accept consumer-defined values; raw strings, numeric enums, and closed enums are unchanged.
         if (discriminator is null || discriminatorModel is null
             || !_extensibleModelNamespaces.Contains(discriminatorModel.Type.Namespace)
             || !ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap.TryGetValue(discriminator.Type, out var discriminatorType)
@@ -69,6 +76,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
             return type;
         }
 
+        // Do not replace an intentional handwritten contract (including a renamed original member).
+        // A compatible public get-only customization can still use the generated initialization constructor.
         PropertyProvider? customDiscriminator = discriminatorModel.CustomCodeView?.Properties
             .FirstOrDefault(property => property.Name == discriminator.Name || property.OriginalName == discriminator.Name);
         if (customDiscriminator is not null
@@ -83,7 +92,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
         if (!kind.Type.IsPublic)
         {
             CSharpType previousKindType = kind.Type;
-            // Rebuild the cached CSharpType, but retain member customizations already applied to the enum.
+            // Promotion rebuilds the cached CSharpType. Retain customized members, attributes, and output
+            // location; in particular, making the enum public must not expose intentionally internal members.
             kind.Update(
                 modifiers: kind.DeclarationModifiers & ~typeVisibility | TypeSignatureModifiers.Public,
                 properties: kind.Properties,
@@ -97,6 +107,7 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 xmlDocs: kind.XmlDocs,
                 relativeFilePath: kind.RelativeFilePath,
                 reset: true);
+            // Update references to the rebuilt type, including static enum members returning their own type.
             ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[kind.Type] = kind;
             foreach (PropertyProvider member in kind.Properties.Where(property => property.Type.Equals(previousKindType)))
             {
@@ -104,6 +115,9 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
             }
         }
 
+        // Only the declaring model owns this property. Do not mutate an inherited property here:
+        // its own visitor pass may already have applied an explicit visibility override.
+        // Preserve initialization while removing a protocol-model setter and exposing the public kind type.
         if (ReferenceEquals(discriminatorModel, model) && discriminator.Body is AutoPropertyBody body)
         {
             discriminator.Update(
@@ -115,7 +129,10 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 body: new AutoPropertyBody(HasSetter: false, InitializationExpression: body.InitializationExpression));
         }
 
-        // Only change initialization constructors, never the full/serialization constructor (JsonPatch).
+        // Expose initialization constructors on eligible open bases, not fixed leaves (excluded above).
+        // ResponseItem has only (kind); other bases can require more arguments, such as
+        // StreamingResponseUpdate(kind, sequenceNumber). Preserve those arguments and all constructor bodies.
+        // The full constructor carries serialization state such as JsonPatch and must remain unchanged.
         foreach (ConstructorProvider constructor in model.Constructors)
         {
             if (ReferenceEquals(constructor, model.FullConstructor))
@@ -130,9 +147,13 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                     continue;
                 }
 
+                // An open intermediate base needs its inherited kind in the initialization signature
+                // so generated base-constructor forwarding can pass the consumer's value to the root.
                 constructor.Signature.Update(parameters: [discriminator.AsParameter, .. constructor.Signature.Parameters]);
             }
 
+            // Allow subclasses in other assemblies to initialize a kind without exposing serialization state.
+            // Use the promoted enum type on discriminator parameters; no defaults or extra overloads are added.
             constructor.Signature.Update(modifiers: MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal);
             foreach (ParameterProvider parameter in constructor.Signature.Parameters.Where(parameter => parameter.Property?.IsDiscriminator == true))
             {
