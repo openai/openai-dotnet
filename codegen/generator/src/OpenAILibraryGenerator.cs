@@ -34,6 +34,8 @@ namespace OpenAILibraryPlugin
             AddVisitor(new MetadataQueryParamVisitor());
             AddVisitor(new ProtocolModelVisitor());
             AddVisitor(new ItemsPropertyVisitor());
+            // Run after ProtocolModelVisitor to remove discriminator setters, and before VisibilityVisitor
+            // so explicit CodeGenVisibility overrides retain precedence. KindRenameVisitor owns CLR names.
             AddVisitor(new ExtensibleModelVisitor());
             AddVisitor(new VisibilityVisitor());
         }

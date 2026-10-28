@@ -13,9 +13,7 @@ namespace OpenAILibraryPlugin.Visitors;
 /// backed by a string extensible enum. Ordinary models, fixed leaves, and closed enums are unchanged.
 /// Explicit custom discriminator members with a different visibility, type, or setter remain authoritative.
 /// Keep this allowlist separate from protocol models: protocol setters do not imply extensibility.
-/// Run after ProtocolModelVisitor to remove discriminator setters, and before VisibilityVisitor
-/// so explicit CodeGenVisibility overrides retain precedence. KindRenameVisitor owns CLR names;
-/// this visitor never changes wire names or fixed discriminator values.
+/// This visitor never changes wire names or fixed discriminator values.
 /// </summary>
 public class ExtensibleModelVisitor : ScmLibraryVisitor
 {
