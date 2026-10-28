@@ -27,7 +27,6 @@ namespace OpenAILibraryPlugin
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
             AddVisitor(new ModelSerializationVisitor());
-            AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());
             AddVisitor(new ResponsesDirectoryVisitor());
             AddVisitor(new PaginationVisitor());
@@ -38,6 +37,8 @@ namespace OpenAILibraryPlugin
             // so explicit CodeGenVisibility overrides retain precedence. KindRenameVisitor owns CLR names.
             AddVisitor(new ExtensibleModelVisitor());
             AddVisitor(new VisibilityVisitor());
+            // Apply annotations after visitors have finalized public visibility, including promoted discriminator enums.
+            AddVisitor(new ExperimentalAttributeVisitor());
         }
     }
 }

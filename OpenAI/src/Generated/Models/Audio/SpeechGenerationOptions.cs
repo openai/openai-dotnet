@@ -29,7 +29,6 @@ namespace OpenAI.Audio
 
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
 
-        [Experimental("OPENAI001")]
         internal InternalCreateSpeechRequestStreamFormat? StreamFormat { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData

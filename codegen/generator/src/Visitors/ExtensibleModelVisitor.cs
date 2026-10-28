@@ -21,7 +21,6 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
     {
         "OpenAI.Responses",
     };
-    private readonly ExperimentalAttributeVisitor _experimentalAttributeVisitor = new();
 
     protected override TypeProvider? PostVisitType(TypeProvider type)
     {
@@ -99,7 +98,6 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 relativeFilePath: kind.RelativeFilePath,
                 reset: true);
             ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[kind.Type] = kind;
-            _experimentalAttributeVisitor.ApplyToType(kind);
             foreach (PropertyProvider member in kind.Properties.Where(property => property.Type.Equals(previousKindType)))
             {
                 member.Update(type: kind.Type);

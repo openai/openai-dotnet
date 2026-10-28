@@ -72,6 +72,28 @@ public class ExtensibleModelVisitorTests
     }
 
     [Test]
+    public void ExperimentalPassAnnotatesPromotedEnumOnce()
+    {
+        var model = CreateModel(enumAccess: "internal");
+        var discriminator = model.Properties.Single(p => p.IsDiscriminator);
+        var kind = ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[discriminator.Type]!;
+        var experimentalVisitor = new TestExperimentalAttributeVisitor();
+        experimentalVisitor.Apply(kind);
+        Assert.That(kind.Attributes, Is.Empty);
+
+        new TestExtensibleModelVisitor().Apply(model);
+        Assert.That(kind.Type.IsPublic, Is.True);
+        Assert.That(kind.Attributes, Is.Empty);
+
+        experimentalVisitor.Apply(kind);
+        experimentalVisitor.Apply(kind);
+
+        Assert.That(kind.Attributes.Count(attribute =>
+            attribute.Type.Equals(typeof(System.Diagnostics.CodeAnalysis.ExperimentalAttribute))), Is.EqualTo(1));
+        Assert.That(new TypeProviderWriter(kind).Write().Content, Does.Contain("ExperimentalAttribute"));
+    }
+
+    [Test]
     public void Pipeline_PreservesSingleKindConstructor()
     {
         var model = CreateModel();
@@ -316,6 +338,14 @@ public class ExtensibleModelVisitorTests
         ApplyPropertyVisitors(model);
         new TestExtensibleModelVisitor().Apply(model);
         new TestVisibilityVisitor().Apply(model);
+        var experimentalVisitor = new TestExperimentalAttributeVisitor();
+        experimentalVisitor.Apply(model);
+        var discriminator = model.Properties.SingleOrDefault(property => property.IsDiscriminator);
+        if (discriminator is not null
+            && ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap.TryGetValue(discriminator.Type, out var kind))
+        {
+            experimentalVisitor.Apply(kind!);
+        }
     }
 
     private static void ApplyPropertyVisitors(ModelProvider model)
@@ -346,6 +376,11 @@ public class ExtensibleModelVisitorTests
     private sealed class TestVisibilityVisitor : VisibilityVisitor
     {
         public TypeProvider? Apply(TypeProvider type) => PostVisitType(type);
+    }
+
+    private sealed class TestExperimentalAttributeVisitor : ExperimentalAttributeVisitor
+    {
+        public TypeProvider? Apply(TypeProvider type) => VisitType(type);
     }
 
     private sealed class CustomizedDiscriminatorType(PropertyProvider discriminator) : TypeProvider
