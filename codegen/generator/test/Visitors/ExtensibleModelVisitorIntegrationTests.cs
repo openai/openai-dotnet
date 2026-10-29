@@ -115,6 +115,26 @@ public class ExtensibleModelVisitorIntegrationTests
         Assert.That(discriminatorProperty.Modifiers, Is.EqualTo(MethodSignatureModifiers.Internal));
     }
 
+    [Test]
+    public void ReplacesDiscriminatorArgumentInDelegatingConstructor()
+    {
+        var rootInput = InputFactory.Model("Root", "OpenAI.Responses",
+            properties: [InputFactory.Property("type", InputFactory.StringEnum("InheritedKind", [], isExtensible: true),
+                isRequired: true, isDiscriminator: true)]);
+        var input = InputFactory.Model("Intermediate", "OpenAI.Responses",
+            properties: [InputFactory.Property("items", InputFactory.Array(InputPrimitiveType.String))],
+            baseModel: rootInput);
+        var model = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(input)!;
+        var root = model.BaseModelProvider!;
+
+        new TestConstructorFixupVisitor().Apply(model);
+        new TestExtensibleModelVisitor().Apply(root);
+        new TestExtensibleModelVisitor().Apply(model);
+
+        var source = new TypeProviderWriter(model).Write().Content;
+        Assert.That(source, Does.Contain("protected internal Intermediate(global::Sample.Models.InheritedKind @type) : this(@type, null, null)"));
+    }
+
     // A minimal discriminated base suffices for interaction tests; eligibility variations stay in the unit fixture.
     private static ModelProvider CreateModel(string enumAccess = "public") =>
         ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(InputFactory.Model("TestModel", "OpenAI.Responses",
@@ -129,6 +149,11 @@ public class ExtensibleModelVisitorIntegrationTests
 
     // Expose only the protected hooks needed by these focused interactions.
     private sealed class TestExtensibleModelVisitor : ExtensibleModelVisitor
+    {
+        public TypeProvider? Apply(TypeProvider type) => PostVisitType(type);
+    }
+
+    private sealed class TestConstructorFixupVisitor : ConstructorFixupVisitor
     {
         public TypeProvider? Apply(TypeProvider type) => PostVisitType(type);
     }

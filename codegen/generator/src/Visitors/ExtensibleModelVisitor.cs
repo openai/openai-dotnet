@@ -160,10 +160,39 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
                 ConstructorInitializer? initializer = constructor.Signature.Initializer;
                 ValueExpression kindArgument = discriminatorProperty.AsParameter;
-                constructor.Signature.Update(initializer: initializer is null
-                    ? new ConstructorInitializer(true, [kindArgument])
-                    : new ConstructorInitializer(initializer.IsBase,
-                        [kindArgument, .. initializer.Arguments]));
+                if (initializer is null)
+                {
+                    initializer = new ConstructorInitializer(true, [kindArgument]);
+                }
+                else if (initializer.IsBase)
+                {
+                    initializer = new ConstructorInitializer(true, [kindArgument, .. initializer.Arguments]);
+                }
+                else
+                {
+                    ConstructorProvider? fullConstructor = model.FullConstructor;
+                    int discriminatorParameterIndex = -1;
+                    if (fullConstructor is not null)
+                    {
+                        for (int i = 0; i < fullConstructor.Signature.Parameters.Count; i++)
+                        {
+                            if (fullConstructor.Signature.Parameters[i].Property?.IsDiscriminator == true)
+                            {
+                                discriminatorParameterIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (discriminatorParameterIndex >= 0 && discriminatorParameterIndex < initializer.Arguments.Count)
+                    {
+                        ValueExpression[] arguments = [.. initializer.Arguments];
+                        arguments[discriminatorParameterIndex] = kindArgument;
+                        initializer = new ConstructorInitializer(false, arguments);
+                    }
+                }
+
+                constructor.Signature.Update(initializer: initializer);
             }
 
             // Allow subclasses in other assemblies to initialize the discriminator property without exposing serialization state.
