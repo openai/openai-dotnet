@@ -159,10 +159,11 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 // so generated base-constructor forwarding can pass the consumer's value to the root.
                 constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
                 ConstructorInitializer? initializer = constructor.Signature.Initializer;
+                ValueExpression kindArgument = discriminatorProperty.AsParameter;
                 constructor.Signature.Update(initializer: initializer is null
-                    ? new ConstructorInitializer(true, [new PositionalParameterReferenceExpression(discriminatorProperty.AsParameter)])
+                    ? new ConstructorInitializer(true, [kindArgument])
                     : new ConstructorInitializer(initializer.IsBase,
-                        [new PositionalParameterReferenceExpression(discriminatorProperty.AsParameter), .. initializer.Arguments]));
+                        [kindArgument, .. initializer.Arguments]));
             }
 
             // Allow subclasses in other assemblies to initialize the discriminator property without exposing serialization state.
