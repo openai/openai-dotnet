@@ -45,7 +45,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
 
         // An already-matching override must not fall through to the non-public-type accessibility safeguard.
         [Test]
-        public void MatchingOverrideDoesNotFallThroughToDefaultVisibility()
+        public void MatchingOverrideBypassesNonPublicTypeVisibilityRestriction()
         {
             var input = InputFactory.Model("TestModel", "OpenAI.Responses",
                 properties: [InputFactory.Property("type",
