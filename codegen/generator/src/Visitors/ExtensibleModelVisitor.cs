@@ -154,12 +154,12 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                     continue;
                 }
 
-                // An open intermediate base needs its inherited kind in the initialization signature
+                // An open intermediate base needs its inherited discriminator parameter in the initialization signature
                 // so generated base-constructor forwarding can pass the consumer's value to the root.
                 constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
             }
 
-            // Allow subclasses in other assemblies to initialize a kind without exposing serialization state.
+            // Allow subclasses in other assemblies to initialize the discriminator property without exposing serialization state.
             constructor.Signature.Update(modifiers: MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal);
             foreach (ParameterProvider parameter in constructor.Signature.Parameters.Where(parameter => parameter.Property?.IsDiscriminator == true))
             {
