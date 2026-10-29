@@ -1,6 +1,5 @@
 using OpenAI.Responses;
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -22,8 +21,6 @@ internal partial class OpenTelemetryScope
         private double _eventTime;
         private double? _previousOutputTime;
         private double? _firstChunkTime;
-        private PipelineResponse _response;
-        private OpenTelemetryResponseStream _responseStream;
 
         public ResponsesStreamingLifecycle(OpenTelemetryScope scope, Func<double> elapsedSeconds)
         {
@@ -33,49 +30,11 @@ internal partial class OpenTelemetryScope
 
         public override IDisposable Enter() => new ActivityActivation(_completed ? null : _scope._activity);
 
-        public override void OnResponse(PipelineResponse response)
-        {
-            if ((_scope._useLatestSemanticConventions) && (response.ContentStream is { } stream))
-            {
-                // Typed and raw enumeration share the send path; typed consumption detaches this observer.
-                _response = response;
-                _responseStream = new OpenTelemetryResponseStream(stream, Enter, CompleteRawResponse);
-                response.ContentStream = _responseStream;
-            }
-        }
-
         public override void OnTypedResponse()
         {
             if (!_completed)
             {
                 _expectsTerminalResponse = true;
-
-                if (_responseStream is not null)
-                {
-                    _responseStream.Detach();
-                    _response.ContentStream = _responseStream.InnerStream;
-                    _responseStream = null;
-                    _response = null;
-                }
-            }
-        }
-
-        private void CompleteRawResponse(Exception exception)
-        {
-            if (!_completed)
-            {
-                _completed = true;
-
-                if (exception is not null)
-                {
-                    _scope.RecordException(exception);
-                }
-                else
-                {
-                    _scope.RecordMetrics(null, null, null, null, null);
-                }
-
-                _scope.Dispose();
             }
         }
 
@@ -224,26 +183,7 @@ internal partial class OpenTelemetryScope
             if (!_completed)
             {
                 RecordFirstChunk();
-
-                if (completionKind == SseCompletionKind.RawResponse)
-                {
-                    if (_responseStream is null)
-                    {
-                        if (_scope._useLatestSemanticConventions)
-                        {
-                            CompleteRawResponse(null);
-                        }
-                        else
-                        {
-                            _completed = true;
-                            _scope.Dispose();
-                        }
-                    }
-                }
-                else
-                {
-                    Finish(completionKind == SseCompletionKind.EndOfStream ? "incomplete_stream" : "cancelled");
-                }
+                Finish(completionKind == SseCompletionKind.EndOfStream ? "incomplete_stream" : "cancelled");
             }
         }
 

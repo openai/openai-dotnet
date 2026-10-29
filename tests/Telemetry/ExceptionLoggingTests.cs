@@ -265,6 +265,11 @@ public class ExceptionLoggingTests
         {
             foreach (var useAsync in new[] { false, true })
             {
+                if ((api == "stream") && (!useAsync))
+                {
+                    continue;
+                }
+
                 foreach (var status in new[] { 429, 500 })
                 {
                     foreach (var recover in new[] { false, true })
@@ -349,17 +354,8 @@ public class ExceptionLoggingTests
 
             if (api == "stream")
             {
-                if (useAsync)
+                await foreach (var update in await responses.CreateResponseStreamingAsync(request))
                 {
-                    await foreach (var update in responses.CreateResponseStreamingAsync(request))
-                    {
-                    }
-                }
-                else
-                {
-                    foreach (var update in responses.CreateResponseStreaming(request))
-                    {
-                    }
                 }
             }
             else if (useAsync)
@@ -417,9 +413,7 @@ public class ExceptionLoggingTests
     [TestCase("response", true, false)]
     [TestCase("response", false, true)]
     [TestCase("response", true, true)]
-    [TestCase("stream", false, false)]
     [TestCase("stream", true, false)]
-    [TestCase("stream", false, true)]
     [TestCase("stream", true, true)]
     public async Task ClientFailuresLogOnceAfterRetries(string api, bool useAsync, bool suppliedPipeline)
     {
@@ -475,19 +469,12 @@ public class ExceptionLoggingTests
 
             if (api == "stream")
             {
-                if (useAsync)
+                await Assert.ThrowsAsync<AggregateException>(async () =>
                 {
-                    await Assert.ThrowsAsync<AggregateException>(async () =>
+                    await foreach (var update in await client.CreateResponseStreamingAsync(request))
                     {
-                        await foreach (var update in client.CreateResponseStreamingAsync(request))
-                        {
-                        }
-                    });
-                }
-                else
-                {
-                    Assert.Throws<AggregateException>(() => client.CreateResponseStreaming(request).ToList());
-                }
+                    }
+                });
             }
             else if (useAsync)
             {
@@ -510,13 +497,9 @@ public class ExceptionLoggingTests
     private sealed class SuppliedResponsesClient(ClientPipeline pipeline, ResponsesClientOptions options)
         : ResponsesClient(pipeline, options);
 
-    [TestCase(false, false, false)]
-    [TestCase(false, false, true)]
-    [TestCase(false, true, true)]
-    [TestCase(true, false, false)]
-    [TestCase(true, false, true)]
-    [TestCase(true, true, true)]
-    public async Task StreamLogsOnlyObservedReadExceptions(bool useAsync, bool raw, bool failRead)
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task StreamLogsOnlyObservedReadExceptions(bool failRead)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
@@ -534,54 +517,30 @@ public class ExceptionLoggingTests
         var client = new ResponsesClient(new ApiKeyCredential("not-a-key"), new ResponsesClientOptions
         {
             Endpoint = s_endpoint,
-            Transport = new MockPipelineTransport(_ => response) { ExpectSyncPipeline = !useAsync },
+            Transport = new MockPipelineTransport(_ => response) { ExpectSyncPipeline = false },
             ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = capture.Factory, EnableMessageLogging = false },
         });
         var options = new CreateResponseOptions { Model = "model", StreamingEnabled = true };
 
-        if (raw)
+        async Task Consume()
         {
-            if (useAsync)
+            await foreach (var update in await client.CreateResponseStreamingAsync(options))
             {
-                await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
-                {
-                }
-            }
-            else
-            {
-                client.CreateResponseStreaming(options).GetRawPages().ToList();
             }
         }
-        else if (useAsync)
-        {
-            async Task Consume()
-            {
-                await foreach (var update in client.CreateResponseStreamingAsync(options))
-                {
-                }
-            }
 
-            if (failRead)
-            {
-                await Assert.ThrowsAsync<IOException>(Consume);
-            }
-            else
-            {
-                await Consume();
-            }
-        }
-        else if (failRead)
+        if (failRead)
         {
-            Assert.Throws<IOException>(() => client.CreateResponseStreaming(options).ToList());
+            await Assert.ThrowsAsync<IOException>(Consume);
         }
         else
         {
-            client.CreateResponseStreaming(options).ToList();
+            await Consume();
         }
 
         Assert.That(Activity.Current, Is.SameAs(parent));
 
-        if ((!raw) && (failRead))
+        if (failRead)
         {
             var record = capture.Records.Single();
             AssertPrivate(record, typeof(IOException));
@@ -592,76 +551,6 @@ public class ExceptionLoggingTests
         {
             Assert.That(capture.Records, Is.Empty);
         }
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task RetainedRawBodyReadFailureExportsOneExceptionWithSavedOperationContext(bool useAsync)
-    {
-        using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
-        using var capture = new OtlpLogCapture();
-        using var activities = new TestActivityListener("OpenAI.ResponsesClient");
-        using var metrics = new TestMeterListener("OpenAI.ResponsesClient");
-        using var parent = new Activity("raw-body-caller").Start();
-        using var response = new MockPipelineResponse(200) { ContentStream = new ThrowingReadStream() };
-        var client = new ResponsesClient(new ApiKeyCredential("not-a-key"), new ResponsesClientOptions
-        {
-            Endpoint = s_endpoint,
-            Transport = new MockPipelineTransport(_ => response) { ExpectSyncPipeline = !useAsync },
-            ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = capture.Factory, EnableMessageLogging = false },
-        });
-        var options = new CreateResponseOptions { Model = "model", StreamingEnabled = true };
-        PipelineResponse retained = null;
-
-        if (useAsync)
-        {
-            await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
-            {
-                retained = page.GetRawResponse();
-                Assert.That(Activity.Current, Is.SameAs(parent));
-            }
-        }
-        else
-        {
-            foreach (var page in client.CreateResponseStreaming(options).GetRawPages())
-            {
-                retained = page.GetRawResponse();
-                Assert.That(Activity.Current, Is.SameAs(parent));
-            }
-        }
-
-        Assert.That(retained, Is.SameAs(response));
-        Assert.That(Activity.Current, Is.SameAs(parent));
-        Assert.That(capture.Records, Is.Empty);
-
-        var buffer = new byte[1];
-
-        if (useAsync)
-        {
-            await Assert.ThrowsAsync<IOException>(async () => await retained.ContentStream.ReadExactlyAsync(buffer.AsMemory()));
-        }
-        else
-        {
-            Assert.Throws<IOException>(() => retained.ContentStream.ReadExactly(buffer, 0, buffer.Length));
-        }
-
-        Assert.That(Activity.Current, Is.SameAs(parent));
-        var activity = activities.Activities.Single();
-        var record = capture.Records.Single();
-        AssertPrivate(record, typeof(IOException));
-        Assert.That(record.TraceId, Is.EqualTo(activity.TraceId.ToHexString()));
-        Assert.That(record.SpanId, Is.EqualTo(activity.SpanId.ToHexString()));
-        Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
-        var durations = metrics.GetMeasurements("gen_ai.client.operation.duration");
-        Assert.That(durations, Has.Count.EqualTo(1));
-        Assert.That(durations[0].tags["error.type"], Is.EqualTo(activity.GetTagItem("error.type")));
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
-
-        retained.Dispose();
-        Assert.That(capture.Records, Has.Count.EqualTo(1));
-        Assert.That(activities.Activities, Has.Count.EqualTo(1));
-        Assert.That(Activity.Current, Is.SameAs(parent));
     }
 
     private sealed class ThrowingReadStream : MemoryStream

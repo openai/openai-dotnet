@@ -205,67 +205,6 @@ public class SseUpdateCollectionTests
         Assert.That(attempt.Result, Is.InstanceOf<OperationCanceledException>());
     }
 
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task LifecycleIsLazyAndIndependentForInterleavedEnumerations(bool useAsync)
-    {
-        var lifecycles = new List<ProbeLifecycle>();
-        ProbeLifecycle CreateLifecycle()
-        {
-            var lifecycle = new ProbeLifecycle();
-            lifecycles.Add(lifecycle);
-
-            return lifecycle;
-        }
-
-        if (useAsync)
-        {
-            var collection = new AsyncSseUpdateCollection<string>(
-                () => Task.FromResult(CreatePage()), DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = CreateLifecycle,
-            };
-            await using var first = collection.GetAsyncEnumerator();
-            await using var second = collection.GetAsyncEnumerator();
-            Assert.That(lifecycles, Is.Empty);
-            Assert.That(await first.MoveNextAsync(), Is.True);
-            Assert.That(await second.MoveNextAsync(), Is.True);
-            await first.DisposeAsync();
-            await first.DisposeAsync();
-
-            while (await second.MoveNextAsync())
-            {
-            }
-        }
-        else
-        {
-            var collection = new SseUpdateCollection<string>(CreatePage, DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = CreateLifecycle,
-            };
-            using var first = collection.GetEnumerator();
-            using var second = collection.GetEnumerator();
-            Assert.That(lifecycles, Is.Empty);
-            Assert.That(first.MoveNext(), Is.True);
-            Assert.That(second.MoveNext(), Is.True);
-            first.Dispose();
-            first.Dispose();
-
-            while (second.MoveNext())
-            {
-            }
-        }
-
-        Assert.That(lifecycles, Has.Count.EqualTo(2));
-        Assert.That(lifecycles[0].Updates, Is.EqualTo(new[] { "A" }));
-        Assert.That(lifecycles[0].CompletionKind, Is.EqualTo(SseCompletionKind.Disposed));
-        Assert.That(lifecycles[1].Updates, Is.EqualTo(new[] { "A", "B" }));
-        Assert.That(lifecycles[1].Events, Is.EqualTo(4));
-        Assert.That(lifecycles[1].CompletionKind, Is.EqualTo(SseCompletionKind.EndOfStream));
-        Assert.That(lifecycles.All(lifecycle => lifecycle.Depth == 0), Is.True);
-        Assert.That(lifecycles.All(lifecycle => lifecycle.TypedResponses == 1), Is.True);
-    }
-
     [TestCase(false, "send")]
     [TestCase(true, "send")]
     [TestCase(false, "read")]
@@ -276,15 +215,12 @@ public class SseUpdateCollectionTests
     [TestCase(true, "cancel")]
     [TestCase(false, "dispose")]
     [TestCase(true, "dispose")]
-    public void LifecycleObservesFailuresAndDisposesOpenedResponses(bool useAsync, string phase)
+    public void FailuresDisposeOpenedResponses(bool useAsync, string phase)
     {
         using var cancellation = new CancellationTokenSource();
-        var lifecycle = new ProbeLifecycle();
         var stream = new FaultStream(StreamContent, phase);
         ClientResult Send()
         {
-            Assert.That(lifecycle.Depth, Is.EqualTo(1));
-
             if (phase == "send")
             {
                 throw new IOException("send");
@@ -299,8 +235,6 @@ public class SseUpdateCollectionTests
         }
         IEnumerable<string> Deserialize(SseItem<byte[]> item)
         {
-            Assert.That(lifecycle.Depth, Is.EqualTo(1));
-
             if (phase == "deserialize")
             {
                 throw new IOException("deserialize");
@@ -311,11 +245,7 @@ public class SseUpdateCollectionTests
 
         if (useAsync)
         {
-            var collection = new AsyncSseUpdateCollection<string>(
-                () => Task.FromResult(Send()), Deserialize, cancellation.Token)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
+            var collection = new AsyncSseUpdateCollection<string>(() => Task.FromResult(Send()), Deserialize, cancellation.Token);
             Assert.That(async () =>
             {
                 await foreach (var update in collection)
@@ -325,60 +255,11 @@ public class SseUpdateCollectionTests
         }
         else
         {
-            var collection = new SseUpdateCollection<string>(Send, Deserialize, cancellation.Token)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
+            var collection = new SseUpdateCollection<string>(Send, Deserialize, cancellation.Token);
             Assert.That(() => collection.ToList(), Throws.Exception);
         }
 
-        Assert.That(lifecycle.Exception, Is.Not.Null);
-        Assert.That(lifecycle.TypedResponses, Is.EqualTo(phase == "send" ? 0 : 1));
-        Assert.That(lifecycle.Depth, Is.Zero);
-        Assert.That(stream.Disposals, Is.EqualTo(phase == "send" ? 0 : 1), lifecycle.Exception?.ToString());
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task RawPageLifecycleDoesNotReadContent(bool useAsync)
-    {
-        var lifecycle = new ProbeLifecycle();
-        var stream = new FaultStream(StreamContent, "read");
-        var page = ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
-
-        if (useAsync)
-        {
-            var collection = new AsyncSseUpdateCollection<string>(
-                () => Task.FromResult(page), DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
-
-            await foreach (var raw in collection.GetRawPagesAsync())
-            {
-                Assert.That(raw, Is.SameAs(page));
-                Assert.That(lifecycle.Depth, Is.Zero);
-            }
-        }
-        else
-        {
-            var collection = new SseUpdateCollection<string>(() => page, DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
-
-            foreach (var raw in collection.GetRawPages())
-            {
-                Assert.That(raw, Is.SameAs(page));
-                Assert.That(lifecycle.Depth, Is.Zero);
-            }
-        }
-
-        Assert.That(lifecycle.Events, Is.Zero);
-        Assert.That(lifecycle.TypedResponses, Is.Zero);
-        Assert.That(lifecycle.CompletionKind, Is.EqualTo(SseCompletionKind.RawResponse));
-        Assert.That(stream.Disposals, Is.Zero);
-        stream.Dispose();
+        Assert.That(stream.Disposals, Is.EqualTo(phase == "send" ? 0 : 1));
     }
 
     [TestCase(false, false, false)]
@@ -391,17 +272,12 @@ public class SseUpdateCollectionTests
     [TestCase(true, true, true)]
     public async Task RawPageHandoffPreservesCallerOwnership(bool useAsync, bool consumeBody, bool disposeEarly)
     {
-        var lifecycle = new ProbeLifecycle();
         var stream = new FaultStream(StreamContent, "");
         var page = ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
 
         if (useAsync)
         {
-            var collection = new AsyncSseUpdateCollection<string>(
-                () => Task.FromResult(page), DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
+            var collection = new AsyncSseUpdateCollection<string>(() => Task.FromResult(page), DeserializeEvent, CancellationToken.None);
             await using var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
             Assert.That(await enumerator.MoveNextAsync(), Is.True);
             Assert.That(enumerator.Current, Is.SameAs(page));
@@ -418,10 +294,7 @@ public class SseUpdateCollectionTests
         }
         else
         {
-            var collection = new SseUpdateCollection<string>(() => page, DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
+            var collection = new SseUpdateCollection<string>(() => page, DeserializeEvent, CancellationToken.None);
             using var enumerator = collection.GetRawPages().GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.True);
             Assert.That(enumerator.Current, Is.SameAs(page));
@@ -437,12 +310,6 @@ public class SseUpdateCollectionTests
             }
         }
 
-        Assert.That(lifecycle.CompletionKind, Is.EqualTo(SseCompletionKind.RawResponse));
-        Assert.That(lifecycle.Exception, Is.Null);
-        Assert.That(lifecycle.Events, Is.Zero);
-        Assert.That(lifecycle.Updates, Is.Empty);
-        Assert.That(lifecycle.TypedResponses, Is.Zero);
-        Assert.That(lifecycle.Depth, Is.Zero);
         Assert.That(stream.Disposals, Is.Zero);
 
         if (!consumeBody)
@@ -454,87 +321,6 @@ public class SseUpdateCollectionTests
         Assert.That(stream.Position, Is.EqualTo(stream.Length));
         page.GetRawResponse().Dispose();
         Assert.That(stream.Disposals, Is.EqualTo(1));
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
-    public void RawPageSendFailureIsObserved(bool useAsync)
-    {
-        var lifecycle = new ProbeLifecycle();
-        var exception = new IOException("send");
-        ClientResult Send()
-        {
-            Assert.That(lifecycle.Depth, Is.EqualTo(1));
-
-            throw exception;
-        }
-
-        if (useAsync)
-        {
-            var collection = new AsyncSseUpdateCollection<string>(
-                () => Task.FromResult(Send()), DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
-            Assert.That(async () =>
-            {
-                await foreach (var page in collection.GetRawPagesAsync())
-                {
-                }
-            }, Throws.Exception.SameAs(exception));
-        }
-        else
-        {
-            var collection = new SseUpdateCollection<string>(Send, DeserializeEvent, CancellationToken.None)
-            {
-                LifecycleFactory = () => lifecycle,
-            };
-            Assert.That(() => collection.GetRawPages().ToList(), Throws.Exception.SameAs(exception));
-        }
-
-        Assert.That(lifecycle.Exception, Is.SameAs(exception));
-        Assert.That(lifecycle.Events, Is.Zero);
-        Assert.That(lifecycle.Depth, Is.Zero);
-    }
-
-    private sealed class ProbeLifecycle : SseLifecycle<string>
-    {
-        public int Depth { get; private set; }
-        public int TypedResponses { get; private set; }
-        public int Events { get; private set; }
-        public List<string> Updates { get; } = [];
-        public SseCompletionKind? CompletionKind { get; private set; }
-        public Exception Exception { get; private set; }
-
-        public override IDisposable Enter()
-        {
-            Depth++;
-
-            return new Activation(this);
-        }
-
-        public override void OnEvent()
-        {
-            Assert.That(Depth, Is.EqualTo(1));
-            Events++;
-        }
-
-        public override void OnTypedResponse() => TypedResponses++;
-
-        public override void OnUpdate(string update)
-        {
-            Assert.That(Depth, Is.EqualTo(1));
-            Updates.Add(update);
-        }
-
-        public override void OnException(Exception exception) => Exception ??= exception;
-
-        public override void Complete(SseCompletionKind completionKind) => CompletionKind ??= completionKind;
-
-        private sealed class Activation(ProbeLifecycle lifecycle) : IDisposable
-        {
-            public void Dispose() => lifecycle.Depth--;
-        }
     }
 
     private sealed class FaultStream(string content, string phase) : Stream

@@ -515,7 +515,7 @@ CreateResponseOptions streamingOptions = new()
 streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
 await foreach (StreamingResponseUpdate update
-    in client.CreateResponseStreamingAsync(streamingOptions))
+    in await client.CreateResponseStreamingAsync(streamingOptions))
 {
     if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
         && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -929,10 +929,10 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
 });
 ```
 
-With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `CollectionResult<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncCollectionResult<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
+With the assistant and thread prepared, await the `CreateRunStreamingAsync` method to get an `AsyncStreamingResult<StreamingUpdate>`. The result exposes the status and headers of the established service response, and you can iterate over its updates once with `await foreach`. Streaming variants also exist as `CreateThreadAndRunStreamingAsync` and `SubmitToolOutputsToRunStreamingAsync`.
 
 ```C# Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
-CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+AsyncStreamingResult<StreamingUpdate> streamingUpdates = await assistantClient.CreateRunStreamingAsync(
     thread.Id,
     assistant.Id,
     new RunCreationOptions()
@@ -944,7 +944,7 @@ CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunSt
 Finally, to handle the `StreamingUpdates` as they arrive, you can use the `UpdateKind` property on the base `StreamingUpdate` and/or downcast to a specifically desired update type, like `MessageContentUpdate` for `thread.message.delta` events or `RequiredActionUpdate` for streaming tool calls.
 
 ```C# Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
-foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
 {
     if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
     {
