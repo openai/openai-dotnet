@@ -1164,7 +1164,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes, "image/png"));
+                        ComputerCallOutput.CreateComputerScreenshotOutput(screenshotBytes, "image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     responseOptions.InputItems.Clear();

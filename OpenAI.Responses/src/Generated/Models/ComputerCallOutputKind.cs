@@ -22,8 +22,6 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static ComputerCallOutputKind Screenshot { get; } = new ComputerCallOutputKind(ScreenshotValue);
-
         public static bool operator ==(ComputerCallOutputKind left, ComputerCallOutputKind right) => left.Equals(right);
 
         public static bool operator !=(ComputerCallOutputKind left, ComputerCallOutputKind right) => !left.Equals(right);

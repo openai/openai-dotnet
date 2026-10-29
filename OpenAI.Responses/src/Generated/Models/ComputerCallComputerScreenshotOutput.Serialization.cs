@@ -10,42 +10,42 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ComputerCallScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallScreenshotOutput>
+    public partial class ComputerCallComputerScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallComputerScreenshotOutput>
     {
         protected override ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallComputerScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeComputerCallScreenshotOutput(document.RootElement, data, options);
+                        return DeserializeComputerCallComputerScreenshotOutput(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ComputerCallScreenshotOutput)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ComputerCallComputerScreenshotOutput)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallComputerScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ComputerCallScreenshotOutput)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ComputerCallComputerScreenshotOutput)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<ComputerCallScreenshotOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ComputerCallComputerScreenshotOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ComputerCallScreenshotOutput IPersistableModel<ComputerCallScreenshotOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => (ComputerCallScreenshotOutput)PersistableModelCreateCore(data, options);
+        ComputerCallComputerScreenshotOutput IPersistableModel<ComputerCallComputerScreenshotOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => (ComputerCallComputerScreenshotOutput)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<ComputerCallScreenshotOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ComputerCallComputerScreenshotOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<ComputerCallScreenshotOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ComputerCallComputerScreenshotOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -62,10 +62,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallComputerScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ComputerCallScreenshotOutput)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ComputerCallComputerScreenshotOutput)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -84,20 +84,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ComputerCallScreenshotOutput IJsonModel<ComputerCallScreenshotOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ComputerCallScreenshotOutput)JsonModelCreateCore(ref reader, options);
+        ComputerCallComputerScreenshotOutput IJsonModel<ComputerCallComputerScreenshotOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ComputerCallComputerScreenshotOutput)JsonModelCreateCore(ref reader, options);
 
         protected override ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallComputerScreenshotOutput>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ComputerCallScreenshotOutput)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ComputerCallComputerScreenshotOutput)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeComputerCallScreenshotOutput(document.RootElement, null, options);
+            return DeserializeComputerCallComputerScreenshotOutput(document.RootElement, null, options);
         }
 
-        internal static ComputerCallScreenshotOutput DeserializeComputerCallScreenshotOutput(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ComputerCallComputerScreenshotOutput DeserializeComputerCallComputerScreenshotOutput(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -128,7 +128,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ComputerCallScreenshotOutput(kind, patch, imageUri, fileId);
+            return new ComputerCallComputerScreenshotOutput(kind, patch, imageUri, fileId);
         }
     }
 }

@@ -8,14 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ComputerCallScreenshotOutput : ComputerCallOutput
+    public partial class ComputerCallComputerScreenshotOutput : ComputerCallOutput
     {
-        public ComputerCallScreenshotOutput() : this(ComputerCallOutputKind.Screenshot, default, null, null)
+        public ComputerCallComputerScreenshotOutput() : this(ComputerCallOutputKind.ComputerScreenshot, default, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerCallScreenshotOutput(ComputerCallOutputKind kind, in JsonPatch patch, string imageUri, string fileId) : base(kind, patch)
+        internal ComputerCallComputerScreenshotOutput(ComputerCallOutputKind kind, in JsonPatch patch, string imageUri, string fileId) : base(kind, patch)
         {
             ImageUri = imageUri;
             FileId = fileId;

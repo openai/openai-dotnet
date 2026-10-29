@@ -253,6 +253,12 @@ namespace OpenAI.Responses {
         Forward = 4
     }
     [Experimental("OPENAI001")]
+    public class ComputerCallComputerScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallComputerScreenshotOutput>, IPersistableModel<ComputerCallComputerScreenshotOutput> {
+        public ComputerCallComputerScreenshotOutput() : base(default);
+        public string FileId { get; set; }
+        public string ImageUri { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
         protected internal ComputerCallOutput(ComputerCallOutputKind kind);
         public ComputerCallOutputKind Kind { get; }
@@ -260,14 +266,14 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public static ComputerCallScreenshotOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        public static ComputerCallScreenshotOutput CreateScreenshotOutput(string screenshotImageFileId);
-        public static ComputerCallScreenshotOutput CreateScreenshotOutput(Uri screenshotImageUri);
+        public static ComputerCallComputerScreenshotOutput CreateComputerScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ComputerCallComputerScreenshotOutput CreateComputerScreenshotOutput(string screenshotImageFileId);
+        public static ComputerCallComputerScreenshotOutput CreateComputerScreenshotOutput(Uri screenshotImageUri);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ComputerCallOutputKind : IEquatable<ComputerCallOutputKind> {
         public ComputerCallOutputKind(string value);
-        public static ComputerCallOutputKind Screenshot { get; }
+        public static ComputerCallOutputKind ComputerScreenshot { get; }
         public readonly bool Equals(ComputerCallOutputKind other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -314,12 +320,6 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public class ComputerCallScreenshotOutput : ComputerCallOutput, IJsonModel<ComputerCallScreenshotOutput>, IPersistableModel<ComputerCallScreenshotOutput> {
-        public ComputerCallScreenshotOutput() : base(default);
-        public string FileId { get; set; }
-        public string ImageUri { get; set; }
     }
     [Experimental("OPENAI001")]
     public enum ComputerCallStatus {
