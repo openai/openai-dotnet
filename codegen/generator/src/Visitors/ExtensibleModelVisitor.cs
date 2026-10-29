@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.ClientModel;
+using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Primitives;
 using System;
@@ -157,6 +158,11 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                 // An open intermediate base needs its inherited discriminator parameter in the initialization signature
                 // so generated base-constructor forwarding can pass the consumer's value to the root.
                 constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
+                ConstructorInitializer? initializer = constructor.Signature.Initializer;
+                constructor.Signature.Update(initializer: initializer is null
+                    ? new ConstructorInitializer(true, [new PositionalParameterReferenceExpression(discriminatorProperty.AsParameter)])
+                    : new ConstructorInitializer(initializer.IsBase,
+                        [new PositionalParameterReferenceExpression(discriminatorProperty.AsParameter), .. initializer.Arguments]));
             }
 
             // Allow subclasses in other assemblies to initialize the discriminator property without exposing serialization state.

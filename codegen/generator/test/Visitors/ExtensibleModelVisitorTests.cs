@@ -225,6 +225,8 @@ public class ExtensibleModelVisitorTests
         Assert.That(intermediate.Constructors.Any(c =>
             c.Signature.Modifiers == (MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal)), Is.True,
             new TypeProviderWriter(intermediate).Write().Content);
+        var source = new TypeProviderWriter(intermediate).Write().Content;
+        Assert.That(source, Does.Contain(": base(kind)"), source);
         Assert.That(leaf.Constructors.Select(c => c.Signature.Modifiers), Is.EqualTo(leafModifiers));
     }
 
