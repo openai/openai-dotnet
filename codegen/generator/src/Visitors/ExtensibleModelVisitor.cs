@@ -140,7 +140,8 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
         // Expose initialization constructors on eligible open bases, not fixed leaves (excluded above).
         // ResponseItem has only (kind); other bases can require more arguments, such as
         // StreamingResponseUpdate(kind, sequenceNumber). Preserve those arguments and all constructor bodies.
-        // The full constructor carries serialization state such as JsonPatch and must remain unchanged.
+        // The full serialization constructor itself remains unchanged. A different constructor may delegate
+        // to it, so update only the delegated discriminator argument and preserve its serialization state.
         foreach (ConstructorProvider constructor in model.Constructors)
         {
             if (ReferenceEquals(constructor, model.FullConstructor))
@@ -155,18 +156,19 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                     continue;
                 }
 
-                // An open intermediate base needs its inherited discriminator parameter in the initialization signature
-                // so generated base-constructor forwarding can pass the consumer's value to the root.
+                // Add the inherited discriminator to the initialization signature, then forward it through the
+                // existing constructor chain: create a base initializer if absent, prepend it for a base call,
+                // or replace its existing slot for a this-call using the full constructor's parameter ordering.
                 constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
                 ConstructorInitializer? initializer = constructor.Signature.Initializer;
-                ValueExpression kindArgument = discriminatorProperty.AsParameter;
+                ValueExpression discriminatorArgument = discriminatorProperty.AsParameter;
                 if (initializer is null)
                 {
-                    initializer = new ConstructorInitializer(true, [kindArgument]);
+                    initializer = new ConstructorInitializer(true, [discriminatorArgument]);
                 }
                 else if (initializer.IsBase)
                 {
-                    initializer = new ConstructorInitializer(true, [kindArgument, .. initializer.Arguments]);
+                    initializer = new ConstructorInitializer(true, [discriminatorArgument, .. initializer.Arguments]);
                 }
                 else
                 {
@@ -187,11 +189,13 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
                     if (discriminatorParameterIndex >= 0 && discriminatorParameterIndex < initializer.Arguments.Count)
                     {
                         ValueExpression[] arguments = [.. initializer.Arguments];
-                        arguments[discriminatorParameterIndex] = kindArgument;
+                        arguments[discriminatorParameterIndex] = discriminatorArgument;
                         initializer = new ConstructorInitializer(false, arguments);
                     }
                 }
 
+                // Apply the initializer chosen above to forward the inherited discriminator while preserving
+                // every other argument in the existing base or delegated constructor call.
                 constructor.Signature.Update(initializer: initializer);
             }
 
