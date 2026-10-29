@@ -99,6 +99,12 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(ImageGenToolInputImageMask.image_url, string);
 @@clientName(ImageGenToolInputImageMask.image_url, "ImageUri");
 
+// ------------ Tool Choice Objects ------------
+@@clientName(ToolChoiceObjectCustom.name, "ToolName");
+@@clientName(ToolChoiceObjectMCP.name, "ToolName");
+@@clientName(ToolChoiceObjectFunction.name, "FunctionName");
+
+
 // ------------ Streaming ------------
 
 @@usage(ResponseStreamEvent, Usage.json);
@@ -137,13 +143,6 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ItemParam);
 @@dynamicModel(Tool);
 @@dynamicModel(ToolChoiceObject);
-@@dynamicModel(ToolChoiceObjectFileSearch);
-@@dynamicModel(ToolChoiceObjectComputer);
-@@dynamicModel(ToolChoiceObjectWebSearch);
-@@dynamicModel(ToolChoiceObjectImageGen);
-@@dynamicModel(ToolChoiceObjectCodeInterpreter);
-@@dynamicModel(ToolChoiceObjectMCP);
-@@dynamicModel(ToolChoiceObjectFunction);
 @@dynamicModel(FunctionTool);
 @@dynamicModel(FileSearchTool);
 @@dynamicModel(ComputerUsePreviewTool);

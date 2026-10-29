@@ -1,6 +1,6 @@
 # Non-discriminated unions
 
-This document defines how the OpenAI .NET library represents non-discriminated unions, including the special case where one union component is shorthand for another.
+This document defines how the OpenAI .NET library represents non-discriminated unions, including the special cases for extensible enums and unions where one component is shorthand for another.
 
 ## Definition
 
@@ -29,9 +29,41 @@ model MCPToolFilter {
 Apply these interpretations before modeling the union in .NET:
 
 - When a union contains `null`, model the containing property as nullable. Do not treat `null` as a component represented by the union type. In other words, only consider this to be a proper union if it includes two or more non-`null` components.
-- When a union contains one or more string literals, such as `"always"` and `"never"`, model them as an extensible enum.
+- Group string literals, such as `"always"` and `"never"`, into a single extensible enum component.
+- When the only members are `string` and string literals, the entire declaration is an extensible enum rather than a proper non-discriminated union. The `string` member allows unknown values, while the literals define the known named values.
 
 After applying these rules, `require_approval` translates to a non-discriminated union between an object and an extensible enum.
+
+## Special case: Recognize extensible enums
+
+TypeSpec represents an extensible enum as a union of `string` and named string literals:
+
+```typespec
+union DotNetResponseDefaultToolChoice {
+  string,
+  none: "none",
+  auto: "auto",
+  required: "required",
+}
+```
+
+The `string` member is not a distinct model alternative. It keeps the enum open so the client can accept values added by the service in the future. The named literal members provide the known values exposed by the .NET type.
+
+Model this declaration as one extensible enum. It does not need a discriminator or a compositional union class:
+
+```csharp
+public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDefaultToolChoice>
+{
+    public ResponseDefaultToolChoice(string value);
+
+    public static ResponseDefaultToolChoice None { get; }
+    public static ResponseDefaultToolChoice Auto { get; }
+    public static ResponseDefaultToolChoice Required { get; }
+
+    public static implicit operator ResponseDefaultToolChoice(string value);
+    public override string ToString();
+}
+```
 
 ## Pattern 1: Represent distinct components through composition
 
@@ -231,11 +263,12 @@ These limitations are preferable to adding a public wrapper when shorthand and l
 Use the following decision process for each non-discriminated union:
 
 1. Remove `null` from consideration as a union component and model it as property nullability.
-2. Group string literals into a single extensible enum component.
-3. Decide whether the remaining components represent distinct concepts.
-4. If they are distinct, use a compositional union class with one nullable, read-only property and one constructor per component.
-5. If one component is only shorthand for another, expose the longhand type and normalize shorthand during deserialization.
-6. Add serialization tests for every accepted JSON shape and for the expected round-trip behavior.
+2. If the remaining members are `string` and string literals, model the entire declaration as one extensible enum and stop.
+3. Otherwise, group string literals into a single extensible enum component.
+4. Decide whether the remaining components represent distinct concepts.
+5. If they are distinct, use a compositional union class with one nullable, read-only property and one constructor per component.
+6. If one component is only shorthand for another, expose the longhand type and normalize shorthand during deserialization.
+7. Add serialization tests for every accepted JSON shape and for the expected round-trip behavior.
 
 When TypeSpec files are changed while implementing either pattern, regenerate the code by running:
 

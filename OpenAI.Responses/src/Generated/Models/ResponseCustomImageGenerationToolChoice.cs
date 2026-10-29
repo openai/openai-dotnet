@@ -3,17 +3,19 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectMCP : InternalToolChoiceObject
+    [Experimental("OPENAI001")]
+    public partial class ResponseCustomImageGenerationToolChoice : ResponseCustomToolChoice
     {
-        public InternalToolChoiceObjectMCP() : this(InternalToolChoiceObjectType.Mcp, default)
+        public ResponseCustomImageGenerationToolChoice() : this(ResponseCustomToolChoiceKind.ImageGeneration, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectMCP(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomImageGenerationToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

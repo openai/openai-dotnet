@@ -3,17 +3,19 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectCodeInterpreter : InternalToolChoiceObject
+    [Experimental("OPENAI001")]
+    public partial class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice
     {
-        public InternalToolChoiceObjectCodeInterpreter() : this(InternalToolChoiceObjectType.CodeInterpreter, default)
+        public ResponseCustomWebSearchPreviewToolChoice() : this(ResponseCustomToolChoiceKind.WebSearchPreview, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectCodeInterpreter(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomWebSearchPreviewToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
