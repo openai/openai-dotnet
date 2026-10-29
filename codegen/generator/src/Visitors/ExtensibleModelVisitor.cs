@@ -9,8 +9,10 @@ namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
 /// Exposes extensible discriminated bases in explicitly opted-in namespaces.
-/// Eligible models are public classes with an unfixed discriminator identified by generator metadata,
-/// backed by a string extensible enum. Ordinary models, fixed leaves, and closed enums are unchanged.
+/// Eligible models are public classes whose discriminator property is not constrained to one value
+/// (generator metadata has no DiscriminatorValue), unlike a concrete leaf such as type = "message".
+/// The discriminator property is identified by generator metadata and its type must be
+/// a string-backed extensible enum. Ordinary models, fixed leaves, and closed enums are unchanged.
 /// Explicit custom discriminator members with a different visibility, type, or setter remain authoritative.
 /// Keep this allowlist separate from protocol models: protocol setters do not imply extensibility.
 /// This visitor never changes wire names or fixed discriminator values.
@@ -38,27 +40,28 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 
         // Find the declaring model through metadata rather than assuming a CLR property name.
         // An open intermediate base may inherit its discriminator from another eligible base.
-        PropertyProvider? discriminator = null;
-        ModelProvider? discriminatorModel = model;
-        for (; discriminatorModel is not null; discriminatorModel = discriminatorModel.BaseModelProvider)
+        // The owner is the model declaring the property, not necessarily the model currently being visited.
+        PropertyProvider? discriminatorProperty = null;
+        ModelProvider? discriminatorPropertyOwner = model;
+        for (; discriminatorPropertyOwner is not null; discriminatorPropertyOwner = discriminatorPropertyOwner.BaseModelProvider)
         {
-            discriminator = discriminatorModel.Properties.FirstOrDefault(property => property.IsDiscriminator);
-            if (discriminator is not null)
+            discriminatorProperty = discriminatorPropertyOwner.Properties.FirstOrDefault(property => property.IsDiscriminator);
+            if (discriminatorProperty is not null)
             {
                 break;
             }
         }
 
-        if (discriminator is null)
+        if (discriminatorProperty is null)
         {
             // A handwritten property can suppress the generated property list while constructor parameters
             // still retain the original discriminator metadata. Use that metadata as the fallback.
-            for (discriminatorModel = model; discriminatorModel is not null; discriminatorModel = discriminatorModel.BaseModelProvider)
+            for (discriminatorPropertyOwner = model; discriminatorPropertyOwner is not null; discriminatorPropertyOwner = discriminatorPropertyOwner.BaseModelProvider)
             {
-                discriminator = discriminatorModel.Constructors.SelectMany(constructor => constructor.Signature.Parameters)
+                discriminatorProperty = discriminatorPropertyOwner.Constructors.SelectMany(constructor => constructor.Signature.Parameters)
                     .Select(parameter => parameter.Property)
                     .FirstOrDefault(property => property?.IsDiscriminator == true);
-                if (discriminator is not null)
+                if (discriminatorProperty is not null)
                 {
                     break;
                 }
@@ -67,65 +70,69 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 
         // Both the model and discriminator owner must opt in. Only string-backed extensible enums
         // can accept consumer-defined values; raw strings, numeric enums, and closed enums are unchanged.
-        if (discriminator is null || discriminatorModel is null
-            || !_extensibleModelNamespaces.Contains(discriminatorModel.Type.Namespace)
-            || !ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap.TryGetValue(discriminator.Type, out var discriminatorType)
-            || discriminatorType is not EnumProvider { IsExtensible: true } kind
-            || !kind.EnumUnderlyingType.Equals(typeof(string)))
+        if (discriminatorProperty is null || discriminatorPropertyOwner is null
+            || !_extensibleModelNamespaces.Contains(discriminatorPropertyOwner.Type.Namespace)
+            || !ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap.TryGetValue(discriminatorProperty.Type, out var discriminatorTypeProvider)
+            || discriminatorTypeProvider is not EnumProvider { IsExtensible: true } discriminatorType
+            || !discriminatorType.EnumUnderlyingType.Equals(typeof(string)))
         {
             return type;
         }
 
         // Do not replace an intentional handwritten contract (including a renamed original member).
         // A compatible public get-only customization can still use the generated initialization constructor.
-        PropertyProvider? customDiscriminator = discriminatorModel.CustomCodeView?.Properties
-            .FirstOrDefault(property => property.Name == discriminator.Name || property.OriginalName == discriminator.Name);
-        if (customDiscriminator is not null
-            && (!customDiscriminator.Modifiers.HasFlag(MethodSignatureModifiers.Public)
-                || !customDiscriminator.Type.Equals(discriminator.Type)
-                || customDiscriminator.Body is AutoPropertyBody { HasSetter: true }))
+        PropertyProvider? customDiscriminatorProperty = discriminatorPropertyOwner.CustomCodeView?.Properties
+            .FirstOrDefault(property => property.Name == discriminatorProperty.Name || property.OriginalName == discriminatorProperty.Name);
+        if (customDiscriminatorProperty is not null
+            && (!customDiscriminatorProperty.Modifiers.HasFlag(MethodSignatureModifiers.Public)
+                || !customDiscriminatorProperty.Type.Equals(discriminatorProperty.Type)
+                || customDiscriminatorProperty.Body is AutoPropertyBody { HasSetter: true }))
         {
             return type;
         }
 
         const TypeSignatureModifiers typeVisibility = TypeSignatureModifiers.Public | TypeSignatureModifiers.Internal;
-        if (!kind.Type.IsPublic)
+        if (!discriminatorType.Type.IsPublic)
         {
-            CSharpType previousKindType = kind.Type;
-            // Promotion rebuilds the cached CSharpType. Retain customized members, attributes, and output
-            // location; in particular, making the enum public must not expose intentionally internal members.
-            kind.Update(
-                modifiers: kind.DeclarationModifiers & ~typeVisibility | TypeSignatureModifiers.Public,
-                properties: kind.Properties,
-                fields: kind.Fields,
-                methods: kind.Methods,
-                constructors: kind.Constructors,
-                serializations: kind.SerializationProviders,
-                nestedTypes: kind.NestedTypes,
-                attributes: kind.Attributes,
-                implements: kind.Implements,
-                xmlDocs: kind.XmlDocs,
-                relativeFilePath: kind.RelativeFilePath,
+            CSharpType previousDiscriminatorType = discriminatorType.Type;
+            // Make the discriminator enum public. reset rebuilds its cached CSharpType so IsPublic changes.
+            // It also clears cached provider state: pass that state back explicitly to preserve customized
+            // members (including internal ones), attributes, interfaces, documentation, and output location.
+            discriminatorType.Update(
+                modifiers: discriminatorType.DeclarationModifiers & ~typeVisibility | TypeSignatureModifiers.Public,
+                properties: discriminatorType.Properties,
+                fields: discriminatorType.Fields,
+                methods: discriminatorType.Methods,
+                constructors: discriminatorType.Constructors,
+                serializations: discriminatorType.SerializationProviders,
+                nestedTypes: discriminatorType.NestedTypes,
+                attributes: discriminatorType.Attributes,
+                implements: discriminatorType.Implements,
+                xmlDocs: discriminatorType.XmlDocs,
+                relativeFilePath: discriminatorType.RelativeFilePath,
                 reset: true);
             // Update references to the rebuilt type, including static enum members returning their own type.
-            ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[kind.Type] = kind;
-            foreach (PropertyProvider member in kind.Properties.Where(property => property.Type.Equals(previousKindType)))
+            ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[discriminatorType.Type] = discriminatorType;
+            foreach (PropertyProvider member in discriminatorType.Properties.Where(property => property.Type.Equals(previousDiscriminatorType)))
             {
-                member.Update(type: kind.Type);
+                // Point self-typed enum properties at the public CSharpType rather than its stale internal copy.
+                member.Update(type: discriminatorType.Type);
             }
         }
 
         // Only the declaring model owns this property. Do not mutate an inherited property here:
         // its own visitor pass may already have applied an explicit visibility override.
-        // Preserve initialization while removing a protocol-model setter and exposing the public kind type.
-        if (ReferenceEquals(discriminatorModel, model) && discriminator.Body is AutoPropertyBody body)
+        // AutoPropertyBody represents generated { get; set; } or { get; } accessors, rather than a custom body.
+        // Only rewrite that known shape: make the property public/get-only, use the public enum type,
+        // and preserve any initializer. Custom accessor implementations are not replaced.
+        if (ReferenceEquals(discriminatorPropertyOwner, model) && discriminatorProperty.Body is AutoPropertyBody body)
         {
-            discriminator.Update(
-                modifiers: discriminator.Modifiers
+            discriminatorProperty.Update(
+                modifiers: discriminatorProperty.Modifiers
                     & ~(MethodSignatureModifiers.Public | MethodSignatureModifiers.Internal
                         | MethodSignatureModifiers.Protected | MethodSignatureModifiers.Private)
                     | MethodSignatureModifiers.Public,
-                type: kind.Type,
+                type: discriminatorType.Type,
                 body: new AutoPropertyBody(HasSetter: false, InitializationExpression: body.InitializationExpression));
         }
 
@@ -149,15 +156,15 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 
                 // An open intermediate base needs its inherited kind in the initialization signature
                 // so generated base-constructor forwarding can pass the consumer's value to the root.
-                constructor.Signature.Update(parameters: [discriminator.AsParameter, .. constructor.Signature.Parameters]);
+                constructor.Signature.Update(parameters: [discriminatorProperty.AsParameter, .. constructor.Signature.Parameters]);
             }
 
             // Allow subclasses in other assemblies to initialize a kind without exposing serialization state.
-            // Use the promoted enum type on discriminator parameters; no defaults or extra overloads are added.
             constructor.Signature.Update(modifiers: MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal);
             foreach (ParameterProvider parameter in constructor.Signature.Parameters.Where(parameter => parameter.Property?.IsDiscriminator == true))
             {
-                parameter.Update(type: kind.Type);
+                // Refresh the parameter's enum type after promotion; preserve its name, default, and metadata.
+                parameter.Update(type: discriminatorType.Type);
             }
         }
 
