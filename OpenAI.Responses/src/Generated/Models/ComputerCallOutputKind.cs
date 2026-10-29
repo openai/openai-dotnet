@@ -13,7 +13,7 @@ namespace OpenAI.Responses
     public readonly partial struct ComputerCallOutputKind : IEquatable<ComputerCallOutputKind>
     {
         private readonly string _value;
-        private const string ScreenshotValue = "computer_screenshot";
+        private const string ComputerScreenshotValue = "computer_screenshot";
 
         public ComputerCallOutputKind(string value)
         {
@@ -21,6 +21,8 @@ namespace OpenAI.Responses
 
             _value = value;
         }
+
+        public static ComputerCallOutputKind ComputerScreenshot { get; } = new ComputerCallOutputKind(ComputerScreenshotValue);
 
         public static bool operator ==(ComputerCallOutputKind left, ComputerCallOutputKind right) => left.Equals(right);
 

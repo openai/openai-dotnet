@@ -151,7 +151,7 @@ model ComputerAction {
 /** A computer screenshot image used with the computer use tool. */
 union ComputerToolCallOutputItemOutputType {
   string,
-  screenshot: "computer_screenshot",
+  computer_screenshot: "computer_screenshot",
 }
 @discriminator("type")
 model ComputerToolCallOutputItemOutput {
@@ -159,7 +159,7 @@ model ComputerToolCallOutputItemOutput {
 }
 model ComputerToolCallOutputItemOutputComputerScreenshot
   extends ComputerToolCallOutputItemOutput {
-  type: ComputerToolCallOutputItemOutputType.screenshot;
+  type: ComputerToolCallOutputItemOutputType.computer_screenshot;
   image_url?: string;
   file_id?: string;
 }
