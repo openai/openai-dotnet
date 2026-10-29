@@ -10,6 +10,12 @@ namespace OpenAI.Responses
     internal partial class InternalCompactResponseMethodPublicBody
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private BinaryData _input;
+        private bool _inputIsDefined;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
 
         internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model)
         {
@@ -19,19 +25,52 @@ namespace OpenAI.Responses
         internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Model = model;
-            Input = input;
-            PreviousResponseId = previousResponseId;
-            Instructions = instructions;
+            _input = input;
+            _previousResponseId = previousResponseId;
+            _instructions = instructions;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal InternalModelIdsCompaction? Model { get; set; }
 
-        public BinaryData Input { get; set; }
+        public BinaryData Input
+        {
+            get
+            {
+                return _input;
+            }
+            set
+            {
+                _input = value;
+                _inputIsDefined = true;
+            }
+        }
 
-        public string PreviousResponseId { get; set; }
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

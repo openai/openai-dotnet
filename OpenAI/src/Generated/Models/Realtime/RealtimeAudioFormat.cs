@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeAudioFormat(InternalRealtimeAudioFormatType kind)
+        private protected RealtimeAudioFormat(InternalRealtimeAudioFormatType kind)
         {
             Kind = kind;
         }

@@ -22,7 +22,7 @@ public partial class AssistantExamples
         CollectionResult<Assistant> assistants = client.GetAssistants();
         foreach (Assistant assistant in assistants)
         {
-            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedOn:s} {assistant.Name}");
 
             count++;
         }

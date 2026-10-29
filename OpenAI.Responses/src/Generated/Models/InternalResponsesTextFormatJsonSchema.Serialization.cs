@@ -97,10 +97,17 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
+            if (Optional.IsDefined(Strict, _strictIsDefined) && !Patch.Contains("$.strict"u8))
             {
-                writer.WritePropertyName("strict"u8);
-                writer.WriteBooleanValue(Strict.Value);
+                if (Strict != null)
+                {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -135,6 +142,7 @@ namespace OpenAI.Responses
             string description = default;
             string name = default;
             BinaryData schema = default;
+            bool strictIsDefined = false;
             bool? strict = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -160,6 +168,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("strict"u8))
                 {
+                    strictIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         strict = null;
@@ -176,7 +185,10 @@ namespace OpenAI.Responses
                 description,
                 name,
                 schema,
-                strict);
+                strict)
+            {
+                _strictIsDefined = strictIsDefined
+            };
         }
     }
 }

@@ -30,7 +30,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a4a8c340ccb4032e-SEA",
+        "CF-Ray": "a513ac7ebdc20882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "793",
         "Content-Type": "application/json",
@@ -40,7 +40,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
@@ -53,9 +52,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-EYyKIrQJItnDqBcA1KGMeLvEf2K3D",
+        "id": "chatcmpl-EdfxekRj5gsvu2F2J5JlHAm7FzwJT",
         "object": "chat.completion",
-        "created": 1792003754,
+        "created": 1793124798,
         "model": "gpt-5.6-sol",
         "choices": [
           {

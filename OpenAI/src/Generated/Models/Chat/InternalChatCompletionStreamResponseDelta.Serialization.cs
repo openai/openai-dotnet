@@ -114,10 +114,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
+            if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                if (Refusal != null)
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -148,6 +155,7 @@ namespace OpenAI.Chat
             StreamingChatFunctionCallUpdate functionCall = default;
             IReadOnlyList<StreamingChatToolCallUpdate> toolCalls = default;
             ChatMessageRole? role = default;
+            bool refusalIsDefined = false;
             string refusal = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -202,6 +210,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("refusal"u8))
                 {
+                    refusalIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         refusal = null;
@@ -219,7 +228,10 @@ namespace OpenAI.Chat
                 toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>(),
                 role,
                 refusal,
-                patch);
+                patch)
+            {
+                _refusalIsDefined = refusalIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

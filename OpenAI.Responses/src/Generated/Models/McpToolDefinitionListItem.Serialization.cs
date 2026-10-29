@@ -103,17 +103,24 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.tools"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
+            if (Optional.IsDefined(Error, _errorIsDefined) && !Patch.Contains("$.error"u8))
             {
-                writer.WritePropertyName("error"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Error);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Error))
+                if (Error != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    writer.WritePropertyName("error"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Error);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Error))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -146,6 +153,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string serverLabel = default;
             IList<McpToolDefinition> toolDefinitions = default;
+            bool errorIsDefined = false;
             BinaryData error = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -176,6 +184,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("error"u8))
                 {
+                    errorIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         error = null;
@@ -192,7 +201,10 @@ namespace OpenAI.Responses
                 patch,
                 serverLabel,
                 toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>(),
-                error);
+                error)
+            {
+                _errorIsDefined = errorIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

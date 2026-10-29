@@ -9,9 +9,6 @@ public partial class FineTuningCheckpoint
     [CodeGenMember("Id")]
     public string Id { get; }
 
-    [CodeGenMember("CreatedAt")]
-    public DateTimeOffset CreatedAt { get; }
-
     [CodeGenMember("FineTunedModelCheckpoint")]
     public string ModelId { get; }
 

@@ -88,15 +88,29 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
-            if (Optional.IsDefined(Output) && !Patch.Contains("$.output"u8))
+            if (Optional.IsDefined(Output, _outputIsDefined) && !Patch.Contains("$.output"u8))
             {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStringValue(Output);
+                if (Output != null)
+                {
+                    writer.WritePropertyName("output"u8);
+                    writer.WriteStringValue(Output);
+                }
+                else
+                {
+                    writer.WriteNull("output"u8);
+                }
             }
-            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
+            if (Optional.IsDefined(Error, _errorIsDefined) && !Patch.Contains("$.error"u8))
             {
-                writer.WritePropertyName("error"u8);
-                writer.WriteStringValue(Error);
+                if (Error != null)
+                {
+                    writer.WritePropertyName("error"u8);
+                    writer.WriteStringValue(Error);
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -129,7 +143,9 @@ namespace OpenAI.Responses
             string serverLabel = default;
             string name = default;
             string arguments = default;
+            bool outputIsDefined = false;
             string output = default;
+            bool errorIsDefined = false;
             string error = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -155,6 +171,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
+                    outputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         output = null;
@@ -165,6 +182,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("error"u8))
                 {
+                    errorIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         error = null;
@@ -182,7 +200,11 @@ namespace OpenAI.Responses
                 name,
                 arguments,
                 output,
-                error);
+                error)
+            {
+                _outputIsDefined = outputIsDefined,
+                _errorIsDefined = errorIsDefined
+            };
         }
     }
 }

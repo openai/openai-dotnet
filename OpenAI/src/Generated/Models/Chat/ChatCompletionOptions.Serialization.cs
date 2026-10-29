@@ -124,20 +124,34 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && !Patch.Contains("$.temperature"u8))
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && !Patch.Contains("$.temperature"u8))
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
             if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
             {
                 writer.WritePropertyName("top_logprobs"u8);
                 writer.WriteNumberValue(TopLogProbabilityCount.Value);
             }
-            if (Optional.IsDefined(TopP) && !Patch.Contains("$.top_p"u8))
+            if (Optional.IsDefined(TopP, _topPIsDefined) && !Patch.Contains("$.top_p"u8))
             {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP.Value);
+                if (TopP != null)
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
             }
             if (Optional.IsDefined(EndUserId) && !Patch.Contains("$.user"u8))
             {
@@ -187,19 +201,26 @@ namespace OpenAI.Chat
             }
             else if (Optional.IsCollectionDefined(InternalModalities))
             {
-                writer.WritePropertyName("modalities"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "modalities"u8);
-                for (int i = 0; i < InternalModalities.Count; i++)
+                if (InternalModalities != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.modalities[{i}]")))
+                    writer.WritePropertyName("modalities"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "modalities"u8);
+                    for (int i = 0; i < InternalModalities.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.modalities[{i}]")))
+                        {
+                            continue;
+                        }
+                        writer.WriteStringValue(InternalModalities[i].ToString());
                     }
-                    writer.WriteStringValue(InternalModalities[i].ToString());
+                    Patch.WriteTo(writer, "$.modalities"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.modalities"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("modalities"u8);
+                }
             }
             if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
             {
@@ -211,15 +232,29 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("max_completion_tokens"u8);
                 writer.WriteNumberValue(MaxOutputTokenCount.Value);
             }
-            if (Optional.IsDefined(FrequencyPenalty) && !Patch.Contains("$.frequency_penalty"u8))
+            if (Optional.IsDefined(FrequencyPenalty, _frequencyPenaltyIsDefined) && !Patch.Contains("$.frequency_penalty"u8))
             {
-                writer.WritePropertyName("frequency_penalty"u8);
-                writer.WriteNumberValue(FrequencyPenalty.Value);
+                if (FrequencyPenalty != null)
+                {
+                    writer.WritePropertyName("frequency_penalty"u8);
+                    writer.WriteNumberValue(FrequencyPenalty.Value);
+                }
+                else
+                {
+                    writer.WriteNull("frequency_penalty"u8);
+                }
             }
-            if (Optional.IsDefined(PresencePenalty) && !Patch.Contains("$.presence_penalty"u8))
+            if (Optional.IsDefined(PresencePenalty, _presencePenaltyIsDefined) && !Patch.Contains("$.presence_penalty"u8))
             {
-                writer.WritePropertyName("presence_penalty"u8);
-                writer.WriteNumberValue(PresencePenalty.Value);
+                if (PresencePenalty != null)
+                {
+                    writer.WritePropertyName("presence_penalty"u8);
+                    writer.WriteNumberValue(PresencePenalty.Value);
+                }
+                else
+                {
+                    writer.WriteNull("presence_penalty"u8);
+                }
             }
             if (Optional.IsDefined(WebSearchOptions) && !Patch.Contains("$.web_search_options"u8))
             {
@@ -256,13 +291,27 @@ namespace OpenAI.Chat
             }
             else if (Optional.IsCollectionDefined(StopSequences))
             {
-                writer.WritePropertyName("stop"u8);
-                SerializeStopSequencesValue(writer, options);
+                if (StopSequences != null)
+                {
+                    writer.WritePropertyName("stop"u8);
+                    SerializeStopSequencesValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("stop"u8);
+                }
             }
             if (Optional.IsCollectionDefined(LogitBiases) && !Patch.Contains("$.logit_bias"u8))
             {
-                writer.WritePropertyName("logit_bias"u8);
-                SerializeLogitBiasesValue(writer, options);
+                if (LogitBiases != null)
+                {
+                    writer.WritePropertyName("logit_bias"u8);
+                    SerializeLogitBiasesValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("logit_bias"u8);
+                }
             }
             if (Optional.IsDefined(IncludeLogProbabilities) && !Patch.Contains("$.logprobs"u8))
             {
@@ -284,10 +333,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("prediction"u8);
                 writer.WriteObjectValue(OutputPrediction, options);
             }
-            if (Optional.IsDefined(Seed) && !Patch.Contains("$.seed"u8))
+            if (Optional.IsDefined(Seed, _seedIsDefined) && !Patch.Contains("$.seed"u8))
             {
-                writer.WritePropertyName("seed"u8);
-                writer.WriteNumberValue(Seed.Value);
+                if (Seed != null)
+                {
+                    writer.WritePropertyName("seed"u8);
+                    writer.WriteNumberValue(Seed.Value);
+                }
+                else
+                {
+                    writer.WriteNull("seed"u8);
+                }
             }
             if (Optional.IsDefined(StreamOptions) && !Patch.Contains("$.stream_options"u8))
             {
@@ -383,30 +439,35 @@ namespace OpenAI.Chat
                 return null;
             }
             IDictionary<string, string> metadata = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
             int? topLogProbabilityCount = default;
+            bool topPIsDefined = false;
             float? topP = default;
             string endUserId = default;
             string safetyIdentifier = default;
             ChatServiceTier? serviceTier = default;
             IList<ChatMessage> messages = default;
             string model = default;
-            IList<InternalCreateChatCompletionRequestModality> internalModalities = default;
+            IList<InternalCreateChatCompletionRequestModality> internalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
             ChatReasoningEffortLevel? reasoningEffortLevel = default;
             int? maxOutputTokenCount = default;
+            bool frequencyPenaltyIsDefined = false;
             float? frequencyPenalty = default;
+            bool presencePenaltyIsDefined = false;
             float? presencePenalty = default;
             ChatWebSearchOptions webSearchOptions = default;
             ChatResponseFormat responseFormat = default;
             ChatAudioOptions audioOptions = default;
             bool? storedOutputEnabled = default;
             bool? stream = default;
-            IList<string> stopSequences = default;
-            IDictionary<int, int> logitBiases = default;
+            IList<string> stopSequences = new ChangeTrackingList<string>();
+            IDictionary<int, int> logitBiases = new ChangeTrackingDictionary<int, int>();
             bool? includeLogProbabilities = default;
             int? deprecatedMaxTokens = default;
             int? n = default;
             ChatOutputPrediction outputPrediction = default;
+            bool seedIsDefined = false;
             long? seed = default;
             InternalChatCompletionStreamOptions streamOptions = default;
             IList<ChatTool> tools = default;
@@ -442,6 +503,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -462,6 +524,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("top_p"u8))
                 {
+                    topPIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
@@ -508,6 +571,7 @@ namespace OpenAI.Chat
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        internalModalities = null;
                         continue;
                     }
                     List<InternalCreateChatCompletionRequestModality> array = new List<InternalCreateChatCompletionRequestModality>();
@@ -540,6 +604,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("frequency_penalty"u8))
                 {
+                    frequencyPenaltyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         frequencyPenalty = null;
@@ -550,6 +615,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("presence_penalty"u8))
                 {
+                    presencePenaltyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         presencePenalty = null;
@@ -658,6 +724,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("seed"u8))
                 {
+                    seedIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         seed = null;
@@ -743,7 +810,7 @@ namespace OpenAI.Chat
                 serviceTier,
                 messages ?? new ChangeTrackingList<ChatMessage>(),
                 model,
-                internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>(),
+                internalModalities,
                 reasoningEffortLevel,
                 maxOutputTokenCount,
                 frequencyPenalty,
@@ -753,8 +820,8 @@ namespace OpenAI.Chat
                 audioOptions,
                 storedOutputEnabled,
                 stream,
-                stopSequences ?? new ChangeTrackingList<string>(),
-                logitBiases ?? new ChangeTrackingDictionary<int, int>(),
+                stopSequences,
+                logitBiases,
                 includeLogProbabilities,
                 deprecatedMaxTokens,
                 n,
@@ -766,7 +833,14 @@ namespace OpenAI.Chat
                 allowParallelToolCalls,
                 functionChoice,
                 functions ?? new ChangeTrackingList<ChatFunction>(),
-                patch);
+                patch)
+            {
+                _temperatureIsDefined = temperatureIsDefined,
+                _topPIsDefined = topPIsDefined,
+                _frequencyPenaltyIsDefined = frequencyPenaltyIsDefined,
+                _presencePenaltyIsDefined = presencePenaltyIsDefined,
+                _seedIsDefined = seedIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

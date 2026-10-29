@@ -69,25 +69,53 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Country) && !Patch.Contains("$.country"u8))
+            if (Optional.IsDefined(Country, _countryIsDefined) && !Patch.Contains("$.country"u8))
             {
-                writer.WritePropertyName("country"u8);
-                writer.WriteStringValue(Country);
+                if (Country != null)
+                {
+                    writer.WritePropertyName("country"u8);
+                    writer.WriteStringValue(Country);
+                }
+                else
+                {
+                    writer.WriteNull("country"u8);
+                }
             }
-            if (Optional.IsDefined(Region) && !Patch.Contains("$.region"u8))
+            if (Optional.IsDefined(Region, _regionIsDefined) && !Patch.Contains("$.region"u8))
             {
-                writer.WritePropertyName("region"u8);
-                writer.WriteStringValue(Region);
+                if (Region != null)
+                {
+                    writer.WritePropertyName("region"u8);
+                    writer.WriteStringValue(Region);
+                }
+                else
+                {
+                    writer.WriteNull("region"u8);
+                }
             }
-            if (Optional.IsDefined(City) && !Patch.Contains("$.city"u8))
+            if (Optional.IsDefined(City, _cityIsDefined) && !Patch.Contains("$.city"u8))
             {
-                writer.WritePropertyName("city"u8);
-                writer.WriteStringValue(City);
+                if (City != null)
+                {
+                    writer.WritePropertyName("city"u8);
+                    writer.WriteStringValue(City);
+                }
+                else
+                {
+                    writer.WriteNull("city"u8);
+                }
             }
-            if (Optional.IsDefined(Timezone) && !Patch.Contains("$.timezone"u8))
+            if (Optional.IsDefined(Timezone, _timezoneIsDefined) && !Patch.Contains("$.timezone"u8))
             {
-                writer.WritePropertyName("timezone"u8);
-                writer.WriteStringValue(Timezone);
+                if (Timezone != null)
+                {
+                    writer.WritePropertyName("timezone"u8);
+                    writer.WriteStringValue(Timezone);
+                }
+                else
+                {
+                    writer.WriteNull("timezone"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -117,9 +145,13 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool countryIsDefined = false;
             string country = default;
+            bool regionIsDefined = false;
             string region = default;
+            bool cityIsDefined = false;
             string city = default;
+            bool timezoneIsDefined = false;
             string timezone = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -130,6 +162,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("country"u8))
                 {
+                    countryIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         country = null;
@@ -140,6 +173,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("region"u8))
                 {
+                    regionIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         region = null;
@@ -150,6 +184,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("city"u8))
                 {
+                    cityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         city = null;
@@ -160,6 +195,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("timezone"u8))
                 {
+                    timezoneIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         timezone = null;
@@ -176,7 +212,13 @@ namespace OpenAI.Responses
                 country,
                 region,
                 city,
-                timezone);
+                timezone)
+            {
+                _countryIsDefined = countryIsDefined,
+                _regionIsDefined = regionIsDefined,
+                _cityIsDefined = cityIsDefined,
+                _timezoneIsDefined = timezoneIsDefined
+            };
         }
     }
 }

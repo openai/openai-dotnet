@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownResponseStreamEvent))]
     public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
         internal StreamingResponseUpdate()

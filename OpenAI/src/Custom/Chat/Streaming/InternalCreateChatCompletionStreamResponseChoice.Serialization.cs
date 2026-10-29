@@ -69,6 +69,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         }
         InternalChatCompletionStreamResponseDelta delta = default;
         InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = default;
+        bool logprobsIsDefined = false;
         ChatFinishReason? finishReason = default;
         int index = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,6 +84,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
             if (property.NameEquals("logprobs"u8))
             {
+                logprobsIsDefined = true;
                 if (property.Value.ValueKind == JsonValueKind.Null)
                 {
                     logprobs = null;
@@ -111,6 +113,8 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(property.Name)], property.Value.GetUtf8Bytes());
             }
         }
-        return new InternalCreateChatCompletionStreamResponseChoice(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, patch: patch);
+        InternalCreateChatCompletionStreamResponseChoice result = new(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, patch: patch);
+        result._logprobsIsDefined = logprobsIsDefined;
+        return result;
     }
 }

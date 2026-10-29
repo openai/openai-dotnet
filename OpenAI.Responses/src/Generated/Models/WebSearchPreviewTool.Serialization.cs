@@ -69,10 +69,17 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(UserLocation) && !Patch.Contains("$.user_location"u8))
+            if (Optional.IsDefined(UserLocation, _userLocationIsDefined) && !Patch.Contains("$.user_location"u8))
             {
-                writer.WritePropertyName("user_location"u8);
-                writer.WriteObjectValue(UserLocation, options);
+                if (UserLocation != null)
+                {
+                    writer.WritePropertyName("user_location"u8);
+                    writer.WriteObjectValue(UserLocation, options);
+                }
+                else
+                {
+                    writer.WriteNull("user_location"u8);
+                }
             }
             if (Optional.IsDefined(SearchContextSize) && !Patch.Contains("$.search_context_size"u8))
             {
@@ -107,6 +114,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool userLocationIsDefined = false;
             WebSearchToolLocation userLocation = default;
             WebSearchToolContextSize? searchContextSize = default;
             foreach (var prop in element.EnumerateObject())
@@ -118,6 +126,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("user_location"u8))
                 {
+                    userLocationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         userLocation = null;
@@ -137,7 +146,10 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchPreviewTool(kind, patch, userLocation, searchContextSize);
+            return new WebSearchPreviewTool(kind, patch, userLocation, searchContextSize)
+            {
+                _userLocationIsDefined = userLocationIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

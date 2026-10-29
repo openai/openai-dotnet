@@ -8,7 +8,7 @@
 namespace OpenAI.Assistants {
     [Experimental("OPENAI001")]
     public class Assistant : IJsonModel<Assistant>, IPersistableModel<Assistant> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Description { get; }
         public string Id { get; }
         public string Instructions { get; }
@@ -226,7 +226,7 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class AssistantThread : IJsonModel<AssistantThread>, IPersistableModel<AssistantThread> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }
@@ -530,12 +530,12 @@ namespace OpenAI.Assistants {
     [Experimental("OPENAI001")]
     public class RunStep : IJsonModel<RunStep>, IPersistableModel<RunStep> {
         public string AssistantId { get; }
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset CreatedOn { get; }
         public RunStepDetails Details { get; }
-        public DateTimeOffset? ExpiredAt { get; }
-        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? ExpiredOn { get; }
+        public DateTimeOffset? FailedOn { get; }
         public string Id { get; }
         public RunStepKind Kind { get; }
         public RunStepError LastError { get; }
@@ -778,12 +778,12 @@ namespace OpenAI.Assistants {
     public class ThreadMessage : IJsonModel<ThreadMessage>, IPersistableModel<ThreadMessage> {
         public string AssistantId { get; }
         public IReadOnlyList<MessageCreationAttachment> Attachments { get; }
-        public DateTimeOffset? CompletedAt { get; }
+        public DateTimeOffset? CompletedOn { get; }
         public IReadOnlyList<MessageContent> Content { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
-        public DateTimeOffset? IncompleteAt { get; }
         public MessageFailureDetails IncompleteDetails { get; }
+        public DateTimeOffset? IncompleteOn { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public MessageRole Role { get; }
         public string RunId { get; }
@@ -800,11 +800,11 @@ namespace OpenAI.Assistants {
     public class ThreadRun : IJsonModel<ThreadRun>, IPersistableModel<ThreadRun> {
         public bool? AllowParallelToolCalls { get; }
         public string AssistantId { get; }
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public DateTimeOffset? ExpiresAt { get; }
-        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? FailedOn { get; }
         public string Id { get; }
         public RunIncompleteDetails IncompleteDetails { get; }
         public string Instructions { get; }
@@ -816,7 +816,7 @@ namespace OpenAI.Assistants {
         public float? NucleusSamplingFactor { get; }
         public IReadOnlyList<RequiredAction> RequiredActions { get; }
         public AssistantResponseFormat ResponseFormat { get; }
-        public DateTimeOffset? StartedAt { get; }
+        public DateTimeOffset? StartedOn { get; }
         public RunStatus Status { get; }
         public float? Temperature { get; }
         public string ThreadId { get; }
@@ -828,7 +828,7 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class ThreadUpdate : StreamingUpdate<AssistantThread> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }

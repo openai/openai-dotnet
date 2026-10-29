@@ -11,6 +11,9 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseMcpCallArgumentsDelta : RealtimeServerUpdate
     {
+        private string _obfuscation;
+        private bool _obfuscationIsDefined;
+
         internal RealtimeServerUpdateResponseMcpCallArgumentsDelta(string eventId, string responseId, string itemId, int outputIndex, BinaryData delta) : base(RealtimeServerUpdateKind.ResponseMcpCallArgumentsDelta)
         {
             EventId = eventId;
@@ -28,7 +31,7 @@ namespace OpenAI.Realtime
             ItemId = itemId;
             OutputIndex = outputIndex;
             Delta = delta;
-            Obfuscation = obfuscation;
+            _obfuscation = obfuscation;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -42,6 +45,17 @@ namespace OpenAI.Realtime
 
         public BinaryData Delta { get; set; }
 
-        public string Obfuscation { get; set; }
+        public string Obfuscation
+        {
+            get
+            {
+                return _obfuscation;
+            }
+            set
+            {
+                _obfuscation = value;
+                _obfuscationIsDefined = true;
+            }
+        }
     }
 }

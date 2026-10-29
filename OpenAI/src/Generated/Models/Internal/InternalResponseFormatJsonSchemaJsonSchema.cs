@@ -10,6 +10,8 @@ namespace OpenAI.Internal
     internal partial class InternalResponseFormatJsonSchemaJsonSchema
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private bool? _strict;
+        private bool _strictIsDefined;
 
         public InternalResponseFormatJsonSchemaJsonSchema(string name)
         {
@@ -21,7 +23,7 @@ namespace OpenAI.Internal
             Description = description;
             Name = name;
             Schema = schema;
-            Strict = strict;
+            _strict = strict;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -29,7 +31,18 @@ namespace OpenAI.Internal
 
         public string Name { get; set; }
 
-        public bool? Strict { get; set; }
+        public bool? Strict
+        {
+            get
+            {
+                return _strict;
+            }
+            set
+            {
+                _strict = value;
+                _strictIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

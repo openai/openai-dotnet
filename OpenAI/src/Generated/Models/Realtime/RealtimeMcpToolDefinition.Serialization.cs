@@ -77,10 +77,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
+            if (Optional.IsDefined(Description, _descriptionIsDefined) && !Patch.Contains("$.description"u8))
             {
-                writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(Description);
+                if (Description != null)
+                {
+                    writer.WritePropertyName("description"u8);
+                    writer.WriteStringValue(Description);
+                }
+                else
+                {
+                    writer.WriteNull("description"u8);
+                }
             }
             if (!Patch.Contains("$.input_schema"u8))
             {
@@ -94,17 +101,24 @@ namespace OpenAI.Realtime
                 }
 #endif
             }
-            if (Optional.IsDefined(Annotations) && !Patch.Contains("$.annotations"u8))
+            if (Optional.IsDefined(Annotations, _annotationsIsDefined) && !Patch.Contains("$.annotations"u8))
             {
-                writer.WritePropertyName("annotations"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Annotations);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Annotations))
+                if (Annotations != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    writer.WritePropertyName("annotations"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Annotations);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Annotations))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("annotations"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -131,8 +145,10 @@ namespace OpenAI.Realtime
                 return null;
             }
             string name = default;
+            bool descriptionIsDefined = false;
             string description = default;
             BinaryData inputSchema = default;
+            bool annotationsIsDefined = false;
             BinaryData annotations = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -146,6 +162,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("description"u8))
                 {
+                    descriptionIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         description = null;
@@ -161,6 +178,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("annotations"u8))
                 {
+                    annotationsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         annotations = null;
@@ -171,7 +189,11 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, patch);
+            return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, patch)
+            {
+                _descriptionIsDefined = descriptionIsDefined,
+                _annotationsIsDefined = annotationsIsDefined
+            };
         }
     }
 }

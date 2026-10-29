@@ -74,10 +74,17 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(EncryptedContent) && !Patch.Contains("$.encrypted_content"u8))
+            if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && !Patch.Contains("$.encrypted_content"u8))
             {
-                writer.WritePropertyName("encrypted_content"u8);
-                writer.WriteStringValue(EncryptedContent);
+                if (EncryptedContent != null)
+                {
+                    writer.WritePropertyName("encrypted_content"u8);
+                    writer.WriteStringValue(EncryptedContent);
+                }
+                else
+                {
+                    writer.WriteNull("encrypted_content"u8);
+                }
             }
             if (Patch.Contains("$.summary"u8))
             {
@@ -131,6 +138,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool encryptedContentIsDefined = false;
             string encryptedContent = default;
             IList<ReasoningSummaryPart> summary = default;
             foreach (var prop in element.EnumerateObject())
@@ -142,6 +150,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("encrypted_content"u8))
                 {
+                    encryptedContentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         encryptedContent = null;
@@ -162,7 +171,10 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalReasoningItemParam(kind, patch, encryptedContent, summary ?? new ChangeTrackingList<ReasoningSummaryPart>());
+            return new InternalReasoningItemParam(kind, patch, encryptedContent, summary ?? new ChangeTrackingList<ReasoningSummaryPart>())
+            {
+                _encryptedContentIsDefined = encryptedContentIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

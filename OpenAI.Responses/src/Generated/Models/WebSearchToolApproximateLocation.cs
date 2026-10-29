@@ -10,6 +10,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchToolApproximateLocation : WebSearchToolLocation
     {
+        private string _country;
+        private bool _countryIsDefined;
+        private string _region;
+        private bool _regionIsDefined;
+        private string _city;
+        private bool _cityIsDefined;
+        private string _timezone;
+        private bool _timezoneIsDefined;
+
         public WebSearchToolApproximateLocation() : this(InternalWebSearchUserLocationKind.Approximate, default, null, null, null, null)
         {
         }
@@ -17,19 +26,63 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal WebSearchToolApproximateLocation(InternalWebSearchUserLocationKind kind, in JsonPatch patch, string country, string region, string city, string timezone) : base(kind, patch)
         {
-            Country = country;
-            Region = region;
-            City = city;
-            Timezone = timezone;
+            _country = country;
+            _region = region;
+            _city = city;
+            _timezone = timezone;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Country { get; set; }
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+            set
+            {
+                _country = value;
+                _countryIsDefined = true;
+            }
+        }
 
-        public string Region { get; set; }
+        public string Region
+        {
+            get
+            {
+                return _region;
+            }
+            set
+            {
+                _region = value;
+                _regionIsDefined = true;
+            }
+        }
 
-        public string City { get; set; }
+        public string City
+        {
+            get
+            {
+                return _city;
+            }
+            set
+            {
+                _city = value;
+                _cityIsDefined = true;
+            }
+        }
 
-        public string Timezone { get; set; }
+        public string Timezone
+        {
+            get
+            {
+                return _timezone;
+            }
+            set
+            {
+                _timezone = value;
+                _timezoneIsDefined = true;
+            }
+        }
     }
 }

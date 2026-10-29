@@ -10,6 +10,8 @@ namespace OpenAI.Responses
     internal partial class InternalResponseTextParam
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private InternalTokenCountsBodyTextVerbosity? _verbosity;
+        private bool _verbosityIsDefined;
 
         public InternalResponseTextParam()
         {
@@ -19,7 +21,7 @@ namespace OpenAI.Responses
         internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Format = format;
-            Verbosity = verbosity;
+            _verbosity = verbosity;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
@@ -28,7 +30,18 @@ namespace OpenAI.Responses
         public ResponseTextFormat Format { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalTokenCountsBodyTextVerbosity? Verbosity { get; set; }
+        internal InternalTokenCountsBodyTextVerbosity? Verbosity
+        {
+            get
+            {
+                return _verbosity;
+            }
+            set
+            {
+                _verbosity = value;
+                _verbosityIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

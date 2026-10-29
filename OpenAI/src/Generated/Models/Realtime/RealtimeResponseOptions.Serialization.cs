@@ -144,23 +144,48 @@ namespace OpenAI.Realtime
             }
             if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
-                if (hasPatch)
+                if (Metadata != null)
                 {
-#if NET8_0_OR_GREATER
-                    global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                    foreach (var item in Metadata)
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
+                    if (hasPatch)
                     {
 #if NET8_0_OR_GREATER
-                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+                        global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                        if (!patchContains)
+                        foreach (var item in Metadata)
+                        {
+#if NET8_0_OR_GREATER
+                            int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                            bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                            bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                            if (!patchContains)
+                            {
+                                writer.WritePropertyName(item.Key);
+                                if (item.Value == null)
+                                {
+                                    writer.WriteNullValue();
+                                    continue;
+                                }
+#if NET6_0_OR_GREATER
+                                writer.WriteRawValue(item.Value);
+#else
+                                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                                {
+                                    JsonSerializer.Serialize(writer, document.RootElement);
+                                }
+#endif
+                            }
+                        }
+
+                        Patch.WriteTo(writer, "$.metadata"u8);
+                    }
+                    else
+                    {
+                        foreach (var item in Metadata)
                         {
                             writer.WritePropertyName(item.Key);
                             if (item.Value == null)
@@ -178,30 +203,12 @@ namespace OpenAI.Realtime
 #endif
                         }
                     }
-
-                    Patch.WriteTo(writer, "$.metadata"u8);
+                    writer.WriteEndObject();
                 }
                 else
                 {
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-#if NET6_0_OR_GREATER
-                        writer.WriteRawValue(item.Value);
-#else
-                        using (JsonDocument document = JsonDocument.Parse(item.Value))
-                        {
-                            JsonSerializer.Serialize(writer, document.RootElement);
-                        }
-#endif
-                    }
+                    writer.WriteNull("metadata"u8);
                 }
-                writer.WriteEndObject();
             }
             if (Patch.Contains("$.input"u8))
             {
@@ -258,7 +265,7 @@ namespace OpenAI.Realtime
             RealtimeToolChoice toolChoice = default;
             RealtimeMaxOutputTokenCount maxOutputTokenCount = default;
             RealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default;
-            IDictionary<string, BinaryData> metadata = default;
+            IDictionary<string, BinaryData> metadata = new ChangeTrackingDictionary<string, BinaryData>();
             IList<RealtimeItem> inputItems = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -338,6 +345,7 @@ namespace OpenAI.Realtime
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        metadata = null;
                         continue;
                     }
                     Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
@@ -379,7 +387,7 @@ namespace OpenAI.Realtime
                 toolChoice,
                 maxOutputTokenCount,
                 defaultConversationConfiguration,
-                metadata ?? new ChangeTrackingDictionary<string, BinaryData>(),
+                metadata,
                 inputItems ?? new ChangeTrackingList<RealtimeItem>(),
                 patch);
         }

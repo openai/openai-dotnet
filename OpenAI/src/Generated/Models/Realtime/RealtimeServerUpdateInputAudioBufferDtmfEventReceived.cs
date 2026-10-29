@@ -11,22 +11,22 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(string @event, DateTimeOffset receivedAt) : base(RealtimeServerUpdateKind.InputAudioBufferDtmfEventReceived)
+        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(string @event, DateTimeOffset receivedOn) : base(RealtimeServerUpdateKind.InputAudioBufferDtmfEventReceived)
         {
             Event = @event;
-            ReceivedAt = receivedAt;
+            ReceivedOn = receivedOn;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(RealtimeServerUpdateKind kind, in JsonPatch patch, string @event, DateTimeOffset receivedAt) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(RealtimeServerUpdateKind kind, in JsonPatch patch, string @event, DateTimeOffset receivedOn) : base(kind, patch)
         {
             Event = @event;
-            ReceivedAt = receivedAt;
+            ReceivedOn = receivedOn;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Event { get; set; }
 
-        public DateTimeOffset ReceivedAt { get; set; }
+        public DateTimeOffset ReceivedOn { get; set; }
     }
 }

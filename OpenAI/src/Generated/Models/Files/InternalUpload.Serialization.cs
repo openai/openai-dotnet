@@ -111,10 +111,17 @@ namespace OpenAI.Files
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.Value.ToString());
             }
-            if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
+            if (Optional.IsDefined(File, _fileIsDefined) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
-                writer.WritePropertyName("file"u8);
-                writer.WriteObjectValue(File, options);
+                if (File != null)
+                {
+                    writer.WritePropertyName("file"u8);
+                    writer.WriteObjectValue(File, options);
+                }
+                else
+                {
+                    writer.WriteNull("file"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -165,6 +172,7 @@ namespace OpenAI.Files
             InternalUploadStatus status = default;
             DateTimeOffset expiresOn = default;
             InternalUploadObject? @object = default;
+            bool fileIsDefined = false;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -215,6 +223,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("file"u8))
                 {
+                    fileIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         @file = null;
@@ -236,7 +245,10 @@ namespace OpenAI.Files
                 expiresOn,
                 @object,
                 @file,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _fileIsDefined = fileIsDefined
+            };
         }
     }
 }

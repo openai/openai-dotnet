@@ -79,10 +79,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (Optional.IsDefined(EncryptedContent) && !Patch.Contains("$.encrypted_content"u8))
+            if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && !Patch.Contains("$.encrypted_content"u8))
             {
-                writer.WritePropertyName("encrypted_content"u8);
-                writer.WriteStringValue(EncryptedContent);
+                if (EncryptedContent != null)
+                {
+                    writer.WritePropertyName("encrypted_content"u8);
+                    writer.WriteStringValue(EncryptedContent);
+                }
+                else
+                {
+                    writer.WriteNull("encrypted_content"u8);
+                }
             }
             if (Patch.Contains("$.summary"u8))
             {
@@ -138,6 +145,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ReasoningStatus? status = default;
+            bool encryptedContentIsDefined = false;
             string encryptedContent = default;
             IList<ReasoningSummaryPart> summaryParts = default;
             foreach (var prop in element.EnumerateObject())
@@ -163,6 +171,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("encrypted_content"u8))
                 {
+                    encryptedContentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         encryptedContent = null;
@@ -189,7 +198,10 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 encryptedContent,
-                summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>());
+                summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>())
+            {
+                _encryptedContentIsDefined = encryptedContentIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

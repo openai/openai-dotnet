@@ -64,10 +64,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(Format, options);
             }
-            if (Optional.IsDefined(Verbosity) && _additionalBinaryDataProperties?.ContainsKey("verbosity") != true)
+            if (Optional.IsDefined(Verbosity, _verbosityIsDefined) && _additionalBinaryDataProperties?.ContainsKey("verbosity") != true)
             {
-                writer.WritePropertyName("verbosity"u8);
-                writer.WriteStringValue(Verbosity.Value.ToString());
+                if (Verbosity != null)
+                {
+                    writer.WritePropertyName("verbosity"u8);
+                    writer.WriteStringValue(Verbosity.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("verbosity"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -111,6 +118,7 @@ namespace OpenAI.Responses
                 return null;
             }
             ResponseTextFormat format = default;
+            bool verbosityIsDefined = false;
             InternalTokenCountsBodyTextVerbosity? verbosity = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -126,6 +134,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("verbosity"u8))
                 {
+                    verbosityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         verbosity = null;
@@ -137,7 +146,10 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseTextParam(format, verbosity, additionalBinaryDataProperties);
+            return new InternalResponseTextParam(format, verbosity, additionalBinaryDataProperties)
+            {
+                _verbosityIsDefined = verbosityIsDefined
+            };
         }
     }
 }

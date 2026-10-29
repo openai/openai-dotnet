@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind)
+        private protected RealtimeSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind)
         {
             Kind = kind;
         }
