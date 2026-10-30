@@ -33,7 +33,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
         DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
         Assert.That(answer.Name, Is.Null);
-        AssertProbability(answer.Probability);
+        Assert.That(answer.Probability, Is.InRange(0, 1));
         Assert.That(answer.Probability, Is.GreaterThan(0.5));
     }
 
@@ -63,13 +63,13 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Name, Is.EqualTo("request_category"));
         Assert.That(answer.Choice.StringValue, Is.EqualTo("replacement"));
         Assert.That(answer.Choice.BooleanValue, Is.Null);
-        AssertProbability(answer.Confidence);
+        Assert.That(answer.Confidence, Is.InRange(0, 1));
         Assert.That(answer.Probabilities.Select(probability => probability.Value.StringValue),
             Is.EquivalentTo(new[] { "replacement", "refund", "delivery" }));
         Assert.That(answer.Probabilities.All(probability => probability.Value.BooleanValue is null), Is.True);
         foreach (DecisionsChoiceProbability probability in answer.Probabilities)
         {
-            AssertProbability(probability.Probability);
+            Assert.That(probability.Probability, Is.InRange(0, 1));
         }
         Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
@@ -99,13 +99,13 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Name, Is.EqualTo("send_receipt"));
         Assert.That(answer.Choice.BooleanValue, Is.True);
         Assert.That(answer.Choice.StringValue, Is.Null);
-        AssertProbability(answer.Confidence);
+        Assert.That(answer.Confidence, Is.InRange(0, 1));
         Assert.That(answer.Probabilities.Select(probability => probability.Value.BooleanValue),
             Is.EquivalentTo(new bool?[] { true, false }));
         Assert.That(answer.Probabilities.All(probability => probability.Value.StringValue is null), Is.True);
         foreach (DecisionsChoiceProbability probability in answer.Probabilities)
         {
-            AssertProbability(probability.Probability);
+            Assert.That(probability.Probability, Is.InRange(0, 1));
         }
         Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
@@ -154,7 +154,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
         DecisionsPredicateAnswer predicateAnswer = (DecisionsPredicateAnswer)decision.Answers[0];
         Assert.That(predicateAnswer.Name, Is.EqualTo("satisfied"));
-        AssertProbability(predicateAnswer.Probability);
+        Assert.That(predicateAnswer.Probability, Is.InRange(0, 1));
         Assert.That(predicateAnswer.Probability, Is.GreaterThan(0.5));
 
         Assert.That(decision.Answers[1], Is.TypeOf<DecisionsChoiceAnswer>());
@@ -162,7 +162,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(choiceAnswer.Name, Is.EqualTo("requested_action"));
         Assert.That(choiceAnswer.Choice.StringValue, Is.EqualTo("email_receipt"));
         Assert.That(choiceAnswer.Choice.BooleanValue, Is.Null);
-        AssertProbability(choiceAnswer.Confidence);
+        Assert.That(choiceAnswer.Confidence, Is.InRange(0, 1));
 
         Assert.That(decision.Answers[2], Is.TypeOf<DecisionsScoreAnswer>());
         AssertSentimentAnswer((DecisionsScoreAnswer)decision.Answers[2], "sentiment");
@@ -265,13 +265,13 @@ public class DecisionsTests : OpenAIRecordedTestBase
     {
         string[] labels = ["negative", "neutral", "positive"];
         Assert.That(answer.Name, Is.EqualTo(name));
-        AssertProbability(answer.Confidence);
+        Assert.That(answer.Confidence, Is.InRange(0, 1));
         Assert.That(answer.Score, Is.InRange(0, labels.Length - 1));
         Assert.That(answer.Probabilities, Has.Count.EqualTo(labels.Length));
         Assert.That(answer.Probabilities.Select(probability => probability.Label), Is.EquivalentTo(labels));
         foreach (DecisionsScoreProbability probability in answer.Probabilities)
         {
-            AssertProbability(probability.Probability);
+            Assert.That(probability.Probability, Is.InRange(0, 1));
             Assert.That(probability.Value, Is.InRange(0, labels.Length - 1));
             Assert.That(probability.Label, Is.EqualTo(labels[probability.Value]));
         }
@@ -287,12 +287,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
         DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
         Assert.That(answer.Name, Is.EqualTo("image_content"));
-        AssertProbability(answer.Probability);
+        Assert.That(answer.Probability, Is.InRange(0, 1));
         Assert.That(answer.Probability, Is.GreaterThan(0.5));
-    }
-
-    private static void AssertProbability(float probability)
-    {
-        Assert.That(probability, Is.InRange(0, 1));
     }
 }
