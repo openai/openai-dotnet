@@ -1,0 +1,168 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/decisions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "881",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
+      },
+      "RequestBody": {
+        "input": [
+          {
+            "type": "message",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Thank you for the excellent support! Please email me the receipt."
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "model": "gpt-6-luna",
+        "questions": [
+          {
+            "type": "predicate",
+            "instructions": "The customer is satisfied with the support they received.",
+            "name": "satisfied"
+          },
+          {
+            "type": "choice",
+            "choices": [
+              {
+                "value": "email_receipt",
+                "description": "Email the receipt."
+              },
+              {
+                "value": "cancel_order",
+                "description": "Cancel the order."
+              }
+            ],
+            "instructions": "Choose the action requested by the customer.",
+            "name": "requested_action"
+          },
+          {
+            "type": "score",
+            "instructions": "Rate the customer's sentiment from negative to positive.",
+            "levels": [
+              {
+                "label": "negative",
+                "description": "The customer is dissatisfied."
+              },
+              {
+                "label": "neutral",
+                "description": "The customer is neither satisfied nor dissatisfied."
+              },
+              {
+                "label": "positive",
+                "description": "The customer is satisfied."
+              }
+            ],
+            "name": "sentiment"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": [
+          "x-request-id,retry-after,server-timing-total",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a528c1f5eef8ba01-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "696",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "Server": "cloudflare",
+        "server-timing-total": "234.732",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Vary": [
+          "origin",
+          "access-control-request-method",
+          "access-control-request-headers"
+        ],
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "180000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "179999586",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "model": "gpt-6-luna",
+        "answers": [
+          {
+            "type": "predicate",
+            "name": "satisfied",
+            "probability": 0.92
+          },
+          {
+            "type": "choice",
+            "name": "requested_action",
+            "choice": "email_receipt",
+            "probabilities": [
+              {
+                "value": "email_receipt",
+                "probability": 1.0
+              },
+              {
+                "value": "cancel_order",
+                "probability": 0.0
+              }
+            ],
+            "confidence": 1.0
+          },
+          {
+            "type": "score",
+            "name": "sentiment",
+            "score": 1.99,
+            "probabilities": [
+              {
+                "value": 0,
+                "label": "negative",
+                "probability": 0.0
+              },
+              {
+                "value": 1,
+                "label": "neutral",
+                "probability": 0.01
+              },
+              {
+                "value": 2,
+                "label": "positive",
+                "probability": 0.99
+              }
+            ],
+            "confidence": 0.99
+          }
+        ],
+        "usage": {
+          "input_tokens": 415,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 415
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
