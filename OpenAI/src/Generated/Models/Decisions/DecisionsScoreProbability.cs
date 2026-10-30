@@ -15,7 +15,7 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal DecisionsScoreProbability(string label, float probability, int value)
+        internal DecisionsScoreProbability(string label, float probability, long value)
         {
             Label = label;
             Probability = probability;
@@ -23,7 +23,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreProbability(string label, float probability, int value, in JsonPatch patch)
+        internal DecisionsScoreProbability(string label, float probability, long value, in JsonPatch patch)
         {
             Label = label;
             Probability = probability;
@@ -41,6 +41,6 @@ namespace OpenAI.Decisions
 
         public float Probability { get; set; }
 
-        public int Value { get; set; }
+        public long Value { get; set; }
     }
 }

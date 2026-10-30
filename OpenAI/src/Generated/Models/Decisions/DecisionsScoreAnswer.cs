@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsScoreAnswer : DecisionsAnswer
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreAnswer(float confidence, string name, IEnumerable<DecisionsScoreProbability> probabilities, float score) : base(DecisionsAnswerKind.Score)
+        internal DecisionsScoreAnswer(float confidence, string name, IEnumerable<DecisionsScoreProbability> probabilities, double score) : base(DecisionsAnswerKind.Score)
         {
             Confidence = confidence;
             Name = name;
@@ -25,7 +25,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, in JsonPatch patch, float confidence, string name, IList<DecisionsScoreProbability> probabilities, float score) : base(kind, patch)
+        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, in JsonPatch patch, float confidence, string name, IList<DecisionsScoreProbability> probabilities, double score) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Confidence = confidence;
@@ -42,6 +42,6 @@ namespace OpenAI.Decisions
 
         public IList<DecisionsScoreProbability> Probabilities { get; }
 
-        public float Score { get; set; }
+        public double Score { get; set; }
     }
 }

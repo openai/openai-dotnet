@@ -166,8 +166,8 @@ namespace OpenAI.Decisions {
         public string Text { get; set; }
     }
     public class DecisionsInputTokenUsageDetails : IJsonModel<DecisionsInputTokenUsageDetails>, IPersistableModel<DecisionsInputTokenUsageDetails> {
-        public int CachedTokenCount { get; set; }
-        public int CacheWriteTokenCount { get; set; }
+        public long CachedTokenCount { get; set; }
+        public long CacheWriteTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -202,7 +202,7 @@ namespace OpenAI.Decisions {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int ReasoningTokenCount { get; set; }
+        public long ReasoningTokenCount { get; set; }
     }
     public class DecisionsPredicateAnswer : DecisionsAnswer, IJsonModel<DecisionsPredicateAnswer>, IPersistableModel<DecisionsPredicateAnswer> {
         public DecisionsPredicateAnswer() : base(default);
@@ -247,7 +247,7 @@ namespace OpenAI.Decisions {
         public float Confidence { get; set; }
         public string Name { get; set; }
         public IList<DecisionsScoreProbability> Probabilities { get; }
-        public float Score { get; set; }
+        public double Score { get; set; }
     }
     public class DecisionsScoreLevel : IJsonModel<DecisionsScoreLevel>, IPersistableModel<DecisionsScoreLevel> {
         public DecisionsScoreLevel();
@@ -264,7 +264,7 @@ namespace OpenAI.Decisions {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public float Probability { get; set; }
-        public int Value { get; set; }
+        public long Value { get; set; }
     }
     public class DecisionsScoreQuestion : DecisionsQuestion, IJsonModel<DecisionsScoreQuestion>, IPersistableModel<DecisionsScoreQuestion> {
         public DecisionsScoreQuestion() : base(default);
@@ -274,13 +274,13 @@ namespace OpenAI.Decisions {
         public string Name { get; set; }
     }
     public class DecisionsUsage : IJsonModel<DecisionsUsage>, IPersistableModel<DecisionsUsage> {
-        public int InputTokenCount { get; set; }
+        public long InputTokenCount { get; set; }
         public DecisionsInputTokenUsageDetails InputTokenDetails { get; set; }
-        public int OutputTokenCount { get; set; }
+        public long OutputTokenCount { get; set; }
         public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int TotalTokenCount { get; set; }
+        public long TotalTokenCount { get; set; }
     }
 }

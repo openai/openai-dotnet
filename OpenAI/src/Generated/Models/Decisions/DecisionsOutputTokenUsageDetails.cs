@@ -15,13 +15,13 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal DecisionsOutputTokenUsageDetails(int reasoningTokenCount)
+        internal DecisionsOutputTokenUsageDetails(long reasoningTokenCount)
         {
             ReasoningTokenCount = reasoningTokenCount;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsOutputTokenUsageDetails(int reasoningTokenCount, in JsonPatch patch)
+        internal DecisionsOutputTokenUsageDetails(long reasoningTokenCount, in JsonPatch patch)
         {
             ReasoningTokenCount = reasoningTokenCount;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public int ReasoningTokenCount { get; set; }
+        public long ReasoningTokenCount { get; set; }
     }
 }

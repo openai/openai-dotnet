@@ -9,9 +9,12 @@ namespace OpenAI.Decisions;
 
 @@clientName(OpenAI.Decisions, "DecisionsClient", "csharp");
 @@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
+@@dynamicModel(OpenAI.Decisions);
 
+// Operation renames.
 @@clientName(createDecision::parameters.body, "creationOptions");
 
+// Model renames.
 @@clientName(createDecision_request_object, "DecisionCreationOptions");
 @@clientName(createDecision_request_object.input, "InputItems");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
@@ -52,6 +55,13 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object.reasoning_tokens, "ReasoningTokenCount");
 
+// Numeric overrides.
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.confidence, float32);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.probability, float32);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfPredicate.probability, float32);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore.confidence, float32);
+@@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object.probability, float32);
+
 // This property is a non-discriminated union between a string and an array of items.
 // The string component is shorthand notation for the array component.
 // Specifically, the string represents an array with a single message item where its content is equal to the string value provided.
@@ -73,5 +83,3 @@ model dotnet_createDecision_response_200_object_Answers_array_item_discriminated
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.choice, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
-
-@@dynamicModel(OpenAI.Decisions);

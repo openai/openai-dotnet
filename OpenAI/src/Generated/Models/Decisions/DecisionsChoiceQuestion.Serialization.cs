@@ -168,7 +168,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsChoiceQuestion(kind, patch, choices, instructions, name);
+            return new DecisionsChoiceQuestion(kind, patch, choices ?? new ChangeTrackingList<DecisionsChoice>(), instructions, name);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

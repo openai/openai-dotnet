@@ -173,6 +173,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(ChatClient) => new OpenAIClientOptions(),
             nameof(ContainerClient) => new ContainerClientOptions(),
             nameof(ConversationClient) => new ConversationClientOptions(),
+            nameof(DecisionsClient) => new DecisionsClientOptions(),
             nameof(EmbeddingClient) => new OpenAIClientOptions(),
             nameof(OpenAIFileClient) => new OpenAIClientOptions(),
             nameof(FineTuningClient) => new FineTuningClientOptions(),

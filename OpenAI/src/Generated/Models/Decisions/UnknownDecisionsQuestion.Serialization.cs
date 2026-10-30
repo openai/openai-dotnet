@@ -16,6 +16,7 @@ namespace OpenAI.Decisions
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override DecisionsQuestion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsQuestion>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Decisions
                     throw new FormatException($"The model {nameof(DecisionsQuestion)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Decisions
 
         BinaryData IPersistableModel<DecisionsQuestion>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         DecisionsQuestion IPersistableModel<DecisionsQuestion>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<DecisionsQuestion>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         DecisionsQuestion IJsonModel<DecisionsQuestion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override DecisionsQuestion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsQuestion>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Decisions
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeDecisionsQuestion(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static UnknownDecisionsQuestion DeserializeUnknownDecisionsQuestion(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

@@ -121,11 +121,11 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int inputTokenCount = default;
+            long inputTokenCount = default;
             DecisionsInputTokenUsageDetails inputTokenDetails = default;
-            int outputTokenCount = default;
+            long outputTokenCount = default;
             DecisionsOutputTokenUsageDetails outputTokenDetails = default;
-            int totalTokenCount = default;
+            long totalTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -133,7 +133,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("input_tokens"u8))
                 {
-                    inputTokenCount = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("input_tokens_details"u8))
@@ -143,7 +143,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("output_tokens"u8))
                 {
-                    outputTokenCount = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens_details"u8))
@@ -153,7 +153,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("total_tokens"u8))
                 {
-                    totalTokenCount = prop.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

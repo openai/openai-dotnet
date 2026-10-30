@@ -106,8 +106,8 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int cacheWriteTokenCount = default;
-            int cachedTokenCount = default;
+            long cacheWriteTokenCount = default;
+            long cachedTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -115,12 +115,12 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("cache_write_tokens"u8))
                 {
-                    cacheWriteTokenCount = prop.Value.GetInt32();
+                    cacheWriteTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("cached_tokens"u8))
                 {
-                    cachedTokenCount = prop.Value.GetInt32();
+                    cachedTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

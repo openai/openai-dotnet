@@ -90,7 +90,7 @@ public class DecisionsClientTests
     [Test]
     public void TestEnvironmentCreatesDecisionsClient()
     {
-        OpenAIClientOptions options = new() { Endpoint = s_endpoint };
+        DecisionsClientOptions options = new() { Endpoint = s_endpoint };
         DecisionsClient client = new OpenAITestEnvironment().GetTestClient<DecisionsClient>(options: options);
 
         Assert.That(client, Is.Not.Null);

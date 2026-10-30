@@ -16,7 +16,7 @@ namespace OpenAI.Decisions
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount)
+        internal DecisionsUsage(long inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, long outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, long totalTokenCount)
         {
             InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;
@@ -28,7 +28,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount, in JsonPatch patch)
+        internal DecisionsUsage(long inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, long outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, long totalTokenCount, in JsonPatch patch)
         {
             InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;
@@ -45,14 +45,14 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public int InputTokenCount { get; set; }
+        public long InputTokenCount { get; set; }
 
         public DecisionsInputTokenUsageDetails InputTokenDetails { get; set; }
 
-        public int OutputTokenCount { get; set; }
+        public long OutputTokenCount { get; set; }
 
         public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
 
-        public int TotalTokenCount { get; set; }
+        public long TotalTokenCount { get; set; }
     }
 }

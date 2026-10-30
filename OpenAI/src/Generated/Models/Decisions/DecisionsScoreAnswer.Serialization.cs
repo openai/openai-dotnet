@@ -148,7 +148,7 @@ namespace OpenAI.Decisions
             float confidence = default;
             string name = default;
             IList<DecisionsScoreProbability> probabilities = default;
-            float score = default;
+            double score = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -183,7 +183,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("score"u8))
                 {
-                    score = prop.Value.GetSingle();
+                    score = prop.Value.GetDouble();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -193,7 +193,7 @@ namespace OpenAI.Decisions
                 patch,
                 confidence,
                 name,
-                probabilities,
+                probabilities ?? new ChangeTrackingList<DecisionsScoreProbability>(),
                 score);
         }
 

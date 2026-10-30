@@ -101,7 +101,7 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            int reasoningTokenCount = default;
+            long reasoningTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -109,7 +109,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("reasoning_tokens"u8))
                 {
-                    reasoningTokenCount = prop.Value.GetInt32();
+                    reasoningTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
