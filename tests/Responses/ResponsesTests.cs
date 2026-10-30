@@ -69,6 +69,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -78,7 +79,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -111,6 +112,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(true)]
     [TestCase(false)]
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
@@ -136,7 +138,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -356,6 +358,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task ReasoningStreamingWorks()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -380,7 +383,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<string> reasoningTextDeltas = [];
         string finalOutput = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
             {
@@ -439,6 +442,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
@@ -454,7 +458,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
         }
@@ -883,6 +887,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CanStreamBackgroundResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -893,7 +898,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(createOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
@@ -926,7 +931,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(getOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;

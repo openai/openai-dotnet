@@ -100,6 +100,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FunctionToolStreamingWorks()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -119,7 +120,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         FunctionCallResponseItem completedFunctionToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate argumentsDeltaUpdate)
             {
@@ -237,6 +238,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CustomToolStreamingWorks()
     {
         const string toolName = "code_exec";
@@ -264,7 +266,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         CustomToolCallItem completedCustomToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
             {
@@ -401,6 +403,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task MCPToolStreamingWorks()
     {
         string serverLabel = "microsoft-learn";
@@ -423,7 +426,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponsesClient client = GetProxiedResponsesClient();
 
-        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
+        AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
         int mcpCallArgumentsDoneUpdateCount = 0;
@@ -749,6 +752,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FileSearchCallStreaming()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -794,7 +798,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         FileCitationMessageAnnotation fileCitationAnnotation = null;
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
+            in await client.CreateResponseStreamingAsync(responseOptions))
         {
             if (update is StreamingResponseFileSearchCallInProgressUpdate fileSearchCallInProgressUpdate)
             {
@@ -1037,6 +1041,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CodeInterpreterToolStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1057,7 +1062,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         StringBuilder codeBuilder = new StringBuilder();
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
+            in await client.CreateResponseStreamingAsync(responseOptions))
         {
             ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
         }
@@ -1071,6 +1076,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -1105,7 +1111,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StringBuilder codeBuilder = new StringBuilder();
 
             await foreach (StreamingResponseUpdate update
-                in client.CreateResponseStreamingAsync(responseOptions))
+                in await client.CreateResponseStreamingAsync(responseOptions))
             {
                 ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
             }
@@ -1281,6 +1287,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task ImageGenToolStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1311,7 +1318,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         bool gotCompletedResponseItem = false;
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
+            in await client.CreateResponseStreamingAsync(responseOptions))
         {
             if (update is StreamingResponseImageGenerationCallPartialImageUpdate imageGenCallInPartialUpdate)
             {
@@ -1673,6 +1680,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task WebSearchCallStreaming()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1702,7 +1710,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int completedCount = 0;
         bool gotFinishedSearchItem = false;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(createResponseOptions))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(createResponseOptions))
         {
             if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
             {
