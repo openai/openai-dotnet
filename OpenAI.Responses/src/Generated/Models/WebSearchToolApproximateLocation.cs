@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchToolApproximateLocation : WebSearchToolLocation
     {
-        public WebSearchToolApproximateLocation() : this(InternalWebSearchUserLocationKind.Approximate, default, null, null, null, null)
+        public WebSearchToolApproximateLocation() : this(WebSearchToolLocationKind.Approximate, default, null, null, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchToolApproximateLocation(InternalWebSearchUserLocationKind kind, in JsonPatch patch, string country, string region, string city, string timezone) : base(kind, patch)
+        internal WebSearchToolApproximateLocation(WebSearchToolLocationKind kind, in JsonPatch patch, string country, string region, string city, string timezone) : base(kind, patch)
         {
             Country = country;
             Region = region;

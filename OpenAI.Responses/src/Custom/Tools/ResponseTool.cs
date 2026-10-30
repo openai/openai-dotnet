@@ -8,8 +8,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("Tool")]
-[CodeGenVisibility(nameof(ResponseTool), CodeGenVisibility.ProtectedInternal, typeof(ResponseToolKind))]
-[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class ResponseTool
 {
     // CUSTOM: Added factory method as a convenience.
