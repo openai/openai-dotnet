@@ -8,20 +8,18 @@ namespace OpenAI.Decisions;
 [CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class DecisionsChoiceValue
 {
-#pragma warning disable SCME0001
-    // CUSTOM: Initialize wire-value patch propagation for model reader/writer construction.
+    // CUSTOM: Keep model reader/writer construction internal.
     internal DecisionsChoiceValue()
     {
-        _patch.SetPropagators(PropagateSet, PropagateGet);
     }
 
-    // CUSTOM: Restore the active union component and its patch while initializing propagation during deserialization.
+#pragma warning disable SCME0001
+    // CUSTOM: Restore the active scalar component and its whole-value patch during deserialization.
     internal DecisionsChoiceValue(string stringValue, bool? booleanValue, in JsonPatch patch)
     {
         StringValue = stringValue;
         BooleanValue = booleanValue;
         _patch = patch;
-        _patch.SetPropagators(PropagateSet, PropagateGet);
     }
 #pragma warning restore SCME0001
 
@@ -30,18 +28,12 @@ public partial class DecisionsChoiceValue
     {
         Argument.AssertNotNull(stringValue, nameof(stringValue));
         StringValue = stringValue;
-#pragma warning disable SCME0001
-        _patch.SetPropagators(PropagateSet, PropagateGet);
-#pragma warning restore SCME0001
     }
 
     // CUSTOM: Initialize only the boolean component, including false as an active value.
     public DecisionsChoiceValue(bool booleanValue)
     {
         BooleanValue = booleanValue;
-#pragma warning disable SCME0001
-        _patch.SetPropagators(PropagateSet, PropagateGet);
-#pragma warning restore SCME0001
     }
 
     // CUSTOM: Keep the nullable string component read-only so the active component cannot change.

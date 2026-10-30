@@ -10,6 +10,8 @@ namespace OpenAI.Decisions;
 @@clientName(OpenAI.Decisions, "DecisionsClient", "csharp");
 @@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
 
+@@clientName(createDecision::parameters.body, "creationOptions");
+
 @@clientName(createDecision_request_object, "DecisionCreationOptions");
 @@clientName(createDecision_request_object.input, "InputItems");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");

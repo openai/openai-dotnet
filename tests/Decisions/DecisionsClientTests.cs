@@ -23,6 +23,18 @@ public class DecisionsClientTests
     private static readonly ApiKeyCredential s_credential = new("not-a-real-key");
     private static readonly Uri s_endpoint = new("https://example.invalid/custom/v1");
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task TypedMethodsUseCreationOptionsParameter(bool isAsync)
+    {
+        DecisionsClient client = new(s_credential);
+        ArgumentNullException exception = isAsync
+            ? await Assert.ThrowsAsync<ArgumentNullException>(async () => await client.CreateDecisionAsync(creationOptions: null))
+            : Assert.Throws<ArgumentNullException>(() => client.CreateDecision(creationOptions: null));
+
+        Assert.That(exception.ParamName, Is.EqualTo("creationOptions"));
+    }
+
     [Test]
     public void ConstructorsUseDefaultEndpoint()
     {

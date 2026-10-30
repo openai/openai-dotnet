@@ -71,16 +71,4 @@ public partial class DecisionsChoiceValue
         return new DecisionsChoiceValue(stringValue, booleanValue, patch);
 #pragma warning restore SCME0001
     }
-
-#pragma warning disable SCME0001
-    // CUSTOM: Scalar components have no nested paths; retain patches on the union itself.
-    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-    {
-        value = default;
-        return false;
-    }
-
-    // CUSTOM: Retain root replacements locally instead of propagating into scalar components.
-    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value) => false;
-#pragma warning restore SCME0001
 }

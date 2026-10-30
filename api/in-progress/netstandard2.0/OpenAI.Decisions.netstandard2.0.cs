@@ -100,9 +100,9 @@ namespace OpenAI.Decisions {
         public DecisionsClient(string apiKey);
         public virtual Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<DecisionResource> CreateDecision(DecisionCreationOptions body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<DecisionResource> CreateDecision(DecisionCreationOptions creationOptions, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateDecision(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<DecisionResource>> CreateDecisionAsync(DecisionCreationOptions body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<DecisionResource>> CreateDecisionAsync(DecisionCreationOptions creationOptions, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateDecisionAsync(BinaryContent content, RequestOptions options = null);
     }
     public class DecisionsClientOptions : ClientPipelineOptions {
