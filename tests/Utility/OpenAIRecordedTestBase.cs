@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
+using OpenAI.Decisions;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 
@@ -62,6 +63,15 @@ namespace OpenAI.Tests.Utility
             T proxiedClient = CreateProxyFromClient<T>(client, null);
 
             return proxiedClient;
+        }
+
+        internal DecisionsClient GetProxiedDecisionsClient(DecisionsClientOptions options = default)
+        {
+            options ??= new DecisionsClientOptions();
+
+            DecisionsClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            DecisionsClient client = new(TestEnvironment.ApiKeyCredential, instrumentedOptions);
+            return CreateProxyFromClient<DecisionsClient>(client, null);
         }
 
         internal ResponsesClient GetProxiedResponsesClient(ResponsesClientOptions options = default)
