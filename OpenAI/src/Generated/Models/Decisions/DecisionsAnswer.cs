@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsAnswer
+    public abstract partial class DecisionsAnswer
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;

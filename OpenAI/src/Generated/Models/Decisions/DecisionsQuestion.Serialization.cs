@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [PersistableModelProxy(typeof(UnknownDecisionsQuestion))]
-    public partial class DecisionsQuestion : IJsonModel<DecisionsQuestion>
+    public abstract partial class DecisionsQuestion : IJsonModel<DecisionsQuestion>
     {
         internal DecisionsQuestion()
         {

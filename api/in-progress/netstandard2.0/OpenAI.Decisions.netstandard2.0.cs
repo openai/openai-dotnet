@@ -27,7 +27,7 @@ namespace OpenAI.Decisions {
         public DecisionsUsage Usage { get; set; }
         public static explicit operator DecisionResource(ClientResult result);
     }
-    public class DecisionsAnswer : IJsonModel<DecisionsAnswer>, IPersistableModel<DecisionsAnswer> {
+    public abstract class DecisionsAnswer : IJsonModel<DecisionsAnswer>, IPersistableModel<DecisionsAnswer> {
         protected internal DecisionsAnswer(DecisionsAnswerKind kind);
         public DecisionsAnswerKind Kind { get; }
         [Serialization.JsonIgnore]
@@ -115,7 +115,7 @@ namespace OpenAI.Decisions {
         public DecisionsClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
-    public class DecisionsContentPart : IJsonModel<DecisionsContentPart>, IPersistableModel<DecisionsContentPart> {
+    public abstract class DecisionsContentPart : IJsonModel<DecisionsContentPart>, IPersistableModel<DecisionsContentPart> {
         protected internal DecisionsContentPart(DecisionsContentPartKind kind);
         public DecisionsContentPartKind Kind { get; }
         [Serialization.JsonIgnore]
@@ -172,7 +172,7 @@ namespace OpenAI.Decisions {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
-    public class DecisionsItem : IJsonModel<DecisionsItem>, IPersistableModel<DecisionsItem> {
+    public abstract class DecisionsItem : IJsonModel<DecisionsItem>, IPersistableModel<DecisionsItem> {
         protected internal DecisionsItem(DecisionsItemKind kind);
         public DecisionsItemKind Kind { get; }
         [Serialization.JsonIgnore]
@@ -215,7 +215,7 @@ namespace OpenAI.Decisions {
         public string Instructions { get; set; }
         public string Name { get; set; }
     }
-    public class DecisionsQuestion : IJsonModel<DecisionsQuestion>, IPersistableModel<DecisionsQuestion> {
+    public abstract class DecisionsQuestion : IJsonModel<DecisionsQuestion>, IPersistableModel<DecisionsQuestion> {
         protected internal DecisionsQuestion(DecisionsQuestionKind kind);
         public DecisionsQuestionKind Kind { get; }
         [Serialization.JsonIgnore]

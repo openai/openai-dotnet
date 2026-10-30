@@ -11,10 +11,10 @@ namespace OpenAI.Decisions;
 @@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
 @@dynamicModel(OpenAI.Decisions);
 
-// Operation renames.
+// --------- Operation renames ------------
 @@clientName(createDecision::parameters.body, "creationOptions");
 
-// Model renames.
+// --------- Model renames ---------
 @@clientName(createDecision_request_object, "DecisionCreationOptions");
 @@clientName(createDecision_request_object.input, "InputItems");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
@@ -55,25 +55,33 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object.reasoning_tokens, "ReasoningTokenCount");
 
-// Numeric overrides.
+// --------- Numeric overrides ---------
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.confidence, float32);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.probability, float32);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfPredicate.probability, float32);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore.confidence, float32);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object.probability, float32);
 
-// This property is a non-discriminated union between a string and an array of items.
-// The string component is shorthand notation for the array component.
-// Specifically, the string represents an array with a single message item where its content is equal to the string value provided.
+// --------- Union overrides ---------
+
+/**
+ * This property is a non-discriminated union between a string and an array of items.
+ * The string component is shorthand notation for the array component. 
+ * Specifically, the string represents an array with a single message item where its content is equal to the string value provided. 
+ */
 @@alternateType(createDecision_request_object.input, createDecision_request_object_Input_union_array_item_discriminatedObject[]);
 
-// This property is a non-discriminated union between a string and an array of content parts.
-// The string component is shorthand notation for the array component.
-// Specifically, the string represents an array with a single input text content part where its text is equal to the string value provided.
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text content part where its text is equal to the string value provided.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject[]);
 
-// These properties are non-discriminated unions.
-// To represent them in .NET, we use a wrapper model.
+/**
+ * These properties are all the same non-discriminated union.
+ * To represent this union in .NET, we use a wrapper model to encapsulate the different possible types.
+ */
 model dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union
 {
     string_value?: string,
