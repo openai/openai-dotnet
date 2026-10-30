@@ -2,6 +2,7 @@ using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -65,6 +66,120 @@ public class SseUpdateCollectionTests
         }
 
         Assert.That(updates, Is.EqualTo(new[] { "A", "B" }));
+    }
+
+    [Test]
+    public async Task StreamingResultLifecycleMatchesAsyncCollection()
+    {
+        const string content =
+            "event: modeled\ndata: {\"value\":\"A\"}\n\n" +
+            "event: modeled\ndata: {\"value\":\"B\"}\n\n" +
+            "data: [DONE]\n\n";
+        var collectionLifecycle = new ProbeLifecycle();
+        var resultLifecycle = new ProbeLifecycle();
+        bool collectionDisposed = false;
+        bool resultDisposed = false;
+
+        var collection = new AsyncSseUpdateCollection<string>(
+            () => Task.FromResult(CreatePage(content)),
+            DeserializeSingleEvent,
+            CancellationToken.None)
+        {
+            LifecycleFactory = () => collectionLifecycle,
+        };
+        collection.AdditionalDisposalActions.Add(() => collectionDisposed = true);
+
+        List<string> collectionUpdates = [];
+        await foreach (string update in collection)
+        {
+            collectionUpdates.Add(update);
+        }
+
+        var streamingResult = new SseStreamingResult<string>(
+            () => Task.FromResult(CreateStreamingPage(content)),
+            DeserializeSingleEvent,
+            CancellationToken.None)
+        {
+            LifecycleFactory = () => resultLifecycle,
+        };
+        streamingResult.AdditionalDisposalActions.Add(() => resultDisposed = true);
+
+        List<string> resultUpdates = [];
+        await using (AsyncStreamingResult<SseItem<string>> result = await streamingResult.CreateAsync())
+        {
+            await foreach (SseItem<string> update in result)
+            {
+                resultUpdates.Add(update.Data);
+            }
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(resultUpdates, Is.EqualTo(collectionUpdates));
+            Assert.That(resultLifecycle.Responses, Is.EqualTo(collectionLifecycle.Responses));
+            Assert.That(resultLifecycle.TypedResponses, Is.EqualTo(collectionLifecycle.TypedResponses));
+            Assert.That(resultLifecycle.Events, Is.EqualTo(collectionLifecycle.Events));
+            Assert.That(resultLifecycle.Updates, Is.EqualTo(collectionLifecycle.Updates));
+            Assert.That(resultLifecycle.CompletionKind, Is.EqualTo(collectionLifecycle.CompletionKind));
+            Assert.That(resultLifecycle.Depth, Is.EqualTo(collectionLifecycle.Depth));
+            Assert.That(resultLifecycle.Exception, Is.EqualTo(collectionLifecycle.Exception));
+            Assert.That(resultDisposed, Is.EqualTo(collectionDisposed));
+            Assert.That(streamingResult.AdditionalDisposalActions, Is.Empty);
+            Assert.That(collection.AdditionalDisposalActions, Is.Empty);
+        });
+    }
+
+    [Test]
+    public async Task StreamingResultStopsAtDoneAndRunsDisposalActions()
+    {
+        bool disposed = false;
+        List<Action> disposalActions = [() => disposed = true];
+        AsyncStreamingResult<SseItem<BinaryData>> source = CreateRawStreamingResult(StreamContent);
+        await using AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
+            source,
+            DeserializeBinaryEvent,
+            CancellationToken.None,
+            disposalActions);
+        List<string> updates = [];
+
+        await foreach (SseItem<string> update in result)
+        {
+            updates.Add(update.Data);
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(updates, Is.EqualTo(new[] { "A", "B" }));
+            Assert.That(disposed, Is.True);
+            Assert.That(disposalActions, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void StreamingResultCancellationIsNotOvertakenByBufferedTerminalEvent()
+    {
+        using CancellationTokenSource source = new();
+        AsyncStreamingResult<SseItem<BinaryData>> streamingSource
+            = CreateRawStreamingResult(StreamContentUnknownThenTerminal);
+        AsyncStreamingResult<SseItem<string>> result = SseStreamingResult.Create(
+            streamingSource,
+            item => DeserializeEventAndCancelOnUnknown(
+                new SseItem<byte[]>(item.Data.ToArray(), item.EventType),
+                source),
+            source.Token);
+
+        Assert.That(
+            async () =>
+            {
+                await using (result)
+                {
+                    await foreach (SseItem<string> update in result)
+                    {
+                        Assert.That(update.Data, Is.EqualTo("A"));
+                    }
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     // A run of events that yield no updates, so that the skip loop stays inside a single
@@ -500,6 +615,7 @@ public class SseUpdateCollectionTests
     private sealed class ProbeLifecycle : SseLifecycle<string>
     {
         public int Depth { get; private set; }
+        public int Responses { get; private set; }
         public int TypedResponses { get; private set; }
         public int Events { get; private set; }
         public List<string> Updates { get; } = [];
@@ -518,6 +634,8 @@ public class SseUpdateCollectionTests
             Assert.That(Depth, Is.EqualTo(1));
             Events++;
         }
+
+        public override void OnResponse(PipelineResponse response) => Responses++;
 
         public override void OnTypedResponse() => TypedResponses++;
 
@@ -599,6 +717,13 @@ public class SseUpdateCollectionTests
         }
     }
 
+    private sealed class NonDisposingMemoryStream(byte[] content) : MemoryStream(content)
+    {
+        protected override void Dispose(bool disposing)
+        {
+        }
+    }
+
     /// <summary>
     /// Serves <paramref name="content"/> once and then blocks until the gate is set.
     /// </summary>
@@ -671,6 +796,9 @@ public class SseUpdateCollectionTests
         return [document.RootElement.GetProperty("value").GetString()!];
     }
 
+    private static string DeserializeSingleEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        => element.GetProperty("value").GetString()!;
+
     private static ClientResult CreatePage() => CreatePage(StreamContent);
 
     private static ClientResult CreatePage(string content)
@@ -682,4 +810,27 @@ public class SseUpdateCollectionTests
 
         return ClientResult.FromResponse(response);
     }
+
+    private static ClientResult CreateStreamingPage(string content)
+    {
+        MockPipelineResponse response = new(200, "OK")
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(content)),
+        };
+
+        return ClientResult.FromResponse(response);
+    }
+
+    private static AsyncStreamingResult<SseItem<BinaryData>> CreateRawStreamingResult(string content)
+    {
+        MockPipelineResponse response = new(200, "OK")
+        {
+            ContentStream = new NonDisposingMemoryStream(Encoding.UTF8.GetBytes(content)),
+        };
+
+        return AsyncStreamingResult.CreateSse(response);
+    }
+
+    private static IEnumerable<string> DeserializeBinaryEvent(SseItem<BinaryData> item)
+        => DeserializeEvent(new SseItem<byte[]>(item.Data.ToArray(), item.EventType));
 }

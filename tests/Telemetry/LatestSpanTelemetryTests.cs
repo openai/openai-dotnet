@@ -259,20 +259,17 @@ public class LatestSpanTelemetryTests
 
     private static IEnumerable<TestCaseData> MetadataCases()
     {
-        foreach (var useAsync in new[] { false, true })
+        foreach (var latest in new[] { false, true })
         {
-            foreach (var latest in new[] { false, true })
+            foreach (var first in new[] { "created", "in_progress", "queued" })
             {
-                foreach (var first in new[] { "created", "in_progress", "queued" })
-                {
-                    yield return new TestCaseData(useAsync, latest, first);
-                }
+                yield return new TestCaseData(latest, first);
             }
         }
     }
 
     [TestCaseSource(nameof(MetadataCases))]
-    public async Task StreamingMetadataIsRetainedAndNormalTerminalFallsBack(bool useAsync, bool latest, string first)
+    public async Task StreamingMetadataIsRetainedAndNormalTerminalFallsBack(bool latest, string first)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
@@ -286,7 +283,7 @@ public class LatestSpanTelemetryTests
         var content = Event("response." + first, initial)
             + Event("response.in_progress", replacement)
             + Event("response.completed", terminal);
-        var client = StreamingClient(content, useAsync, () => captured = Activity.Current);
+        var client = StreamingClient(content, () => captured = Activity.Current);
         var count = 0;
         void Observe()
         {
@@ -302,19 +299,9 @@ public class LatestSpanTelemetryTests
             }
         }
 
-        if (useAsync)
+        await foreach (var update in await client.CreateResponseStreamingAsync(Options(streaming: true)))
         {
-            await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true)))
-            {
-                Observe();
-            }
-        }
-        else
-        {
-            foreach (var update in client.CreateResponseStreaming(Options(streaming: true)))
-            {
-                Observe();
-            }
+            Observe();
         }
 
         Assert.That(count, Is.EqualTo(3));
@@ -430,20 +417,17 @@ public class LatestSpanTelemetryTests
         AssertNoContent(activity);
     }
 
-    [TestCase(false, "empty")]
-    [TestCase(true, "empty")]
-    [TestCase(false, "read_failure")]
-    [TestCase(true, "read_failure")]
-    [TestCase(false, "send_failure")]
-    [TestCase(true, "send_failure")]
-    public async Task ZeroEventTypedEndingsAreDistinguishedFromSendFailures(bool useAsync, string ending)
+    [TestCase("empty")]
+    [TestCase("read_failure")]
+    [TestCase("send_failure")]
+    public async Task ZeroEventTypedEndingsAreDistinguishedFromSendFailures(string ending)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = new TestActivityListener(ResponsesSource);
         using var metrics = new TestMeterListener(ResponsesSource);
         using var parent = new Activity("empty-caller").Start();
-        var client = StreamingClient("", useAsync,
+        var client = StreamingClient("",
             onSend: () =>
             {
                 if (ending == "send_failure")
@@ -454,17 +438,8 @@ public class LatestSpanTelemetryTests
             streamFactory: ending == "read_failure" ? () => new ImmediateReadFailureStream() : null);
         async Task Consume()
         {
-            if (useAsync)
+            await foreach (var update in await client.CreateResponseStreamingAsync(Options(streaming: true)))
             {
-                await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true)))
-                {
-                }
-            }
-            else
-            {
-                foreach (var update in client.CreateResponseStreaming(Options(streaming: true)))
-                {
-                }
             }
         }
 
@@ -535,7 +510,7 @@ public class LatestSpanTelemetryTests
             StreamingEnabled = streaming,
         };
 
-    private static ResponsesClient StreamingClient(string content, bool useAsync, Action onSend = null, Func<Stream> streamFactory = null)
+    private static ResponsesClient StreamingClient(string content, Action onSend = null, Func<Stream> streamFactory = null)
     {
         var transport = new MockPipelineTransport(_ =>
         {
@@ -544,7 +519,7 @@ public class LatestSpanTelemetryTests
             return new MockPipelineResponse(200) { ContentStream = streamFactory?.Invoke() ?? new MemoryStream(Encoding.UTF8.GetBytes(content)) };
         })
         {
-            ExpectSyncPipeline = !useAsync,
+            ExpectSyncPipeline = false,
         };
 
         return new ResponsesClient(new ApiKeyCredential("not-a-real-key"), new ResponsesClientOptions
