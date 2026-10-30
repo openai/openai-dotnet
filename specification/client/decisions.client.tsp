@@ -10,13 +10,18 @@ namespace OpenAI.Decisions;
 @@clientName(OpenAI.Decisions, "DecisionsClient", "csharp");
 @@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
 
+@@clientName(createDecision::parameters.body, "creationOptions");
+
 @@clientName(createDecision_request_object, "DecisionCreationOptions");
+@@clientName(createDecision_request_object.input, "InputItems");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator, "DecisionsItemKind");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage, "DecisionsMessageItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject, "DecisionsContentPart");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_discriminator, "DecisionsContentPartKind");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage, "DecisionsInputImageContentPart");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage.image_url, "ImageUri");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage.detail, "ImageDetailLevel");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum, "DecisionsImageDetailLevel");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextContentPart");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject, "DecisionsQuestion");
@@ -36,8 +41,16 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore, "DecisionsScoreAnswer");
 @@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object, "DecisionsScoreProbability");
 @@clientName(createDecision_response_200_object_Usage_object, "DecisionsUsage");
+@@clientName(createDecision_response_200_object_Usage_object.input_tokens, "InputTokenCount");
+@@clientName(createDecision_response_200_object_Usage_object.output_tokens, "OutputTokenCount");
+@@clientName(createDecision_response_200_object_Usage_object.total_tokens, "TotalTokenCount");
+@@clientName(createDecision_response_200_object_Usage_object.input_tokens_details, "InputTokenDetails");
+@@clientName(createDecision_response_200_object_Usage_object.output_tokens_details, "OutputTokenDetails");
 @@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object, "DecisionsInputTokenUsageDetails");
+@@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object.cached_tokens, "CachedTokenCount");
+@@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object.cache_write_tokens, "CacheWriteTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
+@@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object.reasoning_tokens, "ReasoningTokenCount");
 
 // This property is a non-discriminated union between a string and an array of items.
 // The string component is shorthand notation for the array component.
@@ -53,9 +66,12 @@ namespace OpenAI.Decisions;
 // To represent them in .NET, we use a wrapper model.
 model dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union
 {
-    component_1?: string,
-    component_2?: boolean
+    string_value?: string,
+    boolean_value?: boolean
 }
+@@clientName(dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union, "DecisionsChoiceValue");
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.choice, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
+
+@@dynamicModel(OpenAI.Decisions);

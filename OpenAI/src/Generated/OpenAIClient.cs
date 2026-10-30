@@ -5,8 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using OpenAI.Decisions;
 
 namespace OpenAI
 {
@@ -15,7 +13,6 @@ namespace OpenAI
         private readonly Uri _endpoint;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
-        private DecisionsClient _cachedDecisionsClient;
 
         protected OpenAIClient()
         {
@@ -44,11 +41,5 @@ namespace OpenAI
         }
 
         public ClientPipeline Pipeline { get; }
-
-        [Experimental("OPENAI001")]
-        public virtual DecisionsClient GetDecisionsClient()
-        {
-            return Volatile.Read(ref _cachedDecisionsClient) ?? Interlocked.CompareExchange(ref _cachedDecisionsClient, new DecisionsClient(Pipeline, _endpoint), null) ?? _cachedDecisionsClient;
-        }
     }
 }

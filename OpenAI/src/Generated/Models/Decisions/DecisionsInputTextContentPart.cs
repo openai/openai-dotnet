@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,11 +18,13 @@ namespace OpenAI.Decisions
             Text = text;
         }
 
-        internal DecisionsInputTextContentPart(DecisionsContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsInputTextContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
         {
             Text = text;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Text { get; }
+        public string Text { get; set; }
     }
 }

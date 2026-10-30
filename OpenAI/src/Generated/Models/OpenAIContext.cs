@@ -177,6 +177,9 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Decisions.DecisionsChoiceQuestion is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DecisionsChoiceQuestion))]
 #pragma warning restore OPENAI001 // global::OpenAI.Decisions.DecisionsChoiceQuestion is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Decisions.DecisionsChoiceValue is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(DecisionsChoiceValue))]
+#pragma warning restore OPENAI001 // global::OpenAI.Decisions.DecisionsChoiceValue is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Decisions.DecisionsContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DecisionsContentPart))]
 #pragma warning restore OPENAI001 // global::OpenAI.Decisions.DecisionsContentPart is experimental and may change in future versions.
@@ -234,9 +237,6 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Audio.DiarizedTranscriptionSegment is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DiarizedTranscriptionSegment))]
 #pragma warning restore OPENAI001 // global::OpenAI.Audio.DiarizedTranscriptionSegment is experimental and may change in future versions.
-#pragma warning disable OPENAI001 // global::OpenAI.Decisions.DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion is experimental and may change in future versions.
-    [ModelReaderWriterBuildable(typeof(DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion))]
-#pragma warning restore OPENAI001 // global::OpenAI.Decisions.DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(EmbeddingGenerationOptions))]
     [ModelReaderWriterBuildable(typeof(EmbeddingTokenUsage))]
     [ModelReaderWriterBuildable(typeof(FileChunkingStrategy))]

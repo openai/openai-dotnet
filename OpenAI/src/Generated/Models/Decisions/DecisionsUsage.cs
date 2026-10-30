@@ -2,50 +2,57 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsUsage
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal DecisionsUsage(int inputTokens, DecisionsInputTokenUsageDetails inputTokensDetails, int outputTokens, DecisionsOutputTokenUsageDetails outputTokensDetails, int totalTokens)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount)
         {
-            InputTokens = inputTokens;
-            InputTokensDetails = inputTokensDetails;
-            OutputTokens = outputTokens;
-            OutputTokensDetails = outputTokensDetails;
-            TotalTokens = totalTokens;
+            InputTokenCount = inputTokenCount;
+            InputTokenDetails = inputTokenDetails;
+            OutputTokenCount = outputTokenCount;
+            OutputTokenDetails = outputTokenDetails;
+            TotalTokenCount = totalTokenCount;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsUsage(int inputTokens, DecisionsInputTokenUsageDetails inputTokensDetails, int outputTokens, DecisionsOutputTokenUsageDetails outputTokensDetails, int totalTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsUsage(int inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, int outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, int totalTokenCount, in JsonPatch patch)
         {
-            InputTokens = inputTokens;
-            InputTokensDetails = inputTokensDetails;
-            OutputTokens = outputTokens;
-            OutputTokensDetails = outputTokensDetails;
-            TotalTokens = totalTokens;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            InputTokenCount = inputTokenCount;
+            InputTokenDetails = inputTokenDetails;
+            OutputTokenCount = outputTokenCount;
+            OutputTokenDetails = outputTokenDetails;
+            TotalTokenCount = totalTokenCount;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public int InputTokens { get; }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        public DecisionsInputTokenUsageDetails InputTokensDetails { get; }
+        public int InputTokenCount { get; set; }
 
-        public int OutputTokens { get; }
+        public DecisionsInputTokenUsageDetails InputTokenDetails { get; set; }
 
-        public DecisionsOutputTokenUsageDetails OutputTokensDetails { get; }
+        public int OutputTokenCount { get; set; }
 
-        public int TotalTokens { get; }
+        public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public int TotalTokenCount { get; set; }
     }
 }

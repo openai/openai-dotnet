@@ -2,10 +2,12 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Decisions
@@ -13,41 +15,47 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionCreationOptions
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        public DecisionCreationOptions(IEnumerable<DecisionsItem> input, string model, IEnumerable<DecisionsQuestion> questions)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public DecisionCreationOptions(IEnumerable<DecisionsItem> inputItems, string model, IEnumerable<DecisionsQuestion> questions)
         {
-            Argument.AssertNotNull(input, nameof(input));
+            Argument.AssertNotNull(inputItems, nameof(inputItems));
             Argument.AssertNotNull(model, nameof(model));
             Argument.AssertNotNull(questions, nameof(questions));
 
-            Input = input.ToList();
+            InputItems = inputItems.ToList();
             Model = model;
             Questions = questions.ToList();
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionCreationOptions(IList<DecisionsItem> input, string model, IList<DecisionsQuestion> questions, string safetyIdentifier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string safetyIdentifier, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Input = input ?? new ChangeTrackingList<DecisionsItem>();
+            InputItems = inputItems ?? new ChangeTrackingList<DecisionsItem>();
             Model = model;
             Questions = questions ?? new ChangeTrackingList<DecisionsQuestion>();
             SafetyIdentifier = safetyIdentifier;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IList<DecisionsItem> Input { get; }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        public string Model { get; }
+        public IList<DecisionsItem> InputItems { get; }
+
+        public string Model { get; set; }
 
         public IList<DecisionsQuestion> Questions { get; }
 
         public string SafetyIdentifier { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

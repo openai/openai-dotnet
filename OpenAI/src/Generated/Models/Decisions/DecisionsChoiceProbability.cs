@@ -2,38 +2,45 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceProbability
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal DecisionsChoiceProbability(float probability, DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion value)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsChoiceProbability(float probability, DecisionsChoiceValue value)
         {
             Probability = probability;
             Value = value;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsChoiceProbability(float probability, DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsChoiceProbability(float probability, DecisionsChoiceValue value, in JsonPatch patch)
         {
             Probability = probability;
             Value = value;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public float Probability { get; }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        public DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion Value { get; }
+        public float Probability { get; set; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public DecisionsChoiceValue Value { get; set; }
     }
 }

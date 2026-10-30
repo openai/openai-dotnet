@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +18,15 @@ namespace OpenAI.Decisions
             Instructions = instructions;
         }
 
-        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string instructions, string name) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, string instructions, string name) : base(kind, patch)
         {
             Instructions = instructions;
             Name = name;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
         public string Name { get; set; }
     }

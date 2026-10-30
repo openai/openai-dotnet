@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +13,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsChoiceQuestion : DecisionsQuestion, IJsonModel<DecisionsChoiceQuestion>
     {
-        internal DecisionsChoiceQuestion() : this(DecisionsQuestionKind.Choice, null, null, null, null)
+        public DecisionsChoiceQuestion() : this(DecisionsQuestionKind.Choice, default, null, null, null)
         {
         }
 
@@ -24,7 +25,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsChoiceQuestion(document.RootElement, options);
+                        return DeserializeDecisionsChoiceQuestion(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsChoiceQuestion)} does not support reading '{options.Format}' format.");
@@ -51,6 +52,14 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsChoiceQuestion>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -64,26 +73,44 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsChoiceQuestion)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.choices"u8))
+            {
+                if (!Patch.IsRemoved("$.choices"u8))
+                {
+                    writer.WritePropertyName("choices"u8);
+                    Patch.WriteTo(writer, "$.choices"u8);
+                }
+            }
+            else
             {
                 writer.WritePropertyName("choices"u8);
                 writer.WriteStartArray();
-                foreach (DecisionsChoice item in Choices)
+                bool hasPatch = Patch.Contains("$"u8, "choices"u8);
+                for (int i = 0; i < Choices.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) || Choices[i] != null && Choices[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Choices[i], options);
                 }
+                Patch.WriteTo(writer, "$.choices"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (!Patch.Contains("$.instructions"u8))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsChoiceQuestion IJsonModel<DecisionsChoiceQuestion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsChoiceQuestion)JsonModelCreateCore(ref reader, options);
@@ -96,17 +123,19 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsChoiceQuestion)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsChoiceQuestion(document.RootElement, options);
+            return DeserializeDecisionsChoiceQuestion(document.RootElement, null, options);
         }
 
-        internal static DecisionsChoiceQuestion DeserializeDecisionsChoiceQuestion(JsonElement element, ModelReaderWriterOptions options)
+        internal static DecisionsChoiceQuestion DeserializeDecisionsChoiceQuestion(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsQuestionKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<DecisionsChoice> choices = default;
             string instructions = default;
             string name = default;
@@ -122,7 +151,7 @@ namespace OpenAI.Decisions
                     List<DecisionsChoice> array = new List<DecisionsChoice>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(DecisionsChoice.DeserializeDecisionsChoice(item, options));
+                        array.Add(DecisionsChoice.DeserializeDecisionsChoice(item, item.GetUtf8Bytes(), options));
                     }
                     choices = array;
                     continue;
@@ -137,10 +166,98 @@ namespace OpenAI.Decisions
                     name = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsChoiceQuestion(kind, additionalBinaryDataProperties, choices, instructions, name);
+            return new DecisionsChoiceQuestion(kind, patch, choices, instructions, name);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("choices"u8))
+            {
+                int propertyLength = "choices"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Choices == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveChoicesArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
+                {
+                    return false;
+                }
+                if (Choices[index] == null)
+                {
+                    return false;
+                }
+                return Choices[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("choices"u8))
+            {
+                int propertyLength = "choices"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Choices == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
+                {
+                    return false;
+                }
+                if (Choices[index] == null)
+                {
+                    return false;
+                }
+                Choices[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveChoicesArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveChoices(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<DecisionsChoice> ActiveChoices()
+        {
+            if (!Optional.IsCollectionDefined(Choices))
+            {
+                yield break;
+            }
+            bool hasPatch = Patch.Contains("$"u8, "choices"u8);
+            for (int i = 0; i < Choices.Count; i++)
+            {
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]"))) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return Choices[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

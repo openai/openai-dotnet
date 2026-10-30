@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -12,21 +11,23 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputImageContentPart : DecisionsContentPart
     {
-        public DecisionsInputImageContentPart(string imageUrl) : base(DecisionsContentPartKind.InputImage)
+        public DecisionsInputImageContentPart(string imageUri) : base(DecisionsContentPartKind.InputImage)
         {
-            Argument.AssertNotNull(imageUrl, nameof(imageUrl));
+            Argument.AssertNotNull(imageUri, nameof(imageUri));
 
-            ImageUrl = imageUrl;
+            ImageUri = imageUri;
         }
 
-        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, DecisionsImageDetailLevel? detail) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
         {
-            ImageUrl = imageUrl;
-            Detail = detail;
+            ImageUri = imageUri;
+            ImageDetailLevel = imageDetailLevel;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ImageUrl { get; }
+        public string ImageUri { get; set; }
 
-        public DecisionsImageDetailLevel? Detail { get; set; }
+        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
     }
 }

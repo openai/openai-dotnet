@@ -21,12 +21,6 @@ namespace OpenAI.Decisions
         {
         }
 
-        internal DecisionsClient(ClientPipeline pipeline, Uri endpoint)
-        {
-            _endpoint = endpoint;
-            Pipeline = pipeline;
-        }
-
         public ClientPipeline Pipeline { get; }
 
         public virtual ClientResult CreateDecision(BinaryContent content, RequestOptions options = null)
@@ -45,19 +39,19 @@ namespace OpenAI.Decisions
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult<DecisionResource> CreateDecision(DecisionCreationOptions body, CancellationToken cancellationToken = default)
+        public virtual ClientResult<DecisionResource> CreateDecision(DecisionCreationOptions creationOptions, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(body, nameof(body));
+            Argument.AssertNotNull(creationOptions, nameof(creationOptions));
 
-            ClientResult result = this.CreateDecision(body, cancellationToken.ToRequestOptions());
+            ClientResult result = CreateDecision(creationOptions, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((DecisionResource)result, result.GetRawResponse());
         }
 
-        public virtual async Task<ClientResult<DecisionResource>> CreateDecisionAsync(DecisionCreationOptions body, CancellationToken cancellationToken = default)
+        public virtual async Task<ClientResult<DecisionResource>> CreateDecisionAsync(DecisionCreationOptions creationOptions, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(body, nameof(body));
+            Argument.AssertNotNull(creationOptions, nameof(creationOptions));
 
-            ClientResult result = await this.CreateDecisionAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            ClientResult result = await CreateDecisionAsync(creationOptions, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((DecisionResource)result, result.GetRawResponse());
         }
     }

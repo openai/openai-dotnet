@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,28 +13,34 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceAnswer : DecisionsAnswer
     {
-        internal DecisionsChoiceAnswer(DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion choice, float confidence, string name, IEnumerable<DecisionsChoiceProbability> probabilities) : base(DecisionsAnswerKind.Choice)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsChoiceAnswer(DecisionsChoiceValue choice, float confidence, string name, IEnumerable<DecisionsChoiceProbability> probabilities) : base(DecisionsAnswerKind.Choice)
         {
             Choice = choice;
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal DecisionsChoiceAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion choice, float confidence, string name, IList<DecisionsChoiceProbability> probabilities) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsChoiceAnswer(DecisionsAnswerKind kind, in JsonPatch patch, DecisionsChoiceValue choice, float confidence, string name, IList<DecisionsChoiceProbability> probabilities) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Choice = choice;
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities ?? new ChangeTrackingList<DecisionsChoiceProbability>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public DotnetCreateDecisionResponse200ObjectAnswersArrayItemDiscriminatedObjectTypeOfChoiceChoiceUnion Choice { get; }
+        public DecisionsChoiceValue Choice { get; set; }
 
-        public float Confidence { get; }
+        public float Confidence { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
         public IList<DecisionsChoiceProbability> Probabilities { get; }
     }
