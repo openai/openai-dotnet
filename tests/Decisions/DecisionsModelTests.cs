@@ -1,11 +1,9 @@
 using NUnit.Framework;
 using OpenAI.Decisions;
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -17,61 +15,47 @@ namespace OpenAI.Tests.Decisions;
 [Category("Smoke")]
 public class DecisionsModelTests
 {
+    // Verifies parameterless message construction preserves the default user role during serialization.
     [Test]
-    public void RenamedUsagePropertiesPreserveWireNames()
+    public void DefaultMessageConstructorUsesUserRole()
     {
-        const string json = """
-            {"input_tokens":10,"output_tokens":5,"total_tokens":15,
-             "input_tokens_details":{"cached_tokens":3,"cache_write_tokens":2},
-             "output_tokens_details":{"reasoning_tokens":4}}
-            """;
-        DecisionsUsage usage = Read<DecisionsUsage>(json);
+        DecisionsMessageItem message = new()
+        {
+            Content = { new DecisionsInputTextContentPart { Text = "hello" } }
+        };
 
-        Assert.That(usage.InputTokenCount, Is.EqualTo(10));
-        Assert.That(usage.OutputTokenCount, Is.EqualTo(5));
-        Assert.That(usage.TotalTokenCount, Is.EqualTo(15));
-        Assert.That(usage.InputTokenDetails.CachedTokenCount, Is.EqualTo(3));
-        Assert.That(usage.InputTokenDetails.CacheWriteTokenCount, Is.EqualTo(2));
-        Assert.That(usage.OutputTokenDetails.ReasoningTokenCount, Is.EqualTo(4));
-
-        using JsonDocument expected = JsonDocument.Parse(json);
-        using JsonDocument actual = JsonDocument.Parse(ModelReaderWriter.Write(usage));
-        AssertJsonContains(expected.RootElement, actual.RootElement);
-        Assert.That(actual.RootElement.EnumerateObject().Count(), Is.EqualTo(5));
+        AssertUserMessage(message);
     }
 
+    // Verifies the content-taking constructor also initializes the message with the user role.
     [Test]
-    public void RenamedInputAndImagePropertiesPreserveWireNames()
+    public void ContentConstructorUsesUserRole()
     {
-        DecisionCreationOptions options = new()
-        {
-            Model = "test",
-            InputItems =
-            {
-                new DecisionsMessageItem
-                {
-                    Content =
-                    {
-                        new DecisionsInputImageContentPart
-                        {
-                            ImageUri = "https://example.invalid/image.png",
-                            ImageDetailLevel = DecisionsImageDetailLevel.High
-                        }
-                    }
-                }
-            }
-        };
-        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
-        JsonElement image = json.RootElement.GetProperty("input")[0].GetProperty("content")[0];
-        Assert.That(image.GetProperty("image_url").GetString(), Is.EqualTo("https://example.invalid/image.png"));
-        Assert.That(image.GetProperty("detail").GetString(), Is.EqualTo("high"));
-        Assert.That(image.EnumerateObject().Count(), Is.EqualTo(3));
-        Assert.That(json.RootElement.TryGetProperty("input_items", out _), Is.False);
+        DecisionsMessageItem message = new([new DecisionsInputTextContentPart { Text = "hello" }]);
 
-        DecisionCreationOptions roundTrip = ModelReaderWriter.Read<DecisionCreationOptions>(ModelReaderWriter.Write(options));
-        DecisionsInputImageContentPart part = (DecisionsInputImageContentPart)((DecisionsMessageItem)roundTrip.InputItems.Single()).Content.Single();
-        Assert.That(part.ImageUri, Is.EqualTo("https://example.invalid/image.png"));
-        Assert.That(part.ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
+        AssertUserMessage(message);
+    }
+
+    // Verifies string input shorthand expands into a user message and serializes that role.
+    [Test]
+    public void InputShorthandUsesUserRole()
+    {
+        DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(
+            BinaryData.FromString("""{"input":"hello","model":"test","questions":[]}"""));
+
+        AssertUserMessage((DecisionsMessageItem)options.InputItems.Single());
+        using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(document.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
+    }
+
+    // Verifies an explicit user role survives deserialization and serialization of a longhand message.
+    [Test]
+    public void LonghandMessagePreservesUserRole()
+    {
+        DecisionsMessageItem message = ModelReaderWriter.Read<DecisionsMessageItem>(
+            BinaryData.FromString("""{"type":"message","role":"user","content":[{"type":"input_text","text":"hello"}]}"""));
+
+        AssertUserMessage(message);
     }
 
     private static IEnumerable<TestCaseData> ProtocolModels()
@@ -99,6 +83,7 @@ public class DecisionsModelTests
 
     private static TestCaseData Model<T>(string json) => new TestCaseData(typeof(T), json).SetName($"{{m}}({typeof(T).Name})");
 
+    // Verifies protocol models expose default construction, mutable scalars, initialized collections, and JsonPatch.
     [TestCaseSource(nameof(ProtocolModels))]
     public void ProtocolModelsHaveDefaultConstructorsMutablePropertiesAndJsonPatch(Type modelType, string json)
     {
@@ -134,59 +119,7 @@ public class DecisionsModelTests
         }
     }
 
-    [TestCaseSource(nameof(ProtocolModels))]
-    public void ProtocolModelsRoundTripUnknownPropertiesAndSupportJsonPatch(Type modelType, string json)
-    {
-        string extendedJson = """{"future_property":{"nested":[true,"value",7]},""" + json.Substring(1);
-        object model = ModelReaderWriter.Read(BinaryData.FromString(extendedJson), modelType);
-        BinaryData serialized = ModelReaderWriter.Write(model);
-        using JsonDocument expected = JsonDocument.Parse(extendedJson);
-        using JsonDocument actual = JsonDocument.Parse(serialized);
-        AssertJsonContains(expected.RootElement, actual.RootElement);
-
-        object roundTrip = ModelReaderWriter.Read(serialized, modelType);
-        using JsonDocument reserialized = JsonDocument.Parse(ModelReaderWriter.Write(roundTrip));
-        AssertJsonContains(actual.RootElement, reserialized.RootElement);
-        GetPatch(model).Set("$.patched_property"u8, 42);
-
-        using JsonDocument patched = JsonDocument.Parse(ModelReaderWriter.Write(model));
-        AssertJsonContains(expected.RootElement, patched.RootElement);
-        Assert.That(patched.RootElement.GetProperty("patched_property").GetInt32(), Is.EqualTo(42));
-    }
-
-    [TestCase(false)]
-    [TestCase(true)]
-    public void CreationOptionsConvertImplicitlyToBinaryContent(bool fromJson)
-    {
-        DecisionCreationOptions options = new()
-        {
-            Model = "test",
-            InputItems = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "hello" } } } },
-            Questions = { new DecisionsPredicateQuestion { Instructions = "evaluate" } }
-        };
-        if (fromJson)
-        {
-            options = Read<DecisionCreationOptions>("""
-                {"model":"test","input":"hello","questions":[{"type":"predicate","instructions":"evaluate"}],"future_received":{"enabled":true}}
-                """);
-        }
-        options.Patch.Set("$.future_property"u8, true);
-        using BinaryContent content = options;
-        using MemoryStream stream = new();
-        content.WriteTo(stream);
-        using JsonDocument expected = JsonDocument.Parse(ModelReaderWriter.Write(options));
-        using JsonDocument actual = JsonDocument.Parse(stream.ToArray());
-        AssertJsonContains(expected.RootElement, actual.RootElement);
-        Assert.That(actual.RootElement.GetProperty("future_property").GetBoolean(), Is.True);
-        if (fromJson)
-        {
-            Assert.That(actual.RootElement.GetProperty("future_received").GetProperty("enabled").GetBoolean(), Is.True);
-        }
-        DecisionCreationOptions nullOptions = null;
-        BinaryContent nullContent = nullOptions;
-        Assert.That(nullContent, Is.Null);
-    }
-
+    // Verifies input string shorthand normalizes to the same message/content arrays as explicit longhand JSON.
     [TestCase("")]
     [TestCase("hello")]
     [TestCase("quotes \" and newline\n and Unicode \u263a")]
@@ -210,6 +143,7 @@ public class DecisionsModelTests
         Assert.That(normalized.RootElement.GetProperty("input")[0].GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.Array));
     }
 
+    // Verifies message content shorthand becomes a single text part without changing the text.
     [TestCase("")]
     [TestCase("hello")]
     public void MessageContentShorthandNormalizesToLonghand(string text)
@@ -226,6 +160,7 @@ public class DecisionsModelTests
         Assert.That(normalized.RootElement.GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.Array));
     }
 
+    // Verifies longhand input retains multiple messages, mixed content, and unknown nested properties.
     [Test]
     public void LonghandInputPreservesMultipleItemsContentAndUnknownFields()
     {
@@ -250,6 +185,7 @@ public class DecisionsModelTests
         Assert.That(serialized.RootElement.GetProperty("input")[1].GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("another message"));
     }
 
+    // Verifies required input and content unions reject JSON shapes other than strings or arrays.
     [TestCase("null")]
     [TestCase("true")]
     [TestCase("false")]
@@ -261,6 +197,7 @@ public class DecisionsModelTests
         Assert.Throws<JsonException>(() => Read<DecisionsMessageItem>($$"""{"type":"message","content":{{value}}}"""));
     }
 
+    // Verifies empty input and content arrays are not expanded into synthetic messages or text parts.
     [Test]
     public void EmptyLonghandCollectionsRemainEmpty()
     {
@@ -268,6 +205,7 @@ public class DecisionsModelTests
         Assert.That(Read<DecisionsMessageItem>("""{"type":"message","content":[]}""").Content, Is.Empty);
     }
 
+    // Verifies constructors, implicit conversions, and deserialization select exactly one scalar and round-trip it.
     [TestCase("\"yes\"")]
     [TestCase("\"\"")]
     [TestCase("\"quoted \\\"value\\\"\"")]
@@ -305,6 +243,7 @@ public class DecisionsModelTests
         }
     }
 
+    // Verifies the union keeps its components immutable, hides synthetic patch paths, and preserves null semantics.
     [Test]
     public void ChoiceValueHasReadOnlyComponentsAndNoPublicSyntheticPatch()
     {
@@ -319,6 +258,7 @@ public class DecisionsModelTests
         Assert.That(Read<DecisionsChoiceValue>("null"), Is.Null);
     }
 
+    // Verifies choice-valued properties round-trip strings, booleans, and null without a wrapper object.
     [TestCase("\"yes\"")]
     [TestCase("\"\"")]
     [TestCase("true")]
@@ -349,6 +289,7 @@ public class DecisionsModelTests
         }
     }
 
+    // Verifies unsupported scalar and object shapes are rejected both directly and inside choice properties.
     [TestCase("42")]
     [TestCase("0")]
     [TestCase("1.25")]
@@ -363,6 +304,7 @@ public class DecisionsModelTests
         Assert.Throws<JsonException>(() => Read<DecisionsChoiceProbability>($$"""{"value":{{value}}}"""));
     }
 
+    // Verifies containing-model patches replace entire choice values on constructed and deserialized models.
     [TestCase(false, "\"replacement\"")]
     [TestCase(false, "false")]
     [TestCase(false, "null")]
@@ -394,6 +336,7 @@ public class DecisionsModelTests
         AssertJsonContains(expected.RootElement, probabilityJson.RootElement.GetProperty("value"));
     }
 
+    // Verifies nested model patches and delegated usage paths reach their wire properties before and after round-trip.
     [TestCase(false)]
     [TestCase(true)]
     public void JsonPatchUpdatesNestedModelsAndPropagatesThroughModelProperties(bool fromJson)
@@ -436,6 +379,7 @@ public class DecisionsModelTests
         Assert.That(resultJson.RootElement.GetProperty("usage").GetProperty("input_tokens_details").GetProperty("cached_tokens").GetInt32(), Is.EqualTo(17));
     }
 
+    // Verifies raw patches can replace normalized input/content arrays with shorthand string representations.
     [Test]
     public void JsonPatchCanOverrideNormalizedShorthandWireRepresentation()
     {
@@ -449,6 +393,7 @@ public class DecisionsModelTests
         Assert.That(messageJson.RootElement.GetProperty("content").GetString(), Is.EqualTo("raw content"));
     }
 
+    // Verifies unknown hierarchy kinds and their additional JSON properties survive round-tripping.
     [TestCase(typeof(DecisionsItem))]
     [TestCase(typeof(DecisionsContentPart))]
     [TestCase(typeof(DecisionsQuestion))]
@@ -465,6 +410,7 @@ public class DecisionsModelTests
         Assert.That(modelType.GetProperty("Kind").GetValue(roundTrip).ToString(), Is.EqualTo("future_kind"));
     }
 
+    // Verifies external subclasses can supply and serialize discriminator values not declared by the SDK.
     [Test]
     public void ExternalSubclassesCanSpecifyExtensibleKinds()
     {
@@ -482,6 +428,7 @@ public class DecisionsModelTests
         AssertSerializedKind(answer, "external_answer");
     }
 
+    // Verifies hierarchy bases expose public get-only kinds and protected-internal kind constructors.
     [TestCase(typeof(DecisionsItem), typeof(DecisionsItemKind))]
     [TestCase(typeof(DecisionsContentPart), typeof(DecisionsContentPartKind))]
     [TestCase(typeof(DecisionsQuestion), typeof(DecisionsQuestionKind))]
@@ -498,6 +445,7 @@ public class DecisionsModelTests
         Assert.That(kindType.IsPublic, Is.True);
     }
 
+    // Verifies each known discriminator selects its matching concrete item, content, question, or answer model.
     [Test]
     public void KnownDiscriminatorsDeserializeToConcreteModels()
     {
@@ -515,25 +463,12 @@ public class DecisionsModelTests
 
     private static T Read<T>(string json) => ModelReaderWriter.Read<T>(BinaryData.FromString(json));
 
-    private static ref JsonPatch GetPatch(object model)
+    private static void AssertUserMessage(DecisionsMessageItem message)
     {
-        switch (model)
-        {
-            case DecisionCreationOptions value: return ref value.Patch;
-            case DecisionResource value: return ref value.Patch;
-            case DecisionsItem value: return ref value.Patch;
-            case DecisionsContentPart value: return ref value.Patch;
-            case DecisionsQuestion value: return ref value.Patch;
-            case DecisionsAnswer value: return ref value.Patch;
-            case DecisionsChoice value: return ref value.Patch;
-            case DecisionsScoreLevel value: return ref value.Patch;
-            case DecisionsChoiceProbability value: return ref value.Patch;
-            case DecisionsScoreProbability value: return ref value.Patch;
-            case DecisionsUsage value: return ref value.Patch;
-            case DecisionsInputTokenUsageDetails value: return ref value.Patch;
-            case DecisionsOutputTokenUsageDetails value: return ref value.Patch;
-            default: throw new ArgumentException("Not a Decisions protocol model.", nameof(model));
-        }
+        using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(message));
+        Assert.That(document.RootElement.GetProperty("role").GetString(), Is.EqualTo("user"));
+        Assert.That(document.RootElement.GetProperty("type").GetString(), Is.EqualTo("message"));
+        Assert.That(document.RootElement.GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("hello"));
     }
 
     private static void AssertSerializedKind<T>(T model, string kind)

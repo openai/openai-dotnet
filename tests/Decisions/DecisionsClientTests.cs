@@ -23,6 +23,7 @@ public class DecisionsClientTests
     private static readonly ApiKeyCredential s_credential = new("not-a-real-key");
     private static readonly Uri s_endpoint = new("https://example.invalid/custom/v1");
 
+    // Verifies both typed methods accept creationOptions by name and report that name for null arguments.
     [TestCase(false)]
     [TestCase(true)]
     public async Task TypedMethodsUseCreationOptionsParameter(bool isAsync)
@@ -35,6 +36,7 @@ public class DecisionsClientTests
         Assert.That(exception.ParamName, Is.EqualTo("creationOptions"));
     }
 
+    // Verifies credential, policy, key, and shared-pipeline constructors use the default endpoint when options are absent.
     [Test]
     public void ConstructorsUseDefaultEndpoint()
     {
@@ -56,6 +58,7 @@ public class DecisionsClientTests
         }
     }
 
+    // Verifies every client construction path rejects its required null credential, policy, settings, or pipeline.
     [Test]
     public void ConstructorsRejectNullRequiredArguments()
     {
@@ -68,6 +71,7 @@ public class DecisionsClientTests
         Assert.Throws<ArgumentNullException>(() => new DerivedDecisionsClient(null, null));
     }
 
+    // Verifies custom endpoints are honored and the pipeline-taking constructor reuses the supplied pipeline.
     [Test]
     public void ConstructorsHonorEndpointAndSharedPipeline()
     {
@@ -82,6 +86,7 @@ public class DecisionsClientTests
         Assert.That(pipelineClient.Pipeline, Is.SameAs(credentialClient.Pipeline));
     }
 
+    // Verifies the shared test-client factory recognizes DecisionsClient and forwards its endpoint options.
     [Test]
     public void TestEnvironmentCreatesDecisionsClient()
     {
@@ -93,6 +98,7 @@ public class DecisionsClientTests
         Assert.That(client.Pipeline, Is.Not.Null);
     }
 
+    // Verifies each OpenAIClient factory call returns a fresh Decisions client sharing the parent pipeline and endpoint.
     [Test]
     public void FactoryCreatesNewClientsWithSharedPipeline()
     {
@@ -107,6 +113,7 @@ public class DecisionsClientTests
         Assert.That(second.Pipeline, Is.SameAs(topLevelClient.Pipeline));
     }
 
+    // Verifies direct and factory-created clients send sync/async requests through configured transport, headers, and policies.
     [TestCase(false, false)]
     [TestCase(false, true)]
     [TestCase(true, false)]
@@ -176,6 +183,7 @@ public class DecisionsClientTests
         Assert.That(headers["X-Custom"], Is.EqualTo("custom-value"));
     }
 
+    // Verifies client construction freezes endpoint, organization, project, and application-ID options.
     [Test]
     public void OptionsFreezeAfterClientConstruction()
     {
@@ -188,6 +196,7 @@ public class DecisionsClientTests
         Assert.Throws<InvalidOperationException>(() => options.UserAgentApplicationId = "test-app");
     }
 
+    // Verifies configuration binds Decisions settings and those settings configure the constructed client.
     [Test]
     public void SettingsBindConfiguration()
     {
@@ -201,6 +210,7 @@ public class DecisionsClientTests
         Assert.That(new DecisionsClient(settings).Endpoint, Is.EqualTo(s_endpoint));
     }
 
+    // Verifies credential-only configuration leaves options absent and the client uses its default endpoint.
     [Test]
     public void SettingsWithoutOptionsUseDefaults()
     {
@@ -215,6 +225,7 @@ public class DecisionsClientTests
         Assert.That(new DecisionsClient(settings).Endpoint, Is.EqualTo(new Uri("https://api.openai.com/v1")));
     }
 
+    // Verifies keyed and unkeyed hosting registrations resolve a client configured from the requested section.
     [TestCase(false)]
     [TestCase(true)]
     public void HostingRegistersConfiguredClient(bool keyed)
@@ -240,6 +251,7 @@ public class DecisionsClientTests
         Assert.That(client.Pipeline, Is.Not.Null);
     }
 
+    // Verifies both hosting registration extensions reject a null host builder.
     [Test]
     public void HostingRejectsNullBuilder()
     {

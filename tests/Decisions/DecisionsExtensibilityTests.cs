@@ -13,45 +13,7 @@ namespace OpenAI.Tests.Decisions;
 [Category("Smoke")]
 public class DecisionsExtensibilityTests
 {
-    [Test]
-    public void DefaultMessageConstructorUsesUserRole()
-    {
-        DecisionsMessageItem message = new()
-        {
-            Content = { new DecisionsInputTextContentPart { Text = "hello" } }
-        };
-
-        AssertUserMessage(message);
-    }
-
-    [Test]
-    public void ContentConstructorUsesUserRole()
-    {
-        DecisionsMessageItem message = new([new DecisionsInputTextContentPart { Text = "hello" }]);
-
-        AssertUserMessage(message);
-    }
-
-    [Test]
-    public void InputShorthandUsesUserRole()
-    {
-        DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(
-            BinaryData.FromString("""{"input":"hello","model":"test","questions":[]}"""));
-
-        AssertUserMessage((DecisionsMessageItem)options.InputItems.Single());
-        using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(options));
-        Assert.That(document.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
-    }
-
-    [Test]
-    public void LonghandMessagePreservesUserRole()
-    {
-        DecisionsMessageItem message = ModelReaderWriter.Read<DecisionsMessageItem>(
-            BinaryData.FromString("""{"type":"message","role":"user","content":[{"type":"input_text","text":"hello"}]}"""));
-
-        AssertUserMessage(message);
-    }
-
+    // Verifies external subclasses can serialize custom kinds and apply property, removal, and root patches.
     [TestCase("item", "J")]
     [TestCase("item", "W")]
     [TestCase("content", "J")]
@@ -122,6 +84,7 @@ public class DecisionsExtensibilityTests
         yield return new TestCaseData(ModelReaderWriter.Read<DecisionsAnswer>(unknown)).SetName("{m}(UnknownAnswer)");
     }
 
+    // Verifies generated and unknown derived models emit each patched property once in JSON and wire formats.
     [TestCaseSource(nameof(GeneratedModels))]
     public void GeneratedDerivedModelsDoNotWriteDuplicatePatchProperties(object model)
     {
@@ -148,14 +111,6 @@ public class DecisionsExtensibilityTests
         using JsonDocument replaced = SerializeBase(model, ModelReaderWriterOptions.Json);
         Assert.That(replaced.RootElement.EnumerateObject().Count(), Is.EqualTo(1));
         Assert.That(replaced.RootElement.GetProperty("replacement").GetBoolean(), Is.True);
-    }
-
-    private static void AssertUserMessage(DecisionsMessageItem message)
-    {
-        using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(message));
-        Assert.That(document.RootElement.GetProperty("role").GetString(), Is.EqualTo("user"));
-        Assert.That(document.RootElement.GetProperty("type").GetString(), Is.EqualTo("message"));
-        Assert.That(document.RootElement.GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("hello"));
     }
 
     private static void AssertNoDuplicateProperties(JsonElement element)

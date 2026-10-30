@@ -20,9 +20,11 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             MockHelpers.LoadMockGenerator(configurationJson: "{ \"package-name\": \"TestLibrary\" }");
         }
 
+        // Verifies protocol namespaces, including Decisions, receive public setters for scalar model properties.
         [TestCase("OpenAI.Containers")]
         [TestCase("OpenAI.Conversations")]
         [TestCase("OpenAI.Decisions")]
+        // Verifies Realtime and Decisions models receive public parameterless constructors for protocol-style usage.
         [TestCase("OpenAI.Realtime")]
         [TestCase("OpenAI.Responses")]
         public void PreVisitProperty_AddsSetterForProtocolNamespace(string modelNamespace)

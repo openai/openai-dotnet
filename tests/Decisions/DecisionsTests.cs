@@ -16,6 +16,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
     {
     }
 
+    // Evaluates a text predicate and verifies an unnamed predicate answer, its probability, and token usage.
     [RecordedTest]
     public async Task CreateTextPredicateDecision()
     {
@@ -36,6 +37,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probability, Is.GreaterThan(0.5));
     }
 
+    // Classifies a request using string choices and verifies the selected value, confidence, and probability distribution.
     [RecordedTest]
     public async Task CreateStringChoiceDecision()
     {
@@ -72,6 +74,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
 
+    // Evaluates boolean choices and verifies the active boolean component and normalized choice probabilities.
     [RecordedTest]
     public async Task CreateBooleanChoiceDecision()
     {
@@ -107,6 +110,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
 
+    // Scores text sentiment and verifies the answer name, level probabilities, and probability-weighted score.
     [RecordedTest]
     public async Task CreateScoreDecision()
     {
@@ -121,6 +125,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertSentimentAnswer((DecisionsScoreAnswer)decision.Answers[0], "sentiment");
     }
 
+    // Submits predicate, choice, and score questions together and verifies answer order, names, and concrete types.
     [RecordedTest]
     public async Task CreateMultipleNamedQuestionsDecision()
     {
@@ -163,8 +168,9 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertSentimentAnswer((DecisionsScoreAnswer)decision.Answers[2], "sentiment");
     }
 
+    // Evaluates an image supplied by HTTPS URI and verifies the image predicate answer and usage.
     [RecordedTest]
-    public async Task CreateImageUrlDecision()
+    public async Task CreateImageUriDecision()
     {
         DecisionsClient client = GetProxiedDecisionsClient();
         DecisionCreationOptions options = CreateImageOptions(
@@ -176,8 +182,9 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertImageDecision(decision, options);
     }
 
+    // Evaluates a local image encoded as a data URI and verifies the image predicate answer and usage.
     [RecordedTest]
-    public async Task CreateImageDataUrlDecision()
+    public async Task CreateImageDataUriDecision()
     {
         DecisionsClient client = GetProxiedDecisionsClient();
         byte[] imageBytes = File.ReadAllBytes(Path.Combine("Assets", "images_dog_and_cat.png"));
@@ -205,13 +212,13 @@ public class DecisionsTests : OpenAIRecordedTestBase
         };
     }
 
-    private DecisionCreationOptions CreateImageOptions(string imageUrl, string instructions)
+    private DecisionCreationOptions CreateImageOptions(string imageUri, string instructions)
     {
         DecisionCreationOptions options = CreateTextOptions("Evaluate the supplied image.");
         DecisionsMessageItem message = (DecisionsMessageItem)options.InputItems[0];
         message.Content.Add(new DecisionsInputImageContentPart
         {
-            ImageUri = imageUrl,
+            ImageUri = imageUri,
             ImageDetailLevel = DecisionsImageDetailLevel.Low,
         });
         options.Questions.Add(new DecisionsPredicateQuestion
