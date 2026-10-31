@@ -43,6 +43,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "access_programs": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "cyber": {
+                        "type": "string",
+                        "enum": [
+                          "daybreak_blue",
+                          "daybreak_red",
+                          "standard"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
                   "background": {
                     "anyOf": [
                       {
@@ -2906,6 +2921,71 @@
                                       ]
                                     }
                                   }
+                                },
+                                "text": {
+                                  "type": "object",
+                                  "required": [
+                                    "format"
+                                  ],
+                                  "properties": {
+                                    "format": {
+                                      "discriminator": {
+                                        "propertyName": "type"
+                                      },
+                                      "oneOf": [
+                                        {
+                                          "type": "object",
+                                          "required": [
+                                            "type",
+                                            "name",
+                                            "schema"
+                                          ],
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "enum": [
+                                                "json_schema"
+                                              ]
+                                            },
+                                            "name": {
+                                              "type": "string"
+                                            },
+                                            "schema": {
+                                              "type": "object",
+                                              "additionalProperties": true
+                                            },
+                                            "description": {
+                                              "type": "string"
+                                            },
+                                            "strict": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "boolean"
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "type": "object",
+                                          "required": [
+                                            "type"
+                                          ],
+                                          "properties": {
+                                            "type": {
+                                              "type": "string",
+                                              "enum": [
+                                                "text"
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
                                 }
                               }
                             },
@@ -3067,6 +3147,13 @@
                                                     "enum": [
                                                       "explicit"
                                                     ]
+                                                  },
+                                                  "ttl": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "12h",
+                                                      "30m"
+                                                    ]
                                                   }
                                                 }
                                               }
@@ -3126,6 +3213,13 @@
                                                     "enum": [
                                                       "explicit"
                                                     ]
+                                                  },
+                                                  "ttl": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "12h",
+                                                      "30m"
+                                                    ]
                                                   }
                                                 }
                                               }
@@ -3157,6 +3251,13 @@
                                                     "type": "string",
                                                     "enum": [
                                                       "explicit"
+                                                    ]
+                                                  },
+                                                  "ttl": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "12h",
+                                                      "30m"
                                                     ]
                                                   }
                                                 }
@@ -3498,6 +3599,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "12h",
+                                                          "30m"
+                                                        ]
                                                       }
                                                     }
                                                   },
@@ -3570,6 +3678,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "12h",
+                                                          "30m"
+                                                        ]
                                                       }
                                                     }
                                                   },
@@ -3608,6 +3723,13 @@
                                                         "type": "string",
                                                         "enum": [
                                                           "explicit"
+                                                        ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "12h",
+                                                          "30m"
                                                         ]
                                                       }
                                                     }
@@ -3796,6 +3918,66 @@
                                       "type": "null"
                                     }
                                   ]
+                                },
+                                "error": {
+                                  "type": "object",
+                                  "required": [
+                                    "type",
+                                    "code",
+                                    "message",
+                                    "param"
+                                  ],
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "code": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "message": {
+                                      "type": "string"
+                                    },
+                                    "param": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "moderation_details": {
+                                      "type": "object",
+                                      "required": [
+                                        "categories",
+                                        "moderation_stage"
+                                      ],
+                                      "properties": {
+                                        "categories": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "moderation_stage": {
+                                          "type": "string",
+                                          "enum": [
+                                            "input",
+                                            "output",
+                                            "unknown"
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
                                 },
                                 "output_format": {
                                   "anyOf": [
@@ -4367,6 +4549,13 @@
                                                 "enum": [
                                                   "explicit"
                                                 ]
+                                              },
+                                              "ttl": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "12h",
+                                                  "30m"
+                                                ]
                                               }
                                             }
                                           }
@@ -4426,6 +4615,13 @@
                                                 "enum": [
                                                   "explicit"
                                                 ]
+                                              },
+                                              "ttl": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "12h",
+                                                  "30m"
+                                                ]
                                               }
                                             }
                                           }
@@ -4457,6 +4653,13 @@
                                                 "type": "string",
                                                 "enum": [
                                                   "explicit"
+                                                ]
+                                              },
+                                              "ttl": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "12h",
+                                                  "30m"
                                                 ]
                                               }
                                             }
@@ -6895,7 +7098,6 @@
                               "type": "object",
                               "required": [
                                 "type",
-                                "action",
                                 "id",
                                 "status"
                               ],
@@ -6904,6 +7106,19 @@
                                   "type": "string",
                                   "enum": [
                                     "web_search_call"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "completed",
+                                    "failed",
+                                    "in_progress",
+                                    "incomplete",
+                                    "searching"
                                   ]
                                 },
                                 "action": {
@@ -6916,8 +7131,7 @@
                                       "type": "object",
                                       "required": [
                                         "type",
-                                        "pattern",
-                                        "url"
+                                        "pattern"
                                       ],
                                       "properties": {
                                         "type": {
@@ -6930,8 +7144,15 @@
                                           "type": "string"
                                         },
                                         "url": {
-                                          "type": "string",
-                                          "format": "uri"
+                                          "anyOf": [
+                                            {
+                                              "type": "string",
+                                              "format": "uri"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
                                         }
                                       }
                                     },
@@ -7013,19 +7234,6 @@
                                         }
                                       }
                                     }
-                                  ]
-                                },
-                                "id": {
-                                  "type": "string"
-                                },
-                                "status": {
-                                  "type": "string",
-                                  "enum": [
-                                    "completed",
-                                    "failed",
-                                    "in_progress",
-                                    "incomplete",
-                                    "searching"
                                   ]
                                 }
                               }
@@ -7149,6 +7357,7 @@
                           "gpt-5.1-chat-latest",
                           "gpt-5.1-codex",
                           "gpt-5.1-codex-max",
+                          "gpt-5.1-mini",
                           "gpt-5.2",
                           "gpt-5.2-2025-12-11",
                           "gpt-5.2-chat-latest",
@@ -7169,10 +7378,15 @@
                           "gpt-5.6-sol",
                           "gpt-5.6-terra",
                           "gpt-6-astra",
+                          "gpt-6-luna",
+                          "gpt-6-sol",
+                          "gpt-6.1-sol",
+                          "gpt-6.1-terra",
                           "gpt-audio-mini",
                           "gpt-audio-mini-2025-12-15",
                           "gpt-daybreak-blue-latest",
                           "gpt-daybreak-red-latest",
+                          "gpt-rosalind-research",
                           "o1",
                           "o1-2024-12-17",
                           "o1-mini",
@@ -7368,6 +7582,13 @@
                                                   "enum": [
                                                     "explicit"
                                                   ]
+                                                },
+                                                "ttl": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "12h",
+                                                    "30m"
+                                                  ]
                                                 }
                                               }
                                             }
@@ -7427,6 +7648,13 @@
                                                   "enum": [
                                                     "explicit"
                                                   ]
+                                                },
+                                                "ttl": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "12h",
+                                                    "30m"
+                                                  ]
                                                 }
                                               }
                                             }
@@ -7458,6 +7686,13 @@
                                                   "type": "string",
                                                   "enum": [
                                                     "explicit"
+                                                  ]
+                                                },
+                                                "ttl": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "12h",
+                                                    "30m"
                                                   ]
                                                 }
                                               }
@@ -9645,7 +9880,10 @@
                     "deprecated": true
                   },
                   "user": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "deprecated": true
                   }
                 }

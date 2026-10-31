@@ -88,7 +88,10 @@
                     ]
                   },
                   "user": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "deprecated": true
                   },
                   "safety_identifier": {
@@ -179,6 +182,10 @@
                             "type": "string",
                             "enum": [
                               "gpt-6-astra",
+                              "gpt-6.1-sol",
+                              "gpt-6.1-terra",
+                              "gpt-6-sol",
+                              "gpt-6-luna",
                               "gpt-5.6-sol",
                               "gpt-5.6-terra",
                               "gpt-5.6-luna",
@@ -198,6 +205,7 @@
                               "gpt-5.1",
                               "gpt-5.1-2025-11-13",
                               "gpt-5.1-codex",
+                              "gpt-5.1-mini",
                               "gpt-5.1-chat-latest",
                               "gpt-5",
                               "gpt-5-mini",
@@ -288,7 +296,8 @@
                           "gpt-5.1-codex-max",
                           "gpt-daybreak-blue-latest",
                           "gpt-daybreak-red-latest",
-                          "gpt-5.6-cyber"
+                          "gpt-5.6-cyber",
+                          "gpt-rosalind-research"
                         ]
                       }
                     ]
@@ -382,7 +391,10 @@
                               "type"
                             ]
                           }
-                        ]
+                        ],
+                        "discriminator": {
+                          "propertyName": "type"
+                        }
                       },
                       "verbosity": {
                         "anyOf": [
@@ -2137,6 +2149,13 @@
                                               "enum": [
                                                 "explicit"
                                               ]
+                                            },
+                                            "ttl": {
+                                              "type": "string",
+                                              "enum": [
+                                                "30m",
+                                                "12h"
+                                              ]
                                             }
                                           },
                                           "type": "object",
@@ -2196,6 +2215,13 @@
                                               "enum": [
                                                 "explicit"
                                               ]
+                                            },
+                                            "ttl": {
+                                              "type": "string",
+                                              "enum": [
+                                                "30m",
+                                                "12h"
+                                              ]
                                             }
                                           },
                                           "type": "object",
@@ -2241,6 +2267,13 @@
                                               "enum": [
                                                 "explicit"
                                               ]
+                                            },
+                                            "ttl": {
+                                              "type": "string",
+                                              "enum": [
+                                                "30m",
+                                                "12h"
+                                              ]
                                             }
                                           },
                                           "type": "object",
@@ -2280,6 +2313,21 @@
                         "type": "null"
                       }
                     ]
+                  },
+                  "access_programs": {
+                    "properties": {
+                      "cyber": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "daybreak_blue",
+                          "daybreak_red"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": []
                   },
                   "service_tier": {
                     "anyOf": [
@@ -2463,6 +2511,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
+                                                        ]
                                                       }
                                                     },
                                                     "type": "object",
@@ -2522,6 +2577,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
+                                                        ]
                                                       }
                                                     },
                                                     "type": "object",
@@ -2566,6 +2628,13 @@
                                                         "type": "string",
                                                         "enum": [
                                                           "explicit"
+                                                        ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
                                                         ]
                                                       }
                                                     },
@@ -3780,8 +3849,15 @@
                                               ]
                                             },
                                             "url": {
-                                              "type": "string",
-                                              "format": "uri"
+                                              "anyOf": [
+                                                {
+                                                  "type": "string",
+                                                  "format": "uri"
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
                                             },
                                             "pattern": {
                                               "type": "string"
@@ -3789,7 +3865,6 @@
                                           },
                                           "required": [
                                             "type",
-                                            "url",
                                             "pattern"
                                           ]
                                         }
@@ -3802,8 +3877,7 @@
                                   "required": [
                                     "id",
                                     "type",
-                                    "status",
-                                    "action"
+                                    "status"
                                   ]
                                 },
                                 {
@@ -3951,6 +4025,13 @@
                                                             "enum": [
                                                               "explicit"
                                                             ]
+                                                          },
+                                                          "ttl": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "30m",
+                                                              "12h"
+                                                            ]
                                                           }
                                                         },
                                                         "type": "object",
@@ -4023,6 +4104,13 @@
                                                             "type": "string",
                                                             "enum": [
                                                               "explicit"
+                                                            ]
+                                                          },
+                                                          "ttl": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "30m",
+                                                              "12h"
                                                             ]
                                                           }
                                                         },
@@ -4107,6 +4195,13 @@
                                                             "type": "string",
                                                             "enum": [
                                                               "explicit"
+                                                            ]
+                                                          },
+                                                          "ttl": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "30m",
+                                                              "12h"
                                                             ]
                                                           }
                                                         },
@@ -7456,6 +7551,71 @@
                                           ]
                                         }
                                       }
+                                    },
+                                    "text": {
+                                      "type": "object",
+                                      "properties": {
+                                        "format": {
+                                          "oneOf": [
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "text"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "json_schema"
+                                                  ]
+                                                },
+                                                "description": {
+                                                  "type": "string"
+                                                },
+                                                "name": {
+                                                  "type": "string"
+                                                },
+                                                "schema": {
+                                                  "type": "object",
+                                                  "additionalProperties": true
+                                                },
+                                                "strict": {
+                                                  "anyOf": [
+                                                    {
+                                                      "type": "boolean"
+                                                    },
+                                                    {
+                                                      "type": "null"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "schema",
+                                                "name"
+                                              ]
+                                            }
+                                          ],
+                                          "discriminator": {
+                                            "propertyName": "type"
+                                          }
+                                        }
+                                      },
+                                      "required": [
+                                        "format"
+                                      ]
                                     }
                                   },
                                   "required": [
@@ -7597,6 +7757,66 @@
                                         {
                                           "type": "null"
                                         }
+                                      ]
+                                    },
+                                    "error": {
+                                      "properties": {
+                                        "code": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "type": {
+                                          "type": "string"
+                                        },
+                                        "message": {
+                                          "type": "string"
+                                        },
+                                        "param": {
+                                          "anyOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "moderation_details": {
+                                          "properties": {
+                                            "moderation_stage": {
+                                              "type": "string",
+                                              "enum": [
+                                                "input",
+                                                "output",
+                                                "unknown"
+                                              ]
+                                            },
+                                            "categories": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            }
+                                          },
+                                          "type": "object",
+                                          "required": [
+                                            "moderation_stage",
+                                            "categories"
+                                          ]
+                                        }
+                                      },
+                                      "type": "object",
+                                      "required": [
+                                        "code",
+                                        "type",
+                                        "message",
+                                        "param"
                                       ]
                                     },
                                     "size": {
@@ -8893,6 +9113,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
+                                                        ]
                                                       }
                                                     },
                                                     "type": "object",
@@ -8952,6 +9179,13 @@
                                                         "enum": [
                                                           "explicit"
                                                         ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
+                                                        ]
                                                       }
                                                     },
                                                     "type": "object",
@@ -8996,6 +9230,13 @@
                                                         "type": "string",
                                                         "enum": [
                                                           "explicit"
+                                                        ]
+                                                      },
+                                                      "ttl": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "30m",
+                                                          "12h"
                                                         ]
                                                       }
                                                     },
@@ -9161,6 +9402,7 @@
                               },
                               "type": "object",
                               "required": [
+                                "type",
                                 "id"
                               ]
                             },

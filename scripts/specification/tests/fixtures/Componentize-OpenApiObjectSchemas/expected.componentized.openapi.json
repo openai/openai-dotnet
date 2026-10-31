@@ -58,10 +58,7 @@
             "$ref": "#/components/schemas/createWidget_request_object_Variants_union"
           },
           "nearMiss": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "$ref": "#/components/schemas/createWidget_request_object_NearMiss_object"
           },
           "literal": {
             "type": "string",
@@ -133,6 +130,12 @@
             ]
           }
         }
+      },
+      "createWidget_request_object_NearMiss_object": {
+        "type": [
+          "object",
+          "null"
+        ]
       },
       "ExistingRoot_Nested_object": {
         "type": "object",

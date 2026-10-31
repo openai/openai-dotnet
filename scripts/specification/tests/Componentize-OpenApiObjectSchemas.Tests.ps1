@@ -128,19 +128,52 @@ try {
     Invoke-Test "candidate discovery finds each inline schema occurrence exactly once" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $candidates = @(Get-InlineOpenApiSchemaCandidates -Document $source)
-        Assert-Equal 8 $candidates.Count "Candidate count was incorrect."
+        Assert-Equal 9 $candidates.Count "Candidate count was incorrect."
         Assert-Sequence `
-            @("Object", "Object", "Object", "Object", "OneOf", "Object", "Object", "Object") `
+            @("Object", "Object", "Object", "Object", "OneOf", "Object", "Object", "Object", "Object") `
             @($candidates.Kind) `
             "Candidate kinds or encounter order were incorrect."
         Assert-Sequence `
-            @(0, 1, 2, 1, 1, 2, 2, 0) `
+            @(0, 1, 2, 1, 1, 2, 2, 1, 0) `
             @($candidates.CandidateDepth) `
             "Candidate nesting depths were incorrect."
         Assert-Equal 1 @($candidates | Where-Object IsNonDiscriminatedUnion).Count "Non-discriminated union count was incorrect."
         Assert-True (@($candidates | Where-Object Kind -eq "OneOf")[0].IsNonDiscriminatedUnion) "oneOf candidate was not classified as a non-discriminated union."
         Assert-Equal 3 @($candidates | Where-Object { $null -ne $_.TypeEnumValue }).Count "Singleton enum count was incorrect."
         Assert-True (-not ($candidates.Pointer -ccontains "#/components/schemas/ExistingRoot")) "Existing component root was rediscovered."
+    }
+
+    Invoke-Test "nullable object properties become components without losing nullability" {
+        foreach ($types in @(@("object", "null"), @("null", "object"), @("object"))) {
+            $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+            $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+            $nullableObject = [ordered]@{
+                type = $types
+                properties = [ordered]@{
+                    mode = [ordered]@{ type = @("string", "null"); enum = @("explicit", "implicit", $null) }
+                    ttl = [ordered]@{ type = "string"; enum = @("30m") }
+                }
+                additionalProperties = $false
+            }
+            $root.properties["prompt_cache_options"] = $nullableObject
+            $root.properties["mode_alias"] = [ordered]@{
+                '$ref' = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/prompt_cache_options/properties/mode"
+            }
+            $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
+            $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+            $componentName = "createWidget_request_object_PromptCacheOptions_object"
+            $schemas = $result.Document.components.schemas
+
+            Assert-True (Test-JsonProperty -Object $schemas -Name $componentName) "Nullable object property was not componentized."
+            Assert-Equal "#/components/schemas/$componentName" $schemas["createWidget_request_object"].properties.prompt_cache_options.'$ref' "Nullable object property did not reference its component."
+            Assert-JsonEqual $nullableObject $schemas[$componentName] "Nullable object component lost its type array, properties, or constraints."
+            Assert-Equal "#/components/schemas/$componentName/properties/mode" $schemas["createWidget_request_object"].properties.mode_alias.'$ref' "Nullable object descendant reference was not relocated."
+            Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
+
+            $second = ConvertTo-ComponentizedOpenApiDocument -Document $result.Document
+            Assert-Equal 0 $second.GeneratedComponentCount "Second pass componentized an existing nullable component root."
+            Assert-JsonEqual $result.Document $second.Document "Second pass changed the nullable object document."
+        }
     }
 
     Invoke-Test "multi-value string enums become deduplicatable enum components" {
@@ -214,12 +247,12 @@ try {
         $expected = Read-OpenApiDocument -Path $expectedFixturePath
         $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
-        Assert-Equal 7 $result.DiscoveredObjectSchemaCount "Discovery statistic was incorrect."
+        Assert-Equal 8 $result.DiscoveredObjectSchemaCount "Discovery statistic was incorrect."
         Assert-Equal 1 $result.DiscoveredOneOfSchemaCount "oneOf discovery statistic was incorrect."
         Assert-Equal 0 $result.DiscoveredStringEnumSchemaCount "String enum discovery statistic was incorrect."
-        Assert-Equal 8 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
-        Assert-Equal 8 $result.GeneratedComponentCount "Generated statistic was incorrect."
-        Assert-Equal 8 $result.RelocationCount "Relocation statistic was incorrect."
+        Assert-Equal 9 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
+        Assert-Equal 9 $result.GeneratedComponentCount "Generated statistic was incorrect."
+        Assert-Equal 9 $result.RelocationCount "Relocation statistic was incorrect."
         Assert-JsonEqual $expected $result.Document "Componentized fixture did not match its golden."
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
     }
@@ -239,6 +272,7 @@ try {
             "createWidget_request_object_Variants_union",
             "createWidget_request_object_Variants_union_object1",
             "createWidget_request_object_Variants_union_object2",
+            "createWidget_request_object_NearMiss_object",
             "ExistingRoot_Nested_object"
         ) @((Get-JsonProperties -Value $schemas).Name) "Generated component names or order were incorrect."
 
@@ -823,17 +857,23 @@ try {
         Assert-Equal "x-api-key" $result.Document.components.securitySchemes.ApiKey.name "Security scheme name changed."
     }
 
-    # Type arrays and example objects are not exact schema-context object
-    # candidates and must survive unchanged.
-    Invoke-Test "near misses and literal object lookalikes remain inline" {
+    # Nullable object schemas move, while primitive unions and literal examples
+    # remain unchanged.
+    Invoke-Test "nullable objects move while near misses and literal lookalikes remain inline" {
         $source = Read-TestJsonFixture `
             -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        foreach ($types in @(@("string", "null"), @("object", "string"), @("Object", "null"), @("null"))) {
+            Assert-True (-not (Test-IsInlineOpenApiObjectSchema `
+                -Value ([ordered]@{ type = $types }) `
+                -Context Schema)) "A non-object or mixed-type schema was eligible."
+        }
         $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.literal.example["oneOf"] = @(
             [ordered]@{ type = "object" }
         )
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $root = $result.Document.components.schemas["createWidget_request_object"]
-        Assert-Sequence @("object", "null") @($root.properties.nearMiss.type) "Type-array near miss changed."
+        Assert-Equal "#/components/schemas/createWidget_request_object_NearMiss_object" $root.properties.nearMiss.'$ref' "Nullable object remained inline."
+        Assert-Sequence @("object", "null") @($result.Document.components.schemas["createWidget_request_object_NearMiss_object"].type) "Nullable object type array changed."
         Assert-Equal "object" $root.properties.literal.example.type "Literal object changed."
         Assert-Equal "object" $root.properties.literal.example.properties.ignored.type "Nested literal object changed."
         Assert-Equal 1 $root.properties.literal.example.oneOf.Count "Literal oneOf lookalike changed."

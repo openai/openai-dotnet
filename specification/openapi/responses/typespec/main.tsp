@@ -17,6 +17,7 @@ using OpenAPI;
 namespace OpenAI;
 
 model createResponse_request_object {
+  access_programs?: createResponse_request_object_AccessPrograms_object;
   background?: boolean | null;
   context_management?: createResponse_request_object_ContextManagement_array_item_object[] | null;
   conversation?: createResponse_request_object_Conversation_union | null;
@@ -50,7 +51,17 @@ model createResponse_request_object {
   #deprecated "deprecated"
   truncation?: createResponse_request_object_Truncation_enum | null;
   #deprecated "deprecated"
-  user?: string;
+  user?: string | null;
+}
+
+model createResponse_request_object_AccessPrograms_object {
+  cyber?: createResponse_request_object_AccessPrograms_object_Cyber_enum;
+}
+
+enum createResponse_request_object_AccessPrograms_object_Cyber_enum {
+  daybreak_blue,
+  daybreak_red,
+  standard,
 }
 
 model createResponse_request_object_ContextManagement_array_item_object {
@@ -359,10 +370,34 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   type: "configuration_update";
   id?: string | null;
   reasoning?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object;
+  text?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object;
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object {
   effort?: createResponse_request_object_Reasoning_object_Effort_enum | null;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object {
+  format: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject;
+}
+
+@discriminator("type")
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: string;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_typeOfJsonSchema
+  extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: "json_schema";
+  name: string;
+  schema: createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary;
+  description?: string;
+  strict?: boolean | null;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_typeOfText
+  extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: "text";
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall
@@ -525,6 +560,7 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   background?:
     | createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum
     | null;
+  error?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object;
   output_format?:
     | createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum
     | null;
@@ -543,6 +579,25 @@ enum createResponse_request_object_Input_union_array_item_discriminatedObject_ty
   failed,
   generating,
   in_progress,
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object {
+  type: string;
+  code: string | null;
+  message: string;
+  param: string | null;
+  moderation_details?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object {
+  categories: string[];
+  moderation_stage: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object_ModerationStage_enum;
+}
+
+enum createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object_ModerationStage_enum {
+  input,
+  output,
+  `unknown`,
 }
 
 enum createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Size_enum {
@@ -958,9 +1013,9 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall
   extends createResponse_request_object_Input_union_array_item_discriminatedObject {
   type: "web_search_call";
-  action: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject;
   id: string;
   status: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Status_enum;
+  action?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject;
 }
 
 @discriminator("type")
@@ -972,7 +1027,7 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject {
   type: "find_in_page";
   pattern: string;
-  url: url;
+  url?: url | null;
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfOpenPage
@@ -1066,6 +1121,7 @@ enum createResponse_request_object_Model_enum {
   `gpt-5.1-chat-latest`,
   `gpt-5.1-codex`,
   `gpt-5.1-codex-max`,
+  `gpt-5.1-mini`,
   `gpt-5.2`,
   `gpt-5.2-2025-12-11`,
   `gpt-5.2-chat-latest`,
@@ -1086,10 +1142,15 @@ enum createResponse_request_object_Model_enum {
   `gpt-5.6-sol`,
   `gpt-5.6-terra`,
   `gpt-6-astra`,
+  `gpt-6-luna`,
+  `gpt-6-sol`,
+  `gpt-6.1-sol`,
+  `gpt-6.1-terra`,
   `gpt-audio-mini`,
   `gpt-audio-mini-2025-12-15`,
   `gpt-daybreak-blue-latest`,
   `gpt-daybreak-red-latest`,
+  `gpt-rosalind-research`,
   o1,
   `o1-2024-12-17`,
   `o1-mini`,
@@ -1171,6 +1232,12 @@ enum createResponse_request_object_Prompt_object_Variables_dictionary_value_unio
 
 model createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object {
   mode: "explicit";
+  ttl?: createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum;
+}
+
+enum createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum {
+  `12h`,
+  `30m`,
 }
 
 model createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage

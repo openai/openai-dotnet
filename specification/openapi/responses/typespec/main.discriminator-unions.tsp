@@ -17,6 +17,7 @@ using OpenAPI;
 namespace OpenAI;
 
 model createResponse_request_object {
+  access_programs?: createResponse_request_object_AccessPrograms_object;
   background?: boolean | null;
   context_management?: createResponse_request_object_ContextManagement_array_item_object[] | null;
   conversation?: createResponse_request_object_Conversation_union | null;
@@ -50,7 +51,18 @@ model createResponse_request_object {
   #deprecated "deprecated"
   truncation?: createResponse_request_object_Truncation_enum | null;
   #deprecated "deprecated"
-  user?: string;
+  user?: string | null;
+}
+
+model createResponse_request_object_AccessPrograms_object {
+  cyber?: createResponse_request_object_AccessPrograms_object_Cyber_enum;
+}
+
+union createResponse_request_object_AccessPrograms_object_Cyber_enum {
+  string,
+  daybreak_blue: "daybreak_blue",
+  daybreak_red: "daybreak_red",
+  standard: "standard",
 }
 
 model createResponse_request_object_ContextManagement_array_item_object {
@@ -437,10 +449,40 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   type: createResponse_request_object_Input_union_array_item_discriminatedObject_discriminator.configuration_update;
   id?: string | null;
   reasoning?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object;
+  text?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object;
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object {
   effort?: createResponse_request_object_Reasoning_object_Effort_enum | null;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object {
+  format: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject;
+}
+
+@discriminator("type")
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_discriminator;
+}
+
+union createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_discriminator {
+  string,
+  json_schema: "json_schema",
+  text: "text",
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_typeOfJsonSchema
+  extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_discriminator.json_schema;
+  name: string;
+  schema: createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary;
+  description?: string;
+  strict?: boolean | null;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_typeOfText
+  extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject {
+  type: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Text_object_Format_discriminatedObject_discriminator.text;
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall
@@ -611,6 +653,7 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   background?:
     | createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_Background_enum
     | null;
+  error?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object;
   output_format?:
     | createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_OutputFormat_enum
     | null;
@@ -630,6 +673,26 @@ union createResponse_request_object_Input_union_array_item_discriminatedObject_t
   failed: "failed",
   generating: "generating",
   in_progress: "in_progress",
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object {
+  type: string;
+  code: string | null;
+  message: string;
+  param: string | null;
+  moderation_details?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object;
+}
+
+model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object {
+  categories: string[];
+  moderation_stage: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object_ModerationStage_enum;
+}
+
+union createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Error_object_ModerationDetails_object_ModerationStage_enum {
+  string,
+  input: "input",
+  output: "output",
+  `unknown`: "unknown",
 }
 
 union createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall_Size_enum {
@@ -1101,9 +1164,9 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall
   extends createResponse_request_object_Input_union_array_item_discriminatedObject {
   type: createResponse_request_object_Input_union_array_item_discriminatedObject_discriminator.web_search_call;
-  action: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject;
   id: string;
   status: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Status_enum;
+  action?: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject;
 }
 
 @discriminator("type")
@@ -1122,7 +1185,7 @@ model createResponse_request_object_Input_union_array_item_discriminatedObject_t
   extends createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject {
   type: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_discriminator.find_in_page;
   pattern: string;
-  url: url;
+  url?: url | null;
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfOpenPage
@@ -1222,6 +1285,7 @@ union createResponse_request_object_Model_enum {
   `gpt-5.1-chat-latest`: "gpt-5.1-chat-latest",
   `gpt-5.1-codex`: "gpt-5.1-codex",
   `gpt-5.1-codex-max`: "gpt-5.1-codex-max",
+  `gpt-5.1-mini`: "gpt-5.1-mini",
   `gpt-5.2`: "gpt-5.2",
   `gpt-5.2-2025-12-11`: "gpt-5.2-2025-12-11",
   `gpt-5.2-chat-latest`: "gpt-5.2-chat-latest",
@@ -1242,10 +1306,15 @@ union createResponse_request_object_Model_enum {
   `gpt-5.6-sol`: "gpt-5.6-sol",
   `gpt-5.6-terra`: "gpt-5.6-terra",
   `gpt-6-astra`: "gpt-6-astra",
+  `gpt-6-luna`: "gpt-6-luna",
+  `gpt-6-sol`: "gpt-6-sol",
+  `gpt-6.1-sol`: "gpt-6.1-sol",
+  `gpt-6.1-terra`: "gpt-6.1-terra",
   `gpt-audio-mini`: "gpt-audio-mini",
   `gpt-audio-mini-2025-12-15`: "gpt-audio-mini-2025-12-15",
   `gpt-daybreak-blue-latest`: "gpt-daybreak-blue-latest",
   `gpt-daybreak-red-latest`: "gpt-daybreak-red-latest",
+  `gpt-rosalind-research`: "gpt-rosalind-research",
   o1: "o1",
   `o1-2024-12-17`: "o1-2024-12-17",
   `o1-mini`: "o1-mini",
@@ -1336,6 +1405,13 @@ union createResponse_request_object_Prompt_object_Variables_dictionary_value_uni
 
 model createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object {
   mode: "explicit";
+  ttl?: createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum;
+}
+
+union createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum {
+  string,
+  `12h`: "12h",
+  `30m`: "30m",
 }
 
 model createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage

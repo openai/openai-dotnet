@@ -5,7 +5,8 @@
 
 .DESCRIPTION
     Finds every inline Schema Object that owns a direct nonempty oneOf, has the
-    exact scalar type "object", or directly declares a multi-value string enum;
+    type "object" (including object-only and nullable-object type arrays), or
+    directly declares a multi-value string enum;
     creates one components.schemas entry per occurrence; and replaces each inline
     definition with a local $ref. A direct oneOf owner takes precedence when a
     schema satisfies multiple predicates. Nested candidates become separate
@@ -86,8 +87,22 @@ function Test-IsInlineOpenApiObjectSchema {
     }
 
     $type = Get-JsonPropertyValue -Object $Value -Name "type"
-    return $type -is [string] -and
-        [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
+    if ($type -is [string]) {
+        return [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
+    }
+    if (-not (Test-JsonArrayValue -Value $type)) {
+        return $false
+    }
+    $hasObjectType = $false
+    foreach ($typeName in $type) {
+        if ($typeName -isnot [string] -or @("object", "null") -cnotcontains $typeName) {
+            return $false
+        }
+        if ([string]::Equals($typeName, "object", [System.StringComparison]::Ordinal)) {
+            $hasObjectType = $true
+        }
+    }
+    return $hasObjectType
 }
 
 # Multi-value string enums are reusable scalar schema definitions. Singleton

@@ -259,6 +259,46 @@ try {
         Assert-Sequence @("nested") @($output.oneOf[0].properties.nested.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Nested candidate wrapper was incorrect."
     }
 
+    Invoke-Test "valid role-discriminated messages retain their branches and mappings" {
+        $root = Get-TestSchemaPointer
+        $branches = @(
+            foreach ($role in @("user", "developer")) {
+                $branch = New-TestSingletonTypeObject -Value "message"
+                $branch.required = [object[]]@($branch.required + "role")
+                $branch.properties["role"] = [ordered]@{ type = "string"; enum = @($role) }
+                $branch
+            }
+        )
+        $branches[0].properties["nested"] = New-TestSingletonTypeObject -Value "nested"
+        $schema = [ordered]@{
+            oneOf = $branches
+            discriminator = [ordered]@{
+                propertyName = "role"
+                mapping = [ordered]@{
+                    user = "$root/oneOf/0"
+                    developer = "$root/oneOf/1"
+                }
+            }
+        }
+        $source = New-TestOpenApiDocument -Schema $schema
+        $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        $result = ConvertTo-WrappedOpenApiSingletonTypeEnumDocument -Document $source
+        $output = Get-TestResponseSchema -Document $result.Document
+
+        Assert-Equal 0 $result.GroupedOneOfCount "Role-discriminated messages were regrouped by type."
+        Assert-Equal 1 $result.SingletonWrapperCount "Nested candidate was not wrapped exactly once."
+        Assert-Equal 2 $output.oneOf.Count "Role-discriminated branch count changed."
+        Assert-JsonEqual $schema.discriminator $output.discriminator "Role discriminator or mappings changed."
+        Assert-Sequence @("message", "message") @($output.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Message leaves were wrapped."
+        Assert-Sequence @("user", "developer") @($output.oneOf | ForEach-Object { $_.properties.role.enum[0] }) "Role branch order changed."
+        Assert-Sequence @("nested") @($output.oneOf[0].properties.nested.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Nested candidate wrapper was incorrect."
+        Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
+
+        $second = ConvertTo-WrappedOpenApiSingletonTypeEnumDocument -Document $result.Document
+        Assert-Equal 0 $second.GeneratedWrapperCount "Second pass generated wrappers."
+        Assert-JsonEqual $result.Document $second.Document "Second pass changed the role-discriminated document."
+    }
+
     Invoke-Test "enum-only near misses remain unchanged and const must agree" {
         $nearMisses = New-TestOpenApiDocument -Schema (
             Get-TestFixtureCase -Cases $schemaCases -Name "nearMisses"

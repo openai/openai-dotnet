@@ -4,14 +4,15 @@
 
 .DESCRIPTION
     Ensures every Schema Object with a required string property named `type`
-    constrained by exactly one enum value is a direct branch of a oneOf whose
-    discriminator propertyName is `type`.
+    constrained by exactly one enum value is a direct branch of a valid
+    discriminated oneOf, introducing a `type` discriminator when needed.
 
     In an undiscriminated mixed oneOf, all qualifying direct object branches are
     moved into one shared nested discriminated oneOf at the position of the first
     qualifying branch. Qualifying schemas in every other position receive a
-    singleton discriminated oneOf wrapper. Existing valid type-discriminated
-    oneOf schemas remain unchanged.
+    singleton discriminated oneOf wrapper. Existing valid discriminated oneOf
+    schemas retain their direct branches, including unions discriminated by
+    another property such as `role`.
 
     Run this stage after Flatten-OpenApiOneOf.ps1 and before sorting.
 
@@ -113,7 +114,7 @@ function Get-WrappableOpenApiSingletonTypeEnumPlan {
     }
 }
 
-function Get-ValidOpenApiTypeDiscriminatorOneOfPlan {
+function Get-ValidOpenApiSingletonTypeEnumParentPlan {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Schema,
@@ -128,13 +129,13 @@ function Get-ValidOpenApiTypeDiscriminatorOneOfPlan {
     }
     $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
     if ($propertyName -isnot [string] -or
-        -not [string]::Equals($propertyName, "type", [System.StringComparison]::Ordinal)) {
+        [string]::IsNullOrWhiteSpace($propertyName)) {
         return $null
     }
 
     return Get-OpenApiInlineDiscriminatorUnionPlan `
         -Schema $Schema `
-        -PropertyName "type" `
+        -PropertyName $propertyName `
         -Breadcrumb $Breadcrumb `
         -RequireDiscriminator
 }
@@ -447,7 +448,7 @@ function ConvertTo-WrappedOpenApiSingletonTypeEnumValue {
         [switch]$SuppressCurrentCandidate,
 
         [Parameter()]
-        [switch]$DirectBranchOfValidTypeOneOf,
+        [switch]$DirectBranchOfValidDiscriminatorOneOf,
 
         [Parameter()]
         [int]$Depth = 0,
@@ -500,7 +501,7 @@ function ConvertTo-WrappedOpenApiSingletonTypeEnumValue {
     else {
         $null
     }
-    if ($null -ne $candidatePlan -and -not $DirectBranchOfValidTypeOneOf) {
+    if ($null -ne $candidatePlan -and -not $DirectBranchOfValidDiscriminatorOneOf) {
         Assert-OpenApiSingletonTypeEnumCandidateIsSafe `
             -Schema $Value `
             -Breadcrumb $SourceBreadcrumb
@@ -531,8 +532,8 @@ function ConvertTo-WrappedOpenApiSingletonTypeEnumValue {
     }
 
     $oneOf = if ($isSchema) { Get-JsonPropertyValue -Object $Value -Name "oneOf" } else { $null }
-    $validTypePlan = if (Test-JsonArrayValue -Value $oneOf) {
-        Get-ValidOpenApiTypeDiscriminatorOneOfPlan `
+    $validParentPlan = if (Test-JsonArrayValue -Value $oneOf) {
+        Get-ValidOpenApiSingletonTypeEnumParentPlan `
             -Schema $Value `
             -Breadcrumb $SourceBreadcrumb
     }
@@ -542,7 +543,7 @@ function ConvertTo-WrappedOpenApiSingletonTypeEnumValue {
 
     $groupedBranchPlans = [System.Collections.Generic.Dictionary[int, object]]::new()
     $wrapGroupedBranchesSeparately = $false
-    if ((Test-JsonArrayValue -Value $oneOf) -and $null -eq $validTypePlan) {
+    if ((Test-JsonArrayValue -Value $oneOf) -and $null -eq $validParentPlan) {
         for ($index = 0; $index -lt $oneOf.Count; $index++) {
             $plan = Get-WrappableOpenApiSingletonTypeEnumPlan `
                 -Schema $oneOf[$index] `
@@ -726,7 +727,7 @@ function ConvertTo-WrappedOpenApiSingletonTypeEnumValue {
                     -GroupedOneOfCount $GroupedOneOfCount `
                     -GroupedBranchCount $GroupedBranchCount `
                     -SingletonWrapperCount $SingletonWrapperCount `
-                    -DirectBranchOfValidTypeOneOf:($null -ne $validTypePlan) `
+                    -DirectBranchOfValidDiscriminatorOneOf:($null -ne $validParentPlan) `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
@@ -768,7 +769,7 @@ function Assert-NoUnwrappedOpenApiSingletonTypeEnums {
         [string]$Breadcrumb = "#",
 
         [Parameter()]
-        [switch]$DirectBranchOfValidTypeOneOf,
+        [switch]$DirectBranchOfValidDiscriminatorOneOf,
 
         [Parameter()]
         [int]$Depth = 0,
@@ -806,14 +807,14 @@ function Assert-NoUnwrappedOpenApiSingletonTypeEnums {
     }
 
     $isSchema = [string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)
-    if ($isSchema -and -not $DirectBranchOfValidTypeOneOf -and
+    if ($isSchema -and -not $DirectBranchOfValidDiscriminatorOneOf -and
         $null -ne (Get-WrappableOpenApiSingletonTypeEnumPlan -Schema $Value -Breadcrumb $Breadcrumb)) {
-        throw "Wrapped output retained required singleton type enum outside a valid type-discriminated oneOf at '$Breadcrumb'."
+        throw "Wrapped output retained required singleton type enum outside a valid discriminated oneOf at '$Breadcrumb'."
     }
 
     $oneOf = if ($isSchema) { Get-JsonPropertyValue -Object $Value -Name "oneOf" } else { $null }
     $validPlan = if (Test-JsonArrayValue -Value $oneOf) {
-        Get-ValidOpenApiTypeDiscriminatorOneOfPlan -Schema $Value -Breadcrumb $Breadcrumb
+        Get-ValidOpenApiSingletonTypeEnumParentPlan -Schema $Value -Breadcrumb $Breadcrumb
     }
     else {
         $null
@@ -833,7 +834,7 @@ function Assert-NoUnwrappedOpenApiSingletonTypeEnums {
                     -Value $property.Value[$index] `
                     -Context Schema `
                     -Breadcrumb "$propertyBreadcrumb/$index" `
-                    -DirectBranchOfValidTypeOneOf:($null -ne $validPlan) `
+                    -DirectBranchOfValidDiscriminatorOneOf:($null -ne $validPlan) `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
