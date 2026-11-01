@@ -298,6 +298,51 @@ public class ChatMockTests : ClientTestBase
     [Test]
     public async Task CompleteChatStreamingKeepsUsageWhenStreamOptionsArePatched()
     {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
+        Assert.That(streamOptions.GetProperty("include_obfuscation").GetBoolean(), Is.False);
+        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.True);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingDoesNotModifyPatchedOptions()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+        options.Patch.Set("$.temperature"u8, 0.5);
+        string patchBefore = options.Patch.ToString("JP");
+
+        await CompleteChatStreamingAndGetRequestBodyAsync(options);
+        await CompleteChatStreamingAndGetRequestBodyAsync(options);
+
+        Assert.That(options.Patch.ToString("JP"), Is.EqualTo(patchBefore));
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingRespectsPatchedIncludeUsage()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_usage"u8, false);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        Assert.That(document.RootElement.GetProperty("stream_options").GetProperty("include_usage").GetBoolean(), Is.False);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingRespectsRemovedStreamOptions()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Remove("$.stream_options"u8);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        Assert.That(document.RootElement.TryGetProperty("stream_options", out _), Is.False);
+    }
+
+    private async Task<string> CompleteChatStreamingAndGetRequestBodyAsync(ChatCompletionOptions options)
+    {
         string requestBody = null;
         OpenAIClientOptions clientOptions = new()
         {
@@ -314,9 +359,6 @@ public class ChatMockTests : ClientTestBase
         };
         ChatClient client = new("model", s_fakeCredential, clientOptions);
 
-        ChatCompletionOptions options = new();
-        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
-
         if (IsAsync)
         {
             await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(s_messages, options))
@@ -330,10 +372,7 @@ public class ChatMockTests : ClientTestBase
             }
         }
 
-        using JsonDocument document = JsonDocument.Parse(requestBody);
-        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
-        Assert.That(streamOptions.GetProperty("include_obfuscation").GetBoolean(), Is.False);
-        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.True);
+        return requestBody;
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
