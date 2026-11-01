@@ -6,7 +6,10 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -290,6 +293,47 @@ public class ChatMockTests : ClientTestBase
         stopwatch.Stop();
 
         Assert.That(response.IsDisposed);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingKeepsUsageWhenStreamOptionsArePatched()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = Encoding.UTF8.GetString(stream.ToArray());
+                return CreateStreamingChatResponse();
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ChatClient client = new("model", s_fakeCredential, clientOptions);
+
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+
+        if (IsAsync)
+        {
+            await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(s_messages, options))
+            {
+            }
+        }
+        else
+        {
+            foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreaming(s_messages, options))
+            {
+            }
+        }
+
+        using JsonDocument document = JsonDocument.Parse(requestBody);
+        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
+        Assert.That(streamOptions.GetProperty("include_obfuscation").GetBoolean(), Is.False);
+        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.True);
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
