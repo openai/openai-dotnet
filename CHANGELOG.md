@@ -30,8 +30,6 @@
 
 ### Bugs Fixed
 
-- Fixed nested `JsonPatch` propagation through model arrays by consuming the complete array index in generated path helpers.
-
 - OpenAI.Chat:
   - Fixed `JsonPatch` precedence for message content and content-part properties, preventing patched values from being emitted alongside modeled values as duplicate JSON properties. _(A community contribution, courtesy of [sylvesterkaczmarek](https://github.com/sylvesterkaczmarek))_
 - OpenAI.Assistants:

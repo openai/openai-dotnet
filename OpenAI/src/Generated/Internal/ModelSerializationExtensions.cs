@@ -397,12 +397,7 @@ namespace OpenAI
                 return false;
             }
 
-            bool parsed = Utf8Parser.TryParse(indexSlice.Slice(0, indexEnd + 1), out index, out bytesConsumed);
-            if (parsed)
-            {
-                bytesConsumed = bytesConsumed + 2;
-            }
-            return parsed;
+            return Utf8Parser.TryParse(indexSlice.Slice(0, indexEnd + 1), out index, out bytesConsumed);
         }
 
         public static ReadOnlySpan<byte> GetRemainder(this ReadOnlySpan<byte> jsonPath, int index)
