@@ -54,6 +54,17 @@ try {
         }
     }
 
+    Invoke-Test "singleton enum groups preserve differences in values and constraints" {
+        $plan = New-OpenApiComponentDefaultMapPlan -Document (New-TestSingletonEnumComponents)
+        Assert-Equal 3 $plan.DefaultMap.groups.Count "Singleton enum identity groups were incorrect."
+        $group = @($plan.DefaultMap.groups | Where-Object { $_.members -ccontains "ModeA" })[0]
+        Assert-Sequence @("ModeA", "ModeB") @($group.members) "Equivalent singleton enums were not grouped together."
+        foreach ($name in @("ModeImplicit", "ModeConstrained")) {
+            $separate = @($plan.DefaultMap.groups | Where-Object { $_.members -ccontains $name })[0]
+            Assert-Sequence @($name) @($separate.members) "Singleton enum '$name' was incorrectly merged."
+        }
+    }
+
     Invoke-Test "equivalent inheritance families share structural identities without cycles" {
         $document = Read-TestJsonFixture -RelativePath "_Shared/minimal.openapi.json"
         $document["components"] = [ordered]@{

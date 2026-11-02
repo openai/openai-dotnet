@@ -100,6 +100,20 @@ try {
         Assert-AdditionalOpenApiReferencesResolve -Document $result.Document
     }
 
+    Invoke-Test "singleton enums deduplicate references without changing required values" {
+        $document = New-TestSingletonEnumComponents
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $document -DefaultMap $plan.DefaultMap
+        Assert-Equal 3 $result.ComponentCount "Singleton enum deduplication retained the wrong count."
+        Assert-Equal 1 $result.RemovedComponentCount "Singleton enum duplicate was not removed."
+        $schema = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema
+        Assert-Equal "#/components/schemas/ModeA" $schema.properties.second.'$ref' "Singleton reference did not follow its representative."
+        Assert-Sequence @("first", "second") @($schema.required) "Required-property membership changed during enum deduplication."
+        Assert-Sequence @("explicit") @($result.Document.components.schemas.ModeA.enum) "Singleton value changed."
+        Assert-Equal "#/components/schemas/ModeImplicit" $schema.properties.different.'$ref' "Different singleton value was merged."
+        Assert-Equal "#/components/schemas/ModeConstrained" $schema.properties.constrained.'$ref' "Different constraints were merged."
+    }
+
     Invoke-Test "all pointer kinds and descendant suffixes relocate" {
         $document = New-AcyclicDeduplicationTestDocument
         $plan = New-OpenApiComponentDefaultMapPlan -Document $document

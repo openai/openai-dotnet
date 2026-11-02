@@ -354,13 +354,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText": {
         "type": "object",
@@ -403,13 +406,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum": {
         "type": "string",
@@ -628,13 +634,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText": {
         "type": "object",
@@ -677,13 +686,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum": {
         "type": "string",
@@ -954,13 +966,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem": {
         "type": "object",
@@ -1064,13 +1079,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser": {
         "type": "object",
@@ -1195,13 +1213,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson": {
         "type": "object",
@@ -1311,13 +1332,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Questions_array_item_discriminatedObject": {
         "type": "object",
@@ -1985,10 +2009,7 @@
             ]
           },
           "ttl": {
-            "type": "string",
-            "enum": [
-              "30m"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_PromptCacheOptions_object_Ttl_enum"
           }
         },
         "additionalProperties": false
@@ -1998,6 +2019,12 @@
         "enum": [
           "explicit",
           "implicit"
+        ]
+      },
+      "createDecision_request_object_PromptCacheOptions_object_Ttl_enum": {
+        "type": "string",
+        "enum": [
+          "30m"
         ]
       },
       "createDecision_response_200_object": {

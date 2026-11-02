@@ -105,7 +105,12 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object {
-  mode: "explicit";
+  mode: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum {
+  string,
+  explicit: "explicit",
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText
@@ -396,13 +401,18 @@ model createDecision_request_object_Questions_array_item_discriminatedObject_typ
 
 model createDecision_request_object_PromptCacheOptions_object {
   mode?: createDecision_request_object_PromptCacheOptions_object_Mode_enum | null;
-  ttl?: "30m";
+  ttl?: createDecision_request_object_PromptCacheOptions_object_Ttl_enum;
 }
 
 union createDecision_request_object_PromptCacheOptions_object_Mode_enum {
   string,
   explicit: "explicit",
   implicit: "implicit",
+}
+
+union createDecision_request_object_PromptCacheOptions_object_Ttl_enum {
+  string,
+  `30m`: "30m",
 }
 
 model createDecision_response_200_object {

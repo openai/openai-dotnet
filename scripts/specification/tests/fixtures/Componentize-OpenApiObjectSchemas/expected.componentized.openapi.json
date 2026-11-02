@@ -80,15 +80,16 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "enum": [
-              "child_kind"
-            ]
+            "$ref": "#/components/schemas/createWidget_request_object_Child_object_Type_enum"
           }
         },
         "additionalProperties": {
           "$ref": "#/components/schemas/createWidget_request_object_Child_object_value_dictionary"
         }
+      },
+      "createWidget_request_object_Child_object_Type_enum": {
+        "type": "string",
+        "enum": ["child_kind"]
       },
       "createWidget_request_object_Child_object_value_dictionary": {
         "type": "object",
@@ -116,23 +117,25 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "enum": [
-              "alpha"
-            ]
+            "$ref": "#/components/schemas/createWidget_request_object_Variants_union_object1_Type_enum"
           }
         }
+      },
+      "createWidget_request_object_Variants_union_object1_Type_enum": {
+        "type": "string",
+        "enum": ["alpha"]
       },
       "createWidget_request_object_Variants_union_object2": {
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "enum": [
-              "alpha"
-            ]
+            "$ref": "#/components/schemas/createWidget_request_object_Variants_union_object2_Type_enum"
           }
         }
+      },
+      "createWidget_request_object_Variants_union_object2_Type_enum": {
+        "type": "string",
+        "enum": ["alpha"]
       },
       "createWidget_request_object_NearMiss_object": {
         "type": "object"

@@ -129,13 +129,13 @@ try {
     Invoke-Test "candidate discovery finds each inline schema occurrence exactly once" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $candidates = @(Get-InlineOpenApiSchemaCandidates -Document $source)
-        Assert-Equal 9 $candidates.Count "Candidate count was incorrect."
+        Assert-Equal 12 $candidates.Count "Candidate count was incorrect."
         Assert-Sequence `
-            @("Object", "Object", "Object", "Object", "OneOf", "Object", "Object", "Object", "Object") `
+            @("Object", "Object", "StringEnum", "Object", "Object", "OneOf", "Object", "StringEnum", "Object", "StringEnum", "Object", "Object") `
             @($candidates.Kind) `
             "Candidate kinds or encounter order were incorrect."
         Assert-Sequence `
-            @(0, 1, 2, 1, 1, 2, 2, 1, 0) `
+            @(0, 1, 2, 2, 1, 1, 2, 3, 2, 3, 1, 0) `
             @($candidates.CandidateDepth) `
             "Candidate nesting depths were incorrect."
         Assert-Equal 1 @($candidates | Where-Object IsNonDiscriminatedUnion).Count "Non-discriminated union count was incorrect."
@@ -223,13 +223,145 @@ try {
         Assert-JsonEqual $result.Document $second.Document "Second pass changed the hierarchy mappings."
     }
 
-    Invoke-Test "multi-value string enums become deduplicatable enum components" {
+    Invoke-Test "discriminator protection follows nested groups and mappings without excluding payload names" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $hierarchy = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $hierarchy -PropertyName "type" -Breadcrumb "#" -RequireDiscriminator
+        $normalized = ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema -Plan $plan
+        $normalized.oneOf[0].oneOf[0].properties["payload"] = [ordered]@{
+            type = "object"
+            properties = [ordered]@{ type = [ordered]@{ type = "string"; enum = @("ordinary") } }
+        }
+        $source = New-TestOpenApiDocument -Schema $normalized
+        $source.paths["/test"].post["operationId"] = "createTest"
+        $root = "#/paths/~1test/post/responses/200/content/application~1json/schema"
+        $pointers = Get-OpenApiDiscriminatorPropertyPointers -Document $source
+        foreach ($pointer in @("$root/oneOf/0/properties/type", "$root/oneOf/0/oneOf/0/properties/type", "$root/oneOf/0/oneOf/1/properties/type", "$root/oneOf/0/oneOf/0/properties/role")) {
+            Assert-True ($pointers.Contains($pointer)) "Discriminator property '$pointer' was not protected."
+        }
+        Assert-True (-not $pointers.Contains("$root/oneOf/0/oneOf/0/properties/payload/properties/type")) "An unrelated payload type field was protected by name."
+
+        $source["components"] = [ordered]@{ schemas = [ordered]@{
+            Base = [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("example") } }; discriminator = [ordered]@{ propertyName = "kind"; mapping = [ordered]@{ example = "Child" } } }
+            Child = [ordered]@{ type = "object"; required = @("kind"); properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("example") } }; allOf = @([ordered]@{ '$ref' = "#/components/schemas/Base" }) }
+            AnyChoice = [ordered]@{ discriminator = [ordered]@{ propertyName = "kind" }; anyOf = @([ordered]@{ '$ref' = "#/components/schemas/Child" }) }
+            AllChoice = [ordered]@{ discriminator = [ordered]@{ propertyName = "kind"; mapping = [ordered]@{ example = "Child" } }; allOf = @([ordered]@{ '$ref' = "#/components/schemas/Child" }) }
+        } }
+        $pointers = Get-OpenApiDiscriminatorPropertyPointers -Document $source
+        Assert-True ($pointers.Contains("#/components/schemas/Child/properties/kind")) "Mapping-only and anyOf component targets were not protected."
+        Assert-True ($pointers.Contains("#/components/schemas/Base/properties/kind")) "Discriminator owner was not protected."
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        Assert-Sequence @("example") @($result.Document.components.schemas.Base.properties.kind.enum) "Mapping-only owner discriminator was extracted."
+        Assert-Sequence @("example") @($result.Document.components.schemas.Child.properties.kind.enum) "Referenced child discriminator was extracted."
+        $outer = Resolve-LocalJsonPointer -Document $result.Document -Pointer (Get-TestResponseSchema $result.Document).'$ref'
+        $message = Resolve-LocalJsonPointer -Document $result.Document -Pointer $outer.oneOf[0].'$ref'
+        $user = Resolve-LocalJsonPointer -Document $result.Document -Pointer $message.oneOf[0].'$ref'
+        Assert-Sequence @("message") @($message.properties.type.enum) "Intermediate outer discriminator was extracted."
+        Assert-Sequence @("message") @($user.properties.type.enum) "Repeated ancestor discriminator value was extracted."
+        Assert-Sequence @("user") @($user.properties.role.enum) "Inner discriminator was extracted."
+        $payload = Resolve-LocalJsonPointer -Document $result.Document -Pointer $user.properties.payload.'$ref'
+        Assert-True (Test-JsonProperty -Object $payload.properties.type -Name '$ref') "Ordinary nested type enum remained inline."
+        $null = Assert-OpenApiDiscriminatorMappings -Document $result.Document
+        $second = ConvertTo-ComponentizedOpenApiDocument -Document $result.Document
+        Assert-Equal 0 $second.GeneratedComponentCount "A rerun extracted a protected discriminator property."
+    }
+
+    Invoke-Test "required singleton string enums become named components without changing constraints" {
+        $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+        $mode = [ordered]@{
+            type = "string"
+            enum = @("explicit")
+            const = "explicit"
+            description = "Cache mode"
+        }
+        $root.properties["prompt_cache_breakpoint"] = [ordered]@{
+            type = "object"
+            required = @("mode")
+            properties = [ordered]@{ mode = $mode }
+            additionalProperties = $false
+        }
+        $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $schemas = $result.Document.components.schemas
+        $breakpointName = "createWidget_request_object_PromptCacheBreakpoint_object"
+        $enumName = "${breakpointName}_Mode_enum"
+        Assert-True (Test-JsonProperty -Object $schemas -Name $enumName) "Singleton mode enum was not componentized."
+        Assert-Equal "#/components/schemas/$enumName" $schemas[$breakpointName].properties.mode.'$ref' "Mode did not reference its enum component."
+        Assert-Sequence @("mode") @($schemas[$breakpointName].required) "Required-property membership changed."
+        Assert-Equal $false $schemas[$breakpointName].additionalProperties "Parent object constraints changed."
+        Assert-JsonEqual $mode $schemas[$enumName] "Enum values, const, or annotations changed."
+        Assert-Equal $before (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Componentization mutated its source."
+    }
+
+    Invoke-Test "singleton enum references follow array dictionary nullable and existing-component contexts" {
+        $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+        $singleton = [ordered]@{ type = "string"; enum = @("fixed"); description = "Preserved" }
+        foreach ($name in @("type", "role", "kind", "a/b~c")) {
+            $root.properties[$name] = Copy-JsonValue -Value $singleton
+        }
+        $root.properties["tags"] = [ordered]@{ type = "array"; items = Copy-JsonValue -Value $singleton }
+        $root.properties["codes"] = [ordered]@{ type = "object"; additionalProperties = Copy-JsonValue -Value $singleton }
+        $root.properties["nullable"] = [ordered]@{ anyOf = @((Copy-JsonValue -Value $singleton), [ordered]@{ type = "null" }) }
+        $root.properties["alias"] = [ordered]@{ '$ref' = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/a~1b~0c" }
+        $root.properties["entryAlias"] = [ordered]@{ '$ref' = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/a~1b~0c/enum/0" }
+        $root.properties.literal.example["enum"] = @("literal")
+        $source.components.schemas.ExistingRoot.properties["fixed"] = Copy-JsonValue -Value $singleton
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $schemas = $result.Document.components.schemas
+        $properties = $schemas["createWidget_request_object"].properties
+        foreach ($name in @("type", "role", "kind", "a/b~c")) {
+            $enum = Resolve-LocalJsonPointer -Document $result.Document -Pointer $properties[$name].'$ref'
+            Assert-JsonEqual $singleton $enum "Ordinary singleton '$name' was not preserved in a component."
+        }
+        Assert-Equal $properties['a/b~c'].'$ref' $properties.alias.'$ref' "Escaped enum reference was not relocated."
+        Assert-Equal "$($properties['a/b~c'].'$ref')/enum/0" $properties.entryAlias.'$ref' "Enum-entry reference suffix changed."
+        $arrayEnum = Resolve-LocalJsonPointer -Document $result.Document -Pointer $properties.tags.items.'$ref'
+        Assert-JsonEqual $singleton $arrayEnum "Array item singleton was not extracted."
+        $dictionary = Resolve-LocalJsonPointer -Document $result.Document -Pointer $properties.codes.'$ref'
+        $dictionaryEnum = Resolve-LocalJsonPointer -Document $result.Document -Pointer $dictionary.additionalProperties.'$ref'
+        Assert-JsonEqual $singleton $dictionaryEnum "Dictionary value singleton was not extracted."
+        Assert-Equal "null" $properties.nullable.anyOf[1].type "Nullable enum use site lost null."
+        Assert-True (Test-JsonProperty -Object $properties.nullable.anyOf[0] -Name '$ref') "Non-null singleton branch was not extracted."
+        Assert-True (Test-JsonProperty -Object $schemas.ExistingRoot.properties.fixed -Name '$ref') "Existing component's child singleton was not extracted."
+        Assert-Sequence @("literal") @($properties.literal.example.enum) "Literal example enum changed."
+        $second = ConvertTo-ComponentizedOpenApiDocument -Document $result.Document
+        Assert-Equal 0 $second.GeneratedComponentCount "Second pass rediscovered singleton candidates."
+        Assert-JsonEqual $result.Document $second.Document "Singleton extraction was not a fixed point."
+    }
+
+    Invoke-Test "singleton enum naming collisions preserve source component definitions" {
+        $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["mode"] = [ordered]@{ type = "string"; enum = @("explicit") }
+        $reservedName = "createWidget_request_object_Mode_enum"
+        $source.components.schemas[$reservedName] = [ordered]@{ type = "integer" }
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        Assert-Equal "integer" $result.Document.components.schemas[$reservedName].type "Source enum-name collision was overwritten."
+        Assert-Equal "#/components/schemas/${reservedName}_1" $result.Document.components.schemas["createWidget_request_object"].properties.mode.'$ref' "Singleton collision did not use the normal suffix."
+    }
+
+    Invoke-Test "unsupported enum shapes and const-only schemas are not invented as string enums" {
+        foreach ($schema in @(
+            [ordered]@{ type = "string"; enum = @() },
+            [ordered]@{ type = "string"; enum = "explicit" },
+            [ordered]@{ type = "string"; enum = @("explicit", 1) },
+            [ordered]@{ type = "integer"; enum = @(1) },
+            [ordered]@{ type = "boolean"; enum = @($true) },
+            [ordered]@{ type = "string"; const = "explicit" }
+        )) {
+            Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema -Value $schema -Context Schema)) "An unsupported or const-only schema was classified as a string enum."
+        }
+        Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema -Value ([ordered]@{ type = "string"; enum = @("literal") }) -Context Literal)) "Literal data became a singleton candidate."
+    }
+
+    Invoke-Test "nonempty string enums become deduplicatable enum components" {
         Assert-True (Test-IsInlineOpenApiStringEnumSchema `
             -Value ([ordered]@{ type = "string"; enum = @("direct", "programmatic") }) `
             -Context Schema) "Multi-value string enum was not eligible."
-        Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema `
+        Assert-True (Test-IsInlineOpenApiStringEnumSchema `
             -Value ([ordered]@{ type = "string"; enum = @("direct") }) `
-            -Context Schema)) "Singleton string enum was eligible."
+            -Context Schema) "Singleton string enum was not eligible."
         Assert-True (-not (Test-IsInlineOpenApiStringEnumSchema `
             -Value ([ordered]@{ type = "string"; enum = @("direct", 1) }) `
             -Context Schema)) "Mixed-value enum was eligible."
@@ -259,12 +391,12 @@ try {
         }
 
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
-        $enumCandidates = @($result.Candidates | Where-Object Kind -eq "StringEnum")
+        $enumCandidates = @($result.Candidates | Where-Object { $_.Kind -ceq "StringEnum" -and $_.Name -clike "*AllowedCallers_array_item_enum" })
         $expectedNames = @(
             "createWidget_request_object_CustomTool_object_AllowedCallers_array_item_enum",
             "createWidget_request_object_FunctionTool_object_AllowedCallers_array_item_enum"
         )
-        Assert-Equal 2 $result.DiscoveredStringEnumSchemaCount "String enum discovery count was incorrect."
+        Assert-Equal 5 $result.DiscoveredStringEnumSchemaCount "String enum discovery count was incorrect."
         Assert-Sequence $expectedNames @($enumCandidates.Name) "String enum component names were incorrect."
         foreach ($name in $expectedNames) {
             Assert-Sequence @("direct", "programmatic") @($result.Document.components.schemas[$name].enum) "Enum values changed for '$name'."
@@ -296,10 +428,10 @@ try {
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         Assert-Equal 8 $result.DiscoveredObjectSchemaCount "Discovery statistic was incorrect."
         Assert-Equal 1 $result.DiscoveredOneOfSchemaCount "oneOf discovery statistic was incorrect."
-        Assert-Equal 0 $result.DiscoveredStringEnumSchemaCount "String enum discovery statistic was incorrect."
-        Assert-Equal 9 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
-        Assert-Equal 9 $result.GeneratedComponentCount "Generated statistic was incorrect."
-        Assert-Equal 9 $result.RelocationCount "Relocation statistic was incorrect."
+        Assert-Equal 3 $result.DiscoveredStringEnumSchemaCount "String enum discovery statistic was incorrect."
+        Assert-Equal 12 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
+        Assert-Equal 12 $result.GeneratedComponentCount "Generated statistic was incorrect."
+        Assert-Equal 12 $result.RelocationCount "Relocation statistic was incorrect."
         Assert-JsonEqual $expected $result.Document "Componentized fixture did not match its golden."
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
     }
@@ -314,11 +446,14 @@ try {
             "ExistingRoot",
             "createWidget_request_object",
             "createWidget_request_object_Child_object",
+            "createWidget_request_object_Child_object_Type_enum",
             "createWidget_request_object_Child_object_value_dictionary",
             "createWidget_request_object_List_array_item_object",
             "createWidget_request_object_Variants_union",
             "createWidget_request_object_Variants_union_object1",
+            "createWidget_request_object_Variants_union_object1_Type_enum",
             "createWidget_request_object_Variants_union_object2",
+            "createWidget_request_object_Variants_union_object2_Type_enum",
             "createWidget_request_object_NearMiss_object",
             "ExistingRoot_Nested_object"
         ) @((Get-JsonProperties -Value $schemas).Name) "Generated component names or order were incorrect."
@@ -328,7 +463,8 @@ try {
         Assert-Sequence @("createWidget", "request", "object") @($root.NameSegments.Value) "Root naming segment values were incorrect."
         Assert-Equal "object" $root.StructuralRole "Root structural role was incorrect."
         Assert-Equal $null $root.NamingPlan.CollisionSuffix "Unique root had a collision suffix."
-        Assert-Sequence @(1, 2) @($result.Candidates[5..6].RoleOrdinal) "Repeated object roles were not numbered from one."
+        $variantCandidates = @($result.Candidates | Where-Object { $_.Pointer -match '/properties/variants/oneOf/[0-9]+$' })
+        Assert-Sequence @(1, 2) @($variantCandidates.RoleOrdinal) "Repeated object roles were not numbered from one."
         Assert-Equal 0 @($result.Candidates.Name | Where-Object { $_ -match '(^|_)Alternative[0-9]+($|_)' }).Count "Opaque alternative roles remained."
     }
 
@@ -808,7 +944,7 @@ try {
 
         $primitive = New-InvalidDiscriminatorSource
         $primitive.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.oneOf[1] = [ordered]@{ type = "string"; enum = @("blue") }
-        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $primitive } "*alternative*must contain only a string `$ref*"
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $primitive } "*Discriminator property 'kind' must be required*"
     }
 
     # A nested candidate inherits the containing candidate's semantic enum name,
@@ -863,7 +999,11 @@ try {
         $schemas = $result.Document.components.schemas
         $first = $schemas["createWidget_request_object_Variants_union_object1"]
         $second = $schemas["createWidget_request_object_Variants_union_object2"]
-        Assert-True (Test-JsonValuesEqual -Left $first -Right $second) "Duplicate fixture branches were not structurally equal."
+        $analysis = Get-OpenApiComponentDeduplicationAnalysis -Document $result.Document
+        Assert-Equal `
+            $analysis.Identities["createWidget_request_object_Variants_union_object1"].Fingerprint `
+            $analysis.Identities["createWidget_request_object_Variants_union_object2"].Fingerprint `
+            "Duplicate fixture branches did not have equivalent referenced schema structures."
         $variantRefs = $schemas["createWidget_request_object_Variants_union"].oneOf
         Assert-True (-not [string]::Equals($variantRefs[0].'$ref', $variantRefs[1].'$ref', [System.StringComparison]::Ordinal)) "Duplicate occurrences shared one component."
     }

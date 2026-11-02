@@ -579,6 +579,14 @@ try {
         Assert-Equal "#/components/schemas/${optionsName}_Mode_enum" $optionsComponent.properties.mode.anyOf[0].'$ref' "Nullable mode did not reference a non-null enum component."
         Assert-NoOpenApiSchemaTypeArrays -Value $componentized
 
+        $sortedBreakpoint = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.prompt_cache_breakpoint
+        Assert-Sequence @("explicit") @($sortedBreakpoint.properties.mode.enum) "Singleton enum was extracted before componentization."
+        $breakpointName = "createResponse_request_object_PromptCacheBreakpoint_object"
+        $breakpoint = Get-JsonPropertyValue -Object $componentized.components.schemas -Name $breakpointName
+        Assert-Equal "#/components/schemas/${breakpointName}_Mode_enum" $breakpoint.properties.mode.'$ref' "Componentization did not extract the singleton breakpoint mode."
+        Assert-Sequence @("mode") @($breakpoint.required) "Singleton extraction changed required mode."
+        Assert-Equal $false $breakpoint.additionalProperties "Singleton extraction changed the breakpoint object constraint."
+
         $splitWrapperName = "createResponse_request_object_SplitChoice_union_discriminatedObject"
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name $splitWrapperName) "Componentization omitted the splitChoice discriminator wrapper."
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfAlpha") "Componentization omitted the alpha split variant."

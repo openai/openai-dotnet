@@ -131,6 +131,43 @@ string enums similarly reference non-null enum components. This yields a named
 TypeSpec model with nullability at its use site. Standalone callers must
 normalize explicitly; componentization does not perform hidden normalization.
 
+## String enum componentization
+
+Stage 15 promotes eligible string enum schemas into components regardless of
+cardinality. An eligible schema has exact scalar `type: "string"` and a nonempty
+`enum` array containing only strings. Ordinary singleton properties such as
+`mode: "explicit"` and `ttl: "30m"` therefore use named enum components.
+Numeric/boolean enums, mixed-value enums, and const-only string schemas do not
+satisfy this predicate. Literal examples and other non-schema data are excluded
+by traversal context.
+
+Each occurrence receives a component using the existing `_enum` naming role;
+its complete schema moves with its values, compatible const, annotations, and
+constraints. The parent property is replaced by a reference without changing
+whether the property is required. References to moved definitions and their
+descendants follow those locations. Finalization groups structurally equivalent
+enum components, so the final reference may use a shared representative name.
+
+Discriminator-defining property schemas remain inline because discriminator
+analysis, mapping validation, naming, and inheritance read finite values
+directly. The exclusion follows actual group alternatives and mapping targets,
+including `oneOf`, `anyOf`, explicit `allOf` mappings, mapping-only inherited
+bases, and local component-name targets. An outer discriminator property is
+protected throughout its nested groups: the fixed `type: "message"` constraint
+on a role-specific message remains direct alongside its own `role` value.
+
+Protection follows discriminator relationships, not arbitrary payload fields or
+a property-name blacklist. An ordinary property named `type`, `role`, or `kind`
+is eligible when it does not define such a relationship. Mapping validation and
+inheritance retain their supported-shape requirements; componentization does
+not weaken them to accommodate a reference to a discriminator enum.
+
+OpenAPI enum components preserve the exact finite string values. The separate
+TypeSpec enum-to-union post-processor converts named string enums into
+extensible string unions, including singleton enums, according to its own
+documented contract. Discriminator post-processing continues to use the direct
+finite constraints on discriminator-defining properties.
+
 ## Discriminator analysis plans
 
 `Get-OpenApiInlineDiscriminatorUnionPlan` returns a `PSCustomObject` describing

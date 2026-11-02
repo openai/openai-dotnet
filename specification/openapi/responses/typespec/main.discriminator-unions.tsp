@@ -141,9 +141,14 @@ union createResponse_request_object_Input_union_array_item_discriminatedObject_d
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools
   extends createResponse_request_object_Input_union_array_item_discriminatedObject {
   type: createResponse_request_object_Input_union_array_item_discriminatedObject_discriminator.additional_tools;
-  role: "developer";
+  role: createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Role_enum;
   tools: createResponse_request_object_Tools_array_item_discriminatedObject[];
   id?: string | null;
+}
+
+union createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Role_enum {
+  string,
+  developer: "developer",
 }
 
 model createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall
@@ -1404,8 +1409,13 @@ union createResponse_request_object_Prompt_object_Variables_dictionary_value_uni
 }
 
 model createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object {
-  mode: "explicit";
+  mode: createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum;
   ttl?: createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum;
+}
+
+union createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum {
+  string,
+  explicit: "explicit",
 }
 
 union createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum {
@@ -1442,13 +1452,18 @@ model createResponse_request_object_PromptCacheOptions_object {
   comparison_response_id?: string | null;
   mode?: createResponse_request_object_PromptCacheOptions_object_Mode_enum;
   prewarm?: boolean;
-  ttl?: "30m";
+  ttl?: createResponse_request_object_PromptCacheOptions_object_Ttl_enum;
 }
 
 union createResponse_request_object_PromptCacheOptions_object_Mode_enum {
   string,
   explicit: "explicit",
   implicit: "implicit",
+}
+
+union createResponse_request_object_PromptCacheOptions_object_Ttl_enum {
+  string,
+  `30m`: "30m",
 }
 
 union createResponse_request_object_PromptCacheRetention_enum {
@@ -2192,7 +2207,12 @@ model createResponse_request_object_Tools_array_item_discriminatedObject_typeOfS
   extends createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject {
   type: createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_discriminator.base64;
   data: string;
-  media_type: "application/zip";
+  media_type: createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum;
+}
+
+union createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum {
+  string,
+  `application/zip`: "application/zip",
 }
 
 model createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference

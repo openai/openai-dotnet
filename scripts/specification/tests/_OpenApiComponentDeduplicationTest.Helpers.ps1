@@ -135,6 +135,27 @@ function New-TestNestedInheritanceFamilies {
     return $document
 }
 
+function New-TestSingletonEnumComponents {
+    $document = Read-TestJsonFixture -RelativePath "_Shared/minimal.openapi.json"
+    $document["components"] = [ordered]@{ schemas = [ordered]@{
+        ModeA = [ordered]@{ type = "string"; enum = @("explicit") }
+        ModeB = [ordered]@{ type = "string"; enum = @("explicit") }
+        ModeImplicit = [ordered]@{ type = "string"; enum = @("implicit") }
+        ModeConstrained = [ordered]@{ type = "string"; enum = @("explicit"); maxLength = 32 }
+    } }
+    $document.paths["/test"].post.responses["200"].content["application/json"].schema = [ordered]@{
+        type = "object"
+        required = @("first", "second")
+        properties = [ordered]@{
+            first = [ordered]@{ '$ref' = "#/components/schemas/ModeA" }
+            second = [ordered]@{ '$ref' = "#/components/schemas/ModeB" }
+            different = [ordered]@{ '$ref' = "#/components/schemas/ModeImplicit" }
+            constrained = [ordered]@{ '$ref' = "#/components/schemas/ModeConstrained" }
+        }
+    }
+    return $document
+}
+
 # Print one summary and fail the process only after all scenarios have run.
 function Complete-OpenApiComponentDeduplicationTests {
     Write-Host ""

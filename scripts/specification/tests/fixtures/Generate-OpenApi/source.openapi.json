@@ -17,6 +17,14 @@
                   {
                     "type": "object",
                     "properties": {
+                      "prompt_cache_breakpoint": {
+                        "type": "object",
+                        "required": ["mode"],
+                        "properties": {
+                          "mode": { "type": "string", "enum": ["explicit"] }
+                        },
+                        "additionalProperties": false
+                      },
                       "prompt_cache_options": {
                         "type": ["object", "null"],
                         "properties": {

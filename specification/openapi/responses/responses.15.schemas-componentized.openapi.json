@@ -586,10 +586,7 @@
             ]
           },
           "role": {
-            "type": "string",
-            "enum": [
-              "developer"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Role_enum"
           },
           "tools": {
             "type": "array",
@@ -608,6 +605,12 @@
             ]
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Role_enum": {
+        "type": "string",
+        "enum": [
+          "developer"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject": {
         "discriminator": {
@@ -2119,12 +2122,15 @@
             "type": "string"
           },
           "media_type": {
-            "type": "string",
-            "enum": [
-              "application/zip"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum": {
+        "type": "string",
+        "enum": [
+          "application/zip"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference": {
         "type": "object",
@@ -4174,15 +4180,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -4249,15 +4258,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -4294,15 +4306,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -4763,15 +4778,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -4851,15 +4869,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -4903,15 +4924,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -5801,15 +5825,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -5876,15 +5903,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -5921,15 +5951,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -8434,12 +8467,15 @@
             "type": "string"
           },
           "media_type": {
-            "type": "string",
-            "enum": [
-              "application/zip"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum"
           }
         }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum": {
+        "type": "string",
+        "enum": [
+          "application/zip"
+        ]
       },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference": {
         "type": "object",
@@ -9331,15 +9367,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -9406,15 +9445,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -9451,15 +9493,18 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum"
           },
           "ttl": {
             "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum"
           }
         }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object_Ttl_enum": {
         "type": "string",
@@ -9489,10 +9534,7 @@
             "type": "boolean"
           },
           "ttl": {
-            "type": "string",
-            "enum": [
-              "30m"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_PromptCacheOptions_object_Ttl_enum"
           }
         }
       },
@@ -9501,6 +9543,12 @@
         "enum": [
           "explicit",
           "implicit"
+        ]
+      },
+      "createResponse_request_object_PromptCacheOptions_object_Ttl_enum": {
+        "type": "string",
+        "enum": [
+          "30m"
         ]
       },
       "createResponse_request_object_PromptCacheRetention_enum": {
@@ -11576,12 +11624,15 @@
             "type": "string"
           },
           "media_type": {
-            "type": "string",
-            "enum": [
-              "application/zip"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum"
           }
         }
+      },
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64_MediaType_enum": {
+        "type": "string",
+        "enum": [
+          "application/zip"
+        ]
       },
       "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference": {
         "type": "object",

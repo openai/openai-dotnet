@@ -1,17 +1,18 @@
 <#
 .SYNOPSIS
-    Moves inline object, direct oneOf, and multi-value string enum schemas into
+    Moves inline object, direct oneOf, and string enum schemas into
     OpenAPI components.
 
 .DESCRIPTION
     Finds every inline Schema Object that owns a direct nonempty oneOf, has the
     exact scalar type "object", or
-    directly declares a multi-value string enum;
+    directly declares a nonempty string enum;
     creates one components.schemas entry per occurrence; and replaces each inline
     definition with a local $ref. A direct oneOf owner takes precedence when a
     schema satisfies multiple predicates. Nested candidates become separate
-    components referenced by their containing component. Singleton string enums
-    remain inline so discriminator properties retain their direct finite values.
+    components referenced by their containing component. Discriminator-defining
+    property schemas remain inline so validation and inheritance can read their
+    finite values directly; ordinary singleton enums become enum components.
 
     Component names use typed underscore-delimited segments. Operation ids and
     structural roles are lower-initial, API property/schema tokens are
@@ -96,9 +97,8 @@ function Test-IsInlineOpenApiObjectSchema {
         [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
 }
 
-# Multi-value string enums are reusable scalar schema definitions. Singleton
-# enums remain direct because they commonly carry discriminator identities that
-# downstream validation intentionally reads without resolving references.
+# Finite string enums are reusable definitions regardless of cardinality.
+# Discriminator-defining properties are excluded by relationship discovery.
 function Test-IsInlineOpenApiStringEnumSchema {
     param(
         [Parameter(Mandatory = $true)]
@@ -119,7 +119,7 @@ function Test-IsInlineOpenApiStringEnumSchema {
         return $false
     }
     $enum = Get-JsonPropertyValue -Object $Value -Name "enum"
-    if (-not (Test-JsonArrayValue -Value $enum) -or $enum.Count -lt 2) {
+    if (-not (Test-JsonArrayValue -Value $enum) -or $enum.Count -lt 1) {
         return $false
     }
     foreach ($value in $enum) {
@@ -445,8 +445,90 @@ function Add-InlineOpenApiSchemaCandidates {
     }
 }
 
+# Carry one discriminator property through group/mapping edges only. Payload
+# properties are discovered separately and are not excluded just by their names.
+function Add-OpenApiDiscriminatorRelationshipPropertyPointers {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Pointer,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.HashSet[string]]$Pointers,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.HashSet[string]]$Visited,
+
+        [int]$Depth = 0,
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Discriminator relationship discovery exceeds depth $MaximumDepth at '$Pointer'."
+    }
+    if (-not (Test-JsonObjectValue -Value $Schema)) { return }
+    $visitKey = "$($Pointer.Length):$Pointer$($PropertyName.Length):$PropertyName"
+    if (-not $Visited.Add($visitKey)) { return }
+
+    $reference = Get-JsonPropertyValue -Object $Schema -Name '$ref'
+    if ($reference -is [string] -and $reference.StartsWith("#", [System.StringComparison]::Ordinal)) {
+        $targetPointer = Get-CanonicalJsonPointer -Pointer $reference
+        $targetSchema = Resolve-LocalJsonPointer -Document $Document -Pointer $targetPointer -Context "discriminator relationship at $Pointer"
+        Add-OpenApiDiscriminatorRelationshipPropertyPointers -Document $Document -Schema $targetSchema `
+            -Pointer $targetPointer -PropertyName $PropertyName -Pointers $Pointers -Visited $Visited `
+            -Depth ($Depth + 1) -MaximumDepth $MaximumDepth
+    }
+
+    $null = $Pointers.Add("$Pointer/properties/$(ConvertTo-JsonPointerToken -Token $PropertyName)")
+    foreach ($compositionName in @("oneOf", "anyOf")) {
+        $branches = Get-JsonPropertyValue -Object $Schema -Name $compositionName
+        if (-not (Test-JsonArrayValue -Value $branches)) { continue }
+        for ($index = 0; $index -lt $branches.Count; $index++) {
+            Add-OpenApiDiscriminatorRelationshipPropertyPointers -Document $Document -Schema $branches[$index] `
+                -Pointer "$Pointer/$compositionName/$index" -PropertyName $PropertyName -Pointers $Pointers -Visited $Visited `
+                -Depth ($Depth + 1) -MaximumDepth $MaximumDepth
+        }
+    }
+
+    $discriminator = Get-JsonPropertyValue -Object $Schema -Name "discriminator"
+    if (Test-JsonObjectValue -Value $discriminator) {
+        $mapping = Get-JsonPropertyValue -Object $discriminator -Name "mapping"
+        foreach ($entry in (Get-JsonProperties -Value $mapping)) {
+            if ($entry.Value -isnot [string]) { continue }
+            if ($entry.Value.StartsWith("#", [System.StringComparison]::Ordinal)) {
+                $targetPointer = Get-CanonicalJsonPointer -Pointer $entry.Value
+                $targetSchema = Resolve-LocalJsonPointer -Document $Document -Pointer $targetPointer `
+                    -Context "discriminator mapping at $Pointer"
+            }
+            else {
+                $target = Resolve-OpenApiDiscriminatorMappingTarget -Document $Document -Target $entry.Value `
+                    -Breadcrumb "$Pointer/discriminator/mapping/$(ConvertTo-JsonPointerToken -Token $entry.Name)"
+                $targetPointer = $target.Pointer
+                $targetSchema = $target.Schema
+            }
+            Add-OpenApiDiscriminatorRelationshipPropertyPointers -Document $Document -Schema $targetSchema `
+                -Pointer $targetPointer -PropertyName $PropertyName -Pointers $Pointers -Visited $Visited `
+                -Depth ($Depth + 1) -MaximumDepth $MaximumDepth
+        }
+    }
+}
+
 function Add-OpenApiDiscriminatorPropertyPointers {
     param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
         [Parameter(Mandatory = $true)]
         [AllowNull()]
         [object]$Value,
@@ -462,6 +544,10 @@ function Add-OpenApiDiscriminatorPropertyPointers {
         [AllowEmptyCollection()]
         [System.Collections.Generic.HashSet[string]]$Pointers,
 
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.HashSet[string]]$Visited,
+
         [Parameter()]
         [int]$Depth = 0,
 
@@ -475,6 +561,7 @@ function Add-OpenApiDiscriminatorPropertyPointers {
     if ($null -eq $Value) {
         return
     }
+    if ($Context -ceq "Literal") { return }
     if (Test-JsonArrayValue -Value $Value) {
         $itemContext = if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
             "Schema"
@@ -484,10 +571,12 @@ function Add-OpenApiDiscriminatorPropertyPointers {
         }
         for ($index = 0; $index -lt $Value.Count; $index++) {
             Add-OpenApiDiscriminatorPropertyPointers `
+                -Document $Document `
                 -Value $Value[$index] `
                 -Context $itemContext `
                 -Pointer "$Pointer/$index" `
                 -Pointers $Pointers `
+                -Visited $Visited `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -499,35 +588,12 @@ function Add-OpenApiDiscriminatorPropertyPointers {
 
     if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
         $discriminator = Get-JsonPropertyValue -Object $Value -Name "discriminator"
-        $oneOf = Get-JsonPropertyValue -Object $Value -Name "oneOf"
-        if ((Test-JsonObjectValue -Value $discriminator) -and
-            (Test-JsonArrayValue -Value $oneOf)) {
+        if (Test-JsonObjectValue -Value $discriminator) {
             $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
             if ($propertyName -is [string] -and -not [string]::IsNullOrWhiteSpace($propertyName)) {
-                $propertyToken = ConvertTo-JsonPointerToken -Token $propertyName
-                for ($index = 0; $index -lt $oneOf.Count; $index++) {
-                    $branch = $oneOf[$index]
-                    $targetPointer = "$Pointer/oneOf/$index"
-                    if ((Test-JsonObjectValue -Value $branch) -and
-                        (Test-JsonProperty -Object $branch -Name '$ref')) {
-                        $reference = Get-JsonPropertyValue -Object $branch -Name '$ref'
-                        if ($reference -is [string] -and
-                            $reference.StartsWith("#", [System.StringComparison]::Ordinal)) {
-                            $targetPointer = Get-CanonicalJsonPointer -Pointer $reference
-                        }
-                    }
-                    $null = $Pointers.Add("$targetPointer/properties/$propertyToken")
-                }
-                $mapping = Get-JsonPropertyValue -Object $discriminator -Name "mapping"
-                if (Test-JsonObjectValue -Value $mapping) {
-                    foreach ($property in (Get-JsonProperties -Value $mapping)) {
-                        if ($property.Value -is [string] -and
-                            $property.Value.StartsWith("#", [System.StringComparison]::Ordinal)) {
-                            $targetPointer = Get-CanonicalJsonPointer -Pointer $property.Value
-                            $null = $Pointers.Add("$targetPointer/properties/$propertyToken")
-                        }
-                    }
-                }
+                Add-OpenApiDiscriminatorRelationshipPropertyPointers -Document $Document -Schema $Value `
+                    -Pointer $Pointer -PropertyName $propertyName -Pointers $Pointers -Visited $Visited `
+                    -Depth $Depth -MaximumDepth $MaximumDepth
             }
         }
     }
@@ -538,10 +604,12 @@ function Add-OpenApiDiscriminatorPropertyPointers {
             -PropertyName $property.Name `
             -PropertyValue $property.Value
         Add-OpenApiDiscriminatorPropertyPointers `
+            -Document $Document `
             -Value $property.Value `
             -Context $childContext `
             -Pointer "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
             -Pointers $Pointers `
+            -Visited $Visited `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -554,11 +622,14 @@ function Get-OpenApiDiscriminatorPropertyPointers {
     )
 
     $pointers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $visited = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
     Add-OpenApiDiscriminatorPropertyPointers `
+        -Document $Document `
         -Value $Document `
         -Context OpenApi `
         -Pointer "#" `
-        -Pointers $pointers
+        -Pointers $pointers `
+        -Visited $visited
     return ,$pointers
 }
 

@@ -345,13 +345,16 @@
         ],
         "properties": {
           "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum"
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit"
+        ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText": {
         "type": "object",
@@ -1256,10 +1259,7 @@
             ]
           },
           "ttl": {
-            "type": "string",
-            "enum": [
-              "30m"
-            ]
+            "$ref": "#/components/schemas/createDecision_request_object_PromptCacheOptions_object_Ttl_enum"
           }
         },
         "additionalProperties": false
@@ -1269,6 +1269,12 @@
         "enum": [
           "explicit",
           "implicit"
+        ]
+      },
+      "createDecision_request_object_PromptCacheOptions_object_Ttl_enum": {
+        "type": "string",
+        "enum": [
+          "30m"
         ]
       },
       "createDecision_response_200_object": {

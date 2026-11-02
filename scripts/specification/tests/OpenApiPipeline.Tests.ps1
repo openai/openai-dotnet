@@ -82,6 +82,11 @@ function Assert-NestedFeatureHierarchy {
         Assert-True ($request.properties.prompt_cache_options.anyOf[1].type -ceq "null") "Object nullability changed in '$path'."
         Assert-True ($options.properties.mode.anyOf[1].type -ceq "null") "Enum nullability changed in '$path'."
         Assert-True ($request.required -cnotcontains "prompt_cache_options") "Normalization made an optional property required in '$path'."
+        $breakpoint = Get-JsonPropertyValue -Object $schemas -Name "${requestName}_PromptCacheBreakpoint_object"
+        $mode = Resolve-LocalJsonPointer -Document $document -Pointer $breakpoint.properties.mode.'$ref'
+        Assert-True ($mode.type -ceq "string" -and $mode.enum.Count -eq 1 -and $mode.enum[0] -ceq "explicit") "Singleton mode reference lost its finite value in '$path'."
+        Assert-True ($breakpoint.required -ccontains "mode") "Singleton mode was made optional in '$path'."
+        Assert-True ($breakpoint.additionalProperties -eq $false) "Breakpoint object constraint changed in '$path'."
         Assert-True ($null -ne $outer -and $null -ne $message) "Nested hierarchy components were missing from '$path'."
         Assert-True ($outer.discriminator.mapping.message -ceq "#/components/schemas/$messageName") "Outer mapping bypassed Message in '$path'."
         Assert-True ($message.discriminator.propertyName -ceq "role") "Message lost role routing in '$path'."
