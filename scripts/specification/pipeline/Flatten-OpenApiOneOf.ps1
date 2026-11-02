@@ -1,20 +1,22 @@
 <#
 .SYNOPSIS
-    Flattens matching nested oneOf schema wrappers in an OpenAPI document.
+    Flattens matching nested oneOf schema groups in an OpenAPI document.
 
 .DESCRIPTION
     Replaces a direct oneOf branch with its inner oneOf branches when the parent
-    and wrapper use the same discriminator property and any additional siblings
+    and nested group use the same discriminator property and any additional siblings
     beyond type, discriminator, and oneOf are deeply equal. Discriminator mapping
     differences are ignored because final mappings are rebuilt after components
     receive stable names. Matching ordinary constraints remain once on the
     parent. Location-sensitive identifiers, anchors, and extension properties
-    make a wrapper ineligible.
+    make a group ineligible.
 
-    Every recursive leaf must require the discriminator property with finite
-    string const/enum values, and accepted values must be globally disjoint. The
-    transparent nested wrappers may omit type when those leaves are explicit
-    objects. The transformation preserves encounter order, relocates affected
+    Flattened leaves must require finite, globally disjoint discriminator values.
+    Groups using a different discriminator property retain their inner
+    discriminator and common outer discriminator value instead of being
+    flattened. Flattenable groups may
+    omit type when their leaves are explicit objects. The transformation
+    preserves encounter order, relocates affected
     local JSON pointers, and writes a separate oneOf-flattened document. Run
     Wrap-OpenApiSingletonTypeEnums.ps1 and then Sort-OpenApiDocument.ps1
     afterward to produce canonical ordering.
@@ -73,14 +75,14 @@ function Get-OpenApiDiscriminatorPropertyName {
     return $propertyName
 }
 
-function Get-FlattenableOpenApiOneOfWrapper {
+function Get-FlattenableOpenApiOneOfGroup {
     param(
         [Parameter(Mandatory = $true)]
         [object]$ParentSchema,
 
         [Parameter(Mandatory = $true)]
         [AllowNull()]
-        [object]$WrapperSchema,
+        [object]$GroupSchema,
 
         [Parameter()]
         [int]$Depth = 0,
@@ -93,7 +95,7 @@ function Get-FlattenableOpenApiOneOfWrapper {
         throw "nested oneOf eligibility exceeds the supported depth of $MaximumDepth."
     }
     if (-not (Test-JsonObjectValue -Value $ParentSchema) -or
-        -not (Test-JsonObjectValue -Value $WrapperSchema)) {
+        -not (Test-JsonObjectValue -Value $GroupSchema)) {
         return $null
     }
 
@@ -122,8 +124,8 @@ function Get-FlattenableOpenApiOneOfWrapper {
     }
 
     foreach ($branchPlan in $plan.BranchPlans) {
-        if ([object]::ReferenceEquals($branchPlan.Branch, $WrapperSchema) -and
-            [string]::Equals($branchPlan.Kind, "Wrapper", [System.StringComparison]::Ordinal)) {
+        if ([object]::ReferenceEquals($branchPlan.Branch, $GroupSchema) -and
+            [string]::Equals($branchPlan.Kind, "FlattenableGroup", [System.StringComparison]::Ordinal)) {
             return [PSCustomObject]@{
                 PropertyName = $propertyName
                 Branches = $branchPlan.NestedPlan.Branches
@@ -378,9 +380,9 @@ function Add-FlattenedOpenApiOneOfBranch {
         [int]$MaximumDepth
     )
 
-    $candidate = Get-FlattenableOpenApiOneOfWrapper `
+    $candidate = Get-FlattenableOpenApiOneOfGroup `
         -ParentSchema $ParentSchema `
-        -WrapperSchema $Branch `
+        -GroupSchema $Branch `
         -MaximumDepth $MaximumDepth
     if ($null -eq $candidate) {
         $destinationBreadcrumb = "$DestinationOneOfBreadcrumb/$($OutputBranches.Count)"
@@ -516,9 +518,9 @@ function ConvertTo-FlattenedOpenApiOneOfValue {
     $hasFlattenableWrapper = $false
     if (Test-JsonArrayValue -Value $oneOf) {
         foreach ($branch in $oneOf) {
-            if ($null -ne (Get-FlattenableOpenApiOneOfWrapper `
+            if ($null -ne (Get-FlattenableOpenApiOneOfGroup `
                 -ParentSchema $Value `
-                -WrapperSchema $branch `
+                -GroupSchema $branch `
                 -MaximumDepth $MaximumDepth)) {
                 $hasFlattenableWrapper = $true
                 break
@@ -624,9 +626,9 @@ function Assert-NoFlattenableOpenApiOneOf {
         $oneOf = Get-JsonPropertyValue -Object $Value -Name "oneOf"
         if (Test-JsonArrayValue -Value $oneOf) {
             for ($index = 0; $index -lt $oneOf.Count; $index++) {
-                if ($null -ne (Get-FlattenableOpenApiOneOfWrapper `
+                if ($null -ne (Get-FlattenableOpenApiOneOfGroup `
                     -ParentSchema $Value `
-                    -WrapperSchema $oneOf[$index] `
+                    -GroupSchema $oneOf[$index] `
                     -MaximumDepth $MaximumDepth)) {
                     throw "Flattened output retained a matching nested oneOf wrapper at '$Breadcrumb/oneOf/$index'."
                 }

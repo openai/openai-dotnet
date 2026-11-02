@@ -104,6 +104,18 @@ try {
         Assert-Equal $true $schema.properties.flag.enum[0] "Boolean enum value changed."
     }
 
+    Invoke-Test "nested hierarchy branches sort by the discriminator property at each level" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $hierarchy = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $hierarchy -PropertyName "type" -Breadcrumb "#" -RequireDiscriminator
+        $source = New-TestOpenApiDocument -Schema (ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema -Plan $plan)
+        $sorted = ConvertTo-SortedOpenApiDocument -Document $source
+        $schema = Get-TestResponseSchema -Document $sorted
+        Assert-Sequence @("function_call", "message") @($schema.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Outer hierarchy did not sort by type."
+        Assert-Equal "role" $schema.oneOf[1].discriminator.propertyName "Sorting changed the inner discriminator property."
+        Assert-Sequence @("assistant", "user") @($schema.oneOf[1].oneOf | ForEach-Object { $_.properties.role.enum[0] }) "Inner hierarchy did not sort by role."
+    }
+
     Invoke-Test "ordinary oneOf sorts direct scalar types before a stable unclassifiable tail" {
         $source = New-TestOpenApiDocument -Schema (
             Get-TestFixtureCase -Cases $schemaCases -Name "ordinaryOneOf"

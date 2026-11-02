@@ -176,6 +176,29 @@ try {
         }
     }
 
+    Invoke-Test "nested discriminator bases inherit their outer identity and retain inner mappings" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $hierarchy = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $hierarchy -PropertyName "type" -Breadcrumb "#" -RequireDiscriminator
+        $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["input_item"] = ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema -Plan $plan
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $schemas = $result.Document.components.schemas
+        $outerName = "createWidget_request_object_InputItem_discriminatedObject"
+        $messageName = "${outerName}_typeOfMessage"
+        Assert-True (Test-JsonProperty -Object $schemas -Name $messageName) "Message subgroup was not named from its outer type value."
+        Assert-Equal "type" $schemas[$outerName].discriminator.propertyName "Outer discriminator changed."
+        Assert-Equal "role" $schemas[$messageName].discriminator.propertyName "Inner discriminator changed."
+        Assert-Equal "#/components/schemas/$messageName" $schemas[$outerName].discriminator.mapping.message "Outer message mapping targeted the wrong hierarchy level."
+        Assert-Equal "#/components/schemas/${messageName}_roleOfUser" $schemas[$messageName].discriminator.mapping.user "Inner user mapping was incorrect."
+        Assert-Equal "#/components/schemas/${messageName}_roleOfAssistant" $schemas[$messageName].discriminator.mapping.assistant "Inner assistant mapping was incorrect."
+        Assert-Sequence @("message") @($schemas[$messageName].properties.type.enum) "Message lost its outer discriminator value."
+        Assert-Equal 0 @(Get-InlineOpenApiSchemaCandidates -Document $result.Document).Count "Hierarchy retained inline candidates."
+        $second = ConvertTo-ComponentizedOpenApiDocument -Document $result.Document
+        Assert-Equal 0 $second.GeneratedComponentCount "Second pass changed the hierarchy components."
+        Assert-JsonEqual $result.Document $second.Document "Second pass changed the hierarchy mappings."
+    }
+
     Invoke-Test "multi-value string enums become deduplicatable enum components" {
         Assert-True (Test-IsInlineOpenApiStringEnumSchema `
             -Value ([ordered]@{ type = "string"; enum = @("direct", "programmatic") }) `

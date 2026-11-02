@@ -167,6 +167,25 @@ try {
         Assert-True ($null -ne (Get-Command Invoke-OpenApiOneOfFlattener -ErrorAction SilentlyContinue)) "CLI function was not defined."
     }
 
+    Invoke-Test "different discriminator levels remain separate hierarchy branches" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $schema = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $schema -PropertyName "type" -Breadcrumb "#" -RequireDiscriminator
+        Assert-Equal "NestedDiscriminatorGroup" $plan.BranchPlans[0].Kind "Role group was classified as a flattenable group."
+        $normalized = ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema -Plan $plan
+        $source = New-TestOpenApiDocument -Schema $normalized
+        $result = ConvertTo-FlattenedOpenApiOneOfDocument -Document $source
+        Assert-Equal 0 $result.FlattenedOneOfCount "Role group was flattened into duplicate message leaves."
+        Assert-JsonEqual $source $result.Document "Flattening changed a multi-level discriminator hierarchy."
+    }
+
+    Invoke-Test "same-property groups are classified as flattenable groups" {
+        $schema = New-TransparentOneOfSchema
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $schema -PropertyName "kind" -Breadcrumb "#" -RequireDiscriminator
+        Assert-True ($null -ne $plan) "Supported same-property group had no analysis plan."
+        Assert-Sequence @("Leaf", "FlattenableGroup", "Leaf") @($plan.BranchPlans.Kind) "Same-property branch kinds were incorrect."
+    }
+
     Invoke-Test "matching safe siblings flatten to the golden without mutating input" {
         $source = New-MatchingOneOfDocument
         $expected = Read-OpenApiDocument -Path (Join-Path $fixtureDirectory "expected.oneof-flattened.openapi.json")

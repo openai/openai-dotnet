@@ -47,16 +47,449 @@
                       {
                         "type": "array",
                         "items": {
+                          "discriminator": {
+                            "propertyName": "type",
+                            "mapping": {
+                              "message": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4",
+                              "function_call": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/2",
+                              "function_call_output": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/3",
+                              "custom_tool_call": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0",
+                              "custom_tool_call_output": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1"
+                            }
+                          },
                           "oneOf": [
                             {
                               "type": "object",
+                              "required": [
+                                "type",
+                                "call_id",
+                                "input",
+                                "name"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom_tool_call"
+                                  ]
+                                },
+                                "call_id": {
+                                  "type": "string"
+                                },
+                                "input": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "namespace": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "completed",
+                                        "in_progress",
+                                        "incomplete"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "required": [
+                                "type",
+                                "call_id",
+                                "output"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom_tool_call_output"
+                                  ]
+                                },
+                                "call_id": {
+                                  "type": "string"
+                                },
+                                "output": {
+                                  "oneOf": [
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "discriminator": {
+                                          "propertyName": "type",
+                                          "mapping": {
+                                            "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/properties/output/oneOf/0/items/oneOf/1",
+                                            "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/properties/output/oneOf/0/items/oneOf/0"
+                                          }
+                                        },
+                                        "oneOf": [
+                                          {
+                                            "type": "object",
+                                            "required": [
+                                              "type",
+                                              "image_url"
+                                            ],
+                                            "properties": {
+                                              "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "input_image"
+                                                ]
+                                              },
+                                              "image_url": {
+                                                "type": "string"
+                                              },
+                                              "detail": {
+                                                "anyOf": [
+                                                  {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "auto",
+                                                      "high",
+                                                      "low",
+                                                      "original"
+                                                    ]
+                                                  },
+                                                  {
+                                                    "type": "null"
+                                                  }
+                                                ]
+                                              },
+                                              "prompt_cache_breakpoint": {
+                                                "type": [
+                                                  "object",
+                                                  "null"
+                                                ],
+                                                "required": [
+                                                  "mode"
+                                                ],
+                                                "properties": {
+                                                  "mode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "explicit"
+                                                    ]
+                                                  }
+                                                },
+                                                "additionalProperties": false
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "required": [
+                                              "type",
+                                              "text"
+                                            ],
+                                            "properties": {
+                                              "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "input_text"
+                                                ]
+                                              },
+                                              "text": {
+                                                "type": "string"
+                                              },
+                                              "prompt_cache_breakpoint": {
+                                                "type": [
+                                                  "object",
+                                                  "null"
+                                                ],
+                                                "required": [
+                                                  "mode"
+                                                ],
+                                                "properties": {
+                                                  "mode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "explicit"
+                                                    ]
+                                                  }
+                                                },
+                                                "additionalProperties": false
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "id": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "completed",
+                                        "in_progress",
+                                        "incomplete"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "required": [
+                                "type",
+                                "arguments",
+                                "call_id",
+                                "name"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "function_call"
+                                  ]
+                                },
+                                "arguments": {
+                                  "type": "string"
+                                },
+                                "call_id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "namespace": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "completed",
+                                        "in_progress",
+                                        "incomplete"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "required": [
+                                "type",
+                                "call_id",
+                                "output"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "function_call_output"
+                                  ]
+                                },
+                                "call_id": {
+                                  "type": "string"
+                                },
+                                "output": {
+                                  "oneOf": [
+                                    {
+                                      "type": "array",
+                                      "items": {
+                                        "discriminator": {
+                                          "propertyName": "type",
+                                          "mapping": {
+                                            "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/3/properties/output/oneOf/0/items/oneOf/1",
+                                            "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/3/properties/output/oneOf/0/items/oneOf/0"
+                                          }
+                                        },
+                                        "oneOf": [
+                                          {
+                                            "type": "object",
+                                            "required": [
+                                              "type",
+                                              "image_url"
+                                            ],
+                                            "properties": {
+                                              "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "input_image"
+                                                ]
+                                              },
+                                              "image_url": {
+                                                "type": "string"
+                                              },
+                                              "detail": {
+                                                "anyOf": [
+                                                  {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "auto",
+                                                      "high",
+                                                      "low",
+                                                      "original"
+                                                    ]
+                                                  },
+                                                  {
+                                                    "type": "null"
+                                                  }
+                                                ]
+                                              },
+                                              "prompt_cache_breakpoint": {
+                                                "type": [
+                                                  "object",
+                                                  "null"
+                                                ],
+                                                "required": [
+                                                  "mode"
+                                                ],
+                                                "properties": {
+                                                  "mode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "explicit"
+                                                    ]
+                                                  }
+                                                },
+                                                "additionalProperties": false
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          },
+                                          {
+                                            "type": "object",
+                                            "required": [
+                                              "type",
+                                              "text"
+                                            ],
+                                            "properties": {
+                                              "type": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "input_text"
+                                                ]
+                                              },
+                                              "text": {
+                                                "type": "string"
+                                              },
+                                              "prompt_cache_breakpoint": {
+                                                "type": [
+                                                  "object",
+                                                  "null"
+                                                ],
+                                                "required": [
+                                                  "mode"
+                                                ],
+                                                "properties": {
+                                                  "mode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                      "explicit"
+                                                    ]
+                                                  }
+                                                },
+                                                "additionalProperties": false
+                                              }
+                                            },
+                                            "additionalProperties": false
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "id": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "status": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "completed",
+                                        "in_progress",
+                                        "incomplete"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "required": [
+                                "type"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "message"
+                                  ]
+                                }
+                              },
                               "discriminator": {
                                 "propertyName": "role",
                                 "mapping": {
-                                  "user": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/3",
-                                  "developer": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/1",
-                                  "system": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/2",
-                                  "assistant": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/0"
+                                  "user": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/3",
+                                  "developer": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/1",
+                                  "system": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/2",
+                                  "assistant": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/0"
                                 }
                               },
                               "oneOf": [
@@ -82,8 +515,8 @@
                                             "discriminator": {
                                               "propertyName": "type",
                                               "mapping": {
-                                                "output_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/0/properties/content/oneOf/0/items/oneOf/0",
-                                                "refusal": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/0/properties/content/oneOf/0/items/oneOf/1"
+                                                "output_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/0/properties/content/oneOf/0/items/oneOf/0",
+                                                "refusal": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/0/properties/content/oneOf/0/items/oneOf/1"
                                               }
                                             },
                                             "oneOf": [
@@ -332,9 +765,9 @@
                                             "discriminator": {
                                               "propertyName": "type",
                                               "mapping": {
-                                                "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/3/properties/content/oneOf/0/items/oneOf/2",
-                                                "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/3/properties/content/oneOf/0/items/oneOf/0",
-                                                "input_json": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/0/oneOf/3/properties/content/oneOf/0/items/oneOf/1"
+                                                "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/3/properties/content/oneOf/0/items/oneOf/2",
+                                                "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/3/properties/content/oneOf/0/items/oneOf/0",
+                                                "input_json": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/4/oneOf/3/properties/content/oneOf/0/items/oneOf/1"
                                               }
                                             },
                                             "oneOf": [
@@ -493,425 +926,6 @@
                                       "type": "string",
                                       "enum": [
                                         "user"
-                                      ]
-                                    }
-                                  },
-                                  "additionalProperties": false
-                                }
-                              ]
-                            },
-                            {
-                              "discriminator": {
-                                "propertyName": "type"
-                              },
-                              "oneOf": [
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type",
-                                    "call_id",
-                                    "input",
-                                    "name"
-                                  ],
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "custom_tool_call"
-                                      ]
-                                    },
-                                    "call_id": {
-                                      "type": "string"
-                                    },
-                                    "input": {
-                                      "type": "string"
-                                    },
-                                    "name": {
-                                      "type": "string"
-                                    },
-                                    "id": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "namespace": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "status": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string",
-                                          "enum": [
-                                            "completed",
-                                            "in_progress",
-                                            "incomplete"
-                                          ]
-                                        },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type",
-                                    "call_id",
-                                    "output"
-                                  ],
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "custom_tool_call_output"
-                                      ]
-                                    },
-                                    "call_id": {
-                                      "type": "string"
-                                    },
-                                    "output": {
-                                      "oneOf": [
-                                        {
-                                          "type": "array",
-                                          "items": {
-                                            "discriminator": {
-                                              "propertyName": "type",
-                                              "mapping": {
-                                                "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/oneOf/1/properties/output/oneOf/0/items/oneOf/1",
-                                                "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/oneOf/1/properties/output/oneOf/0/items/oneOf/0"
-                                              }
-                                            },
-                                            "oneOf": [
-                                              {
-                                                "type": "object",
-                                                "required": [
-                                                  "type",
-                                                  "image_url"
-                                                ],
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "input_image"
-                                                    ]
-                                                  },
-                                                  "image_url": {
-                                                    "type": "string"
-                                                  },
-                                                  "detail": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "auto",
-                                                          "high",
-                                                          "low",
-                                                          "original"
-                                                        ]
-                                                      },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
-                                                      }
-                                                    },
-                                                    "additionalProperties": false
-                                                  }
-                                                },
-                                                "additionalProperties": false
-                                              },
-                                              {
-                                                "type": "object",
-                                                "required": [
-                                                  "type",
-                                                  "text"
-                                                ],
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "input_text"
-                                                    ]
-                                                  },
-                                                  "text": {
-                                                    "type": "string"
-                                                  },
-                                                  "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
-                                                      }
-                                                    },
-                                                    "additionalProperties": false
-                                                  }
-                                                },
-                                                "additionalProperties": false
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        {
-                                          "type": "string"
-                                        }
-                                      ]
-                                    },
-                                    "id": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "status": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string",
-                                          "enum": [
-                                            "completed",
-                                            "in_progress",
-                                            "incomplete"
-                                          ]
-                                        },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type",
-                                    "arguments",
-                                    "call_id",
-                                    "name"
-                                  ],
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "function_call"
-                                      ]
-                                    },
-                                    "arguments": {
-                                      "type": "string"
-                                    },
-                                    "call_id": {
-                                      "type": "string"
-                                    },
-                                    "name": {
-                                      "type": "string"
-                                    },
-                                    "id": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "namespace": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "status": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string",
-                                          "enum": [
-                                            "completed",
-                                            "in_progress",
-                                            "incomplete"
-                                          ]
-                                        },
-                                        {
-                                          "type": "null"
-                                        }
-                                      ]
-                                    }
-                                  },
-                                  "additionalProperties": false
-                                },
-                                {
-                                  "type": "object",
-                                  "required": [
-                                    "type",
-                                    "call_id",
-                                    "output"
-                                  ],
-                                  "properties": {
-                                    "type": {
-                                      "type": "string",
-                                      "enum": [
-                                        "function_call_output"
-                                      ]
-                                    },
-                                    "call_id": {
-                                      "type": "string"
-                                    },
-                                    "output": {
-                                      "oneOf": [
-                                        {
-                                          "type": "array",
-                                          "items": {
-                                            "discriminator": {
-                                              "propertyName": "type",
-                                              "mapping": {
-                                                "input_text": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/oneOf/3/properties/output/oneOf/0/items/oneOf/1",
-                                                "input_image": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/0/items/oneOf/1/oneOf/3/properties/output/oneOf/0/items/oneOf/0"
-                                              }
-                                            },
-                                            "oneOf": [
-                                              {
-                                                "type": "object",
-                                                "required": [
-                                                  "type",
-                                                  "image_url"
-                                                ],
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "input_image"
-                                                    ]
-                                                  },
-                                                  "image_url": {
-                                                    "type": "string"
-                                                  },
-                                                  "detail": {
-                                                    "anyOf": [
-                                                      {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "auto",
-                                                          "high",
-                                                          "low",
-                                                          "original"
-                                                        ]
-                                                      },
-                                                      {
-                                                        "type": "null"
-                                                      }
-                                                    ]
-                                                  },
-                                                  "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
-                                                      }
-                                                    },
-                                                    "additionalProperties": false
-                                                  }
-                                                },
-                                                "additionalProperties": false
-                                              },
-                                              {
-                                                "type": "object",
-                                                "required": [
-                                                  "type",
-                                                  "text"
-                                                ],
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "input_text"
-                                                    ]
-                                                  },
-                                                  "text": {
-                                                    "type": "string"
-                                                  },
-                                                  "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
-                                                      }
-                                                    },
-                                                    "additionalProperties": false
-                                                  }
-                                                },
-                                                "additionalProperties": false
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        {
-                                          "type": "string"
-                                        }
-                                      ]
-                                    },
-                                    "id": {
-                                      "type": [
-                                        "string",
-                                        "null"
-                                      ]
-                                    },
-                                    "status": {
-                                      "anyOf": [
-                                        {
-                                          "type": "string",
-                                          "enum": [
-                                            "completed",
-                                            "in_progress",
-                                            "incomplete"
-                                          ]
-                                        },
-                                        {
-                                          "type": "null"
-                                        }
                                       ]
                                     }
                                   },

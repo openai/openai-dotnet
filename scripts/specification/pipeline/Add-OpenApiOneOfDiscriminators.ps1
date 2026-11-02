@@ -3,13 +3,14 @@
     Reconciles type discriminators on oneOf schema compositions.
 
 .DESCRIPTION
-    Adds `discriminator: { propertyName: "type" }` to a schema when its direct
-    nonempty oneOf recursively resolves to compatible object leaves. Every leaf
-    must require a direct string `properties.type` constrained by const or a
-    nonempty enum, and all accepted values must be disjoint across the complete
-    tree. Nested oneOf wrappers must use the same discriminator and carry only
-    structural siblings shared with their parent. Such wrappers may omit type
-    when every recursively collected leaf is an explicit object schema.
+    Adds `discriminator: { propertyName: "type" }` when a nonempty oneOf has
+    compatible object branches with disjoint finite discriminator values. Nested
+    groups using the same discriminator property contribute their leaves and
+    must carry matching structural siblings. A group using a different
+    discriminator property remains one branch when every concrete leaf requires
+    the same singleton outer discriminator value. That property constraint is
+    declared directly on the intermediate base without changing its inner
+    discriminator, leaf constraints, or reference locations.
 
     The discriminator is inserted immediately before oneOf. Existing valid
     discriminators are preserved; existing invalid discriminators are removed
@@ -17,6 +18,17 @@
     and encounter order outside the metadata change remain unchanged. Run
     Normalize-OpenApiOneOf.ps1, Flatten-OpenApiOneOf.ps1, and
     Wrap-OpenApiSingletonTypeEnums.ps1 before sorting.
+
+    Here invalid means unsupported by the pipeline's conservative analysis, not
+    necessarily invalid JSON Schema. This includes malformed discriminator
+    metadata/compositions, non-object alternatives, missing or optional
+    discriminator properties, non-finite/conflicting const/enum values, and
+    overlapping branch values. A NestedDiscriminatorGroup must have a valid
+    inner discriminator and one provable common required outer value. A
+    FlattenableGroup must meet the same-property structural and scope checks.
+    Mappings on retained discriminators are validated during componentization;
+    malformed targets or keys then fail rather than being silently discarded. See
+    docs/OpenApiPipelineDesign.md for the stage-specific rules and failure behavior.
 
 .PARAMETER InputPath
     The type-enum-split OpenAPI JSON document to update.
@@ -84,6 +96,7 @@ function Get-OpenApiOneOfDiscriminatorCandidate {
     return [PSCustomObject]@{
         Branches = $oneOf
         EnumValues = [string[]]$plan.Values
+        Plan = $plan
     }
 }
 
@@ -173,6 +186,28 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
     }
     else {
         $null
+    }
+
+    $normalizationPlan = if ($null -ne $candidate) {
+        $candidate.Plan
+    }
+    elseif ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+        (Test-JsonProperty -Object $Value -Name "oneOf") -and
+        (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $Value)) {
+        $discriminator = Get-JsonPropertyValue -Object $Value -Name "discriminator"
+        Get-OpenApiInlineDiscriminatorUnionPlan `
+            -Schema $Value `
+            -PropertyName (Get-JsonPropertyValue -Object $discriminator -Name "propertyName") `
+            -Breadcrumb $Breadcrumb `
+            -RequireDiscriminator
+    }
+    else {
+        $null
+    }
+    if ($null -ne $normalizationPlan) {
+        $Value = ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema `
+            -Plan $normalizationPlan `
+            -MaximumDepth ($MaximumDepth - $Depth)
     }
 
     $result = [ordered]@{}

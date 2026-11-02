@@ -3,11 +3,13 @@
     Refactors componentized discriminated oneOf schemas into inheritance.
 
 .DESCRIPTION
-    Replaces each eligible component that directly owns a discriminator and
-    oneOf with a discriminator-only object base. Each mapped child retains its
-    direct selector and payload constraints and receives one allOf reference to
-    the base. A child shared by multiple discriminator parents is cloned once
-    per parent so every derived component has exactly one base.
+    Replaces each eligible discriminator oneOf component with an object base.
+    An intermediate base retains its fixed value for the parent's discriminator
+    property, its own discriminator, and one allOf reference to its immediate
+    parent. Concrete children retain their discriminator property and payload
+    constraints. Shared leaves are cloned once per parent; shared nested bases
+    and inheritance cycles fail explicitly. Every generated derived component
+    has exactly one base.
 
 .PARAMETER InputPath
     The componentized OpenAPI JSON document.
@@ -186,15 +188,6 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
         }
 
         $parentPointer = Get-OpenApiInheritanceComponentPointer -ComponentName $parentName
-        $allowedProperties = [System.Collections.Generic.HashSet[string]]::new(
-            [string[]]@("type", "discriminator", "oneOf"),
-            [System.StringComparer]::Ordinal
-        )
-        foreach ($property in (Get-JsonProperties -Value $schema)) {
-            if (-not $allowedProperties.Contains($property.Name)) {
-                throw "Discriminator parent '$parentName' has unsupported sibling '$($property.Name)'."
-            }
-        }
         if (Test-JsonProperty -Object $schema -Name "type") {
             $parentType = Get-JsonPropertyValue -Object $schema -Name "type"
             if ($parentType -isnot [string] -or
@@ -233,7 +226,7 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
                 -Target $mappingProperty.Value `
                 -Breadcrumb "$parentPointer/discriminator/mapping/$(ConvertTo-JsonPointerToken -Token $mappingProperty.Name)"
             if ($mappingKeyByTarget.ContainsKey($target.ComponentName)) {
-                throw "Discriminator parent '$parentName' maps multiple values to child '$($target.ComponentName)'; inheritance requires one selector value per child."
+                throw "Discriminator parent '$parentName' maps multiple values to child '$($target.ComponentName)'; inheritance requires one discriminator value per child."
             }
             $mappingKeyByTarget[$target.ComponentName] = $mappingProperty.Name
         }
@@ -277,30 +270,30 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
                 throw "Discriminator child '$($target.ComponentName)' must directly require '$propertyName'."
             }
             $properties = Get-JsonPropertyValue -Object $childSchema -Name "properties"
-            $selector = if (Test-JsonObjectValue -Value $properties) {
+            $discriminatorProperty = if (Test-JsonObjectValue -Value $properties) {
                 Get-JsonPropertyValue -Object $properties -Name $propertyName
             }
             else {
                 $null
             }
-            $selectorType = if (Test-JsonObjectValue -Value $selector) {
-                Get-JsonPropertyValue -Object $selector -Name "type"
+            $discriminatorPropertyType = if (Test-JsonObjectValue -Value $discriminatorProperty) {
+                Get-JsonPropertyValue -Object $discriminatorProperty -Name "type"
             }
             else {
                 $null
             }
-            $selectorEnum = if (Test-JsonObjectValue -Value $selector) {
-                Get-JsonPropertyValue -Object $selector -Name "enum"
+            $discriminatorPropertyEnum = if (Test-JsonObjectValue -Value $discriminatorProperty) {
+                Get-JsonPropertyValue -Object $discriminatorProperty -Name "enum"
             }
             else {
                 $null
             }
-            if ($selectorType -isnot [string] -or
-                -not [string]::Equals($selectorType, "string", [System.StringComparison]::Ordinal) -or
-                -not (Test-JsonArrayValue -Value $selectorEnum) -or
-                $selectorEnum.Count -ne 1 -or
-                $selectorEnum[0] -isnot [string] -or
-                -not [string]::Equals($selectorEnum[0], $mappingKey, [System.StringComparison]::Ordinal)) {
+            if ($discriminatorPropertyType -isnot [string] -or
+                -not [string]::Equals($discriminatorPropertyType, "string", [System.StringComparison]::Ordinal) -or
+                -not (Test-JsonArrayValue -Value $discriminatorPropertyEnum) -or
+                $discriminatorPropertyEnum.Count -ne 1 -or
+                $discriminatorPropertyEnum[0] -isnot [string] -or
+                -not [string]::Equals($discriminatorPropertyEnum[0], $mappingKey, [System.StringComparison]::Ordinal)) {
                 throw "Discriminator child '$($target.ComponentName)' must directly declare '$propertyName' as the singleton string enum '$mappingKey'."
             }
 
@@ -345,8 +338,56 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
     }
 
     foreach ($childName in $edgesByChild.Keys) {
-        if ($planByParent.ContainsKey($childName)) {
-            throw "Component '$childName' is both a discriminator parent and a discriminator child; nested inheritance is not supported."
+        if ($planByParent.ContainsKey($childName) -and $edgesByChild[$childName].Count -ne 1) {
+            throw "Discriminator base '$childName' has multiple inheritance parents; shared nested bases are not supported."
+        }
+    }
+
+    foreach ($plan in $plans) {
+        $visited = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+        $currentName = $plan.ParentName
+        while ($edgesByChild.ContainsKey($currentName)) {
+            if (-not $visited.Add($currentName)) {
+                throw "Discriminator inheritance cycle includes component '$currentName'."
+            }
+            $currentName = $edgesByChild[$currentName][0].ParentName
+        }
+
+        $schema = $schemaByName[$plan.ParentName]
+        $allowedProperties = [System.Collections.Generic.HashSet[string]]::new(
+            [string[]]@("type", "discriminator", "oneOf"),
+            [System.StringComparer]::Ordinal
+        )
+        $incomingEdge = if ($edgesByChild.ContainsKey($plan.ParentName)) {
+            $edgesByChild[$plan.ParentName][0]
+        }
+        else {
+            $null
+        }
+        if ($null -ne $incomingEdge) {
+            if ([string]::Equals($incomingEdge.PropertyName, $plan.PropertyName, [System.StringComparison]::Ordinal)) {
+                throw "Nested discriminator base '$($plan.ParentName)' repeats its parent's discriminator property '$($plan.PropertyName)'; groups using the same discriminator property must be flattened first."
+            }
+            $null = $allowedProperties.Add("required")
+            $null = $allowedProperties.Add("properties")
+            $properties = Get-JsonPropertyValue -Object $schema -Name "properties"
+            foreach ($property in (Get-JsonProperties -Value $properties)) {
+                if (-not [string]::Equals($property.Name, $incomingEdge.PropertyName, [System.StringComparison]::Ordinal)) {
+                    throw "Nested discriminator base '$($plan.ParentName)' has unsupported property '$($property.Name)'; only its parent's discriminator property may be retained."
+                }
+            }
+            $required = Get-JsonPropertyValue -Object $schema -Name "required"
+            foreach ($name in $required) {
+                if ($name -isnot [string] -or
+                    -not [string]::Equals($name, $incomingEdge.PropertyName, [System.StringComparison]::Ordinal)) {
+                    throw "Nested discriminator base '$($plan.ParentName)' has unsupported required name '$name'."
+                }
+            }
+        }
+        foreach ($property in (Get-JsonProperties -Value $schema)) {
+            if (-not $allowedProperties.Contains($property.Name)) {
+                throw "Discriminator parent '$($plan.ParentName)' has unsupported sibling '$($property.Name)'."
+            }
         }
     }
 
@@ -407,14 +448,20 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
             $mapping[$mappingProperty.Name] = Get-OpenApiInheritanceComponentPointer `
                 -ComponentName $edge.OutputChildName
         }
+        $requiredNames = [object[]]@($plan.PropertyName)
+        $baseProperties = [ordered]@{}
+        if ($edgesByChild.ContainsKey($plan.ParentName)) {
+            $incomingEdge = $edgesByChild[$plan.ParentName][0]
+            $incomingProperties = Get-JsonPropertyValue -Object $schemaByName[$plan.ParentName] -Name "properties"
+            $baseProperties[$incomingEdge.PropertyName] = Copy-JsonValue `
+                -Value (Get-JsonPropertyValue -Object $incomingProperties -Name $incomingEdge.PropertyName)
+            $requiredNames = [object[]]@($incomingEdge.PropertyName, $plan.PropertyName)
+        }
+        $baseProperties[$plan.PropertyName] = [ordered]@{ type = "string" }
         $plan.BaseSchema = [ordered]@{
             type = "object"
-            required = @($plan.PropertyName)
-            properties = [ordered]@{
-                $plan.PropertyName = [ordered]@{
-                    type = "string"
-                }
-            }
+            required = $requiredNames
+            properties = $baseProperties
             discriminator = [ordered]@{
                 propertyName = $plan.PropertyName
                 mapping = $mapping
@@ -426,7 +473,13 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
     foreach ($schemaProperty in $schemaProperties) {
         $name = $schemaProperty.Name
         if ($planByParent.ContainsKey($name)) {
-            $newSchemas[$name] = $planByParent[$name].BaseSchema
+            $baseSchema = $planByParent[$name].BaseSchema
+            if ($edgesByChild.ContainsKey($name)) {
+                $baseSchema = New-OpenApiInheritedChildSchema `
+                    -Schema $baseSchema `
+                    -ParentName $edgesByChild[$name][0].ParentName
+            }
+            $newSchemas[$name] = $baseSchema
             continue
         }
         if ($edgesByChild.ContainsKey($name)) {
@@ -467,6 +520,21 @@ function ConvertTo-OpenApiDiscriminatedInheritanceDocument {
     Assert-OpenApiReferencesResolve -Document $result
     Assert-AdditionalOpenApiReferencesResolve -Document $result
     $null = Assert-OpenApiDiscriminatorMappings -Document $result
+    foreach ($plan in $plans) {
+        foreach ($edge in $plan.Edges) {
+            $childSchema = $newSchemas[$edge.OutputChildName]
+            $allOf = Get-JsonPropertyValue -Object $childSchema -Name "allOf"
+            $expectedBase = Get-OpenApiInheritanceComponentPointer -ComponentName $edge.ParentName
+            if (-not (Test-JsonArrayValue -Value $allOf) -or $allOf.Count -ne 1 -or
+                -not [string]::Equals(
+                    (Get-JsonPropertyValue -Object $allOf[0] -Name '$ref'),
+                    $expectedBase,
+                    [System.StringComparison]::Ordinal
+                )) {
+                throw "Inherited child '$($edge.OutputChildName)' must have exactly one immediate base '$($edge.ParentName)'."
+            }
+        }
+    }
     return [PSCustomObject]@{
         Document = $result
         RefactoredParentCount = $plans.Count

@@ -134,6 +134,24 @@ try {
         ) "Structurally different inherited children shared a fingerprint."
     }
 
+    Invoke-Test "nested inheritance families fingerprint consistently across ancestor references" {
+        foreach ($ancestorReference in @($false, $true)) {
+            $document = New-TestNestedInheritanceFamilies -AncestorReference:$ancestorReference
+            $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+            Assert-Equal 4 $plan.DefaultMap.groups.Count "Equivalent nested families did not produce four identity groups."
+            foreach ($name in @("InputItem", "Message", "UserMessage", "AssistantMessage")) {
+                $group = @($plan.DefaultMap.groups | Where-Object { $_.members -ccontains $name })[0]
+                Assert-Sequence @($name, "Other$name") @($group.members) "Nested identity group '$name' was incorrect."
+            }
+            $document.components.schemas.OtherUserMessage.properties.content.type = "integer"
+            $different = New-OpenApiComponentDefaultMapPlan -Document $document
+            $rootGroup = @($different.DefaultMap.groups | Where-Object { $_.members -ccontains "InputItem" })[0]
+            Assert-True ($rootGroup.members -cnotcontains "OtherInputItem") "Different nested payloads collapsed their root hierarchies."
+            $messageGroup = @($different.DefaultMap.groups | Where-Object { $_.members -ccontains "Message" })[0]
+            Assert-True ($messageGroup.members -cnotcontains "OtherMessage") "Different nested payloads collapsed their intermediate bases."
+        }
+    }
+
     Invoke-Test "file generation discards prior default edits and is deterministic" {
         $inputPath = Join-Path $temporaryDirectory "source.componentized.openapi.json"
         $defaultPath = Join-Path $temporaryDirectory "responses.component-default-map.json"

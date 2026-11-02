@@ -17,6 +17,43 @@
                   {
                     "type": "object",
                     "properties": {
+                      "input_item": {
+                        "discriminator": { "propertyName": "type" },
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "discriminator": { "propertyName": "role" },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "required": ["type", "role", "content"],
+                                "properties": {
+                                  "type": { "type": "string", "enum": ["message"] },
+                                  "role": { "type": "string", "enum": ["user"] },
+                                  "content": { "type": "string" }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "required": ["type", "role", "content"],
+                                "properties": {
+                                  "type": { "type": "string", "enum": ["message"] },
+                                  "role": { "type": "string", "enum": ["assistant"] },
+                                  "content": { "type": "string" }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "required": ["type", "call_id"],
+                            "properties": {
+                              "type": { "type": "string", "enum": ["function_call"] },
+                              "call_id": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
                       "model": {
                         "title": "Discard model title",
                         "description": "Keep wrapper",

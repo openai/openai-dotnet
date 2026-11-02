@@ -5,7 +5,7 @@
       "id": "createDecision_request_object",
       "type": "duplicate",
       "representative": "createDecision_request_object",
-      "fingerprint": "sha256:cc93c2cee25c79c8dc905a864788048aca70d3bf8157afbe12a9084f77d468cb",
+      "fingerprint": "sha256:98b8b052de4ebd1234f6ea96bfda898a8a10d955bff7544334277162ad96aad5",
       "members": [
         "createDecision_request_object"
       ]
@@ -14,181 +14,78 @@
       "id": "createDecision_request_object_Input_union",
       "type": "duplicate",
       "representative": "createDecision_request_object_Input_union",
-      "fingerprint": "sha256:4d2a6b78706c54c9bbb034b36744ee1cf567ba02f1e185480f098172b366564d",
+      "fingerprint": "sha256:3c5d59f48347ff6733fef42cf2f31f066029f4edd3e3a4635d52c0d2bf23e15b",
       "members": [
         "createDecision_request_object_Input_union"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union",
-      "fingerprint": "sha256:b3f667a24efaa33daa85ae787fb29c37e9dbdb58d0f6aeb6cc971ba915c76c8c",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject",
+      "fingerprint": "sha256:3a1d5e4cedf60cb2de95d6613077dd11ce1fbbead90ef605790d62a86a062c96",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1",
-      "fingerprint": "sha256:0fddb72fad900f921e2d54e7eb25234fd2114d191525f7dd4ef74c9d5e69b0ed",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall",
+      "fingerprint": "sha256:6d25dc5819d31aed488e43376767070c4433c398f7c8fc72b996554a21080440",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant",
-      "fingerprint": "sha256:4afc4c7843d13baa8f09f568f5dbca59a60a0c30a3eb2ddba41b446d68bae203",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum",
+      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union",
-      "fingerprint": "sha256:08bf77a9360ba12ec23e05da58e688bddf74422a96889aaeca33114d719fba58",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput",
+      "fingerprint": "sha256:3f3f61d8f4b29b7dd40efc016394fcc20db3b3bf34f17d42556784f4b25a09e7",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject",
-      "fingerprint": "sha256:5587965cd72be905a4c731a5eb63dd1a9e304fe054a69d1cdd77cc8ca4aa4c49",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union",
+      "fingerprint": "sha256:46b703c9ff95ae5bda3a6528d7ff6b6d5e49088e9f2f9e03a2d14d83b69d997a",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText",
-      "fingerprint": "sha256:d196904e60ecd9bae413cb8388bbe31d418c643c1c659e3e5e609cef3d7bc240",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
+      "fingerprint": "sha256:69ac171f6c2fbd89d6d67f8f9e0ccd5d886e5086eb0c7fe2ad44adf380ee04fc",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal",
-      "fingerprint": "sha256:fa8268457045d6ac212fbbda30164b2198eb9d23b5c676ffbc739ea58269be51",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
+      "fingerprint": "sha256:1ae7898f903f90dcfbb78d53af786c7af8fc43072cee4e83a6f9335d431e0774",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Phase_enum",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Phase_enum",
-      "fingerprint": "sha256:92356521dbb3d3897b7a13dbff18026f0f3afaeb053304e1efb3f10bf4b4c14a",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfAssistant_Phase_enum"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper",
-      "fingerprint": "sha256:4e8e7fba32b38a80a43ceb349ed4c6e67f9ebb72ba69c19aa87d06935db1ca67",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union",
-      "fingerprint": "sha256:0cb34f11bafa59ad95bfe933a7a231a8f89659716b1f533df27459eb07e1143d",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem_Content_union"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject",
-      "fingerprint": "sha256:019191ea0b6cdf2a2d48e9f70457ac184e48db6642e2c9cf053945071f0ec58c",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem_Content_union_array_item_discriminatedObject"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
-      "fingerprint": "sha256:178a32888649ce5471bf4fbec0849a96ebf2fa054d0406c86f5501443047fd3e",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-      "fingerprint": "sha256:1f325fc0a4e58d144156fa66e0a41868dc55c34f8de90e2a369fcf85bf6f3854",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem",
-      "fingerprint": "sha256:68c85b5165ed1fdae9c83bea863a176a91dcfad6affbe47762fd6451fee1bbc4",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfSystem"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser",
-      "fingerprint": "sha256:5000af7516d3a528a337a205bf8b6956c7b9f141c1993b5365f86ce6589728e5",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union",
-      "fingerprint": "sha256:bec075051cfdf6139e7b18b9e072ac0cc7a59d22a7f723b3905397863bf2d8fc",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject",
-      "fingerprint": "sha256:2037471f7b2b5f1468bb121c3bec6889d3e41c917d9ff6b148bf293772964017",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage",
-      "fingerprint": "sha256:f7840fdd1b2f3455f9e7376bbbc1e47be269e26238cd92be4b65b758613f6977",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage"
       ]
     },
     {
@@ -197,21 +94,212 @@
       "representative": "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
       "fingerprint": "sha256:8978270304e4fa9291b246c06e14ccb03df96d9c307bfc3a3f7ca434e11d2a83",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+      "fingerprint": "sha256:1f325fc0a4e58d144156fa66e0a41868dc55c34f8de90e2a369fcf85bf6f3854",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
+      "fingerprint": "sha256:71b0ceae2f76679aa505657ea3908ec851b886aed7450d8ae1e37e106f65f821",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall",
+      "fingerprint": "sha256:469e922055f75beea2c918b55f92ec9934e964c7b6c5107a79c9ae26ccd35f13",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput",
+      "fingerprint": "sha256:c185e21277820478e83540c15f1a1e57febfb2c8b7ec463a4bb6397334ddc25f",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage",
+      "fingerprint": "sha256:90cc2baeea2788c23c85c633dc4f1e7b7f25d91f0527e19d07253214287f58a7",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant",
+      "fingerprint": "sha256:3092c131a42ada3dd21f7ca3498a637860984c526e46c46ae1346ff2ca85c2b3",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union",
+      "fingerprint": "sha256:08bf77a9360ba12ec23e05da58e688bddf74422a96889aaeca33114d719fba58",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject",
+      "fingerprint": "sha256:5587965cd72be905a4c731a5eb63dd1a9e304fe054a69d1cdd77cc8ca4aa4c49",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText",
+      "fingerprint": "sha256:d196904e60ecd9bae413cb8388bbe31d418c643c1c659e3e5e609cef3d7bc240",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal",
+      "fingerprint": "sha256:fa8268457045d6ac212fbbda30164b2198eb9d23b5c676ffbc739ea58269be51",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum",
+      "fingerprint": "sha256:92356521dbb3d3897b7a13dbff18026f0f3afaeb053304e1efb3f10bf4b4c14a",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper",
+      "fingerprint": "sha256:2f247ed1a388fe7028ac46f05a64b83262481516de6e3bd6ba0b2485526f3393",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union",
+      "fingerprint": "sha256:0cb34f11bafa59ad95bfe933a7a231a8f89659716b1f533df27459eb07e1143d",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject",
+      "fingerprint": "sha256:019191ea0b6cdf2a2d48e9f70457ac184e48db6642e2c9cf053945071f0ec58c",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
+      "fingerprint": "sha256:178a32888649ce5471bf4fbec0849a96ebf2fa054d0406c86f5501443047fd3e",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem",
+      "fingerprint": "sha256:7d482ad271d218cbc92e1e96a1557f89d1493b02dab438b2b57dfe632dcc8592",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser",
+      "fingerprint": "sha256:1210267cb6590f164c6c11870604d9473353c5e475de7b0b641a357395aea4ba",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union",
+      "fingerprint": "sha256:bec075051cfdf6139e7b18b9e072ac0cc7a59d22a7f723b3905397863bf2d8fc",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject",
+      "fingerprint": "sha256:2037471f7b2b5f1468bb121c3bec6889d3e41c917d9ff6b148bf293772964017",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage",
+      "fingerprint": "sha256:f7840fdd1b2f3455f9e7376bbbc1e47be269e26238cd92be4b65b758613f6977",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson",
       "fingerprint": "sha256:081d4a22800d4c42fd4d595b9364bf4d22bf680887bdbbb853b9914e1159a1fd",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson"
       ]
     },
     {
@@ -220,7 +308,7 @@
       "representative": "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union",
       "fingerprint": "sha256:8172f6d29d3a9dc21a6208c558ee97c9c664943972fee63062135a319db804bb",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union"
@@ -232,8 +320,8 @@
       "representative": "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary",
       "fingerprint": "sha256:89c474ebd7901860dd0d1309b75a50cced0f51435d0a1ec57f28eca92fac4995",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary",
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary",
         "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary",
@@ -243,109 +331,12 @@
       ]
     },
     {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText",
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText",
       "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText",
       "fingerprint": "sha256:7797f873edec2b673fbcbc36822cc538054022b93138542c615aa48ceed4bd00",
       "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject1_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2",
-      "fingerprint": "sha256:6cef8f4473ea06cb09df1f26557c57128dd4b888c50c6cec4ca508078da066b4",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall",
-      "fingerprint": "sha256:73e4fdb7e98b33973f95429830c702f9d2c167ed87f771d331486214ab65c7d9",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall_Status_enum",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall_Status_enum",
-      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCall_Status_enum",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Status_enum",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCall_Status_enum",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Status_enum"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput",
-      "fingerprint": "sha256:b31fa8a1fc56ea0c372f10ecbfbe6a31278ae498176fdcc116111c1f6ab4c2d0",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union",
-      "fingerprint": "sha256:46b703c9ff95ae5bda3a6528d7ff6b6d5e49088e9f2f9e03a2d14d83b69d997a",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
-      "fingerprint": "sha256:69ac171f6c2fbd89d6d67f8f9e0ccd5d886e5086eb0c7fe2ad44adf380ee04fc",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
-      "fingerprint": "sha256:1ae7898f903f90dcfbb78d53af786c7af8fc43072cee4e83a6f9335d431e0774",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
-      "fingerprint": "sha256:71b0ceae2f76679aa505657ea3908ec851b886aed7450d8ae1e37e106f65f821",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCall",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCall",
-      "fingerprint": "sha256:0898ef90276b02f5b9a3af7712ae2038ec6d2b606647b4cd8028814a50eee36d",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCall"
-      ]
-    },
-    {
-      "id": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput",
-      "type": "duplicate",
-      "representative": "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput",
-      "fingerprint": "sha256:3c116585425cc10bb2bbaa01e1b496658305580b120041439e302a14ddade908",
-      "members": [
-        "createDecision_request_object_Input_union_array_item_union_discriminatedObject2_typeOfFunctionCallOutput"
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText"
       ]
     },
     {

@@ -642,7 +642,7 @@ function Get-OpenApiDiscriminatorPropertyValues {
 }
 
 # Scope-sensitive schema keywords and extensions cannot be discarded from a
-# nested wrapper without potentially changing its meaning.
+# nested group without potentially changing its meaning.
 function Test-ContainsUnsafeOpenApiDiscriminatorUnionSibling {
     param(
         [Parameter(Mandatory = $true)]
@@ -700,7 +700,7 @@ function Test-OpenApiDiscriminatorMetadataCompatible {
         [object]$ParentSchema,
 
         [Parameter(Mandatory = $true)]
-        [object]$WrapperSchema,
+        [object]$GroupSchema,
 
         [Parameter(Mandatory = $true)]
         [string]$PropertyName,
@@ -710,13 +710,13 @@ function Test-OpenApiDiscriminatorMetadataCompatible {
     )
 
     $parentDiscriminator = Get-JsonPropertyValue -Object $ParentSchema -Name "discriminator"
-    $wrapperDiscriminator = Get-JsonPropertyValue -Object $WrapperSchema -Name "discriminator"
-    if (-not (Test-JsonObjectValue -Value $wrapperDiscriminator)) {
+    $groupDiscriminator = Get-JsonPropertyValue -Object $GroupSchema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $groupDiscriminator)) {
         return $false
     }
-    $wrapperPropertyName = Get-JsonPropertyValue -Object $wrapperDiscriminator -Name "propertyName"
-    if ($wrapperPropertyName -isnot [string] -or
-        -not [string]::Equals($wrapperPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
+    $groupPropertyName = Get-JsonPropertyValue -Object $groupDiscriminator -Name "propertyName"
+    if ($groupPropertyName -isnot [string] -or
+        -not [string]::Equals($groupPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
         return $false
     }
 
@@ -731,7 +731,7 @@ function Test-OpenApiDiscriminatorMetadataCompatible {
         }
     }
     $actual = [ordered]@{}
-    foreach ($property in (Get-JsonProperties -Value $wrapperDiscriminator)) {
+    foreach ($property in (Get-JsonProperties -Value $groupDiscriminator)) {
         if (-not [string]::Equals($property.Name, "mapping", [System.StringComparison]::Ordinal)) {
             $actual[$property.Name] = $property.Value
         }
@@ -745,7 +745,7 @@ function Test-OpenApiDiscriminatorUnionSiblingsMatch {
         [object]$ParentSchema,
 
         [Parameter(Mandatory = $true)]
-        [object]$WrapperSchema,
+        [object]$GroupSchema,
 
         [Parameter()]
         [ValidateSet("oneOf", "anyOf")]
@@ -753,25 +753,25 @@ function Test-OpenApiDiscriminatorUnionSiblingsMatch {
 
         [Parameter()]
         [ValidateSet("oneOf", "anyOf")]
-        [string]$WrapperCompositionName = "oneOf"
+        [string]$GroupCompositionName = "oneOf"
     )
 
     $parentProperties = @(
         Get-JsonProperties -Value $ParentSchema |
             Where-Object { @("type", "discriminator", $ParentCompositionName) -cnotcontains $_.Name }
     )
-    $wrapperProperties = @(
-        Get-JsonProperties -Value $WrapperSchema |
-            Where-Object { @("type", "discriminator", $WrapperCompositionName) -cnotcontains $_.Name }
+    $groupProperties = @(
+        Get-JsonProperties -Value $GroupSchema |
+            Where-Object { @("type", "discriminator", $GroupCompositionName) -cnotcontains $_.Name }
     )
-    if ($parentProperties.Count -ne $wrapperProperties.Count) {
+    if ($parentProperties.Count -ne $groupProperties.Count) {
         return $false
     }
     foreach ($property in $parentProperties) {
-        if (-not (Test-JsonProperty -Object $WrapperSchema -Name $property.Name) -or
+        if (-not (Test-JsonProperty -Object $GroupSchema -Name $property.Name) -or
             -not (Test-JsonValuesEqual `
                 -Left $property.Value `
-                -Right (Get-JsonPropertyValue -Object $WrapperSchema -Name $property.Name))) {
+                -Right (Get-JsonPropertyValue -Object $GroupSchema -Name $property.Name))) {
             return $false
         }
         $sibling = [ordered]@{}
@@ -783,11 +783,256 @@ function Test-OpenApiDiscriminatorUnionSiblingsMatch {
     return $true
 }
 
-# Recursively describes a union as direct leaves and transparent nested oneOf
-# wrappers. A wrapper may omit type because its recursively validated leaves are
-# explicit objects; any present wrapper type must still be exactly object. A null
-# result means the union cannot safely use one discriminator or be flattened
-# under the requested property.
+function Get-OpenApiCommonNestedDiscriminatorValue {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Plan,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Common nested-group discriminator value analysis exceeds the supported depth of $MaximumDepth."
+    }
+    $commonValue = $null
+    foreach ($branchPlan in $Plan.BranchPlans) {
+        if ($null -ne $branchPlan.NestedPlan) {
+            $value = Get-OpenApiCommonNestedDiscriminatorValue `
+                -Plan $branchPlan.NestedPlan `
+                -PropertyName $PropertyName `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        else {
+            try {
+                [string[]]$acceptedValues = @(Get-OpenApiDiscriminatorPropertyValues `
+                    -Schema $branchPlan.Branch `
+                    -PropertyName $PropertyName `
+                    -Breadcrumb $branchPlan.Breadcrumb)
+            }
+            catch {
+                return $null
+            }
+            if ($acceptedValues.Count -ne 1) {
+                return $null
+            }
+            $value = $acceptedValues[0]
+        }
+        if ($null -eq $value -or
+            ($null -ne $branchPlan.NestedPlan -and
+                -not (Test-OpenApiNestedDiscriminatorPropertyCompatible `
+                    -Schema $branchPlan.Branch `
+                    -PropertyName $PropertyName `
+                    -Value $value `
+                    -Breadcrumb $branchPlan.Breadcrumb)) -or
+            ($null -ne $commonValue -and
+                -not [string]::Equals($commonValue, $value, [System.StringComparison]::Ordinal))) {
+            return $null
+        }
+        $commonValue = $value
+    }
+    return $commonValue
+}
+
+function Test-OpenApiNestedDiscriminatorPropertyCompatible {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    if (Test-JsonProperty -Object $Schema -Name "required") {
+        $required = Get-JsonPropertyValue -Object $Schema -Name "required"
+        if (-not (Test-JsonArrayValue -Value $required) -or
+            @($required | Where-Object { $_ -isnot [string] }).Count -gt 0) {
+            return $false
+        }
+    }
+    if (-not (Test-JsonProperty -Object $Schema -Name "properties")) {
+        return $true
+    }
+    $properties = Get-JsonPropertyValue -Object $Schema -Name "properties"
+    if (-not (Test-JsonObjectValue -Value $properties)) {
+        return $false
+    }
+    if (-not (Test-JsonProperty -Object $properties -Name $PropertyName)) {
+        return $true
+    }
+    $discriminatorProperty = Get-JsonPropertyValue -Object $properties -Name $PropertyName
+    if (-not (Test-JsonObjectValue -Value $discriminatorProperty)) {
+        return $false
+    }
+    if (Test-JsonProperty -Object $discriminatorProperty -Name "type") {
+        $discriminatorPropertyType = Get-JsonPropertyValue -Object $discriminatorProperty -Name "type"
+        if ($discriminatorPropertyType -isnot [string] -or
+            -not [string]::Equals($discriminatorPropertyType, "string", [System.StringComparison]::Ordinal)) {
+            return $false
+        }
+    }
+    if ((Test-JsonProperty -Object $discriminatorProperty -Name "const") -or
+        (Test-JsonProperty -Object $discriminatorProperty -Name "enum")) {
+        try {
+            [string[]]$acceptedValues = @(Get-OpenApiFiniteStringSchemaValues `
+                -Schema $discriminatorProperty `
+                -Breadcrumb "$Breadcrumb/properties/$(ConvertTo-JsonPointerToken -Token $PropertyName)")
+            return $acceptedValues -ccontains $Value
+        }
+        catch {
+            return $false
+        }
+    }
+    return $true
+}
+
+function ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Plan,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Nested-group discriminator property normalization exceeds the supported depth of $MaximumDepth."
+    }
+    $result = Copy-JsonValue -Value $Plan.Schema
+    [object[]]$branches = [object[]]::new($Plan.BranchPlans.Count)
+    for ($index = 0; $index -lt $branches.Count; $index++) {
+        $branchPlan = $Plan.BranchPlans[$index]
+        $branch = if ($null -ne $branchPlan.NestedPlan) {
+            ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema `
+                -Plan $branchPlan.NestedPlan `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        else {
+            Copy-JsonValue -Value $branchPlan.Branch
+        }
+        if ([string]::Equals($branchPlan.Kind, "NestedDiscriminatorGroup", [System.StringComparison]::Ordinal)) {
+            if (-not (Test-JsonProperty -Object $branch -Name "type")) {
+                $branch["type"] = "object"
+            }
+            if (-not (Test-JsonProperty -Object $branch -Name "properties")) {
+                $branch["properties"] = [ordered]@{}
+            }
+            $properties = Get-JsonPropertyValue -Object $branch -Name "properties"
+            $discriminatorProperty = if (Test-JsonProperty -Object $properties -Name $Plan.PropertyName) {
+                Copy-JsonValue -Value (Get-JsonPropertyValue -Object $properties -Name $Plan.PropertyName)
+            }
+            else {
+                [ordered]@{}
+            }
+            if (-not (Test-JsonProperty -Object $discriminatorProperty -Name "type")) {
+                $discriminatorProperty["type"] = "string"
+            }
+            $discriminatorProperty["enum"] = [object[]]@($branchPlan.Values[0])
+            $properties[$Plan.PropertyName] = $discriminatorProperty
+            [object[]]$required = if (Test-JsonProperty -Object $branch -Name "required") {
+                @(Get-JsonPropertyValue -Object $branch -Name "required")
+            }
+            else {
+                @()
+            }
+            if ($required -cnotcontains $Plan.PropertyName) {
+                $required = [object[]]@($required + $Plan.PropertyName)
+            }
+            $branch["required"] = $required
+        }
+        $branches[$index] = $branch
+    }
+    $result[$Plan.CompositionName] = $branches
+    return $result
+}
+
+<#
+A discriminator union plan is a PSCustomObject describing the result of schema
+analysis, not a pipeline stage or an output document. Building a plan does not
+modify the input. Schema and Branch reference the original schema objects;
+conversion functions copy those objects before applying changes.
+
+Each union plan contains:
+    Schema          The Schema Object owning the composition.
+    PropertyName    The discriminator property at this level, such as type or role.
+    CompositionName The analyzed composition keyword: oneOf or anyOf.
+    Branches        The original immediate alternatives, in encounter order.
+    BranchPlans     One analysis result per immediate alternative.
+    Values          All accepted discriminator values at this level.
+
+Each branch plan contains Kind, Branch, Breadcrumb (its JSON Pointer), Values
+(its discriminator values at the parent's level), and NestedPlan. NestedPlan is
+null for a Leaf; otherwise it describes the nested oneOf using that group's own
+discriminator property.
+
+Kind describes a branch relative to its immediate parent, not its depth:
+    Leaf                     A concrete object alternative with finite, required
+                                                     discriminator values.
+    FlattenableGroup         A nested group using the SAME discriminator property
+                                                     as its parent. Matching structural constraints make
+                                                     it a transparent grouping whose alternatives can be
+                                                     promoted into the parent by the flatten stage.
+    NestedDiscriminatorGroup A nested group using a DIFFERENT discriminator
+                                                     property. Every concrete member must already require
+                                                     the same single outer discriminator value. The group
+                                                     counts once at the outer level and remains intact so
+                                                     its own discriminator can distinguish its members.
+
+For example, type chooses Message or FunctionCall, and role chooses UserMessage
+or AssistantMessage inside Message. An abbreviated outer plan is:
+    PropertyName = "type"
+    Values = @("message", "function_call")
+    BranchPlans = @(
+        @{ Kind = "NestedDiscriminatorGroup"; Values = @("message"); NestedPlan = @{
+                 PropertyName = "role"; Values = @("user", "assistant")
+             } },
+        @{ Kind = "Leaf"; Values = @("function_call"); NestedPlan = $null }
+    )
+The role group's two message members do not create duplicate outer values:
+"message" occurs once in the outer plan and user/assistant belong to NestedPlan.
+By contrast, a type group containing input_text and input_image inside another
+type group can be a FlattenableGroup: both values contribute to the parent's
+values.
+
+For a NestedDiscriminatorGroup, analysis proves that all concrete members
+already require the same outer discriminator value. Normalization declares that
+constraint directly on the subgroup. Component naming, exhaustive mappings, and
+immediate-parent inheritance then preserve both discriminator levels; the group
+is not flattened into alternatives sharing a duplicate outer value.
+
+A null result means the composition does not satisfy these conservative rules.
+That includes malformed discriminator metadata or compositions, non-object
+alternatives, optional/missing discriminator properties, non-finite or
+conflicting const/enum constraints, and overlapping values across immediate
+logical branches. A NestedDiscriminatorGroup must also have a valid inner
+discriminator and one common required outer value compatible with its existing
+constraints. A same-property group must meet the structural/metadata equivalence
+and scope-safety checks for flattening. Unsupported analysis does not necessarily
+mean the original JSON Schema is invalid. Stage 09 removes unsupported oneOf
+discriminator metadata and may infer a valid type discriminator instead; it does
+not remove the oneOf alternatives. Component mapping validation and inheritance
+have additional fail-fast requirements documented in docs/OpenApiPipelineDesign.md.
+Recursion supports more than two levels, subject to MaximumDepth and the same
+required, finite, unambiguous discriminator checks at each level.
+#>
 function Get-OpenApiInlineDiscriminatorUnionPlan {
     param(
         [Parameter(Mandatory = $true)]
@@ -849,32 +1094,32 @@ function Get-OpenApiInlineDiscriminatorUnionPlan {
             return $null
         }
 
-        $isNestedWrapper = Test-JsonProperty -Object $branch -Name "oneOf"
-        if ($isNestedWrapper) {
+        $isNestedGroup = Test-JsonProperty -Object $branch -Name "oneOf"
+        if ($isNestedGroup) {
             $hasBranchType = Test-JsonProperty -Object $branch -Name "type"
             $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
-            # Composition-only wrappers may omit type because their recursively
+            # Composition-only groups may omit type because their recursively
             # validated leaves are explicit objects. Any present type remains
             # strict and must be the exact scalar string "object".
             if (($hasBranchType -and
                     ($branchType -isnot [string] -or
                         -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal))) -or
-                (Test-JsonProperty -Object $branch -Name '$ref') -or
-                -not (Test-OpenApiDiscriminatorMetadataCompatible `
-                    -ParentSchema $Schema `
-                    -WrapperSchema $branch `
-                    -PropertyName $PropertyName `
-                    -IgnoreParentDiscriminator:$IgnoreSchemaDiscriminatorMetadata) -or
-                -not (Test-OpenApiDiscriminatorUnionSiblingsMatch `
-                    -ParentSchema $Schema `
-                    -WrapperSchema $branch `
-                    -ParentCompositionName $CompositionName `
-                    -WrapperCompositionName "oneOf")) {
+                (Test-JsonProperty -Object $branch -Name '$ref')) {
+                return $null
+            }
+            $branchDiscriminator = Get-JsonPropertyValue -Object $branch -Name "discriminator"
+            $nestedPropertyName = if (Test-JsonObjectValue -Value $branchDiscriminator) {
+                Get-JsonPropertyValue -Object $branchDiscriminator -Name "propertyName"
+            }
+            else {
+                $null
+            }
+            if ($nestedPropertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($nestedPropertyName)) {
                 return $null
             }
             $nestedPlan = Get-OpenApiInlineDiscriminatorUnionPlan `
                 -Schema $branch `
-                -PropertyName $PropertyName `
+                -PropertyName $nestedPropertyName `
                 -Breadcrumb $branchBreadcrumb `
                 -RequireDiscriminator `
                 -Depth ($Depth + 1) `
@@ -882,9 +1127,41 @@ function Get-OpenApiInlineDiscriminatorUnionPlan {
             if ($null -eq $nestedPlan) {
                 return $null
             }
-            [string[]]$branchValues = [string[]]$nestedPlan.Values
+            $kind = "FlattenableGroup"
+            if ([string]::Equals($nestedPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
+                if (-not (Test-OpenApiDiscriminatorMetadataCompatible `
+                        -ParentSchema $Schema `
+                        -GroupSchema $branch `
+                        -PropertyName $PropertyName `
+                        -IgnoreParentDiscriminator:$IgnoreSchemaDiscriminatorMetadata) -or
+                    -not (Test-OpenApiDiscriminatorUnionSiblingsMatch `
+                        -ParentSchema $Schema `
+                        -GroupSchema $branch `
+                        -ParentCompositionName $CompositionName `
+                        -GroupCompositionName "oneOf")) {
+                    return $null
+                }
+                [string[]]$branchValues = [string[]]$nestedPlan.Values
+            }
+            else {
+                $commonValue = Get-OpenApiCommonNestedDiscriminatorValue `
+                    -Plan $nestedPlan `
+                    -PropertyName $PropertyName `
+                    -Depth ($Depth + 1) `
+                    -MaximumDepth $MaximumDepth
+                if ($null -eq $commonValue -or
+                    -not (Test-OpenApiNestedDiscriminatorPropertyCompatible `
+                        -Schema $branch `
+                        -PropertyName $PropertyName `
+                        -Value $commonValue `
+                        -Breadcrumb $branchBreadcrumb)) {
+                    return $null
+                }
+                $kind = "NestedDiscriminatorGroup"
+                [string[]]$branchValues = @($commonValue)
+            }
             $branchPlans.Add([PSCustomObject]@{
-                Kind = "Wrapper"
+                Kind = $kind
                 Branch = $branch
                 Breadcrumb = $branchBreadcrumb
                 Values = $branchValues
@@ -924,6 +1201,7 @@ function Get-OpenApiInlineDiscriminatorUnionPlan {
     }
 
     return [PSCustomObject]@{
+        Schema = $Schema
         PropertyName = $PropertyName
         CompositionName = $CompositionName
         Branches = $composition

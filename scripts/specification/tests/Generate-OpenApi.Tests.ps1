@@ -481,10 +481,10 @@ try {
         Assert-True (-not ($recursiveSimplifiedNested.oneOf[2].PSObject.Properties.Name -ccontains "required")) "Recursive Simplify stage required the optional omega type early."
         Assert-True (-not ($recursiveSimplifiedSplitChoice.oneOf[1].PSObject.Properties.Name -ccontains "required")) "Recursive Simplify stage required the optional multi-value type early."
         Assert-Sequence @("alpha", "beta") @($recursiveSimplifiedSplitChoice.oneOf[1].properties.type.enum) "Recursive Simplify stage changed the multi-value type enum early."
-        Assert-Sequence @("type") @($requiredNested.oneOf[0].required) "Type requirement stage did not require the alpha selector."
-        Assert-Sequence @("type") @($requiredNested.oneOf[2].required) "Type requirement stage did not require the omega selector."
-        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[1].required) "Type requirement stage did not require the multi-value selector."
-        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[2].required) "Type requirement stage changed the already-required selector."
+        Assert-Sequence @("type") @($requiredNested.oneOf[0].required) "Type requirement stage did not require the alpha discriminator property."
+        Assert-Sequence @("type") @($requiredNested.oneOf[2].required) "Type requirement stage did not require the omega discriminator property."
+        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[1].required) "Type requirement stage did not require the multi-value discriminator property."
+        Assert-Sequence @("type") @($requiredSplitChoice.oneOf[2].required) "Type requirement stage changed the already-required discriminator property."
         Assert-Equal 4 $splitChoice.oneOf.Count "Type enum split stage emitted the wrong branch count."
         Assert-Sequence @("alpha", "beta", "gamma") @($splitChoice.oneOf[1..3] | ForEach-Object { $_.properties.type.enum[0] }) "Type enum split stage emitted the wrong singleton branches."
         Assert-True (-not ($discriminatedSplitChoice.PSObject.Properties.Name -ccontains "discriminator")) "Discriminator stage added metadata to a mixed scalar/object union."
@@ -535,12 +535,26 @@ try {
         Assert-Equal 1 $sortedNestedTypeGroups.Count "Sorted nested union did not contain one type discriminator group."
         Assert-Sequence @("alpha", "omega") @(
             $sortedNestedTypeGroups[0].oneOf | ForEach-Object { $_.properties.type.enum[0] }
-        ) "Newly required singleton selectors were not grouped together."
+        ) "Newly required singleton discriminator properties were not grouped together."
         Assert-Sequence @("apply_patch", "function", "web_search_preview") @(
             $sortedTools.items.oneOf | ForEach-Object { $_.properties.type.enum[0] }
         ) "Sort stage did not order tools by discriminator value."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
         Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."
+
+        foreach ($stageDocument in @($oneOfDiscriminated, $oneOfFlattened, $singletonTypeWrapped)) {
+            $inputItem = $stageDocument.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.input_item
+            Assert-Equal "type" $inputItem.discriminator.propertyName "A generation stage lost the outer discriminator."
+            Assert-Equal "role" $inputItem.oneOf[0].discriminator.propertyName "A generation stage lost the nested role discriminator."
+            Assert-Sequence @("message") @($inputItem.oneOf[0].properties.type.enum) "A generation stage lost the intermediate discriminator value."
+        }
+        $inputItemName = "createResponse_request_object_InputItem_discriminatedObject"
+        $messageName = "${inputItemName}_typeOfMessage"
+        $inputItemComponent = Get-JsonPropertyValue -Object $componentized.components.schemas -Name $inputItemName
+        $messageComponent = Get-JsonPropertyValue -Object $componentized.components.schemas -Name $messageName
+        Assert-True ($null -ne $messageComponent) "Generation omitted the typeOfMessage hierarchy component."
+        Assert-Equal "#/components/schemas/$messageName" $inputItemComponent.discriminator.mapping.message "Generation split the message and tool-call hierarchies."
+        Assert-Equal "role" $messageComponent.discriminator.propertyName "Componentized Message lost role routing."
 
         $splitWrapperName = "createResponse_request_object_SplitChoice_union_discriminatedObject"
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name $splitWrapperName) "Componentization omitted the splitChoice discriminator wrapper."

@@ -154,15 +154,25 @@ function Get-OpenApiSortedDiscriminatorBranchValues {
         }
     }
     elseif (Test-JsonProperty -Object $Branch -Name "oneOf") {
-        $nestedPlan = Get-OpenApiInlineDiscriminatorUnionPlan `
-            -Schema $Branch `
-            -PropertyName $PropertyName `
-            -Breadcrumb $Breadcrumb `
-            -RequireDiscriminator
-        if ($null -eq $nestedPlan -or $nestedPlan.Values.Count -eq 0) {
-            throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because it does not expose finite discriminator values."
+        $discriminator = Get-JsonPropertyValue -Object $Branch -Name "discriminator"
+        $nestedPropertyName = if (Test-JsonObjectValue -Value $discriminator) {
+            Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
         }
-        return ,(Sort-OrdinalStrings -Values ([string[]]$nestedPlan.Values))
+        else {
+            $null
+        }
+        if ($nestedPropertyName -is [string] -and
+            [string]::Equals($nestedPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
+            $nestedPlan = Get-OpenApiInlineDiscriminatorUnionPlan `
+                -Schema $Branch `
+                -PropertyName $PropertyName `
+                -Breadcrumb $Breadcrumb `
+                -RequireDiscriminator
+            if ($null -eq $nestedPlan -or $nestedPlan.Values.Count -eq 0) {
+                throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because it does not expose finite discriminator values."
+            }
+            return ,(Sort-OrdinalStrings -Values ([string[]]$nestedPlan.Values))
+        }
     }
 
     try {

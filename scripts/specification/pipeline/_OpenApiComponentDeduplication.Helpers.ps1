@@ -262,6 +262,10 @@ function Get-OpenApiComponentTreeCanonicalValueText {
         [string]$RelativeRootComponentName,
 
         [Parameter()]
+        [AllowEmptyCollection()]
+        [string[]]$RelativeAncestorComponentNames = @(),
+
+        [Parameter()]
         [ValidateSet("Default", "Discriminator", "Mapping")]
         [string]$Context = "Default",
 
@@ -287,6 +291,7 @@ function Get-OpenApiComponentTreeCanonicalValueText {
                 -State $State `
                 -ComponentName $ComponentName `
                 -RelativeRootComponentName $RelativeRootComponentName `
+                -RelativeAncestorComponentNames $RelativeAncestorComponentNames `
                 -Context Default `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth))
@@ -316,9 +321,15 @@ function Get-OpenApiComponentTreeCanonicalValueText {
             $pointerInfo = Get-OpenApiSchemaComponentPointerInfo -Pointer $propertyValue
             if ([string]::Equals($kind, "DiscriminatorMapping", [System.StringComparison]::Ordinal)) {
                 if ($null -ne $pointerInfo -and $State.Schemas.ContainsKey($pointerInfo.ComponentName)) {
+                    [string[]]$ancestorNames = @($RelativeAncestorComponentNames)
+                    if (-not [string]::IsNullOrWhiteSpace($RelativeRootComponentName) -and
+                        $ancestorNames -cnotcontains $RelativeRootComponentName) {
+                        $ancestorNames = [string[]]@($ancestorNames + $RelativeRootComponentName)
+                    }
                     $identity = Get-OpenApiRelativeComponentTreeIdentity `
                         -ComponentName $pointerInfo.ComponentName `
                         -RelativeRootComponentName $ComponentName `
+                        -RelativeAncestorComponentNames $ancestorNames `
                         -State $State
                     $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
                 }
@@ -337,6 +348,10 @@ function Get-OpenApiComponentTreeCanonicalValueText {
                     [string]::Equals($pointerInfo.ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal)) {
                     $propertyText = "relative-root-pointer:${kind}:$($pointerInfo.Suffix)"
                 }
+                elseif ($RelativeAncestorComponentNames -ccontains $pointerInfo.ComponentName) {
+                    $ancestorIndex = [Array]::IndexOf($RelativeAncestorComponentNames, $pointerInfo.ComponentName)
+                    $propertyText = "relative-ancestor-pointer:${kind}:$ancestorIndex`:$($pointerInfo.Suffix)"
+                }
                 elseif (-not [string]::IsNullOrWhiteSpace($RelativeRootComponentName) -and
                     (Test-OpenApiComponentCanReach `
                         -Start $pointerInfo.ComponentName `
@@ -345,6 +360,7 @@ function Get-OpenApiComponentTreeCanonicalValueText {
                     $identity = Get-OpenApiRelativeComponentTreeIdentity `
                         -ComponentName $pointerInfo.ComponentName `
                         -RelativeRootComponentName $RelativeRootComponentName `
+                        -RelativeAncestorComponentNames $RelativeAncestorComponentNames `
                         -State $State
                     $propertyText = "component-pointer:${kind}:$($identity.Fingerprint):$($pointerInfo.Suffix)"
                 }
@@ -384,6 +400,7 @@ function Get-OpenApiComponentTreeCanonicalValueText {
                 -State $State `
                 -ComponentName $ComponentName `
                 -RelativeRootComponentName $RelativeRootComponentName `
+                -RelativeAncestorComponentNames $RelativeAncestorComponentNames `
                 -Context $childContext `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
@@ -401,12 +418,24 @@ function Get-OpenApiRelativeComponentTreeIdentity {
         [Parameter(Mandatory = $true)]
         [string]$RelativeRootComponentName,
 
+        [Parameter()]
+        [AllowEmptyCollection()]
+        [string[]]$RelativeAncestorComponentNames = @(),
+
         [Parameter(Mandatory = $true)]
         [object]$State
     )
 
-    if ([string]::Equals($ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal)) {
-        $canonicalText = "relative-root"
+    $ancestorIndex = [Array]::IndexOf($RelativeAncestorComponentNames, $ComponentName)
+    if ([string]::Equals($ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal) -or
+        $ancestorIndex -ge 0) {
+        $canonicalText = if ($ancestorIndex -ge 0 -and
+            -not [string]::Equals($ComponentName, $RelativeRootComponentName, [System.StringComparison]::Ordinal)) {
+            "relative-ancestor:$ancestorIndex"
+        }
+        else {
+            "relative-root"
+        }
         $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonicalText)
         return [PSCustomObject]@{
             ComponentName = $ComponentName
@@ -416,7 +445,8 @@ function Get-OpenApiRelativeComponentTreeIdentity {
         }
     }
 
-    $key = "$($RelativeRootComponentName.Length):$RelativeRootComponentName$($ComponentName.Length):$ComponentName"
+    $ancestorKey = (@($RelativeAncestorComponentNames | ForEach-Object { "$($_.Length):$_" }) -join "")
+    $key = "$($RelativeAncestorComponentNames.Count):$ancestorKey$($RelativeRootComponentName.Length):$RelativeRootComponentName$($ComponentName.Length):$ComponentName"
     if ($State.RelativeIdentities.ContainsKey($key)) {
         return $State.RelativeIdentities[$key]
     }
@@ -429,7 +459,8 @@ function Get-OpenApiRelativeComponentTreeIdentity {
             -Value $State.Schemas[$ComponentName] `
             -State $State `
             -ComponentName $ComponentName `
-            -RelativeRootComponentName $RelativeRootComponentName
+            -RelativeRootComponentName $RelativeRootComponentName `
+            -RelativeAncestorComponentNames $RelativeAncestorComponentNames
         $bytes = [System.Text.Encoding]::UTF8.GetBytes($canonicalText)
         $identity = [PSCustomObject]@{
             ComponentName = $ComponentName

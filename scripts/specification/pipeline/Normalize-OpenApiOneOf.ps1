@@ -104,6 +104,7 @@ function Get-DiscriminatedOpenApiAnyOfCandidate {
     return [PSCustomObject]@{
         PropertyName = $propertyName
         Branches = $plan.Branches
+        Plan = $plan
     }
 }
 
@@ -181,6 +182,12 @@ function ConvertTo-NormalizedOpenApiOneOfValue {
     $removeDiscriminator = $isSchema -and
         $null -eq $candidate -and
         (Test-IsOrphanedOpenApiDiscriminator -Schema $Value)
+
+    if ($null -ne $candidate) {
+        $Value = ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema `
+            -Plan $candidate.Plan `
+            -MaximumDepth ($MaximumDepth - $Depth)
+    }
 
     $result = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {

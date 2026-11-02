@@ -18,13 +18,11 @@ Run the three top-level phases in order:
 
 Each successful phase atomically publishes its result to
 `specification/openapi/<feature-area>/<feature-area>.openapi.json`. Generation
-adds required `type` selectors at artifact 07 and publishes numbered artifact
-14, the componentized document. Inheritance reads that alias by default,
-retains artifacts 15 and 16, and republishes artifact 16.
-Finalization also reads the alias by default, validates policy, replaces the
-default map, applies both maps, retains artifact 17, and republishes it as the
-final alias. The retained OpenAPI audit trail is numbered continuously from 01
-through 17 across all three phases.
+produces the componentized document, inheritance prepares its model bases and
+derived models, and finalization applies the component maps. Inherit and Finalize
+read the alias by default, so the commands above can be run in sequence without
+specifying intermediate filenames. Numbered artifacts 01 through 17 remain
+available as an audit trail.
 
 Component maps are control files rather than transformation snapshots, so they
 remain unnumbered. The final alias also remains unnumbered so consumers have one
@@ -39,6 +37,10 @@ remain under the selected feature directory. Generate also requires the exact
 The former Responses-specific scripts and root-level Responses artifacts are no
 longer supported. Responses outputs now live under
 `specification/openapi/responses/`.
+
+For stage-by-stage behavior and implementation details, see
+[OpenAPI Pipeline Design](OpenApiPipelineDesign.md). This guide focuses on
+creating, reviewing, and maintaining component maps.
 
 ## Default map
 
@@ -122,3 +124,23 @@ Finalization fails without modifying policy when:
 - the generated default map is stale or manually edited when passed directly to the deduplicator.
 
 Policy fingerprints are strict. Schema evolution requires manually updating the affected policy groups from a newly generated default-map view.
+
+## Pipeline errors
+
+If generation or inheritance fails before finalization, correct or review the
+source schema named in the error. A component policy map controls grouping and
+output names; it does not repair invalid references, discriminator mappings, or
+unsupported inheritance structures.
+
+Nested discriminator bases must have one inheritance parent. Cycles, shared
+nested bases, and unsupported intermediate payload constraints require source
+review rather than a policy-map override. Some unsupported shapes are valid
+OpenAPI but cannot be converted into the pipeline's supported model hierarchy.
+See the [discriminator validation reference](OpenApiPipelineDesign.md#discriminator-validation)
+for the exact conditions and which stages remove metadata versus fail.
+
+For a missing or changed policy member or fingerprint, review the regenerated
+default map alongside the schema change and update the affected policy groups
+manually. Do not edit the generated default map to bypass validation; the next
+finalization replaces it. If multiple policy targets match a new component,
+resolve the ambiguity in the policy map before rerunning finalization.

@@ -172,6 +172,26 @@ try {
         Assert-True (-not (Test-JsonProperty $invalidNormalized "discriminator")) "Invalid anyOf discriminator remained."
     }
 
+    Invoke-Test "promotion preserves distinct discriminator levels and normalizes the outer discriminator property" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $schema = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $schema["anyOf"] = $schema.oneOf
+        $schema.Remove("oneOf")
+        $source = New-TestOpenApiDocument -Schema $schema
+        $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        $normalized = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal 1 $result.PromotedAnyOfCount "Hierarchical anyOf was not promoted."
+        Assert-Equal "type" $normalized.discriminator.propertyName "Outer discriminator was lost."
+        Assert-Equal "role" $normalized.oneOf[0].discriminator.propertyName "Inner discriminator was lost."
+        Assert-Sequence @("message") @($normalized.oneOf[0].properties.type.enum) "Common outer discriminator value was not materialized."
+        Assert-Sequence @("type") @($normalized.oneOf[0].required) "Intermediate base did not require the outer discriminator property."
+        Assert-JsonEqual $schema.anyOf[0].oneOf $normalized.oneOf[0].oneOf "Role-specific leaves changed."
+        Assert-Equal $before (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Promotion mutated its source."
+        $second = ConvertTo-NormalizedOpenApiOneOfDocument -Document $result.Document
+        Assert-JsonEqual $result.Document $second.Document "Second pass changed the hierarchy."
+    }
+
     # Every eligibility gate is conservative: malformed or mismatched unions
     # stay anyOf, after which their unpaired discriminator follows cleanup rules.
     Invoke-Test "near misses remain anyOf and follow orphan cleanup" {

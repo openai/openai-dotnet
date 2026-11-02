@@ -11,12 +11,13 @@
     definition with a local $ref. A direct oneOf owner takes precedence when a
     schema satisfies multiple predicates. Nested candidates become separate
     components referenced by their containing component. Singleton string enums
-    remain inline so discriminator selectors retain their direct finite values.
+    remain inline so discriminator properties retain their direct finite values.
 
     Component names use typed underscore-delimited segments. Operation ids and
     structural roles are lower-initial, API property/schema tokens are
-    PascalCase, and discriminator leaves use their actual property and accepted
-    value. Object, dictionary, union, discriminated-object, enum, array-item,
+    PascalCase, and discriminator branches, including intermediate bases, use
+    their actual property and accepted value. Object, dictionary, union,
+    discriminated-object, enum, array-item,
     dictionary-value, and tuple-item roles are explicit. Repeated anonymous
     sibling roles receive one-based shape ordinals before numeric collision
     suffixes beginning with `_1`.
@@ -571,7 +572,7 @@ function Get-OpenApiDiscriminatorPropertyPointers {
     return ,$pointers
 }
 
-# Discriminator planning reads finite selector values directly from each branch.
+# Discriminator planning reads finite discriminator values directly from each branch.
 # Keep that one schema inline even when it is otherwise an eligible string enum.
 function Test-IsOpenApiDiscriminatorPropertyCandidate {
     param(
@@ -933,7 +934,7 @@ function Get-OpenApiDirectDiscriminatorIdentity {
         return $null
     }
     $branchPlan = $plan.BranchPlans[$alternativePosition - 1]
-    if (-not [string]::Equals($branchPlan.Kind, "Leaf", [System.StringComparison]::Ordinal)) {
+    if (@("Leaf", "NestedDiscriminatorGroup") -cnotcontains $branchPlan.Kind) {
         return $null
     }
     [string[]]$values = @($branchPlan.Values)

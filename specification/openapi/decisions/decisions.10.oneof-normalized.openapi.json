@@ -485,7 +485,18 @@
                                   "assistant": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/0/oneOf/3"
                                 }
                               },
-                              "type": "object"
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "message"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "type"
+                              ]
                             },
                             {
                               "type": "object",
@@ -899,7 +910,17 @@
                               ],
                               "additionalProperties": false
                             }
-                          ]
+                          ],
+                          "discriminator": {
+                            "propertyName": "type",
+                            "mapping": {
+                              "message": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/0",
+                              "function_call": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/1",
+                              "function_call_output": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/2",
+                              "custom_tool_call": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/3",
+                              "custom_tool_call_output": "#/paths/~1decisions/post/requestBody/content/application~1json/schema/properties/input/oneOf/1/items/oneOf/4"
+                            }
+                          }
                         }
                       }
                     ]

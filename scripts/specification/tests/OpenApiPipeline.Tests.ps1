@@ -61,6 +61,28 @@ function Assert-FeatureArtifactLayout {
     Assert-True (@(Get-ChildItem -LiteralPath $Paths.OutputDirectory -File).Count -eq 20) "Feature '$($Paths.FeatureArea)' did not contain exactly 20 artifacts."
 }
 
+function Assert-NestedFeatureHierarchy {
+    param([object]$Paths, [string]$OperationId)
+
+    $outerName = "${OperationId}_request_object_InputItem_discriminatedObject"
+    $messageName = "${outerName}_typeOfMessage"
+    foreach ($path in @($Paths.DiscriminatorInherited, $Paths.DiscriminatorInheritedSorted, $Paths.Deduplicated, $Paths.Final)) {
+        $document = Read-OpenApiDocument -Path $path
+        $schemas = $document.components.schemas
+        $outer = Get-JsonPropertyValue -Object $schemas -Name $outerName
+        $message = Get-JsonPropertyValue -Object $schemas -Name $messageName
+        Assert-True ($null -ne $outer -and $null -ne $message) "Nested hierarchy components were missing from '$path'."
+        Assert-True ($outer.discriminator.mapping.message -ceq "#/components/schemas/$messageName") "Outer mapping bypassed Message in '$path'."
+        Assert-True ($message.discriminator.propertyName -ceq "role") "Message lost role routing in '$path'."
+        Assert-True ($message.allOf.Count -eq 1 -and $message.allOf[0].'$ref' -ceq "#/components/schemas/$outerName") "Message did not inherit the immediate outer base in '$path'."
+        foreach ($role in @("User", "Assistant")) {
+            $leaf = Get-JsonPropertyValue -Object $schemas -Name "${messageName}_roleOf$role"
+            Assert-True ($leaf.allOf.Count -eq 1 -and $leaf.allOf[0].'$ref' -ceq "#/components/schemas/$messageName") "Role leaf skipped Message in '$path'."
+        }
+        $null = Assert-OpenApiDiscriminatorMappings -Document $document
+    }
+}
+
 function Invoke-TopLevelPhase {
     param(
         [string]$ScriptPath,
@@ -114,6 +136,7 @@ try {
     Assert-AdditionalOpenApiReferencesResolve -Document $document
     Assert-OpenApiTypePropertiesRequired -Value $document
     Assert-FeatureArtifactLayout -Paths $paths
+    Assert-NestedFeatureHierarchy -Paths $paths -OperationId "createResponse"
 
     [byte[]]$responsesFinalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
     $alternateSourcePath = Join-Path $temporaryDirectory "alternate.openapi.json"
@@ -139,6 +162,7 @@ try {
 
     Assert-True ([System.IO.File]::Exists($alternatePaths.Final)) "Second feature alias was not created."
     Assert-FeatureArtifactLayout -Paths $alternatePaths
+    Assert-NestedFeatureHierarchy -Paths $alternatePaths -OperationId "createAlternate"
     Assert-BytesEqual $responsesFinalBytes ([System.IO.File]::ReadAllBytes($paths.Final)) "Running the second feature changed the Responses alias."
     Assert-True (-not [System.IO.File]::Exists((Join-Path $outputRoot "responses.openapi.json"))) "An artifact was written directly beneath the output root."
 

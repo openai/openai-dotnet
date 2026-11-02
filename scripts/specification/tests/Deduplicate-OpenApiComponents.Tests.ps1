@@ -138,6 +138,24 @@ try {
         $null = Assert-OpenApiDiscriminatorMappings -Document $result.Document
     }
 
+    Invoke-Test "nested hierarchies deduplicate without breaking either discriminator level" {
+        $document = New-TestNestedInheritanceFamilies -AncestorReference
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $document -DefaultMap $plan.DefaultMap
+        $schemas = $result.Document.components.schemas
+        Assert-Equal 4 $result.ComponentCount "Nested family component count was incorrect."
+        Assert-Equal 4 $result.RemovedComponentCount "Nested family removal count was incorrect."
+        Assert-Equal "#/components/schemas/Message" $schemas.InputItem.discriminator.mapping.message "Outer mapping was broken."
+        Assert-Equal "#/components/schemas/UserMessage" $schemas.Message.discriminator.mapping.user "Inner mapping was broken."
+        Assert-Equal "#/components/schemas/InputItem" $schemas.Message.allOf[0].'$ref' "Intermediate inheritance was broken."
+        Assert-Equal "#/components/schemas/Message" $schemas.UserMessage.allOf[0].'$ref' "Leaf inheritance was broken."
+        Assert-Equal "#/components/schemas/InputItem" $schemas.UserMessage.properties.ancestor.'$ref' "Ancestor reference was broken."
+        $null = Assert-OpenApiDiscriminatorMappings -Document $result.Document
+        $secondPlan = New-OpenApiComponentDefaultMapPlan -Document $result.Document
+        $second = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $result.Document -DefaultMap $secondPlan.DefaultMap
+        Assert-True (Test-JsonValuesEqual -Left $result.Document -Right $second.Document) "Nested deduplication was not a fixed point."
+    }
+
     Invoke-Test "override and nested partial members roll up to the parent representative" {
         $document = New-AcyclicDeduplicationTestDocument
         $document.components.schemas["NearMissB"] = Copy-JsonValue -Value $document.components.schemas.NearMiss

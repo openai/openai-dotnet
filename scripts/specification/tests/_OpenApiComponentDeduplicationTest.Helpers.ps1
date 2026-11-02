@@ -87,6 +87,54 @@ function New-TestDeduplicationAnalysis {
     return Get-OpenApiComponentDeduplicationAnalysis -Document $Document
 }
 
+function New-TestNestedInheritanceFamilies {
+    param([switch]$AncestorReference)
+
+    $document = Read-TestJsonFixture -RelativePath "_Shared/minimal.openapi.json"
+    $schemas = [ordered]@{}
+    foreach ($prefix in @("", "Other")) {
+        $rootName = "${prefix}InputItem"
+        $messageName = "${prefix}Message"
+        $userName = "${prefix}UserMessage"
+        $assistantName = "${prefix}AssistantMessage"
+        $schemas[$rootName] = [ordered]@{
+            type = "object"
+            required = @("type")
+            properties = [ordered]@{ type = [ordered]@{ type = "string" } }
+            discriminator = [ordered]@{ propertyName = "type"; mapping = [ordered]@{ message = "#/components/schemas/$messageName" } }
+        }
+        $schemas[$messageName] = [ordered]@{
+            type = "object"
+            required = @("type", "role")
+            properties = [ordered]@{ type = [ordered]@{ type = "string"; enum = @("message") }; role = [ordered]@{ type = "string" } }
+            discriminator = [ordered]@{ propertyName = "role"; mapping = [ordered]@{ user = "#/components/schemas/$userName"; assistant = "#/components/schemas/$assistantName" } }
+            allOf = @([ordered]@{ '$ref' = "#/components/schemas/$rootName" })
+        }
+        foreach ($role in @("user", "assistant")) {
+            $leafName = if ($role -ceq "user") { $userName } else { $assistantName }
+            $properties = [ordered]@{
+                type = [ordered]@{ type = "string"; enum = @("message") }
+                role = [ordered]@{ type = "string"; enum = @($role) }
+                content = [ordered]@{ type = "string" }
+            }
+            if ($AncestorReference) {
+                $properties["ancestor"] = [ordered]@{ '$ref' = "#/components/schemas/$rootName" }
+            }
+            $schemas[$leafName] = [ordered]@{
+                type = "object"
+                required = @("type", "role", "content")
+                properties = $properties
+                allOf = @([ordered]@{ '$ref' = "#/components/schemas/$messageName" })
+            }
+        }
+    }
+    $document["components"] = [ordered]@{ schemas = $schemas }
+    $document.paths["/test"].post.responses["200"].content["application/json"].schema = [ordered]@{
+        oneOf = @([ordered]@{ '$ref' = "#/components/schemas/InputItem" }, [ordered]@{ '$ref' = "#/components/schemas/OtherInputItem" })
+    }
+    return $document
+}
+
 # Print one summary and fail the process only after all scenarios have run.
 function Complete-OpenApiComponentDeduplicationTests {
     Write-Host ""

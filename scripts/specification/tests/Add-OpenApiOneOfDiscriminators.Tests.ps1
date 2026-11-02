@@ -204,6 +204,95 @@ try {
         Assert-Equal "type" (Get-TestResponseSchema $inferredResult.Document).discriminator.propertyName "Inferred outer discriminator was incorrect."
     }
 
+    Invoke-Test "nested role hierarchy preserves type routing and requires its outer discriminator property" {
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedHierarchy"
+        $source = New-TestOpenApiDocument -Schema $schema
+        $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        Assert-True (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $schema) "Nested role hierarchy invalidated the outer type discriminator."
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
+        $converted = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal 0 $result.RemovedInvalidDiscriminatorCount "Outer discriminator was removed."
+        Assert-Equal "type" $converted.discriminator.propertyName "Outer discriminator property changed."
+        Assert-Equal "role" $converted.oneOf[0].discriminator.propertyName "Inner discriminator property changed."
+        Assert-Sequence @("type") @($converted.oneOf[0].required) "Intermediate base did not require the outer discriminator property."
+        Assert-Sequence @("message") @($converted.oneOf[0].properties.type.enum) "Intermediate discriminator value was incorrect."
+        Assert-JsonEqual $schema.oneOf[0].oneOf $converted.oneOf[0].oneOf "Role-specific leaves changed."
+        Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its source."
+        $second = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $result.Document
+        Assert-JsonEqual $result.Document $second.Document "Second pass changed the normalized hierarchy."
+    }
+
+    Invoke-Test "outer type routing is inferred around a nested role hierarchy" {
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedHierarchy"
+        $schema.Remove("discriminator")
+        $candidate = Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema
+        Assert-True ($null -ne $candidate) "Hierarchical parent was not inferable."
+        Assert-Sequence @("message", "function_call") @($candidate.EnumValues) "Hierarchical branch values were incorrect."
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document (New-TestOpenApiDocument -Schema $schema)
+        Assert-Equal 1 $result.AddedDiscriminatorCount "Outer discriminator was not inferred exactly once."
+        $converted = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal "type" $converted.discriminator.propertyName "Inferred outer discriminator property was incorrect."
+        Assert-Equal "role" $converted.oneOf[0].discriminator.propertyName "Inner discriminator property was lost."
+    }
+
+    Invoke-Test "ambiguous optional and conflicting hierarchy discriminator properties are rejected" {
+        foreach ($case in @("different", "optional", "multiple", "conflicting", "overlapping", "invalid-role", "non-object")) {
+            $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedHierarchy"
+            $message = $schema.oneOf[0]
+            switch ($case) {
+                "different" { $message.oneOf[1].properties.type.enum = @("other") }
+                "optional" { $message.oneOf[1].required = @("role", "content") }
+                "multiple" { $message.oneOf[1].properties.type.enum = @("message", "other") }
+                "conflicting" { $message["properties"] = [ordered]@{ type = [ordered]@{ type = "string"; const = "other" } } }
+                "overlapping" { $schema.oneOf[1].properties.type.enum = @("message") }
+                "invalid-role" { $message.oneOf[1].properties.role.enum = @("user") }
+                "non-object" { $message.type = "string" }
+            }
+            Assert-True (-not (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $schema)) "Invalid hierarchy '$case' was considered valid."
+            Assert-True ($null -eq (Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema -IgnoreExistingDiscriminator)) "Invalid hierarchy '$case' was inferable."
+        }
+    }
+
+    Invoke-Test "hierarchy normalization preserves discriminator const and existing mappings" {
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedHierarchy"
+        $root = "#/paths/~1test/post/responses/200/content/application~1json/schema"
+        $schema.discriminator["mapping"] = [ordered]@{ message = "$root/oneOf/0"; function_call = "$root/oneOf/1" }
+        $schema.oneOf[0].discriminator["mapping"] = [ordered]@{ user = "$root/oneOf/0/oneOf/0"; assistant = "$root/oneOf/0/oneOf/1" }
+        $schema.oneOf[0]["properties"] = [ordered]@{ type = [ordered]@{ type = "string"; const = "message"; title = "Message discriminator property" } }
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document (New-TestOpenApiDocument -Schema $schema)
+        $converted = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal "message" $converted.oneOf[0].properties.type.const "Discriminator const changed."
+        Assert-Equal "Message discriminator property" $converted.oneOf[0].properties.type.title "Discriminator property annotation changed."
+        Assert-JsonEqual $schema.discriminator $converted.discriminator "Outer mapping changed."
+        Assert-JsonEqual $schema.oneOf[0].discriminator $converted.oneOf[0].discriminator "Inner mapping changed."
+    }
+
+    Invoke-Test "multiple discriminator levels normalize each immediate parent identity" {
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedHierarchy"
+        $assistant = Copy-JsonValue -Value $schema.oneOf[0].oneOf[1]
+        $phaseBranches = @(
+            foreach ($phase in @("draft", "final")) {
+                $leaf = Copy-JsonValue -Value $assistant
+                $leaf.required = [object[]]@($leaf.required + "phase")
+                $leaf.properties["phase"] = [ordered]@{ type = "string"; enum = @($phase) }
+                $leaf
+            }
+        )
+        $schema.oneOf[0].oneOf[1] = [ordered]@{
+            type = "object"
+            discriminator = [ordered]@{ propertyName = "phase" }
+            oneOf = $phaseBranches
+        }
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document (New-TestOpenApiDocument -Schema $schema)
+        $converted = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal 0 $result.RemovedInvalidDiscriminatorCount "A valid deep discriminator was removed."
+        Assert-Sequence @("message") @($converted.oneOf[0].properties.type.enum) "Message lost its type identity."
+        Assert-Sequence @("assistant") @($converted.oneOf[0].oneOf[1].properties.role.enum) "Assistant base lost its role identity."
+        Assert-Equal "phase" $converted.oneOf[0].oneOf[1].discriminator.propertyName "Deep discriminator property changed."
+        $schema.oneOf[0].oneOf[1]["properties"] = [ordered]@{ type = [ordered]@{ type = "string"; const = "other" } }
+        Assert-True (-not (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $schema)) "Conflicting ancestor discriminator value on an intermediate base was accepted."
+    }
+
     # Composition-only wrappers do not need to repeat type=object when every
     # recursively collected leaf is an explicit required object alternative.
     Invoke-Test "composition-only wrappers infer one parent discriminator" {

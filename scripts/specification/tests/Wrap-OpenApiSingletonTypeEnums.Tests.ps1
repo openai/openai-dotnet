@@ -299,6 +299,17 @@ try {
         Assert-JsonEqual $result.Document $second.Document "Second pass changed the role-discriminated document."
     }
 
+    Invoke-Test "valid outer type hierarchy keeps its role-discriminated message branch" {
+        $cases = Read-TestJsonFixture -RelativePath "Add-OpenApiOneOfDiscriminators/cases.schema.json"
+        $schema = Get-TestFixtureCase -Cases $cases -Name "nestedHierarchy"
+        $plan = Get-OpenApiInlineDiscriminatorUnionPlan -Schema $schema -PropertyName "type" -Breadcrumb "#" -RequireDiscriminator
+        $source = New-TestOpenApiDocument -Schema (ConvertTo-NormalizedOpenApiDiscriminatorUnionSchema -Plan $plan)
+        $result = ConvertTo-WrappedOpenApiSingletonTypeEnumDocument -Document $source
+        Assert-Equal 0 $result.GeneratedWrapperCount "Valid nested hierarchy acquired redundant singleton wrappers."
+        Assert-JsonEqual $source $result.Document "Wrapping changed the outer or inner hierarchy."
+        Assert-NoUnwrappedOpenApiSingletonTypeEnums -Value $result.Document
+    }
+
     Invoke-Test "enum-only near misses remain unchanged and const must agree" {
         $nearMisses = New-TestOpenApiDocument -Schema (
             Get-TestFixtureCase -Cases $schemaCases -Name "nearMisses"
