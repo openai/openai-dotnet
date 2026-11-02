@@ -26,7 +26,8 @@
 
 - OpenAI.Decisions:
   - Changed `DecisionsMessageItem` to an abstract base with role-specific subclasses. Use `DecisionsUserMessageItem` for previously supported user messages.
-  - Changed the `Instructions` properties and corresponding constructor parameters on choice, predicate, and score questions from strings to collections of `DecisionsInstructionContentPart`.
+  - Changed the `Instructions` properties and corresponding constructor parameters on choice, predicate, and score questions from strings to collections of `DecisionsInstructionsPart`.
+  - Represented input and instruction JSON data as collections of `BinaryData`; a single object in JSON is accepted as shorthand for a one-item collection.
 
 ### Bugs Fixed
 

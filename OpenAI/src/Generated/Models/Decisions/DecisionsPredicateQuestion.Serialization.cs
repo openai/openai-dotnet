@@ -131,7 +131,7 @@ namespace OpenAI.Decisions
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            IList<DecisionsInstructionContentPart> instructions = default;
+            IList<DecisionsInstructionsPart> instructions = default;
             string name = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -152,7 +152,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsPredicateQuestion(kind, patch, instructions ?? new ChangeTrackingList<DecisionsInstructionContentPart>(), name);
+            return new DecisionsPredicateQuestion(kind, patch, instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>(), name);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -227,7 +227,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsInstructionContentPart> ActiveInstructions()
+        private IEnumerable<DecisionsInstructionsPart> ActiveInstructions()
         {
             if (!Optional.IsCollectionDefined(Instructions))
             {

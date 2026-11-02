@@ -128,8 +128,8 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             DecisionsMessageRole role = default;
-            IList<DecisionsAssistantContentPart> content = default;
-            DecisionsMessagePhase? phase = default;
+            IList<DecisionsContentOutputPart> content = default;
+            DecisionsAssistantMessagePhase? phase = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -154,12 +154,12 @@ namespace OpenAI.Decisions
                         phase = null;
                         continue;
                     }
-                    phase = new DecisionsMessagePhase(prop.Value.GetString());
+                    phase = new DecisionsAssistantMessagePhase(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsAssistantMessageItem(kind, patch, role, content ?? new ChangeTrackingList<DecisionsAssistantContentPart>(), phase);
+            return new DecisionsAssistantMessageItem(kind, patch, role, content ?? new ChangeTrackingList<DecisionsContentOutputPart>(), phase);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -234,7 +234,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsAssistantContentPart> ActiveContent()
+        private IEnumerable<DecisionsContentOutputPart> ActiveContent()
         {
             if (!Optional.IsCollectionDefined(Content))
             {

@@ -9,9 +9,9 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsRefusalContentPart : DecisionsAssistantContentPart
+    public partial class DecisionsRefusalContentPart : DecisionsContentOutputPart
     {
-        public DecisionsRefusalContentPart(string refusal) : base(DecisionsAssistantContentPartKind.Refusal)
+        public DecisionsRefusalContentPart(string refusal) : base(DecisionsContentOutputPartKind.Refusal)
         {
             Argument.AssertNotNull(refusal, nameof(refusal));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsRefusalContentPart(DecisionsAssistantContentPartKind kind, in JsonPatch patch, string refusal) : base(kind, patch)
+        internal DecisionsRefusalContentPart(DecisionsContentOutputPartKind kind, in JsonPatch patch, string refusal) : base(kind, patch)
         {
             Refusal = refusal;
         }

@@ -119,7 +119,7 @@ public class DecisionsRequestModelTests
     {
         DecisionsMessageItem[] messages =
         [
-            new DecisionsUserMessageItem([new DecisionsInputTextContentPart { Text = "user" }]),
+            new DecisionsUserMessageItem([new DecisionsContentInputTextPart { Text = "user" }]),
             new DecisionsAssistantMessageItem([new DecisionsOutputTextContentPart { Text = "assistant" }]),
             new DecisionsDeveloperMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "developer" }]),
             new DecisionsSystemMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "system" }]),
@@ -253,8 +253,8 @@ public class DecisionsRequestModelTests
         Assert.That(instructions[1].GetProperty("image_url").GetString(), Is.EqualTo("https://example.invalid/reference.png"));
         Assert.That(instructions[1].GetProperty("detail").GetString(), Is.EqualTo("original"));
         Assert.That(instructions[2].GetProperty("data")[0].GetProperty("expected").GetBoolean(), Is.True);
-        Assert.That(typeof(DecisionsInstructionTextContentPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
-        Assert.That(typeof(DecisionsInstructionImageContentPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
+        Assert.That(typeof(DecisionsInstructionsInputTextPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
+        Assert.That(typeof(DecisionsInstructionsInputImagePart).GetProperty("PromptCacheBreakpoint"), Is.Null);
     }
 
     [Test]
@@ -274,8 +274,8 @@ public class DecisionsRequestModelTests
         DecisionsSystemMessageItem system = (DecisionsSystemMessageItem)options.InputItems[0];
         Assert.That(((DecisionsInstructionMessageTextContentPart)system.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
         DecisionsUserMessageItem user = (DecisionsUserMessageItem)options.InputItems[1];
-        Assert.That(((DecisionsInputTextContentPart)user.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
-        Assert.That(((DecisionsInputImageContentPart)user.Content[1]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
+        Assert.That(((DecisionsContentInputTextPart)user.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
+        Assert.That(((DecisionsContentInputImagePart)user.Content[1]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
 
         options.Patch.Set("$.prompt_cache_options.ttl"u8, "future_ttl");
         options.Patch.Set("$.input[1].content[1].prompt_cache_breakpoint.mode"u8, "future_mode");
@@ -294,7 +294,7 @@ public class DecisionsRequestModelTests
         Assert.That(options.PromptCacheKey, Is.Null);
         Assert.That(options.PromptCacheOptions, Is.Null);
         Assert.That(options.SafetyIdentifier, Is.Null);
-        DecisionsInputImageContentPart image = ModelReaderWriter.Read<DecisionsInputImageContentPart>(
+        DecisionsContentInputImagePart image = ModelReaderWriter.Read<DecisionsContentInputImagePart>(
             BinaryData.FromString("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":null,"prompt_cache_breakpoint":null}"""));
         Assert.That(image.ImageDetailLevel, Is.Null);
         Assert.That(image.PromptCacheBreakpoint, Is.Null);

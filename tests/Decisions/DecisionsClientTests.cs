@@ -213,7 +213,7 @@ public class DecisionsClientTests
             {
                 new DecisionsUserMessageItem
                 {
-                    Content = { new DecisionsInputJsonContentPart { Data = new DecisionsJsonObject(BinaryData.FromString("""{"value":true}""")) } },
+                    Content = { new DecisionsContentInputJsonPart([BinaryData.FromString("""{"value":true}""")]) },
                 },
             },
             Questions =
@@ -221,7 +221,7 @@ public class DecisionsClientTests
                 new DecisionsPredicateQuestion
                 {
                     Name = "valid",
-                    Instructions = { new DecisionsInstructionTextContentPart { Text = "The JSON value is true." } },
+                    Instructions = { new DecisionsInstructionsInputTextPart { Text = "The JSON value is true." } },
                 },
             },
             PromptCacheKey = "test-cache",
@@ -234,7 +234,7 @@ public class DecisionsClientTests
 
         using JsonDocument request = JsonDocument.Parse(requestBody);
         Assert.That(request.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
-        Assert.That(request.RootElement.GetProperty("input")[0].GetProperty("content")[0].GetProperty("data").GetProperty("value").GetBoolean(), Is.True);
+        Assert.That(request.RootElement.GetProperty("input")[0].GetProperty("content")[0].GetProperty("data")[0].GetProperty("value").GetBoolean(), Is.True);
         Assert.That(request.RootElement.GetProperty("questions")[0].GetProperty("instructions")[0].GetProperty("text").GetString(), Is.EqualTo("The JSON value is true."));
         Assert.That(request.RootElement.GetProperty("prompt_cache_options").GetProperty("mode").GetString(), Is.EqualTo("implicit"));
         Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());

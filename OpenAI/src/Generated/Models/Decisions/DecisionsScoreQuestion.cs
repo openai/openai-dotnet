@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsScoreQuestion : DecisionsQuestion
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsScoreQuestion(IEnumerable<DecisionsInstructionContentPart> instructions, IEnumerable<DecisionsScoreLevel> levels) : base(DecisionsQuestionKind.Score)
+        public DecisionsScoreQuestion(IEnumerable<DecisionsInstructionsPart> instructions, IEnumerable<DecisionsScoreLevel> levels) : base(DecisionsQuestionKind.Score)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
             Argument.AssertNotNull(levels, nameof(levels));
@@ -26,17 +26,17 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionContentPart> instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, patch)
+        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionsPart> instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
-            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionContentPart>();
+            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Levels = levels ?? new ChangeTrackingList<DecisionsScoreLevel>();
             Name = name;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IList<DecisionsInstructionContentPart> Instructions { get; }
+        public IList<DecisionsInstructionsPart> Instructions { get; }
 
         public IList<DecisionsScoreLevel> Levels { get; }
 

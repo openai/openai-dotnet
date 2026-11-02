@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsOutputTextContentPart : DecisionsAssistantContentPart, IJsonModel<DecisionsOutputTextContentPart>
+    public partial class DecisionsOutputTextContentPart : DecisionsContentOutputPart, IJsonModel<DecisionsOutputTextContentPart>
     {
-        public DecisionsOutputTextContentPart() : this(DecisionsAssistantContentPartKind.OutputText, default, null)
+        public DecisionsOutputTextContentPart() : this(DecisionsContentOutputPartKind.OutputText, default, null)
         {
         }
 
-        protected override DecisionsAssistantContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override DecisionsContentOutputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsOutputTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -85,7 +85,7 @@ namespace OpenAI.Decisions
 
         DecisionsOutputTextContentPart IJsonModel<DecisionsOutputTextContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsOutputTextContentPart)JsonModelCreateCore(ref reader, options);
 
-        protected override DecisionsAssistantContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override DecisionsContentOutputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsOutputTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -102,7 +102,7 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            DecisionsAssistantContentPartKind kind = default;
+            DecisionsContentOutputPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,7 +111,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new DecisionsAssistantContentPartKind(prop.Value.GetString());
+                    kind = new DecisionsContentOutputPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

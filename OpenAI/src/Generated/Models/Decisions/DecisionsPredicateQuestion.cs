@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsPredicateQuestion : DecisionsQuestion
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsPredicateQuestion(IEnumerable<DecisionsInstructionContentPart> instructions) : base(DecisionsQuestionKind.Predicate)
+        public DecisionsPredicateQuestion(IEnumerable<DecisionsInstructionsPart> instructions) : base(DecisionsQuestionKind.Predicate)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
 
@@ -24,16 +24,16 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionContentPart> instructions, string name) : base(kind, patch)
+        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
-            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionContentPart>();
+            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Name = name;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IList<DecisionsInstructionContentPart> Instructions { get; }
+        public IList<DecisionsInstructionsPart> Instructions { get; }
 
         public string Name { get; set; }
     }

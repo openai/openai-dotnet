@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsChoiceQuestion : DecisionsQuestion
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsChoiceQuestion(IEnumerable<DecisionsChoice> choices, IEnumerable<DecisionsInstructionContentPart> instructions) : base(DecisionsQuestionKind.Choice)
+        public DecisionsChoiceQuestion(IEnumerable<DecisionsChoice> choices, IEnumerable<DecisionsInstructionsPart> instructions) : base(DecisionsQuestionKind.Choice)
         {
             Argument.AssertNotNull(choices, nameof(choices));
             Argument.AssertNotNull(instructions, nameof(instructions));
@@ -26,11 +26,11 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsChoice> choices, IList<DecisionsInstructionContentPart> instructions, string name) : base(kind, patch)
+        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsChoice> choices, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Choices = choices ?? new ChangeTrackingList<DecisionsChoice>();
-            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionContentPart>();
+            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Name = name;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -38,7 +38,7 @@ namespace OpenAI.Decisions
 
         public IList<DecisionsChoice> Choices { get; }
 
-        public IList<DecisionsInstructionContentPart> Instructions { get; }
+        public IList<DecisionsInstructionsPart> Instructions { get; }
 
         public string Name { get; set; }
     }

@@ -616,11 +616,7 @@ DecisionCreationOptions options = new()
         {
             Content =
             {
-                new DecisionsInputJsonContentPart
-                {
-                    Data = new DecisionsJsonObject(
-                        BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")),
-                },
+                new DecisionsContentInputJsonPart([BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")]),
             },
         },
     },
@@ -631,7 +627,7 @@ DecisionCreationOptions options = new()
             Name = "positive_total",
             Instructions =
             {
-                new DecisionsInstructionTextContentPart { Text = "The order total is positive." },
+                new DecisionsInstructionsInputTextPart { Text = "The order total is positive." },
             },
         },
     },
@@ -646,7 +642,7 @@ Replace `YOUR_DECISIONS_MODEL` with a model supported by the Decisions API.
 
 Input supports user, assistant, developer, and system message items, as well as function-call and custom-tool-call history. Message roles have their own content types: user messages support input text, images, and JSON; assistant messages support output text and refusals; developer and system messages support text. Function-call and custom-tool-call outputs support text and images. Supplying tool history does not execute tools.
 
-Question `Instructions` collections support `DecisionsInstructionTextContentPart`, `DecisionsInstructionImageContentPart`, and `DecisionsInstructionJsonContentPart`. `DecisionsJsonData` represents either one `DecisionsJsonObject` or an array of objects, exposed through its read-only `ObjectValue` and `ArrayValue` properties. Arbitrary JSON properties, including nested values and nulls, are preserved. JSON objects can be constructed from `BinaryData` or populated and edited through `JsonPatch`.
+Question `Instructions` collections support `DecisionsInstructionsInputTextPart`, `DecisionsInstructionsInputImagePart`, and `DecisionsInstructionsInputJsonPart`. JSON input and instruction parts expose `Data` as a collection of `BinaryData`, with each item containing a free-form JSON object. A single object is accepted as shorthand during deserialization and normalized to a one-item array when serialized. Arbitrary JSON properties, including nested values and nulls, are preserved.
 
 Configure prompt caching through `DecisionCreationOptions.PromptCacheKey` and `PromptCacheOptions`. Cache options expose `Mode` (`Implicit` or `Explicit`) and `TimeToLive` (`ThirtyMinutes`). Explicit breakpoints use `DecisionsPromptCacheBreakpoint` on supported message or tool-output text/image parts; question instruction parts do not expose breakpoints. These settings request service-side caching but do not guarantee a cache hit.
 

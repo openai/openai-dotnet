@@ -9,9 +9,9 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsOutputTextContentPart : DecisionsAssistantContentPart
+    public partial class DecisionsOutputTextContentPart : DecisionsContentOutputPart
     {
-        public DecisionsOutputTextContentPart(string text) : base(DecisionsAssistantContentPartKind.OutputText)
+        public DecisionsOutputTextContentPart(string text) : base(DecisionsContentOutputPartKind.OutputText)
         {
             Argument.AssertNotNull(text, nameof(text));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsOutputTextContentPart(DecisionsAssistantContentPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
+        internal DecisionsOutputTextContentPart(DecisionsContentOutputPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
         {
             Text = text;
         }
