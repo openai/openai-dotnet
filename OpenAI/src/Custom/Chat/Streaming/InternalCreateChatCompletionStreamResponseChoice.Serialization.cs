@@ -27,7 +27,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         writer.WriteStartObject();
         writer.WritePropertyName("delta"u8);
         writer.WriteObjectValue(instance.Delta, options);
-        if (Optional.IsDefined(instance.Logprobs))
+        if (Optional.IsDefined(instance.Logprobs, instance._logprobsIsDefined))
         {
             if (instance.Logprobs != null)
             {

@@ -617,6 +617,63 @@ public class ChatSmokeTests : ClientTestBase
     }
 
     [Test]
+    public void AssistantMessageSerializationPreservesRefusalPresence()
+    {
+        AssistantChatMessage omittedRefusal = new("Hello");
+        using JsonDocument omittedJson = JsonDocument.Parse(ModelReaderWriter.Write(omittedRefusal));
+        Assert.That(omittedJson.RootElement.TryGetProperty("refusal", out _), Is.False);
+
+        AssistantChatMessage explicitNullRefusal = new("Hello")
+        {
+            Refusal = null
+        };
+        using JsonDocument explicitNullJson = JsonDocument.Parse(ModelReaderWriter.Write(explicitNullRefusal));
+        Assert.That(explicitNullJson.RootElement.GetProperty("refusal").ValueKind, Is.EqualTo(JsonValueKind.Null));
+
+        AssistantChatMessage roundTrippedOmittedRefusal = ModelReaderWriter.Read<AssistantChatMessage>(
+            BinaryData.FromString("""{"role":"assistant","content":"Hello"}"""));
+        using JsonDocument roundTrippedOmittedJson = JsonDocument.Parse(ModelReaderWriter.Write(roundTrippedOmittedRefusal));
+        Assert.That(roundTrippedOmittedJson.RootElement.TryGetProperty("refusal", out _), Is.False);
+
+        AssistantChatMessage roundTrippedNullRefusal = ModelReaderWriter.Read<AssistantChatMessage>(
+            BinaryData.FromString("""{"role":"assistant","content":"Hello","refusal":null}"""));
+        using JsonDocument roundTrippedNullJson = JsonDocument.Parse(ModelReaderWriter.Write(roundTrippedNullRefusal));
+        Assert.That(roundTrippedNullJson.RootElement.GetProperty("refusal").ValueKind, Is.EqualTo(JsonValueKind.Null));
+    }
+
+    [Test]
+    public void StreamingChoiceSerializationPreservesLogprobsPresence()
+    {
+        StreamingChatCompletionUpdate omittedLogprobs = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {
+                  "id": "chatcmpl-test",
+                  "choices": [{"delta": {}, "finish_reason": null, "index": 0}],
+                  "created": 0,
+                  "model": "gpt-test",
+                  "object": "chat.completion.chunk"
+                }
+                """));
+        using JsonDocument omittedJson = JsonDocument.Parse(ModelReaderWriter.Write(omittedLogprobs));
+        Assert.That(omittedJson.RootElement.GetProperty("choices")[0].TryGetProperty("logprobs", out _), Is.False);
+
+        StreamingChatCompletionUpdate explicitNullLogprobs = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {
+                  "id": "chatcmpl-test",
+                  "choices": [{"delta": {}, "logprobs": null, "finish_reason": null, "index": 0}],
+                  "created": 0,
+                  "model": "gpt-test",
+                  "object": "chat.completion.chunk"
+                }
+                """));
+        using JsonDocument explicitNullJson = JsonDocument.Parse(ModelReaderWriter.Write(explicitNullLogprobs));
+        Assert.That(
+            explicitNullJson.RootElement.GetProperty("choices")[0].GetProperty("logprobs").ValueKind,
+            Is.EqualTo(JsonValueKind.Null));
+    }
+
+    [Test]
     public void SerializeAudioThings()
     {
         // User audio input: wire-correlated ("real") content parts should cleanly serialize/deserialize
