@@ -1,0 +1,46 @@
+{
+  "nullableObject": {
+    "type": ["object", "null"],
+    "properties": {
+      "mode": {
+        "type": ["string", "null"],
+        "enum": ["explicit", "implicit", null]
+      },
+      "ttl": { "type": "string", "enum": ["30m"] }
+    },
+    "additionalProperties": false
+  },
+  "enumWithoutNull": {
+    "type": ["string", "null"],
+    "enum": ["explicit", "implicit"]
+  },
+  "allTypes": {
+    "title": "Preserved annotation",
+    "type": ["null", "object", "array", "string", "number", "integer", "boolean"],
+    "properties": { "child": { "type": ["string", "null"] } },
+    "required": ["child"],
+    "additionalProperties": false,
+    "items": { "type": ["boolean", "null"] },
+    "minItems": 1,
+    "pattern": "^example$",
+    "minimum": 0,
+    "format": "custom-format",
+    "x-note": { "type": ["ignored", "literal"] }
+  },
+  "overlappingNumbers": {
+    "type": ["number", "integer"],
+    "enum": [1.0, 1.5, "1", true]
+  },
+  "jsonKinds": {
+    "type": ["object", "array", "string", "boolean", "null"],
+    "enum": [{ "value": 1 }, [1], "1", true, null]
+  },
+  "invalidTypes": {
+    "empty": [],
+    "duplicate": ["object", "object"],
+    "nonString": ["object", 1],
+    "jsonNull": ["object", null],
+    "wrongCase": ["Object", "null"],
+    "unknown": ["date", "null"]
+  }
+}

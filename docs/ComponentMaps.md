@@ -21,7 +21,7 @@ Each successful phase atomically publishes its result to
 produces the componentized document, inheritance prepares its model bases and
 derived models, and finalization applies the component maps. Inherit and Finalize
 read the alias by default, so the commands above can be run in sequence without
-specifying intermediate filenames. Numbered artifacts 01 through 17 remain
+specifying intermediate filenames. Numbered artifacts 01 through 18 remain
 available as an audit trail.
 
 Component maps are control files rather than transformation snapshots, so they
@@ -126,6 +126,12 @@ Finalization fails without modifying policy when:
 Policy fingerprints are strict. Schema evolution requires manually updating the affected policy groups from a newly generated default-map view.
 
 ## Pipeline errors
+
+The full Generate phase normalizes schema type arrays automatically. If you run
+the componentizer directly and it reports an unnormalized type array, first run
+`Normalize-OpenApiTypeArrays.ps1` from `scripts/specification/pipeline/` and use
+its output as the componentizer input. Nullable object properties should refer
+to a non-null object component with nullability kept at the property.
 
 If generation or inheritance fails before finalization, correct or review the
 source schema named in the error. A component policy map controls grouping and

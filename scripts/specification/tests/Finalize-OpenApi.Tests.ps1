@@ -70,10 +70,10 @@ try {
         }
 
         $paths = Get-OpenApiArtifactPaths -FeatureArea $script:TestFeatureArea -OutputRoot $expectedDirectory
-        Assert-Equal "responses.16.inherited-document-sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Retained inherited name was incorrect."
+        Assert-Equal "responses.17.inherited-document-sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Retained inherited name was incorrect."
         Assert-Equal "responses.component-default-map.json" ([System.IO.Path]::GetFileName($paths.DefaultComponentMap)) "Default map name was incorrect."
         Assert-Equal "responses.component-policy-map.json" ([System.IO.Path]::GetFileName($paths.PolicyComponentMap)) "Policy map name was incorrect."
-        Assert-Equal "responses.17.components-deduplicated.openapi.json" ([System.IO.Path]::GetFileName($paths.Deduplicated)) "Deduplicated output name was incorrect."
+        Assert-Equal "responses.18.components-deduplicated.openapi.json" ([System.IO.Path]::GetFileName($paths.Deduplicated)) "Deduplicated output name was incorrect."
         Assert-Equal "responses.openapi.json" ([System.IO.Path]::GetFileName($paths.Final)) "Final output name was incorrect."
     }
 

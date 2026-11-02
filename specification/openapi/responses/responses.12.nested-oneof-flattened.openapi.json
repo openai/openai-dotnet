@@ -88,11 +88,15 @@
                     ]
                   },
                   "user": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "deprecated": true
+                    "deprecated": true,
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "safety_identifier": {
                     "anyOf": [

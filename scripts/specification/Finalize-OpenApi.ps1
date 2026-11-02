@@ -6,7 +6,7 @@
     Reads the feature alias by default, validates the optional manually
     maintained policy component map, regenerates the complete default component
     map, applies the resolved maps, retains the deduplicated document as numbered
-    artifact 17, and atomically republishes it to the feature alias. Component
+    artifact 18, and atomically republishes it to the feature alias. Component
     maps remain stable unnumbered files.
 
 .PARAMETER FeatureArea

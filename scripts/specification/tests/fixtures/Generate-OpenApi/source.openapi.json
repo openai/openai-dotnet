@@ -17,6 +17,16 @@
                   {
                     "type": "object",
                     "properties": {
+                      "prompt_cache_options": {
+                        "type": ["object", "null"],
+                        "properties": {
+                          "mode": { "type": ["string", "null"], "enum": ["explicit", "implicit", null] },
+                          "ttl": { "type": "string", "enum": ["30m"] }
+                        },
+                        "additionalProperties": false
+                      },
+                      "nullable_flag": { "type": ["boolean", "null"] },
+                      "mixed_value": { "type": ["integer", "number"], "enum": [1, 1.5] },
                       "input_item": {
                         "discriminator": { "propertyName": "type" },
                         "oneOf": [

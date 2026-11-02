@@ -5,8 +5,8 @@
 .DESCRIPTION
     Reads the feature alias by default, refactors componentized discriminator
     oneOf schemas into base/derived allOf inheritance, canonically sorts the
-    result, retains numbered stage artifacts 15 and 16, and atomically
-    republishes artifact 16 to the feature alias.
+    result, retains numbered stage artifacts 16 and 17, and atomically
+    republishes artifact 17 to the feature alias.
 
 .PARAMETER FeatureArea
     Lowercase kebab-case feature name used for the output directory and artifact

@@ -7,9 +7,9 @@
     Extracts the selected operation and runs the OpenAPI transformation stages
     through componentization. Every retained artifact is written beneath
     <OutputRoot>/<FeatureArea> with a feature prefix and sequence number from 01
-    through 14. The componentized result is atomically published as
+    through 15. The componentized result is atomically published as
     <FeatureArea>.openapi.json. Run Inherit-OpenApi.ps1 afterward; its retained
-    artifacts continue the sequence at 15 and 16.
+    artifacts continue the sequence at 16 and 17.
 
 .PARAMETER FeatureArea
     Lowercase kebab-case feature name used for the output directory and artifact
@@ -106,6 +106,7 @@ function Invoke-OpenApiGeneration {
         "Extract-OpenApiRoute.ps1"
         "Remove-OpenApiOmittedProperties.ps1"
         "Inline-OpenApiReferences.ps1"
+        "Normalize-OpenApiTypeArrays.ps1"
         "Flatten-OpenApiAllOf.ps1"
         "Simplify-OpenApiStringVariants.ps1"
         "Simplify-OpenApiRecursiveSchemas.ps1"
@@ -141,8 +142,11 @@ function Invoke-OpenApiGeneration {
     $null = & $stageScriptPaths["Inline-OpenApiReferences.ps1"] `
         -InputPath $paths.Omitted `
         -OutputPath $paths.Inlined
-    $null = & $stageScriptPaths["Flatten-OpenApiAllOf.ps1"] `
+    $null = & $stageScriptPaths["Normalize-OpenApiTypeArrays.ps1"] `
         -InputPath $paths.Inlined `
+        -OutputPath $paths.TypeArraysNormalized
+    $null = & $stageScriptPaths["Flatten-OpenApiAllOf.ps1"] `
+        -InputPath $paths.TypeArraysNormalized `
         -OutputPath $paths.Flattened
     $null = & $stageScriptPaths["Simplify-OpenApiStringVariants.ps1"] `
         -InputPath $paths.Flattened `
@@ -176,6 +180,7 @@ function Invoke-OpenApiGeneration {
         $paths.Extracted,
         $paths.Omitted,
         $paths.Inlined,
+        $paths.TypeArraysNormalized,
         $paths.Flattened,
         $paths.Simplified,
         $paths.RecursiveSimplified,

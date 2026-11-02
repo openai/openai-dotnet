@@ -20,7 +20,7 @@ model createDecision_request_object {
   `model`: string;
   questions: createDecision_request_object_Questions_array_item_discriminatedObject[];
   prompt_cache_key?: string | null;
-  prompt_cache_options?: createDecision_request_object_PromptCacheOptions_object;
+  prompt_cache_options?: createDecision_request_object_PromptCacheOptions_object | null;
   safety_identifier?: string | null;
 }
 
@@ -83,21 +83,22 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   detail?:
     | createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum
     | null;
-  prompt_cache_breakpoint?: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
 }
 
-union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object {
-  {
-    mode: "explicit",
-  },
-  null,
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object {
+  mode: "explicit";
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText
   extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject {
   type: "input_text";
   text: string;
-  prompt_cache_breakpoint?: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall
@@ -191,7 +192,9 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject {
   type: "input_text";
   text: string;
-  prompt_cache_breakpoint?: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem
@@ -226,7 +229,9 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   detail?:
     | createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum
     | null;
-  prompt_cache_breakpoint?: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson
@@ -239,7 +244,9 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject {
   type: "input_text";
   text: string;
-  prompt_cache_breakpoint?: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
 }
 
 @discriminator("type")
@@ -329,12 +336,14 @@ model createDecision_request_object_Questions_array_item_discriminatedObject_typ
   description?: string;
 }
 
-union createDecision_request_object_PromptCacheOptions_object {
-  {
-    mode?: "explicit" | "implicit" | null | null,
-    ttl?: "30m",
-  },
-  null,
+model createDecision_request_object_PromptCacheOptions_object {
+  mode?: createDecision_request_object_PromptCacheOptions_object_Mode_enum | null;
+  ttl?: "30m";
+}
+
+enum createDecision_request_object_PromptCacheOptions_object_Mode_enum {
+  explicit,
+  implicit,
 }
 
 model createDecision_response_200_object {

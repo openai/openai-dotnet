@@ -82,22 +82,26 @@
                                                     "type": "string"
                                                   },
                                                   "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
+                                                    "anyOf": [
+                                                      {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "mode": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "explicit"
+                                                            ]
+                                                          }
+                                                        },
+                                                        "required": [
+                                                          "mode"
+                                                        ],
+                                                        "additionalProperties": false
+                                                      },
+                                                      {
+                                                        "type": "null"
                                                       }
-                                                    },
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "additionalProperties": false
+                                                    ]
                                                   }
                                                 },
                                                 "required": [
@@ -129,22 +133,26 @@
                                                     ]
                                                   },
                                                   "prompt_cache_breakpoint": {
-                                                    "type": [
-                                                      "object",
-                                                      "null"
-                                                    ],
-                                                    "properties": {
-                                                      "mode": {
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "explicit"
-                                                        ]
+                                                    "anyOf": [
+                                                      {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "mode": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "explicit"
+                                                            ]
+                                                          }
+                                                        },
+                                                        "required": [
+                                                          "mode"
+                                                        ],
+                                                        "additionalProperties": false
+                                                      },
+                                                      {
+                                                        "type": "null"
                                                       }
-                                                    },
-                                                    "required": [
-                                                      "mode"
-                                                    ],
-                                                    "additionalProperties": false
+                                                    ]
                                                   },
                                                   "type": {
                                                     "type": "string",
@@ -234,8 +242,7 @@
                                   },
                                   "required": [
                                     "role",
-                                    "content",
-                                    "type"
+                                    "content"
                                   ],
                                   "additionalProperties": false
                                 },
@@ -268,22 +275,26 @@
                                                 "type": "string"
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               }
                                             },
                                             "required": [
@@ -304,8 +315,7 @@
                                   },
                                   "required": [
                                     "role",
-                                    "content",
-                                    "type"
+                                    "content"
                                   ],
                                   "additionalProperties": false
                                 },
@@ -338,22 +348,26 @@
                                                 "type": "string"
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               }
                                             },
                                             "required": [
@@ -374,8 +388,7 @@
                                   },
                                   "required": [
                                     "role",
-                                    "content",
-                                    "type"
+                                    "content"
                                   ],
                                   "additionalProperties": false
                                 },
@@ -470,8 +483,7 @@
                                   },
                                   "required": [
                                     "role",
-                                    "content",
-                                    "type"
+                                    "content"
                                   ],
                                   "additionalProperties": false
                                 }
@@ -491,18 +503,26 @@
                               "type": "object",
                               "properties": {
                                 "id": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "call_id": {
                                   "type": "string"
                                 },
                                 "namespace": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "name": {
@@ -545,9 +565,13 @@
                               "type": "object",
                               "properties": {
                                 "id": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "call_id": {
@@ -575,22 +599,26 @@
                                                 "type": "string"
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               }
                                             },
                                             "required": [
@@ -622,22 +650,26 @@
                                                 ]
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               },
                                               "type": {
                                                 "type": "string",
@@ -697,18 +729,26 @@
                               "type": "object",
                               "properties": {
                                 "id": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "call_id": {
                                   "type": "string"
                                 },
                                 "namespace": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "name": {
@@ -751,9 +791,13 @@
                               "type": "object",
                               "properties": {
                                 "id": {
-                                  "type": [
-                                    "string",
-                                    "null"
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
                                   ]
                                 },
                                 "call_id": {
@@ -781,22 +825,26 @@
                                                 "type": "string"
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               }
                                             },
                                             "required": [
@@ -828,22 +876,26 @@
                                                 ]
                                               },
                                               "prompt_cache_breakpoint": {
-                                                "type": [
-                                                  "object",
-                                                  "null"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "explicit"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "mode"
+                                                    ],
+                                                    "additionalProperties": false
+                                                  },
+                                                  {
+                                                    "type": "null"
                                                   }
-                                                },
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "additionalProperties": false
+                                                ]
                                               },
                                               "type": {
                                                 "type": "string",
@@ -1419,42 +1471,57 @@
                     }
                   },
                   "safety_identifier": {
-                    "type": [
-                      "string",
-                      "null"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
                     ]
                   },
                   "prompt_cache_key": {
-                    "type": [
-                      "string",
-                      "null"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
                     ]
                   },
                   "prompt_cache_options": {
-                    "type": [
-                      "object",
-                      "null"
-                    ],
-                    "properties": {
-                      "ttl": {
-                        "type": "string",
-                        "enum": [
-                          "30m"
-                        ]
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "ttl": {
+                            "type": "string",
+                            "enum": [
+                              "30m"
+                            ]
+                          },
+                          "mode": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "implicit",
+                                  "explicit"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "additionalProperties": false
                       },
-                      "mode": {
-                        "type": [
-                          "string",
-                          "null"
-                        ],
-                        "enum": [
-                          "implicit",
-                          "explicit",
-                          null
-                        ]
+                      {
+                        "type": "null"
                       }
-                    },
-                    "additionalProperties": false
+                    ]
                   }
                 },
                 "required": [
@@ -1493,9 +1560,13 @@
                                 ]
                               },
                               "name": {
-                                "type": [
-                                  "string",
-                                  "null"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
                                 ]
                               },
                               "probability": {
@@ -1519,9 +1590,13 @@
                                 ]
                               },
                               "name": {
-                                "type": [
-                                  "string",
-                                  "null"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
                                 ]
                               },
                               "choice": {
@@ -1583,9 +1658,13 @@
                                 ]
                               },
                               "name": {
-                                "type": [
-                                  "string",
-                                  "null"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
                                 ]
                               },
                               "score": {
@@ -1638,9 +1717,13 @@
                                 ]
                               },
                               "name": {
-                                "type": [
-                                  "string",
-                                  "null"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
                                 ]
                               }
                             },

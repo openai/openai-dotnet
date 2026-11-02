@@ -74,9 +74,9 @@
                     ]
                   },
                   "nearMiss": {
-                    "type": [
-                      "object",
-                      "null"
+                    "anyOf": [
+                      { "type": "object" },
+                      { "type": "null" }
                     ]
                   },
                   "literal": {

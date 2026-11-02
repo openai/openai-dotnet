@@ -33,6 +33,7 @@ function Assert-FeatureArtifactLayout {
         $Paths.Extracted,
         $Paths.Omitted,
         $Paths.Inlined,
+        $Paths.TypeArraysNormalized,
         $Paths.Flattened,
         $Paths.Simplified,
         $Paths.RecursiveSimplified,
@@ -58,7 +59,7 @@ function Assert-FeatureArtifactLayout {
         Assert-True ([System.IO.File]::Exists($stablePath)) "Stable artifact was not created: $stablePath"
         Assert-True ([System.IO.Path]::GetFileName($stablePath) -notmatch '^.+\.\d{2}\.') "Stable artifact was unexpectedly numbered: $stablePath"
     }
-    Assert-True (@(Get-ChildItem -LiteralPath $Paths.OutputDirectory -File).Count -eq 20) "Feature '$($Paths.FeatureArea)' did not contain exactly 20 artifacts."
+    Assert-True (@(Get-ChildItem -LiteralPath $Paths.OutputDirectory -File).Count -eq 21) "Feature '$($Paths.FeatureArea)' did not contain exactly 21 artifacts."
 }
 
 function Assert-NestedFeatureHierarchy {
@@ -68,9 +69,19 @@ function Assert-NestedFeatureHierarchy {
     $messageName = "${outerName}_typeOfMessage"
     foreach ($path in @($Paths.DiscriminatorInherited, $Paths.DiscriminatorInheritedSorted, $Paths.Deduplicated, $Paths.Final)) {
         $document = Read-OpenApiDocument -Path $path
+        Assert-NoOpenApiSchemaTypeArrays -Value $document
         $schemas = $document.components.schemas
         $outer = Get-JsonPropertyValue -Object $schemas -Name $outerName
         $message = Get-JsonPropertyValue -Object $schemas -Name $messageName
+        $requestName = "${OperationId}_request_object"
+        $optionsName = "${requestName}_PromptCacheOptions_object"
+        $request = Get-JsonPropertyValue -Object $schemas -Name $requestName
+        $options = Get-JsonPropertyValue -Object $schemas -Name $optionsName
+        Assert-True ($options.type -ceq "object") "Nullable model remained a type array in '$path'."
+        Assert-True ($request.properties.prompt_cache_options.anyOf[0].'$ref' -ceq "#/components/schemas/$optionsName") "Nullable model reference changed in '$path'."
+        Assert-True ($request.properties.prompt_cache_options.anyOf[1].type -ceq "null") "Object nullability changed in '$path'."
+        Assert-True ($options.properties.mode.anyOf[1].type -ceq "null") "Enum nullability changed in '$path'."
+        Assert-True ($request.required -cnotcontains "prompt_cache_options") "Normalization made an optional property required in '$path'."
         Assert-True ($null -ne $outer -and $null -ne $message) "Nested hierarchy components were missing from '$path'."
         Assert-True ($outer.discriminator.mapping.message -ceq "#/components/schemas/$messageName") "Outer mapping bypassed Message in '$path'."
         Assert-True ($message.discriminator.propertyName -ceq "role") "Message lost role routing in '$path'."

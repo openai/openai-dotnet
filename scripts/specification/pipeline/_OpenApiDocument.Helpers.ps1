@@ -1026,7 +1026,7 @@ logical branches. A NestedDiscriminatorGroup must also have a valid inner
 discriminator and one common required outer value compatible with its existing
 constraints. A same-property group must meet the structural/metadata equivalence
 and scope-safety checks for flattening. Unsupported analysis does not necessarily
-mean the original JSON Schema is invalid. Stage 09 removes unsupported oneOf
+mean the original JSON Schema is invalid. Stage 10 removes unsupported oneOf
 discriminator metadata and may infer a valid type discriminator instead; it does
 not remove the oneOf alternatives. Component mapping validation and inheritance
 have additional fail-fast requirements documented in docs/OpenApiPipelineDesign.md.
@@ -2034,15 +2034,18 @@ function Add-OpenApiPointerRelocation {
     $Relocations[$SourcePrefix] = $DestinationPrefix
 }
 
-# Applies the longest matching relocation prefix repeatedly so nested schema
-# transformations resolve to their final destination paths.
+# Existing callers follow chained moves. SinglePass is for transformations that
+# already map original locations to final paths, including moves below themselves.
 function Get-RelocatedOpenApiPointer {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Pointer,
 
         [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.Dictionary[string, string]]$Relocations
+        [System.Collections.Generic.Dictionary[string, string]]$Relocations,
+
+        [Parameter()]
+        [switch]$SinglePass
     )
 
     if ([string]::Equals($Pointer, "#", [System.StringComparison]::Ordinal) -or
@@ -2073,6 +2076,9 @@ function Get-RelocatedOpenApiPointer {
 
         $relocatedPointer = $Relocations[$matchingPrefix] +
             $relocatedPointer.Substring($matchingPrefix.Length)
+        if ($SinglePass) {
+            return $relocatedPointer
+        }
     }
 
     throw "JSON Pointer relocation contains a cycle for '$Pointer'."
@@ -2088,6 +2094,16 @@ function ConvertTo-RelocatedOpenApiPointers {
 
         [Parameter(Mandatory = $true)]
         [System.Collections.Generic.Dictionary[string, string]]$Relocations,
+
+        [Parameter()]
+        [switch]$SinglePass,
+
+        [Parameter()]
+        [switch]$SchemaAware,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext = "OpenApi",
 
         [Parameter()]
         [ValidateSet("Default", "Discriminator", "Mapping")]
@@ -2106,12 +2122,19 @@ function ConvertTo-RelocatedOpenApiPointers {
     if ($null -eq $Value) {
         return $null
     }
+    if ($SchemaAware -and $SchemaContext -ceq "Literal" -and $Context -ceq "Default") {
+        return Copy-JsonValue -Value $Value
+    }
     if (Test-JsonArrayValue -Value $Value) {
+        $itemSchemaContext = if ($SchemaContext -ceq "SchemaArray") { "Schema" } else { $SchemaContext }
         [object[]]$items = [object[]]::new($Value.Count)
         for ($index = 0; $index -lt $Value.Count; $index++) {
             $items[$index] = ConvertTo-RelocatedOpenApiPointers `
                 -Value $Value[$index] `
                 -Relocations $Relocations `
+                -SinglePass:$SinglePass `
+                -SchemaAware:$SchemaAware `
+                -SchemaContext $itemSchemaContext `
                 -Context Default `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
@@ -2128,21 +2151,25 @@ function ConvertTo-RelocatedOpenApiPointers {
             $property.Value -is [string]) {
             $result[$property.Name] = Get-RelocatedOpenApiPointer `
                 -Pointer $property.Value `
-                -Relocations $Relocations
+                -Relocations $Relocations `
+                -SinglePass:$SinglePass
             continue
         }
 
         if (@('$ref', '$dynamicRef', '$recursiveRef') -ccontains $property.Name -and
-            $property.Value -is [string]) {
+            $property.Value -is [string] -and
+            (-not $SchemaAware -or $SchemaContext -cne "SchemaMap")) {
             $result[$property.Name] = Get-RelocatedOpenApiPointer `
                 -Pointer $property.Value `
-                -Relocations $Relocations
+                -Relocations $Relocations `
+                -SinglePass:$SinglePass
             continue
         }
 
         $childContext = "Default"
         if ([string]::Equals($Context, "Default", [System.StringComparison]::Ordinal) -and
-            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal)) {
+            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal) -and
+            (-not $SchemaAware -or $SchemaContext -ceq "Schema")) {
             $childContext = "Discriminator"
         }
         elseif ([string]::Equals($Context, "Discriminator", [System.StringComparison]::Ordinal) -and
@@ -2150,14 +2177,59 @@ function ConvertTo-RelocatedOpenApiPointers {
             $childContext = "Mapping"
         }
 
+        $childSchemaContext = if ($SchemaAware) {
+            Get-OpenApiSchemaChildContext -ParentContext $SchemaContext -PropertyName $property.Name -PropertyValue $property.Value
+        }
+        else {
+            $SchemaContext
+        }
         $result[$property.Name] = ConvertTo-RelocatedOpenApiPointers `
             -Value $property.Value `
             -Relocations $Relocations `
+            -SinglePass:$SinglePass `
+            -SchemaAware:$SchemaAware `
+            -SchemaContext $childSchemaContext `
             -Context $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
     return $result
+}
+
+function Assert-NoOpenApiSchemaTypeArrays {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
+
+        [string]$Breadcrumb = "#",
+        [int]$Depth = 0,
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) { throw "Schema type-array inspection exceeds depth $MaximumDepth at '$Breadcrumb'." }
+    if ($null -eq $Value -or $Context -ceq "Literal") { return }
+    if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = if ($Context -ceq "SchemaArray") { "Schema" } else { $Context }
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            Assert-NoOpenApiSchemaTypeArrays -Value $Value[$index] -Context $itemContext `
+                -Breadcrumb "$Breadcrumb/$index" -Depth ($Depth + 1) -MaximumDepth $MaximumDepth
+        }
+        return
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) { return }
+    if ($Context -ceq "SchemaArray") { $Context = "Schema" }
+    if ($Context -ceq "Schema" -and (Test-JsonArrayValue -Value (Get-JsonPropertyValue -Object $Value -Name "type"))) {
+        throw "Schema type array remains at '$Breadcrumb/type'. Run Normalize-OpenApiTypeArrays.ps1 before componentization."
+    }
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        $childContext = Get-OpenApiSchemaChildContext -ParentContext $Context -PropertyName $property.Name -PropertyValue $property.Value
+        Assert-NoOpenApiSchemaTypeArrays -Value $property.Value -Context $childContext `
+            -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" -Depth ($Depth + 1) -MaximumDepth $MaximumDepth
+    }
 }
 
 # Validates dynamic and recursive references not covered by the shared

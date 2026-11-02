@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     Finds every inline Schema Object that owns a direct nonempty oneOf, has the
-    type "object" (including object-only and nullable-object type arrays), or
+    exact scalar type "object", or
     directly declares a multi-value string enum;
     creates one components.schemas entry per occurrence; and replaces each inline
     definition with a local $ref. A direct oneOf owner takes precedence when a
@@ -28,6 +28,10 @@
     component pointers. Structurally identical occurrences intentionally remain
     separate components. Run Inherit-OpenApi.ps1 with this output as its input
     before finalization.
+
+    Run Normalize-OpenApiTypeArrays.ps1 before invoking this stage directly.
+    Schema type arrays are rejected instead of promoting a complete nullable
+    definition into a named union with an anonymous object alternative.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to componentize.
@@ -88,22 +92,8 @@ function Test-IsInlineOpenApiObjectSchema {
     }
 
     $type = Get-JsonPropertyValue -Object $Value -Name "type"
-    if ($type -is [string]) {
-        return [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
-    }
-    if (-not (Test-JsonArrayValue -Value $type)) {
-        return $false
-    }
-    $hasObjectType = $false
-    foreach ($typeName in $type) {
-        if ($typeName -isnot [string] -or @("object", "null") -cnotcontains $typeName) {
-            return $false
-        }
-        if ([string]::Equals($typeName, "object", [System.StringComparison]::Ordinal)) {
-            $hasObjectType = $true
-        }
-    }
-    return $hasObjectType
+    return $type -is [string] -and
+        [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
 }
 
 # Multi-value string enums are reusable scalar schema definitions. Singleton
@@ -1453,6 +1443,7 @@ function ConvertTo-ComponentizedOpenApiDocument {
         [object]$Document
     )
 
+    Assert-NoOpenApiSchemaTypeArrays -Value $Document
     [object[]]$candidates = @(Get-InlineOpenApiSchemaCandidates -Document $Document)
     if ($candidates.Count -eq 0) {
         $copy = Copy-JsonValue -Value $Document

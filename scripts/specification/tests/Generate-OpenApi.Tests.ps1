@@ -229,6 +229,7 @@ try {
             "Extract-OpenApiRoute.ps1",
             "Remove-OpenApiOmittedProperties.ps1",
             "Inline-OpenApiReferences.ps1",
+            "Normalize-OpenApiTypeArrays.ps1",
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
             "Simplify-OpenApiRecursiveSchemas.ps1",
@@ -255,27 +256,29 @@ try {
             "responses.01.route-extracted.openapi.json",
             "responses.02.properties-omitted.openapi.json",
             "responses.03.references-inlined.openapi.json",
-            "responses.04.allof-flattened.openapi.json",
-            "responses.05.string-variants-simplified.openapi.json",
-            "responses.06.recursive-schemas-simplified.openapi.json",
-            "responses.07.type-properties-required.openapi.json",
-            "responses.08.multi-value-type-enums-split.openapi.json",
-            "responses.09.oneof-discriminators-added.openapi.json",
-            "responses.10.oneof-normalized.openapi.json",
-            "responses.11.nested-oneof-flattened.openapi.json",
-            "responses.12.singleton-type-enums-wrapped.openapi.json",
-            "responses.13.document-sorted.openapi.json",
-            "responses.14.schemas-componentized.openapi.json",
-            "responses.15.discriminator-inheritance-refactored.openapi.json",
-            "responses.16.inherited-document-sorted.openapi.json",
+            "responses.04.type-arrays-normalized.openapi.json",
+            "responses.05.allof-flattened.openapi.json",
+            "responses.06.string-variants-simplified.openapi.json",
+            "responses.07.recursive-schemas-simplified.openapi.json",
+            "responses.08.type-properties-required.openapi.json",
+            "responses.09.multi-value-type-enums-split.openapi.json",
+            "responses.10.oneof-discriminators-added.openapi.json",
+            "responses.11.oneof-normalized.openapi.json",
+            "responses.12.nested-oneof-flattened.openapi.json",
+            "responses.13.singleton-type-enums-wrapped.openapi.json",
+            "responses.14.document-sorted.openapi.json",
+            "responses.15.schemas-componentized.openapi.json",
+            "responses.16.discriminator-inheritance-refactored.openapi.json",
+            "responses.17.inherited-document-sorted.openapi.json",
             "responses.component-default-map.json",
             "responses.component-policy-map.json",
-            "responses.17.components-deduplicated.openapi.json",
+            "responses.18.components-deduplicated.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Extracted),
             [System.IO.Path]::GetFileName($paths.Omitted),
             [System.IO.Path]::GetFileName($paths.Inlined),
+            [System.IO.Path]::GetFileName($paths.TypeArraysNormalized),
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
             [System.IO.Path]::GetFileName($paths.RecursiveSimplified),
@@ -298,6 +301,7 @@ try {
             $paths.Extracted,
             $paths.Omitted,
             $paths.Inlined,
+            $paths.TypeArraysNormalized,
             $paths.Flattened,
             $paths.Simplified,
             $paths.RecursiveSimplified,
@@ -313,7 +317,7 @@ try {
             $paths.DiscriminatorInheritedSorted,
             $paths.Deduplicated
         )
-        Assert-Sequence (1..17 | ForEach-Object { $_.ToString("00") }) @(
+        Assert-Sequence (1..18 | ForEach-Object { $_.ToString("00") }) @(
             $numberedPaths | ForEach-Object {
                 $fileName = [System.IO.Path]::GetFileName($_)
                 if ($fileName -notmatch '^responses\.(\d{2})\.') {
@@ -370,6 +374,7 @@ try {
             $paths.Extracted,
             $paths.Omitted,
             $paths.Inlined,
+            $paths.TypeArraysNormalized,
             $paths.Flattened,
             $paths.Simplified,
             $paths.RecursiveSimplified,
@@ -395,6 +400,7 @@ try {
         $extracted = Read-TestJson -Path $paths.Extracted
         $omitted = Read-TestJson -Path $paths.Omitted
         $inlined = Read-TestJson -Path $paths.Inlined
+        $typeArraysNormalized = Read-TestJson -Path $paths.TypeArraysNormalized
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
         $recursiveSimplified = Read-TestJson -Path $paths.RecursiveSimplified
@@ -433,6 +439,14 @@ try {
         Assert-True (-not ($inlinedModel.PSObject.Properties.Name -ccontains "description")) "Extract stage retained schema description metadata."
         Assert-True (-not ($inlinedModel.PSObject.Properties.Name -ccontains "default")) "Extract stage retained schema default metadata."
         Assert-True (-not ($flattenedSchema.PSObject.Properties.Name -ccontains "allOf")) "Flatten stage retained allOf."
+
+        $inlinedOptions = $inlinedSchema.allOf[0].properties.prompt_cache_options
+        Assert-Sequence @("object", "null") @($inlinedOptions.type) "Inlining normalized type arrays too early."
+        $normalizedProperties = $typeArraysNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.allOf[0].properties
+        Assert-Sequence @("object", "null") @($normalizedProperties.prompt_cache_options.anyOf.type) "Stage 04 did not normalize the nullable object."
+        Assert-Sequence @("explicit", "implicit") @($normalizedProperties.prompt_cache_options.anyOf[0].properties.mode.anyOf[0].enum) "Stage 04 retained null in the non-null enum."
+        Assert-Sequence @("integer", "number") @($normalizedProperties.mixed_value.anyOf.type) "Stage 04 changed overlapping type alternatives."
+        Assert-NoOpenApiSchemaTypeArrays -Value $typeArraysNormalized
 
         $simplifiedModel = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $simplifiedOutputs = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
@@ -555,6 +569,15 @@ try {
         Assert-True ($null -ne $messageComponent) "Generation omitted the typeOfMessage hierarchy component."
         Assert-Equal "#/components/schemas/$messageName" $inputItemComponent.discriminator.mapping.message "Generation split the message and tool-call hierarchies."
         Assert-Equal "role" $messageComponent.discriminator.propertyName "Componentized Message lost role routing."
+
+        $optionsName = "createResponse_request_object_PromptCacheOptions_object"
+        $requestComponent = Get-JsonPropertyValue -Object $componentized.components.schemas -Name "createResponse_request_object"
+        $optionsComponent = Get-JsonPropertyValue -Object $componentized.components.schemas -Name $optionsName
+        Assert-Equal "object" $optionsComponent.type "Nullable component did not become a non-null object definition."
+        Assert-Equal "#/components/schemas/$optionsName" $requestComponent.properties.prompt_cache_options.anyOf[0].'$ref' "Nullable property did not reference its object component."
+        Assert-Equal "null" $requestComponent.properties.prompt_cache_options.anyOf[1].type "Nullable property lost null."
+        Assert-Equal "#/components/schemas/${optionsName}_Mode_enum" $optionsComponent.properties.mode.anyOf[0].'$ref' "Nullable mode did not reference a non-null enum component."
+        Assert-NoOpenApiSchemaTypeArrays -Value $componentized
 
         $splitWrapperName = "createResponse_request_object_SplitChoice_union_discriminatedObject"
         Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name $splitWrapperName) "Componentization omitted the splitChoice discriminator wrapper."

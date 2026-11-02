@@ -23,6 +23,7 @@ $componentizeScriptPath = Join-Path $scriptDirectory "Componentize-OpenApiObject
 # exercised without file I/O. The script's invocation guard must prevent its CLI
 # entry point from running during this load; the first test locks that contract.
 . $componentizeScriptPath
+. (Join-Path $scriptDirectory "Normalize-OpenApiTypeArrays.ps1")
 . (Join-Path $scriptDirectory "_OpenApiComponentDeduplication.Helpers.ps1")
 . (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
@@ -143,7 +144,7 @@ try {
         Assert-True (-not ($candidates.Pointer -ccontains "#/components/schemas/ExistingRoot")) "Existing component root was rediscovered."
     }
 
-    Invoke-Test "nullable object properties become components without losing nullability" {
+    Invoke-Test "normalized nullable properties reference non-null object and enum components" {
         foreach ($types in @(@("object", "null"), @("null", "object"), @("object"))) {
             $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
             $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
@@ -160,13 +161,25 @@ try {
                 '$ref' = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/prompt_cache_options/properties/mode"
             }
             $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
-            $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+            $normalized = ConvertTo-NormalizedOpenApiTypeArrayDocument -Document $source
+            $result = ConvertTo-ComponentizedOpenApiDocument -Document $normalized.Document
             $componentName = "createWidget_request_object_PromptCacheOptions_object"
             $schemas = $result.Document.components.schemas
 
-            Assert-True (Test-JsonProperty -Object $schemas -Name $componentName) "Nullable object property was not componentized."
-            Assert-Equal "#/components/schemas/$componentName" $schemas["createWidget_request_object"].properties.prompt_cache_options.'$ref' "Nullable object property did not reference its component."
-            Assert-JsonEqual $nullableObject $schemas[$componentName] "Nullable object component lost its type array, properties, or constraints."
+            Assert-True (Test-JsonProperty -Object $schemas -Name $componentName) "Non-null object branch was not componentized."
+            $property = $schemas["createWidget_request_object"].properties.prompt_cache_options
+            if ($types.Count -gt 1) {
+                Assert-Equal "#/components/schemas/$componentName" $property.anyOf[0].'$ref' "Nullable property did not reference its non-null component."
+                Assert-Equal "null" $property.anyOf[1].type "Nullable property lost null."
+            }
+            else {
+                Assert-Equal "#/components/schemas/$componentName" $property.'$ref' "Object-only array gained nullability."
+            }
+            Assert-Equal "object" $schemas[$componentName].type "Object component retained a type array."
+            Assert-Equal $false $schemas[$componentName].additionalProperties "Object constraint changed."
+            Assert-Equal "#/components/schemas/${componentName}_Mode_enum" $schemas[$componentName].properties.mode.anyOf[0].'$ref' "Mode enum did not become a non-null component."
+            Assert-Equal "null" $schemas[$componentName].properties.mode.anyOf[1].type "Mode lost nullability."
+            Assert-Sequence @("explicit", "implicit") @($schemas["${componentName}_Mode_enum"].enum) "Non-null enum retained null."
             Assert-Equal "#/components/schemas/$componentName/properties/mode" $schemas["createWidget_request_object"].properties.mode_alias.'$ref' "Nullable object descendant reference was not relocated."
             Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
 
@@ -174,6 +187,17 @@ try {
             Assert-Equal 0 $second.GeneratedComponentCount "Second pass componentized an existing nullable component root."
             Assert-JsonEqual $result.Document $second.Document "Second pass changed the nullable object document."
         }
+    }
+
+    Invoke-Test "standalone componentization rejects unnormalized schema type arrays" {
+        foreach ($types in @(@("object", "null"), @("object"), @("string", "null"))) {
+            Assert-Throws {
+                ConvertTo-ComponentizedOpenApiDocument -Document (New-TestOpenApiDocument -Schema ([ordered]@{ type = $types }))
+            } "*schema/type*Run Normalize-OpenApiTypeArrays.ps1*"
+        }
+        $source = Read-TestJsonFixture -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.components.schemas["Unnormalized"] = [ordered]@{ type = @("object", "null") }
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $source } "*#/components/schemas/Unnormalized/type*"
     }
 
     Invoke-Test "nested discriminator bases inherit their outer identity and retain inner mappings" {
@@ -895,8 +919,9 @@ try {
         )
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $root = $result.Document.components.schemas["createWidget_request_object"]
-        Assert-Equal "#/components/schemas/createWidget_request_object_NearMiss_object" $root.properties.nearMiss.'$ref' "Nullable object remained inline."
-        Assert-Sequence @("object", "null") @($result.Document.components.schemas["createWidget_request_object_NearMiss_object"].type) "Nullable object type array changed."
+        Assert-Equal "#/components/schemas/createWidget_request_object_NearMiss_object" $root.properties.nearMiss.anyOf[0].'$ref' "Non-null object remained inline."
+        Assert-Equal "null" $root.properties.nearMiss.anyOf[1].type "Nullable use site lost null."
+        Assert-Equal "object" $result.Document.components.schemas["createWidget_request_object_NearMiss_object"].type "Object component retained nullability."
         Assert-Equal "object" $root.properties.literal.example.type "Literal object changed."
         Assert-Equal "object" $root.properties.literal.example.properties.ignored.type "Nested literal object changed."
         Assert-Equal 1 $root.properties.literal.example.oneOf.Count "Literal oneOf lookalike changed."

@@ -114,8 +114,8 @@ try {
             Assert-True (Test-Path -LiteralPath $stagePath -PathType Leaf) "Required stage script was not found: $stagePath"
         }
         $paths = Get-OpenApiArtifactPaths -FeatureArea $featureArea -OutputRoot $expectedDirectory
-        Assert-Equal "responses.15.discriminator-inheritance-refactored.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInherited)) "Inherited artifact name was incorrect."
-        Assert-Equal "responses.16.inherited-document-sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Sorted inherited artifact name was incorrect."
+        Assert-Equal "responses.16.discriminator-inheritance-refactored.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInherited)) "Inherited artifact name was incorrect."
+        Assert-Equal "responses.17.inherited-document-sorted.openapi.json" ([System.IO.Path]::GetFileName($paths.DiscriminatorInheritedSorted)) "Sorted inherited artifact name was incorrect."
     }
 
     Invoke-Test "default alias input produces retained artifacts and inherited alias" {

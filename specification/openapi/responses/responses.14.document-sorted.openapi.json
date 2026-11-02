@@ -9880,9 +9880,13 @@
                     "deprecated": true
                   },
                   "user": {
-                    "type": [
-                      "string",
-                      "null"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
                     ],
                     "deprecated": true
                   }

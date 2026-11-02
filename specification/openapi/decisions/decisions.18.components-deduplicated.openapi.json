@@ -79,18 +79,33 @@
             }
           },
           "prompt_cache_key": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "prompt_cache_options": {
-            "$ref": "#/components/schemas/createDecision_request_object_PromptCacheOptions_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_PromptCacheOptions_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "safety_identifier": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
@@ -155,15 +170,23 @@
             "type": "string"
           },
           "id": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "namespace": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "status": {
@@ -213,15 +236,19 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union"
           },
           "id": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
               },
               {
                 "type": "null"
@@ -286,7 +313,7 @@
           "detail": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
               },
               {
                 "type": "null"
@@ -294,7 +321,14 @@
             ]
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -304,20 +338,8 @@
           }
         ]
       },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "high",
-          "low",
-          "original"
-        ]
-      },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
+        "type": "object",
         "required": [
           "mode"
         ],
@@ -348,7 +370,14 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -356,32 +385,6 @@
           {
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject"
           }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum": {
-        "type": "string",
-        "enum": [
-          "completed",
-          "in_progress",
-          "incomplete"
         ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall": {
@@ -409,21 +412,29 @@
             "type": "string"
           },
           "id": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "namespace": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
               },
               {
                 "type": "null"
@@ -436,14 +447,6 @@
           {
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
           }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum": {
-        "type": "string",
-        "enum": [
-          "completed",
-          "in_progress",
-          "incomplete"
         ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput": {
@@ -464,18 +467,22 @@
             "type": "string"
           },
           "output": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union"
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union"
           },
           "id": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
               },
               {
                 "type": "null"
@@ -488,154 +495,6 @@
           {
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
           }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
-            }
-          },
-          {
-            "type": "string"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "input_image": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
-            "input_text": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText"
-          }
-        }
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage": {
-        "type": "object",
-        "required": [
-          "type",
-          "image_url"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_image"
-            ]
-          },
-          "image_url": {
-            "type": "string"
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "high",
-          "low",
-          "original"
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum": {
-        "type": "string",
-        "enum": [
-          "completed",
-          "in_progress",
-          "incomplete"
         ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage": {
@@ -655,6 +514,11 @@
             "type": "string"
           }
         },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
+          }
+        ],
         "discriminator": {
           "propertyName": "role",
           "mapping": {
@@ -663,12 +527,7 @@
             "system": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem",
             "user": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser"
           }
-        },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
-          }
-        ]
+        }
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant": {
         "type": "object",
@@ -875,7 +734,14 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -884,24 +750,6 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject"
           }
         ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem": {
         "type": "object",
@@ -918,7 +766,7 @@
             ]
           },
           "content": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union"
+            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union"
           },
           "role": {
             "type": "string",
@@ -933,81 +781,6 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage"
           }
         ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject"
-            }
-          },
-          {
-            "type": "string"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "input_text": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText"
-          }
-        }
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser": {
         "type": "object",
@@ -1091,7 +864,7 @@
           "detail": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
               },
               {
                 "type": "null"
@@ -1099,7 +872,14 @@
             ]
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -1108,33 +888,6 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject"
           }
         ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "high",
-          "low",
-          "original"
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson": {
         "type": "object",
@@ -1150,7 +903,7 @@
             ]
           },
           "data": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union"
+            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union"
           }
         },
         "additionalProperties": false,
@@ -1159,49 +912,6 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject"
           }
         ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary"
-            }
-          },
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary"
-          }
-        ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText": {
         "type": "object",
@@ -1220,7 +930,14 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -1229,24 +946,6 @@
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject"
           }
         ]
-      },
-      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": [
-          "object",
-          "null"
-        ],
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        },
-        "additionalProperties": false
       },
       "createDecision_request_object_Questions_array_item_discriminatedObject": {
         "type": "object",
@@ -1308,23 +1007,13 @@
         ],
         "properties": {
           "value": {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object_Value_union"
+            "$ref": "#/components/schemas/createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union"
           },
           "description": {
             "type": "string"
           }
         },
         "additionalProperties": false
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object_Value_union": {
-        "oneOf": [
-          {
-            "type": "boolean"
-          },
-          {
-            "type": "string"
-          }
-        ]
       },
       "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union": {
         "oneOf": [
@@ -1430,28 +1119,13 @@
           {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary"
+              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary"
             }
           },
           {
             "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary"
           }
         ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
       },
       "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary": {
         "type": "object",
@@ -1506,7 +1180,7 @@
             ]
           },
           "instructions": {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union"
+            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union"
           },
           "name": {
             "type": "string"
@@ -1516,172 +1190,6 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject"
-            }
-          },
-          {
-            "type": "string"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "input_image": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputImage",
-            "input_json": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson",
-            "input_text": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputText"
-          }
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputImage": {
-        "type": "object",
-        "required": [
-          "type",
-          "image_url"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_image"
-            ]
-          },
-          "image_url": {
-            "type": "string"
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "high",
-          "low",
-          "original"
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson": {
-        "type": "object",
-        "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_json"
-            ]
-          },
-          "data": {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary"
-            }
-          },
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject_typeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate_Instructions_union_array_item_discriminatedObject"
           }
         ]
       },
@@ -1700,7 +1208,7 @@
             ]
           },
           "instructions": {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union"
+            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union"
           },
           "levels": {
             "type": "array",
@@ -1716,172 +1224,6 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject"
-            }
-          },
-          {
-            "type": "string"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "input_image": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputImage",
-            "input_json": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson",
-            "input_text": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputText"
-          }
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputImage": {
-        "type": "object",
-        "required": [
-          "type",
-          "image_url"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_image"
-            ]
-          },
-          "image_url": {
-            "type": "string"
-          },
-          "detail": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "high",
-          "low",
-          "original"
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson": {
-        "type": "object",
-        "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_json"
-            ]
-          },
-          "data": {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary"
-            }
-          },
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary"
-          }
-        ]
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_array_item_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary": {
-        "type": "object",
-        "additionalProperties": {
-          "anyOf": [
-            {},
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "minProperties": 0,
-        "propertyNames": {
-          "type": "string"
-        }
-      },
-      "createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject_typeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false,
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Instructions_union_array_item_discriminatedObject"
           }
         ]
       },
@@ -1901,20 +1243,16 @@
         "additionalProperties": false
       },
       "createDecision_request_object_PromptCacheOptions_object": {
-        "type": [
-          "object",
-          "null"
-        ],
+        "type": "object",
         "properties": {
           "mode": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "enum": [
-              "explicit",
-              "implicit",
-              null
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/createDecision_request_object_PromptCacheOptions_object_Mode_enum"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "ttl": {
@@ -1925,6 +1263,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "createDecision_request_object_PromptCacheOptions_object_Mode_enum": {
+        "type": "string",
+        "enum": [
+          "explicit",
+          "implicit"
+        ]
       },
       "createDecision_response_200_object": {
         "type": "object",
@@ -1992,9 +1337,13 @@
             "type": "number"
           },
           "name": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "probabilities": {
@@ -2032,20 +1381,10 @@
             "type": "number"
           },
           "value": {
-            "$ref": "#/components/schemas/createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object_Value_union"
+            "$ref": "#/components/schemas/createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union"
           }
         },
         "additionalProperties": false
-      },
-      "createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object_Value_union": {
-        "oneOf": [
-          {
-            "type": "boolean"
-          },
-          {
-            "type": "string"
-          }
-        ]
       },
       "createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfPredicate": {
         "type": "object",
@@ -2062,9 +1401,13 @@
             ]
           },
           "name": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "probability": {
@@ -2092,9 +1435,13 @@
             ]
           },
           "name": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
@@ -2125,9 +1472,13 @@
             "type": "number"
           },
           "name": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "probabilities": {
