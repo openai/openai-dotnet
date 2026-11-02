@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Share role-aware string shorthand normalization and strict array validation across Decisions deserialization hooks.
 internal static class DecisionsSerializationHelpers
 {
     internal static IList<T> DeserializeTextOrParts<T>(

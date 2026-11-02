@@ -5,9 +5,10 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Serialize the union as its active JSON component rather than as a synthetic composition object.
 public partial class DecisionsJsonData
 {
-    // The composition model represents the JSON value itself, without synthetic component properties.
+    // CUSTOM: Preserve whole-value patches and omit the generated composition object's start/end delimiters.
     void IJsonModel<DecisionsJsonData>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
 #pragma warning disable SCME0001
@@ -20,6 +21,7 @@ public partial class DecisionsJsonData
         JsonModelWriteCore(writer, options);
     }
 
+    // CUSTOM: Write exactly one object or object-array component and reject an uninitialized union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         string format = options.Format == "W" ? ((IPersistableModel<DecisionsJsonData>)this).GetFormatFromOptions(options) : options.Format;
@@ -38,6 +40,7 @@ public partial class DecisionsJsonData
             foreach (DecisionsJsonObject item in ArrayValue)
             {
 #pragma warning disable SCME0001
+                // CUSTOM: Omit array objects removed through their root patches.
                 if (!item.Patch.IsRemoved("$"u8))
                 {
                     writer.WriteObjectValue(item, options);
@@ -45,6 +48,7 @@ public partial class DecisionsJsonData
 #pragma warning restore SCME0001
             }
 #pragma warning disable SCME0001
+            // CUSTOM: Emit appended array elements whose patches remain on the wrapper instead of an existing component.
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001
             writer.WriteEndArray();
@@ -55,6 +59,7 @@ public partial class DecisionsJsonData
         }
     }
 
+    // CUSTOM: Select the component by JSON shape, preserve null, and reject values other than objects or object arrays.
     internal static DecisionsJsonData DeserializeDecisionsJsonData(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
@@ -93,6 +98,7 @@ public partial class DecisionsJsonData
     }
 
 #pragma warning disable SCME0001
+    // CUSTOM: Forward nested reads to the active object or indexed array object while retaining root reads on the wrapper.
     private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
     {
         value = default;
@@ -112,6 +118,7 @@ public partial class DecisionsJsonData
             && ArrayValue[index].Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice(bytesConsumed)], out value);
     }
 
+    // CUSTOM: Forward nested writes to components, leaving whole-value replacements and array appends on the wrapper.
     private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
     {
         if (jsonPath.SequenceEqual("$"u8))

@@ -6,6 +6,7 @@ namespace OpenAI.Decisions;
 
 public partial class DecisionsJsonObject
 {
+    // CUSTOM: Accept arbitrary JSON objects as BinaryData while validating their shape and preserving patch data.
     public DecisionsJsonObject(BinaryData json)
     {
         Argument.AssertNotNull(json, nameof(json));

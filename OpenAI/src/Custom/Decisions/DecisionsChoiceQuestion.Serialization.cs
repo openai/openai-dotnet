@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Accept string shorthand choice instructions and normalize them into an instruction text content collection.
 [CodeGenSerialization(nameof(Instructions), DeserializationValueHook = nameof(DeserializeInstructionsValue))]
 public partial class DecisionsChoiceQuestion
 {

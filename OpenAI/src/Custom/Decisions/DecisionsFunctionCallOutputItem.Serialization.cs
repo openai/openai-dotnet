@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Accept string shorthand function output and normalize it into a tool output text content collection.
 [CodeGenSerialization(nameof(Output), DeserializationValueHook = nameof(DeserializeOutputValue))]
 public partial class DecisionsFunctionCallOutputItem
 {

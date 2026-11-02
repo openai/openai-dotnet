@@ -2,7 +2,7 @@ namespace OpenAI.Decisions;
 
 public partial class DecisionsUserMessageItem
 {
-    // Use the initialization constructor so both fixed discriminators are preserved.
+    // CUSTOM: Use the content constructor to preserve both the fixed message kind and role.
     public DecisionsUserMessageItem() : this([])
     {
     }

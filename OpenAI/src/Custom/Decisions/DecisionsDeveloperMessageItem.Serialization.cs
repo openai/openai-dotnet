@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
+// CUSTOM: Accept string shorthand developer content and normalize it into an instruction message text content collection.
 [CodeGenSerialization(nameof(Content), DeserializationValueHook = nameof(DeserializeContentValue))]
 public partial class DecisionsDeveloperMessageItem
 {
