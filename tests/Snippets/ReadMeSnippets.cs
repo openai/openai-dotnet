@@ -527,7 +527,6 @@ public class ReadMeSnippets
     public async Task ResponsesStreaming()
     {
         var clientMock = new Mock<ResponsesClient>();
-        var streamingResultMock = new Mock<AsyncCollectionResult<StreamingResponseUpdate>>();
 
         clientMock
             .Setup(c => c.CreateResponseAsync(
@@ -535,15 +534,13 @@ public class ReadMeSnippets
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(ClientResult.FromValue(new ResponseResult(), new MockPipelineResponse()));
 
-        streamingResultMock
-            .Setup(r => r.GetRawPagesAsync())
-            .Returns(AsyncEnumerable.Empty<ClientResult>());
-
         clientMock
             .Setup(c => c.CreateResponseStreamingAsync(
                 It.IsAny<CreateResponseOptions>(),
                 It.IsAny<CancellationToken>()))
-            .Returns(streamingResultMock.Object);
+            .ReturnsAsync(() => AsyncStreamingResult.Create(
+                new MockPipelineResponse(200).WithContent(string.Empty),
+                (_, _) => AsyncEnumerable.Empty<StreamingResponseUpdate>()));
 
         #region Snippet:ReadMe_ResponsesStreaming
 #if SNIPPET
@@ -578,7 +575,7 @@ public class ReadMeSnippets
         streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(streamingOptions))
+            in await client.CreateResponseStreamingAsync(streamingOptions))
         {
             if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
                 && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -1048,17 +1045,11 @@ public class ReadMeSnippets
     }
 
     [Test]
-    public void Assistants_Vision()
+    public async Task Assistants_Vision()
     {
         // Setup mocks
-        var streamingUpdatesMock = new Mock<CollectionResult<StreamingUpdate>>();
         var fileClientMock = new Mock<OpenAIFileClient>();
         var assistantClientMock = new Mock<AssistantClient>();
-
-        streamingUpdatesMock
-            .Protected()
-            .Setup<IEnumerable<StreamingUpdate>>("GetValuesFromPage", ItExpr.IsAny<ClientResult>())
-            .Returns(Enumerable.Empty<StreamingUpdate>());
 
         fileClientMock
             .Setup(c => c.UploadFile(
@@ -1086,12 +1077,14 @@ public class ReadMeSnippets
                 new MockPipelineResponse()));
 
         assistantClientMock
-            .Setup(c => c.CreateRunStreaming(
+            .Setup(c => c.CreateRunStreamingAsync(
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<RunCreationOptions>(),
                 It.IsAny<CancellationToken>()))
-            .Returns(streamingUpdatesMock.Object);
+            .ReturnsAsync(() => AsyncStreamingResult.Create(
+                new MockPipelineResponse(200).WithContent(string.Empty),
+                (_, _) => AsyncEnumerable.Empty<StreamingUpdate>()));
 
         #region Snippet:ReadMe_Assistants_Vision_CreateClients
 #if SNIPPET
@@ -1137,7 +1130,7 @@ public class ReadMeSnippets
         #endregion
 
         #region Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
-        CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+        AsyncStreamingResult<StreamingUpdate> streamingUpdates = await assistantClient.CreateRunStreamingAsync(
             thread.Id,
             assistant.Id,
             new RunCreationOptions()
@@ -1147,7 +1140,7 @@ public class ReadMeSnippets
         #endregion
 
         #region Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
-        foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+        await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
         {
             if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
             {

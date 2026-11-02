@@ -45,6 +45,7 @@
     <Compile Include="..\OpenAI\src\Utility\SseLifecycle.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Utility\SseCompletionKind.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Utility\AsyncSseUpdateCollection.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\SseStreamingResult.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\ModelSerializationExtensions.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\TypeFormatters.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\SerializationFormat.cs" LinkBase="Utility\Shared" />

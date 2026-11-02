@@ -14,16 +14,26 @@
 
 - OpenAI.Responses:
   - Added experimental OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations. The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
-  - Added experimental OpenTelemetry support for synchronous and asynchronous `CreateResponseStreaming` enumeration, including terminal usage, errors, cancellation, and early disposal. The latest semantic-convention opt-in adds request streaming attributes and first-chunk/output-chunk timing histograms. Streaming content is not captured.
+  - Added experimental OpenTelemetry support for `CreateResponseStreamingAsync`, including terminal usage, errors, cancellation, and early disposal. The latest semantic-convention opt-in adds request streaming attributes and first-chunk/output-chunk timing histograms. Streaming content is not captured.
   - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, and `AllTurns`.
+  - Added the protected `ResponsesClient.CreateStreamingResult` method, which lets derived clients observe or transform the updates of a streaming response while the returned result keeps sole ownership of that response.
+
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Responses, OpenAI.Assistants, and OpenAI.Audio:
+  - The experimental streaming methods are now async-only and return `Task<AsyncStreamingResult<T>>` instead of `AsyncCollectionResult<T>`. Awaiting the call sends the request and completes once the service response is established, so its `Status`, `ReasonPhrase`, and `Headers` are available before the updates are read. The result can be enumerated once and owns the response; enumerate it to completion or dispose it to release the connection. The synchronous counterparts have been removed:
+    - `ResponsesClient`: removed `CreateResponseStreaming` and `GetResponseStreaming`; use `CreateResponseStreamingAsync` and `GetResponseStreamingAsync`.
+    - `AssistantClient`: removed `CreateRunStreaming`, `CreateThreadAndRunStreaming`, and `SubmitToolOutputsToRunStreaming`; use the corresponding `*Async` methods.
+    - `AudioClient`: removed `GenerateSpeechStreaming` and both `TranscribeAudioStreaming` overloads; use `GenerateSpeechStreamingAsync` and `TranscribeAudioStreamingAsync`.
+  - The stable `ChatClient` streaming methods are unchanged.
 
 ### Bugs Fixed
 
 - OpenAI.Chat:
   - Fixed `JsonPatch` precedence for message content and content-part properties, preventing patched values from being emitted alongside modeled values as duplicate JSON properties. _(A community contribution, courtesy of [sylvesterkaczmarek](https://github.com/sylvesterkaczmarek))_
 - OpenAI.Assistants:
-  - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
-  - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreaming` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
+  - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`. The asynchronous methods were not affected.
+  - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreamingAsync` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
   - Fixed `TextAnnotationUpdate.EndIndex` returning the start index for streamed text annotations of a type that the library does not model.
 
 - OpenAI.Chat and OpenAI.Responses:
@@ -31,9 +41,6 @@
   - Latest-mode spans and metrics omit cache or reasoning token subsets that exceed their reported totals.
 
 - OpenAI.Responses:
-  - Raw-page streaming enumeration no longer reports response handoff as cancellation.
-  - Latest-mode raw-page streaming spans remain open through response-body EOF, stream disposal, or a read/disposal failure.
-  - Latest-mode raw-page streaming records operation duration once at the observed body completion boundary, including the span's error type for failures.
   - Latest-mode streaming spans now retain observed response metadata across interruption, record abnormal finish reasons and first-chunk latency, and omit the streaming attribute on buffered requests.
 
 ### Other Changes

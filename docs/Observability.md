@@ -86,7 +86,7 @@ Requests without a model continue to emit a `chat` operation without `gen_ai.req
 The following sources and meters are available:
 
 - `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
-- `OpenAI.ResponsesClient` - records traces and metrics for `CreateResponse` and `CreateResponseStreaming` operations, including their asynchronous overloads. Protocol, retrieval (including streaming retrieval), cancellation, deletion, and input-item methods are not instrumented yet.
+- `OpenAI.ResponsesClient` - records traces and metrics for `CreateResponse`, `CreateResponseAsync`, and `CreateResponseStreamingAsync` operations. Protocol, retrieval (including streaming retrieval), cancellation, deletion, and input-item methods are not instrumented yet.
 
 ### Latest-mode token metrics
 
@@ -126,10 +126,10 @@ Latest-mode operations do not also emit the legacy token histogram. Default-mode
 
 ### Responses streaming lifecycle and timing
 
-Streaming creation is lazy. Each enumeration starts its own operation when it sends the request;
-creating a collection or disposing an enumerator before its first move emits no telemetry.
-The operation uses the ambient parent at that time, preserves baggage, and parents HTTP work beneath
-the Responses span. It restores the caller's current activity between enumeration calls.
+Each `CreateResponseStreamingAsync` call starts one operation before it sends the request. The
+operation uses the ambient parent at that time, preserves baggage, and parents HTTP work beneath
+the Responses span. The returned `AsyncStreamingResult<StreamingResponseUpdate>` can be enumerated
+once, and the caller's current activity is restored between enumeration calls.
 
 The first `response.completed`, `response.failed`, or `response.incomplete` update ends the operation,
 using the same status, finish-reason, service-tier, and usage mappings as non-streaming creation.
@@ -144,41 +144,28 @@ When no terminal response has been observed:
 - A streaming `error` update records the bounded error type `stream_error`, not its arbitrary code,
   message, or parameter.
 - EOF or `[DONE]` records `incomplete_stream`; neither is treated as successful response completion.
-- Early disposal of typed enumeration records `cancelled`, without manufacturing response usage.
-- Raw-page enumeration remains unbuffered and does not decode events. In latest mode, its activity
-  remains open after response handoff until the caller reads EOF, disposes the response stream,
-  or encounters a read/disposal exception. Reads use the operation activity and restore the caller's
-  current activity afterward. Merely ending raw enumeration does not end the activity. With the
-  default conventions, the activity continues to end at raw-page handoff.
-  Time while the caller retains an unread raw response is included in the latest-mode span duration.
-  Latest-mode raw processing records operation duration once at that same boundary, including
-  `error.type` for read/disposal exceptions and omitting it otherwise. This also works when only
-  metrics are enabled. Raw processing does not emit token usage or chunk timing measurements, and does
-  not infer provider status or finish reasons from uninterpreted content. Handoff and disposal
-  without an observed error do not manufacture cancellation errors. Request-send failures are
-  still reported. Raw-page callers still own disposal of the response.
+- Early disposal of the enumerator, or disposal of the result before it is enumerated, records
+  `cancelled`, without manufacturing response usage.
 
 In latest mode, typed stream failures, premature EOF, and early disposal record an `error` finish
-reason when a final response was expected, including a successfully opened typed stream that
-received no events. Request-send failures and raw-response handoff do not manufacture a generation
-finish reason. Authoritative terminal finish reasons are preserved.
+reason when a final response was expected, including a successfully opened stream that
+received no events. Request-send failures do not manufacture a generation finish reason.
+Authoritative terminal finish reasons are preserved.
 
 Latest-mode spans retain response model, identifier, service tier, and system fingerprint as those
 values become available from response-bearing events. Later supplied values update earlier ones;
 omitted fields, including on a terminal response, do not erase previously observed metadata.
 Receiving metadata alone does not finalize the operation or emit token usage.
 
-Always dispose enumerators (normally with `foreach` or `await foreach`) and caller-owned raw responses.
-An abandoned raw response whose body was not read to EOF cannot guarantee completion telemetry.
-Abandoned, undisposed enumerators cannot guarantee completion telemetry. Cancellation preserves existing stream behavior;
-synchronous enumeration checks cancellation between events rather than interrupting a blocking read.
+Always dispose the streaming result or its enumerator (normally with `await using` or `await foreach`).
+An abandoned, undisposed result cannot guarantee completion telemetry.
 
 With `gen_ai_latest_experimental`, the following histograms are emitted in seconds, using a monotonic
 clock and the recommended duration histogram bucket boundaries:
 
 | Metric | Measurement |
 | --- | --- |
-| `gen_ai.client.operation.time_to_first_chunk` | Once, from lazy request start to the first parsed SSE event, including metadata or unknown events, not necessarily the first output token. No measurement is emitted if no event is received. |
+| `gen_ai.client.operation.time_to_first_chunk` | Once, from request start to the first parsed SSE event, including metadata or unknown events, not necessarily the first output token. No measurement is emitted if no event is received. |
 | `gen_ai.client.operation.time_per_output_chunk` | Once per output chunk after the first output chunk, between parsed event arrival times. Text, refusal, reasoning, tool arguments/input/code, audio/transcript deltas, and partial images count as output. Completed output items without previously observed indexed deltas count as discrete output chunks; cumulative item completion after those deltas does not count again. |
 
 These are protocol-level observations, not transport packet or token timings. Structural progress

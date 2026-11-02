@@ -30,6 +30,11 @@ public class TokenSubsetNormalizationTests
         {
             foreach (var useAsync in new[] { false, true })
             {
+                if ((api == "stream") && (!useAsync))
+                {
+                    continue;
+                }
+
                 foreach (var latest in new[] { false, true })
                 {
                     foreach (var scenario in new[] { "exceeds", "equal", "zero", "unknown", "input_unknown", "output_unknown", "independent", "below" })
@@ -97,17 +102,8 @@ public class TokenSubsetNormalizationTests
 
             if (api == "stream")
             {
-                if (useAsync)
+                await foreach (var update in await client.CreateResponseStreamingAsync(request))
                 {
-                    await foreach (var update in client.CreateResponseStreamingAsync(request))
-                    {
-                    }
-                }
-                else
-                {
-                    foreach (var update in client.CreateResponseStreaming(request))
-                    {
-                    }
                 }
             }
             else if (useAsync)

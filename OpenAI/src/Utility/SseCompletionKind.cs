@@ -4,5 +4,4 @@ internal enum SseCompletionKind
 {
     EndOfStream,
     Disposed,
-    RawResponse,
 }
