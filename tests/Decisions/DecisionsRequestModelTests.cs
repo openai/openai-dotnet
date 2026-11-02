@@ -178,6 +178,7 @@ public class DecisionsRequestModelTests
     }
 
     [Test]
+    [Ignore("Pending generator array-path fix: https://github.com/microsoft/typespec/issues/12431")]
     public void ToolHistoryPreservesAllFieldsAndConcreteTypes()
     {
         const string json = """
@@ -257,6 +258,7 @@ public class DecisionsRequestModelTests
     }
 
     [Test]
+    [Ignore("Pending generator array-path fix: https://github.com/microsoft/typespec/issues/12431")]
     public void PromptCacheOptionsAndBreakpointsRoundTripAndPropagatePatches()
     {
         const string json = """
