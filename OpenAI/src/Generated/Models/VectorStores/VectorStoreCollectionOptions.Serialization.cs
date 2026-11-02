@@ -100,7 +100,7 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            long? pageSizeLimit = default;
+            int? pageSizeLimit = default;
             VectorStoreCollectionOrder? order = default;
             string afterId = default;
             string beforeId = default;

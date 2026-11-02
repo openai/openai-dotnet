@@ -17,7 +17,7 @@ namespace OpenAI.VectorStores
         {
         }
 
-        internal VectorStoreCollectionOptions(long? pageSizeLimit, VectorStoreCollectionOrder? order, string afterId, string beforeId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreCollectionOptions(int? pageSizeLimit, VectorStoreCollectionOrder? order, string afterId, string beforeId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             PageSizeLimit = pageSizeLimit;
             Order = order;
@@ -26,7 +26,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public long? PageSizeLimit { get; set; }
+        public int? PageSizeLimit { get; set; }
 
         public VectorStoreCollectionOrder? Order { get; set; }
 
