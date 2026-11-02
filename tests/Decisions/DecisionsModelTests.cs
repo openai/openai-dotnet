@@ -19,7 +19,7 @@ public class DecisionsModelTests
     [Test]
     public void DefaultMessageConstructorUsesUserRole()
     {
-        DecisionsMessageItem message = new()
+        DecisionsUserMessageItem message = new()
         {
             Content = { new DecisionsInputTextContentPart { Text = "hello" } }
         };
@@ -31,7 +31,7 @@ public class DecisionsModelTests
     [Test]
     public void ContentConstructorUsesUserRole()
     {
-        DecisionsMessageItem message = new([new DecisionsInputTextContentPart { Text = "hello" }]);
+        DecisionsUserMessageItem message = new([new DecisionsInputTextContentPart { Text = "hello" }]);
 
         AssertUserMessage(message);
     }
@@ -43,7 +43,7 @@ public class DecisionsModelTests
         DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(
             BinaryData.FromString("""{"input":"hello","model":"test","questions":[]}"""));
 
-        AssertUserMessage((DecisionsMessageItem)options.InputItems.Single());
+        AssertUserMessage((DecisionsUserMessageItem)options.InputItems.Single());
         using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(options));
         Assert.That(document.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
     }
@@ -52,7 +52,7 @@ public class DecisionsModelTests
     [Test]
     public void LonghandMessagePreservesUserRole()
     {
-        DecisionsMessageItem message = ModelReaderWriter.Read<DecisionsMessageItem>(
+        DecisionsUserMessageItem message = ModelReaderWriter.Read<DecisionsUserMessageItem>(
             BinaryData.FromString("""{"type":"message","role":"user","content":[{"type":"input_text","text":"hello"}]}"""));
 
         AssertUserMessage(message);
@@ -62,9 +62,28 @@ public class DecisionsModelTests
     {
         yield return Model<DecisionCreationOptions>("""{"input":[],"model":"test-model","questions":[],"safety_identifier":"user"}""");
         yield return Model<DecisionResource>("""{"answers":[],"model":"test-model","usage":{"input_tokens":1,"output_tokens":2,"total_tokens":3,"input_tokens_details":{"cache_write_tokens":0,"cached_tokens":1},"output_tokens_details":{"reasoning_tokens":2}}}""");
-        yield return Model<DecisionsMessageItem>("""{"type":"message","content":[{"type":"input_text","text":"hello"}]}""");
+        yield return Model<DecisionsUserMessageItem>("""{"type":"message","role":"user","content":[{"type":"input_text","text":"hello"}]}""");
+        yield return Model<DecisionsAssistantMessageItem>("""{"type":"message","role":"assistant","content":[{"type":"output_text","text":"hello"}],"phase":"final_answer"}""");
+        yield return Model<DecisionsDeveloperMessageItem>("""{"type":"message","role":"developer","content":[{"type":"input_text","text":"hello"}]}""");
+        yield return Model<DecisionsSystemMessageItem>("""{"type":"message","role":"system","content":[{"type":"input_text","text":"hello"}]}""");
+        yield return Model<DecisionsFunctionCallItem>("""{"type":"function_call","call_id":"call_1","name":"lookup","arguments":"{}","id":"fc_1","namespace":"tools","status":"completed"}""");
+        yield return Model<DecisionsCustomToolCallItem>("""{"type":"custom_tool_call","call_id":"call_2","name":"lookup","input":"hello","id":"ctc_1","namespace":"tools","status":"completed"}""");
+        yield return Model<DecisionsFunctionCallOutputItem>("""{"type":"function_call_output","call_id":"call_1","output":"result","id":"fco_1","status":"completed"}""");
+        yield return Model<DecisionsCustomToolCallOutputItem>("""{"type":"custom_tool_call_output","call_id":"call_2","output":"result","id":"ctco_1","status":"completed"}""");
         yield return Model<DecisionsInputTextContentPart>("""{"type":"input_text","text":"hello"}""");
         yield return Model<DecisionsInputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"original"}""");
+        yield return Model<DecisionsInputJsonContentPart>("""{"type":"input_json","data":{"count":2}}""");
+        yield return Model<DecisionsOutputTextContentPart>("""{"type":"output_text","text":"hello"}""");
+        yield return Model<DecisionsRefusalContentPart>("""{"type":"refusal","refusal":"No."}""");
+        yield return Model<DecisionsInstructionMessageTextContentPart>("""{"type":"input_text","text":"hello","prompt_cache_breakpoint":{"mode":"explicit"}}""");
+        yield return Model<DecisionsToolOutputTextContentPart>("""{"type":"input_text","text":"hello"}""");
+        yield return Model<DecisionsToolOutputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"high"}""");
+        yield return Model<DecisionsInstructionTextContentPart>("""{"type":"input_text","text":"hello"}""");
+        yield return Model<DecisionsInstructionImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"low"}""");
+        yield return Model<DecisionsInstructionJsonContentPart>("""{"type":"input_json","data":[{"count":2}]}""");
+        yield return Model<DecisionsPromptCacheOptions>("""{"mode":"explicit","ttl":"30m"}""");
+        yield return Model<DecisionsPromptCacheBreakpoint>("""{"mode":"explicit"}""");
+        yield return Model<DecisionsJsonObject>("""{"arbitrary":{"values":[false,null,2,"hello"]}}""");
         yield return Model<DecisionsChoice>("""{"value":false,"description":"negative"}""");
         yield return Model<DecisionsChoiceQuestion>("""{"type":"choice","instructions":"choose","name":"choice","choices":[{"value":"yes","description":"positive"},{"value":false}]}""");
         yield return Model<DecisionsPredicateQuestion>("""{"type":"predicate","instructions":"evaluate","name":"predicate"}""");
@@ -95,7 +114,7 @@ public class DecisionsModelTests
 
         foreach (PropertyInfo property in modelType.GetProperties(BindingFlags.Instance | BindingFlags.Public))
         {
-            if (property.Name is "Kind" or "Patch")
+            if (property.Name is "Kind" or "Role" or "Patch")
             {
                 Assert.That(property.SetMethod?.IsPublic ?? false, Is.False, property.Name);
             }
@@ -130,7 +149,7 @@ public class DecisionsModelTests
         DecisionCreationOptions longhand = Read<DecisionCreationOptions>($$"""{"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}],"model":"test","questions":[]}""");
 
         Assert.That(shorthand.InputItems, Has.Count.EqualTo(1));
-        DecisionsMessageItem message = shorthand.InputItems.Single() as DecisionsMessageItem;
+        DecisionsUserMessageItem message = shorthand.InputItems.Single() as DecisionsUserMessageItem;
         Assert.That(message, Is.Not.Null);
         Assert.That(message.Kind, Is.EqualTo(DecisionsItemKind.Message));
         Assert.That(message.Content, Has.Count.EqualTo(1));
@@ -149,8 +168,8 @@ public class DecisionsModelTests
     public void MessageContentShorthandNormalizesToLonghand(string text)
     {
         string encodedText = JsonSerializer.Serialize(text);
-        DecisionsMessageItem shorthand = Read<DecisionsMessageItem>($$"""{"type":"message","content":{{encodedText}}}""");
-        DecisionsMessageItem longhand = Read<DecisionsMessageItem>($$"""{"type":"message","content":[{"type":"input_text","text":{{encodedText}}}]}""");
+        DecisionsUserMessageItem shorthand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":{{encodedText}}}""");
+        DecisionsUserMessageItem longhand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}""");
         Assert.That(shorthand.Content, Has.Count.EqualTo(1));
         Assert.That(shorthand.Content[0], Is.TypeOf<DecisionsInputTextContentPart>());
         Assert.That(((DecisionsInputTextContentPart)shorthand.Content[0]).Text, Is.EqualTo(text));
@@ -166,16 +185,16 @@ public class DecisionsModelTests
     {
         const string json = """
             {"input":[
-                {"type":"message","content":[
+                {"type":"message","role":"user","content":[
                     {"type":"input_text","text":"describe","future_text":true},
                     {"type":"input_image","image_url":"https://example.invalid/image.png","detail":"high"}
                 ],"future_message":42},
-                {"type":"message","content":"another message"}
+                {"type":"message","role":"user","content":"another message"}
             ],"model":"test","questions":[]}
             """;
         DecisionCreationOptions options = Read<DecisionCreationOptions>(json);
         Assert.That(options.InputItems, Has.Count.EqualTo(2));
-        DecisionsMessageItem message = (DecisionsMessageItem)options.InputItems[0];
+        DecisionsUserMessageItem message = (DecisionsUserMessageItem)options.InputItems[0];
         Assert.That(message.Content, Has.Count.EqualTo(2));
         Assert.That(((DecisionsInputImageContentPart)message.Content[1]).ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
         using JsonDocument serialized = JsonDocument.Parse(ModelReaderWriter.Write(options));
@@ -194,7 +213,7 @@ public class DecisionsModelTests
     public void RequiredShorthandPropertiesRejectUnsupportedShapes(string value)
     {
         Assert.Throws<JsonException>(() => Read<DecisionCreationOptions>($$"""{"input":{{value}},"model":"test","questions":[]}"""));
-        Assert.Throws<JsonException>(() => Read<DecisionsMessageItem>($$"""{"type":"message","content":{{value}}}"""));
+        Assert.Throws<JsonException>(() => Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":{{value}}}"""));
     }
 
     // Verifies empty input and content arrays are not expanded into synthetic messages or text parts.
@@ -202,7 +221,7 @@ public class DecisionsModelTests
     public void EmptyLonghandCollectionsRemainEmpty()
     {
         Assert.That(Read<DecisionCreationOptions>("""{"input":[],"model":"test","questions":[]}""").InputItems, Is.Empty);
-        Assert.That(Read<DecisionsMessageItem>("""{"type":"message","content":[]}""").Content, Is.Empty);
+        Assert.That(Read<DecisionsUserMessageItem>("""{"type":"message","role":"user","content":[]}""").Content, Is.Empty);
     }
 
     // Verifies constructors, implicit conversions, and deserialization select exactly one scalar and round-trip it.
@@ -344,14 +363,14 @@ public class DecisionsModelTests
         DecisionCreationOptions options = new()
         {
             Model = "test",
-            InputItems = { new DecisionsMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
-            Questions = { new DecisionsChoiceQuestion { Instructions = "choose", Choices = { new DecisionsChoice { Value = true } } } }
+            InputItems = { new DecisionsUserMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
+            Questions = { new DecisionsChoiceQuestion { Instructions = { new DecisionsInstructionTextContentPart { Text = "choose" } }, Choices = { new DecisionsChoice { Value = true } } } }
         };
         if (fromJson)
         {
             options = ModelReaderWriter.Read<DecisionCreationOptions>(ModelReaderWriter.Write(options));
         }
-        ((DecisionsMessageItem)options.InputItems[0]).Content[0].Patch.Set("$.text"u8, "patched text");
+        ((DecisionsUserMessageItem)options.InputItems[0]).Content[0].Patch.Set("$.text"u8, "patched text");
         DecisionsChoiceQuestion question = (DecisionsChoiceQuestion)options.Questions[0];
         question.Choices[0].Patch.Set("$.value"u8, "\"patched choice\""u8);
         question.Patch.Set("$.future_question"u8, "preserved");
@@ -387,7 +406,7 @@ public class DecisionsModelTests
         options.Patch.Set("$.input"u8, "\"raw shorthand\""u8);
         using JsonDocument optionsJson = JsonDocument.Parse(ModelReaderWriter.Write(options));
         Assert.That(optionsJson.RootElement.GetProperty("input").GetString(), Is.EqualTo("raw shorthand"));
-        DecisionsMessageItem message = Read<DecisionsMessageItem>("""{"type":"message","content":"original"}""");
+        DecisionsUserMessageItem message = Read<DecisionsUserMessageItem>("""{"type":"message","role":"user","content":"original"}""");
         message.Patch.Set("$.content"u8, "\"raw content\""u8);
         using JsonDocument messageJson = JsonDocument.Parse(ModelReaderWriter.Write(message));
         Assert.That(messageJson.RootElement.GetProperty("content").GetString(), Is.EqualTo("raw content"));
@@ -396,6 +415,10 @@ public class DecisionsModelTests
     // Verifies unknown hierarchy kinds and their additional JSON properties survive round-tripping.
     [TestCase(typeof(DecisionsItem))]
     [TestCase(typeof(DecisionsContentPart))]
+    [TestCase(typeof(DecisionsAssistantContentPart))]
+    [TestCase(typeof(DecisionsInstructionContentPart))]
+    [TestCase(typeof(DecisionsInstructionMessageContentPart))]
+    [TestCase(typeof(DecisionsToolOutputContentPart))]
     [TestCase(typeof(DecisionsQuestion))]
     [TestCase(typeof(DecisionsAnswer))]
     public void UnknownDiscriminatorsRoundTripWithKindAndAdditionalProperties(Type modelType)
@@ -431,6 +454,10 @@ public class DecisionsModelTests
     // Verifies hierarchy bases expose public get-only kinds and protected-internal kind constructors.
     [TestCase(typeof(DecisionsItem), typeof(DecisionsItemKind))]
     [TestCase(typeof(DecisionsContentPart), typeof(DecisionsContentPartKind))]
+    [TestCase(typeof(DecisionsAssistantContentPart), typeof(DecisionsAssistantContentPartKind))]
+    [TestCase(typeof(DecisionsInstructionContentPart), typeof(DecisionsInstructionContentPartKind))]
+    [TestCase(typeof(DecisionsInstructionMessageContentPart), typeof(DecisionsInstructionMessageContentPartKind))]
+    [TestCase(typeof(DecisionsToolOutputContentPart), typeof(DecisionsToolOutputContentPartKind))]
     [TestCase(typeof(DecisionsQuestion), typeof(DecisionsQuestionKind))]
     [TestCase(typeof(DecisionsAnswer), typeof(DecisionsAnswerKind))]
     public void DiscriminatorBasesExposeReadOnlyKindsAndProtectedInternalConstructors(Type modelType, Type kindType)
@@ -449,7 +476,7 @@ public class DecisionsModelTests
     [Test]
     public void KnownDiscriminatorsDeserializeToConcreteModels()
     {
-        Assert.That(Read<DecisionsItem>("""{"type":"message","content":[]}"""), Is.TypeOf<DecisionsMessageItem>());
+        Assert.That(Read<DecisionsItem>("""{"type":"message","role":"user","content":[]}"""), Is.TypeOf<DecisionsUserMessageItem>());
         Assert.That(Read<DecisionsContentPart>("""{"type":"input_text","text":"hello"}"""), Is.TypeOf<DecisionsInputTextContentPart>());
         Assert.That(Read<DecisionsContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png"}"""), Is.TypeOf<DecisionsInputImageContentPart>());
         Assert.That(Read<DecisionsQuestion>("""{"type":"choice","instructions":"choose","choices":[]}"""), Is.TypeOf<DecisionsChoiceQuestion>());
@@ -463,7 +490,7 @@ public class DecisionsModelTests
 
     private static T Read<T>(string json) => ModelReaderWriter.Read<T>(BinaryData.FromString(json));
 
-    private static void AssertUserMessage(DecisionsMessageItem message)
+    private static void AssertUserMessage(DecisionsUserMessageItem message)
     {
         using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(message));
         Assert.That(document.RootElement.GetProperty("role").GetString(), Is.EqualTo("user"));

@@ -24,6 +24,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to use responses with streaming and reasoning](#how-to-use-responses-with-streaming-and-reasoning)
 - [How to use responses with file search](#how-to-use-responses-with-file-search)
 - [How to use responses with web search](#how-to-use-responses-with-web-search)
+- [How to create decisions](#how-to-create-decisions)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
@@ -96,6 +97,7 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Audio`                | `AudioClient`                |
 | `OpenAI.Batch`                | `BatchClient`                |
 | `OpenAI.Chat`                 | `ChatClient`                 |
+| `OpenAI.Decisions`            | `DecisionsClient`            |
 | `OpenAI.Embeddings`           | `EmbeddingClient`            |
 | `OpenAI.Evals`                | `EvaluationClient`           |
 | `OpenAI.FineTuning`           | `FineTuningClient`           |
@@ -595,6 +597,62 @@ foreach (ResponseItem item in response.OutputItems)
     }
 }
 ```
+
+## How to create decisions
+
+The Decisions API evaluates predicate, choice, and score questions against supplied input. The .NET APIs remain experimental (`OPENAI001`), even though the REST API is generally available.
+
+```csharp
+#pragma warning disable OPENAI001
+using OpenAI.Decisions;
+
+DecisionsClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+DecisionCreationOptions options = new()
+{
+    Model = "YOUR_DECISIONS_MODEL",
+    InputItems =
+    {
+        new DecisionsUserMessageItem
+        {
+            Content =
+            {
+                new DecisionsInputJsonContentPart
+                {
+                    Data = new DecisionsJsonObject(
+                        BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")),
+                },
+            },
+        },
+    },
+    Questions =
+    {
+        new DecisionsPredicateQuestion
+        {
+            Name = "positive_total",
+            Instructions =
+            {
+                new DecisionsInstructionTextContentPart { Text = "The order total is positive." },
+            },
+        },
+    },
+};
+
+DecisionResource decision = await client.CreateDecisionAsync(options);
+DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
+Console.WriteLine(answer.Probability);
+```
+
+Replace `YOUR_DECISIONS_MODEL` with a model supported by the Decisions API.
+
+Input supports user, assistant, developer, and system message items, as well as function-call and custom-tool-call history. Message roles have their own content types: user messages support input text, images, and JSON; assistant messages support output text and refusals; developer and system messages support text. Function-call and custom-tool-call outputs support text and images. Supplying tool history does not execute tools.
+
+Question `Instructions` collections support `DecisionsInstructionTextContentPart`, `DecisionsInstructionImageContentPart`, and `DecisionsInstructionJsonContentPart`. `DecisionsJsonData` represents either one `DecisionsJsonObject` or an array of objects, exposed through its read-only `ObjectValue` and `ArrayValue` properties. Arbitrary JSON properties, including nested values and nulls, are preserved. JSON objects can be constructed from `BinaryData` or populated and edited through `JsonPatch`.
+
+Configure prompt caching through `DecisionCreationOptions.PromptCacheKey` and `PromptCacheOptions`. Cache options expose `Mode` (`Implicit` or `Explicit`) and `TimeToLive` (`ThirtyMinutes`). Explicit breakpoints use `DecisionsPromptCacheBreakpoint` on supported message or tool-output text/image parts; question instruction parts do not expose breakpoints. These settings request service-side caching but do not guarantee a cache hit.
+
+When migrating from the preliminary Decisions API, replace direct construction of `DecisionsMessageItem` with `DecisionsUserMessageItem` (or another role-specific subtype), and replace string `Instructions` assignments with text content in the instruction collection. String shorthand remains supported during deserialization of input, message content, tool outputs, and question instructions; serialization emits the equivalent longhand arrays. To send a shorthand representation explicitly, use `JsonPatch` or a protocol method.
+
+See the [Decisions API guide](https://developers.openai.com/api/docs/guides/decisions) for service behavior and constraints.
 
 ## How to generate text embeddings
 

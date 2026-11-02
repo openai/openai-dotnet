@@ -11,20 +11,27 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputTextContentPart : DecisionsContentPart
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputTextContentPart(string text) : base(DecisionsContentPartKind.InputText)
         {
             Argument.AssertNotNull(text, nameof(text));
 
             Text = text;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputTextContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
+        internal DecisionsInputTextContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
             Text = text;
+            PromptCacheBreakpoint = promptCacheBreakpoint;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Text { get; set; }
+
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
     }
 }

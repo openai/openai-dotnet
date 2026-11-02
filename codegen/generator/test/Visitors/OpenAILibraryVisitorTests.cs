@@ -78,8 +78,25 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             Assert.That(methodBody, Is.EqualTo(Helpers.GetExpectedFromFile(isDynamicModel.ToString())));
         }
 
+        [Test]
+        public void ArrayIndexParsingConsumesBothBrackets()
+        {
+            MockHelpers.LoadMockGenerator(inputModels: () => [InputFactory.Model("DynamicModel", "Samples", isDynamicModel: true)]);
+            var helper = new ModelSerializationExtensionsDefinition();
+            var method = helper.Methods.Single(method => method.Signature.Name == "TryGetIndex");
+
+            new TestOpenAILibraryVisitor().InvokeVisitMethod(method);
+
+            string source = method.BodyStatements!.ToDisplayString();
+            Assert.That(source, Does.Contain("bool parsed =").And.Contain("if (parsed)"));
+            Assert.That(source, Does.Contain("bytesConsumed + 2"));
+            Assert.That(source, Does.Contain("return parsed;"));
+        }
+
         private class TestOpenAILibraryVisitor : OpenAILibraryVisitor
         {
+            public MethodProvider InvokeVisitMethod(MethodProvider method) => base.VisitMethod(method);
+
             public MethodProvider? InvokeVisitMethod(ModelProvider model, MethodProvider method)
             {
                 base.VisitType(model);

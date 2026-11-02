@@ -105,6 +105,8 @@ namespace OpenAI.Decisions
                 {
                     case "input_image":
                         return DecisionsInputImageContentPart.DeserializeDecisionsInputImageContentPart(element, data, options);
+                    case "input_json":
+                        return DecisionsInputJsonContentPart.DeserializeDecisionsInputJsonContentPart(element, data, options);
                     case "input_text":
                         return DecisionsInputTextContentPart.DeserializeDecisionsInputTextContentPart(element, data, options);
                 }

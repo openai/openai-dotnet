@@ -11,23 +11,30 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputImageContentPart : DecisionsContentPart
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputImageContentPart(string imageUri) : base(DecisionsContentPartKind.InputImage)
         {
             Argument.AssertNotNull(imageUri, nameof(imageUri));
 
             ImageUri = imageUri;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
+        internal DecisionsInputImageContentPart(DecisionsContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
             ImageUri = imageUri;
             ImageDetailLevel = imageDetailLevel;
+            PromptCacheBreakpoint = promptCacheBreakpoint;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUri { get; set; }
 
         public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
     }
 }

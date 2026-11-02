@@ -8,6 +8,11 @@
 
 ### Features Added
 
+- OpenAI.Decisions:
+  - Updated the experimental .NET APIs to consume the generally available Decisions REST API.
+  - Added role-specific user, assistant, developer, and system messages, function-call and custom-tool-call history, structured JSON input, multimodal question instructions, and prompt cache options and breakpoints.
+  - Preserved string shorthand deserialization for input and message content, and added it for tool outputs and question instructions. Serialization uses the equivalent content arrays.
+
 - OpenAI.Chat and OpenAI.Responses:
   - Expanded latest-mode OpenTelemetry span attributes for request settings, response metadata, and token-usage details.
   - Added privacy-conscious operation exception logs through the existing client logging configuration. Records contain the exception type without exception messages, stack traces, or request/response content.
@@ -17,7 +22,15 @@
   - Added experimental OpenTelemetry support for synchronous and asynchronous `CreateResponseStreaming` enumeration, including terminal usage, errors, cancellation, and early disposal. The latest semantic-convention opt-in adds request streaming attributes and first-chunk/output-chunk timing histograms. Streaming content is not captured.
   - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, and `AllTurns`.
 
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Decisions:
+  - Changed `DecisionsMessageItem` to an abstract base with role-specific subclasses. Use `DecisionsUserMessageItem` for previously supported user messages.
+  - Changed the `Instructions` properties and corresponding constructor parameters on choice, predicate, and score questions from strings to collections of `DecisionsInstructionContentPart`.
+
 ### Bugs Fixed
+
+- Fixed nested `JsonPatch` propagation through model arrays by consuming the complete array index in generated path helpers.
 
 - OpenAI.Chat:
   - Fixed `JsonPatch` precedence for message content and content-part properties, preventing patched values from being emitted alongside modeled values as duplicate JSON properties. _(A community contribution, courtesy of [sylvesterkaczmarek](https://github.com/sylvesterkaczmarek))_

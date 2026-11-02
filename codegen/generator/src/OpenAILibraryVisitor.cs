@@ -121,6 +121,26 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
 
     protected override MethodProvider VisitMethod(MethodProvider method)
     {
+        if (method.EnclosingType.Name == ModelSerializationExtensionsTypeName && method.Signature.Name == "TryGetIndex")
+        {
+            List<MethodBodyStatement> body = method.BodyStatements?.ToList() ?? [];
+            if (body.LastOrDefault() is not ExpressionStatement { Expression: KeywordExpression { Keyword: "return", Expression: { } parseExpression } })
+            {
+                throw new InvalidOperationException("The generated TryGetIndex method has an unsupported body.");
+            }
+
+            // Array patch propagators need to consume both brackets as well as the parsed digits.
+            body[^1] = Declare("parsed", typeof(bool), parseExpression, out var parsed);
+            ValueExpression bytesConsumed = method.Signature.Parameters.Single(parameter => parameter.Name == "bytesConsumed");
+            body.Add(new IfStatement(parsed)
+            {
+                bytesConsumed.Assign(new BinaryOperatorExpression("+", bytesConsumed, Literal(2))).Terminate()
+            });
+            body.Add(Return(parsed));
+            method.Update(bodyStatements: body);
+            return method;
+        }
+
         // If there are no body statements, or the body statements are not MethodBodyStatements,
         // return the method as is return the method as is
         if (method.Signature.Name != JsonModelWriteCoreMethodName ||

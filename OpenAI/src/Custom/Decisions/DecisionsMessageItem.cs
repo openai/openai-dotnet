@@ -1,10 +1,12 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Decisions;
 
-public partial class DecisionsMessageItem
+[CodeGenVisibility("Role", CodeGenVisibility.Public)]
+public abstract partial class DecisionsMessageItem
 {
-    // CUSTOM: Preserve the required user role; ConstructorFixupVisitor otherwise passes null to the
-    // serialization constructor, overwriting the generated Role property's "user" initializer.
-    public DecisionsMessageItem() : this(DecisionsItemKind.Message, default, null, "user")
+    protected internal DecisionsMessageItem(DecisionsMessageRole role) : base(DecisionsItemKind.Message)
     {
+        Role = role;
     }
 }

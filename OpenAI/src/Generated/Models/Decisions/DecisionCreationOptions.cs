@@ -33,12 +33,14 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string safetyIdentifier, in JsonPatch patch)
+        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string promptCacheKey, DecisionsPromptCacheOptions promptCacheOptions, string safetyIdentifier, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             InputItems = inputItems ?? new ChangeTrackingList<DecisionsItem>();
             Model = model;
             Questions = questions ?? new ChangeTrackingList<DecisionsQuestion>();
+            PromptCacheKey = promptCacheKey;
+            PromptCacheOptions = promptCacheOptions;
             SafetyIdentifier = safetyIdentifier;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
@@ -55,6 +57,10 @@ namespace OpenAI.Decisions
         public string Model { get; set; }
 
         public IList<DecisionsQuestion> Questions { get; }
+
+        public string PromptCacheKey { get; set; }
+
+        public DecisionsPromptCacheOptions PromptCacheOptions { get; set; }
 
         public string SafetyIdentifier { get; set; }
     }

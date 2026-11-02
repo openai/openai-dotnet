@@ -14,6 +14,7 @@ namespace OpenAI.Decisions
     {
         private readonly string _value;
         private const string InputImageValue = "input_image";
+        private const string InputJsonValue = "input_json";
         private const string InputTextValue = "input_text";
 
         public DecisionsContentPartKind(string value)
@@ -24,6 +25,8 @@ namespace OpenAI.Decisions
         }
 
         public static DecisionsContentPartKind InputImage { get; } = new DecisionsContentPartKind(InputImageValue);
+
+        public static DecisionsContentPartKind InputJson { get; } = new DecisionsContentPartKind(InputJsonValue);
 
         public static DecisionsContentPartKind InputText { get; } = new DecisionsContentPartKind(InputTextValue);
 

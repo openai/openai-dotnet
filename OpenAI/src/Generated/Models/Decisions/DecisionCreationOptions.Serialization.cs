@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionCreationOptions : IJsonModel<DecisionCreationOptions>
     {
-        public DecisionCreationOptions() : this(null, null, null, null, default)
+        public DecisionCreationOptions() : this(null, null, null, null, null, null, default)
         {
         }
 
@@ -136,6 +136,16 @@ namespace OpenAI.Decisions
                 Patch.WriteTo(writer, "$.questions"u8);
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(PromptCacheKey) && !Patch.Contains("$.prompt_cache_key"u8))
+            {
+                writer.WritePropertyName("prompt_cache_key"u8);
+                writer.WriteStringValue(PromptCacheKey);
+            }
+            if (Optional.IsDefined(PromptCacheOptions) && !Patch.Contains("$.prompt_cache_options"u8))
+            {
+                writer.WritePropertyName("prompt_cache_options"u8);
+                writer.WriteObjectValue(PromptCacheOptions, options);
+            }
             if (Optional.IsDefined(SafetyIdentifier) && !Patch.Contains("$.safety_identifier"u8))
             {
                 writer.WritePropertyName("safety_identifier"u8);
@@ -168,6 +178,8 @@ namespace OpenAI.Decisions
             IList<DecisionsItem> inputItems = default;
             string model = default;
             IList<DecisionsQuestion> questions = default;
+            string promptCacheKey = default;
+            DecisionsPromptCacheOptions promptCacheOptions = default;
             string safetyIdentifier = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -194,6 +206,26 @@ namespace OpenAI.Decisions
                     questions = array;
                     continue;
                 }
+                if (prop.NameEquals("prompt_cache_key"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        promptCacheKey = null;
+                        continue;
+                    }
+                    promptCacheKey = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("prompt_cache_options"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        promptCacheOptions = null;
+                        continue;
+                    }
+                    promptCacheOptions = DecisionsPromptCacheOptions.DeserializeDecisionsPromptCacheOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 if (prop.NameEquals("safety_identifier"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -206,7 +238,14 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionCreationOptions(inputItems ?? new ChangeTrackingList<DecisionsItem>(), model, questions ?? new ChangeTrackingList<DecisionsQuestion>(), safetyIdentifier, patch);
+            return new DecisionCreationOptions(
+                inputItems ?? new ChangeTrackingList<DecisionsItem>(),
+                model,
+                questions ?? new ChangeTrackingList<DecisionsQuestion>(),
+                promptCacheKey,
+                promptCacheOptions,
+                safetyIdentifier,
+                patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -215,6 +254,14 @@ namespace OpenAI.Decisions
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+            if (local.StartsWith("prompt_cache_options"u8))
+            {
+                if (PromptCacheOptions == null)
+                {
+                    return false;
+                }
+                return PromptCacheOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_cache_options"u8.Length)], out value);
+            }
             if (local.StartsWith("input"u8))
             {
                 int propertyLength = "input"u8.Length;
@@ -268,6 +315,15 @@ namespace OpenAI.Decisions
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+            if (local.StartsWith("prompt_cache_options"u8))
+            {
+                if (PromptCacheOptions == null)
+                {
+                    return false;
+                }
+                PromptCacheOptions.Patch.Set([.. "$"u8, .. local.Slice("prompt_cache_options"u8.Length)], value);
+                return true;
+            }
             if (local.StartsWith("input"u8))
             {
                 int propertyLength = "input"u8.Length;

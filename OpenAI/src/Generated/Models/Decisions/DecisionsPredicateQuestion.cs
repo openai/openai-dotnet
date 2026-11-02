@@ -3,7 +3,9 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Decisions
@@ -11,22 +13,27 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsPredicateQuestion : DecisionsQuestion
     {
-        public DecisionsPredicateQuestion(string instructions) : base(DecisionsQuestionKind.Predicate)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public DecisionsPredicateQuestion(IEnumerable<DecisionsInstructionContentPart> instructions) : base(DecisionsQuestionKind.Predicate)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
 
-            Instructions = instructions;
-        }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, string instructions, string name) : base(kind, patch)
-        {
-            Instructions = instructions;
-            Name = name;
+            Instructions = instructions.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Instructions { get; set; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionContentPart> instructions, string name) : base(kind, patch)
+        {
+            // Plugin customization: ensure initialization of collections
+            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionContentPart>();
+            Name = name;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public IList<DecisionsInstructionContentPart> Instructions { get; }
 
         public string Name { get; set; }
     }

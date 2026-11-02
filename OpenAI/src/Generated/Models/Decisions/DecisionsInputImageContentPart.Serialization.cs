@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsInputImageContentPart : DecisionsContentPart, IJsonModel<DecisionsInputImageContentPart>
     {
-        public DecisionsInputImageContentPart() : this(DecisionsContentPartKind.InputImage, default, null, default)
+        public DecisionsInputImageContentPart() : this(DecisionsContentPartKind.InputImage, default, null, default, null)
         {
         }
 
@@ -83,6 +83,11 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("detail"u8);
                 writer.WriteStringValue(ImageDetailLevel.Value.ToString());
             }
+            if (Optional.IsDefined(PromptCacheBreakpoint) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            {
+                writer.WritePropertyName("prompt_cache_breakpoint"u8);
+                writer.WriteObjectValue(PromptCacheBreakpoint, options);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -113,6 +118,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string imageUri = default;
             DecisionsImageDetailLevel? imageDetailLevel = default;
+            DecisionsPromptCacheBreakpoint promptCacheBreakpoint = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -135,9 +141,55 @@ namespace OpenAI.Decisions
                     imageDetailLevel = new DecisionsImageDetailLevel(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("prompt_cache_breakpoint"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        promptCacheBreakpoint = null;
+                        continue;
+                    }
+                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel);
+            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("prompt_cache_breakpoint"u8))
+            {
+                if (PromptCacheBreakpoint == null)
+                {
+                    return false;
+                }
+                return PromptCacheBreakpoint.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("prompt_cache_breakpoint"u8))
+            {
+                if (PromptCacheBreakpoint == null)
+                {
+                    return false;
+                }
+                PromptCacheBreakpoint.Patch.Set([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

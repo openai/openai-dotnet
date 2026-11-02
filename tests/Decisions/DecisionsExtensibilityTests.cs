@@ -18,6 +18,14 @@ public class DecisionsExtensibilityTests
     [TestCase("item", "W")]
     [TestCase("content", "J")]
     [TestCase("content", "W")]
+    [TestCase("assistant-content", "J")]
+    [TestCase("assistant-content", "W")]
+    [TestCase("instruction-content", "J")]
+    [TestCase("instruction-content", "W")]
+    [TestCase("instruction-message-content", "J")]
+    [TestCase("instruction-message-content", "W")]
+    [TestCase("tool-output-content", "J")]
+    [TestCase("tool-output-content", "W")]
     [TestCase("question", "J")]
     [TestCase("question", "W")]
     [TestCase("answer", "J")]
@@ -28,6 +36,10 @@ public class DecisionsExtensibilityTests
         {
             "item" => new CustomItem(),
             "content" => new CustomContentPart(),
+            "assistant-content" => new CustomAssistantContentPart(),
+            "instruction-content" => new CustomInstructionContentPart(),
+            "instruction-message-content" => new CustomInstructionMessageContentPart(),
+            "tool-output-content" => new CustomToolOutputContentPart(),
             "question" => new CustomQuestion(),
             "answer" => new CustomAnswer(),
             _ => throw new ArgumentOutOfRangeException(nameof(hierarchy))
@@ -67,9 +79,25 @@ public class DecisionsExtensibilityTests
 
     private static IEnumerable<TestCaseData> GeneratedModels()
     {
-        yield return new TestCaseData(new DecisionsMessageItem()).SetName("{m}(Message)");
+        yield return new TestCaseData(new DecisionsUserMessageItem()).SetName("{m}(UserMessage)");
+        yield return new TestCaseData(new DecisionsAssistantMessageItem()).SetName("{m}(AssistantMessage)");
+        yield return new TestCaseData(new DecisionsDeveloperMessageItem()).SetName("{m}(DeveloperMessage)");
+        yield return new TestCaseData(new DecisionsSystemMessageItem()).SetName("{m}(SystemMessage)");
+        yield return new TestCaseData(new DecisionsFunctionCallItem()).SetName("{m}(FunctionCall)");
+        yield return new TestCaseData(new DecisionsFunctionCallOutputItem()).SetName("{m}(FunctionCallOutput)");
+        yield return new TestCaseData(new DecisionsCustomToolCallItem()).SetName("{m}(CustomToolCall)");
+        yield return new TestCaseData(new DecisionsCustomToolCallOutputItem()).SetName("{m}(CustomToolCallOutput)");
         yield return new TestCaseData(new DecisionsInputTextContentPart()).SetName("{m}(InputText)");
         yield return new TestCaseData(new DecisionsInputImageContentPart()).SetName("{m}(InputImage)");
+        yield return new TestCaseData(new DecisionsInputJsonContentPart()).SetName("{m}(InputJson)");
+        yield return new TestCaseData(new DecisionsOutputTextContentPart()).SetName("{m}(OutputText)");
+        yield return new TestCaseData(new DecisionsRefusalContentPart()).SetName("{m}(RefusalContent)");
+        yield return new TestCaseData(new DecisionsInstructionTextContentPart()).SetName("{m}(InstructionText)");
+        yield return new TestCaseData(new DecisionsInstructionImageContentPart()).SetName("{m}(InstructionImage)");
+        yield return new TestCaseData(new DecisionsInstructionJsonContentPart()).SetName("{m}(InstructionJson)");
+        yield return new TestCaseData(new DecisionsInstructionMessageTextContentPart()).SetName("{m}(InstructionMessageText)");
+        yield return new TestCaseData(new DecisionsToolOutputTextContentPart()).SetName("{m}(ToolOutputText)");
+        yield return new TestCaseData(new DecisionsToolOutputImageContentPart()).SetName("{m}(ToolOutputImage)");
         yield return new TestCaseData(new DecisionsChoiceQuestion()).SetName("{m}(ChoiceQuestion)");
         yield return new TestCaseData(new DecisionsPredicateQuestion()).SetName("{m}(PredicateQuestion)");
         yield return new TestCaseData(new DecisionsScoreQuestion()).SetName("{m}(ScoreQuestion)");
@@ -80,6 +108,11 @@ public class DecisionsExtensibilityTests
         BinaryData unknown = BinaryData.FromString("""{"type":"future","received":true}""");
         yield return new TestCaseData(ModelReaderWriter.Read<DecisionsItem>(unknown)).SetName("{m}(UnknownItem)");
         yield return new TestCaseData(ModelReaderWriter.Read<DecisionsContentPart>(unknown)).SetName("{m}(UnknownContent)");
+        yield return new TestCaseData(ModelReaderWriter.Read<DecisionsAssistantContentPart>(unknown)).SetName("{m}(UnknownAssistantContent)");
+        yield return new TestCaseData(ModelReaderWriter.Read<DecisionsInstructionContentPart>(unknown)).SetName("{m}(UnknownInstructionContent)");
+        yield return new TestCaseData(ModelReaderWriter.Read<DecisionsInstructionMessageContentPart>(unknown)).SetName("{m}(UnknownInstructionMessageContent)");
+        yield return new TestCaseData(ModelReaderWriter.Read<DecisionsToolOutputContentPart>(unknown)).SetName("{m}(UnknownToolOutputContent)");
+        yield return new TestCaseData(ModelReaderWriter.Read<DecisionsItem>(BinaryData.FromString("""{"type":"message","role":"future","received":true}"""))).SetName("{m}(UnknownMessage)");
         yield return new TestCaseData(ModelReaderWriter.Read<DecisionsQuestion>(unknown)).SetName("{m}(UnknownQuestion)");
         yield return new TestCaseData(ModelReaderWriter.Read<DecisionsAnswer>(unknown)).SetName("{m}(UnknownAnswer)");
     }
@@ -132,6 +165,18 @@ public class DecisionsExtensibilityTests
                 case DecisionsContentPart part:
                     ((IJsonModel<DecisionsContentPart>)part).Write(writer, options);
                     break;
+                case DecisionsAssistantContentPart part:
+                    ((IJsonModel<DecisionsAssistantContentPart>)part).Write(writer, options);
+                    break;
+                case DecisionsInstructionContentPart part:
+                    ((IJsonModel<DecisionsInstructionContentPart>)part).Write(writer, options);
+                    break;
+                case DecisionsInstructionMessageContentPart part:
+                    ((IJsonModel<DecisionsInstructionMessageContentPart>)part).Write(writer, options);
+                    break;
+                case DecisionsToolOutputContentPart part:
+                    ((IJsonModel<DecisionsToolOutputContentPart>)part).Write(writer, options);
+                    break;
                 case DecisionsQuestion question:
                     ((IJsonModel<DecisionsQuestion>)question).Write(writer, options);
                     break;
@@ -151,6 +196,10 @@ public class DecisionsExtensibilityTests
         {
             case DecisionsItem item: return ref item.Patch;
             case DecisionsContentPart part: return ref part.Patch;
+            case DecisionsAssistantContentPart part: return ref part.Patch;
+            case DecisionsInstructionContentPart part: return ref part.Patch;
+            case DecisionsInstructionMessageContentPart part: return ref part.Patch;
+            case DecisionsToolOutputContentPart part: return ref part.Patch;
             case DecisionsQuestion question: return ref question.Patch;
             case DecisionsAnswer answer: return ref answer.Patch;
             default: throw new ArgumentException("Expected a Decisions hierarchy model.", nameof(model));
@@ -176,6 +225,42 @@ public class DecisionsExtensibilityTests
     }
 
     private sealed class CustomQuestion() : DecisionsQuestion(new DecisionsQuestionKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomAssistantContentPart() : DecisionsAssistantContentPart(new DecisionsAssistantContentPartKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomInstructionContentPart() : DecisionsInstructionContentPart(new DecisionsInstructionContentPartKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomInstructionMessageContentPart() : DecisionsInstructionMessageContentPart(new DecisionsInstructionMessageContentPartKind("custom"))
+    {
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            base.JsonModelWriteCore(writer, options);
+            Patch.WriteTo(writer);
+        }
+    }
+
+    private sealed class CustomToolOutputContentPart() : DecisionsToolOutputContentPart(new DecisionsToolOutputContentPartKind("custom"))
     {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
