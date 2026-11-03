@@ -90,16 +90,6 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object.reasoning_tokens, "ReasoningTokenCount");
 
-// --------- Others ---------
-/**
- * The role-specific models repeat the inherited `type` property with fixed value of `"message"`.
- * Scope this repeated property out from each model to keep a single CLR member and wire property.
- */
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser.type, "!csharp");
-
 // --------- Numeric overrides ---------
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.confidence, float32);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.probability, float32);
@@ -206,3 +196,14 @@ model dotnet_createDecision_response_200_object_Answers_array_item_discriminated
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.choice, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object.value, dotnet_createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union);
+
+// --------- Others ---------
+
+/**
+ * The role-specific models repeat the inherited `type` property with fixed value of `"message"`.
+ * Scope this repeated property out from each model to keep a single CLR member and wire property.
+ */
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser.type, "!csharp");
