@@ -11,23 +11,23 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsFunctionToolCallItem : DecisionsItem
     {
-        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(DecisionsItemKind.FunctionToolCall)
+        public DecisionsFunctionToolCallItem(string arguments, string callId, string functionName) : base(DecisionsItemKind.FunctionToolCall)
         {
             Argument.AssertNotNull(arguments, nameof(arguments));
             Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(functionName, nameof(functionName));
 
             Arguments = arguments;
             CallId = callId;
-            Name = name;
+            FunctionName = functionName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsFunctionToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string arguments, string callId, string name, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsFunctionToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string arguments, string callId, string functionName, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
         {
             Arguments = arguments;
             CallId = callId;
-            Name = name;
+            FunctionName = functionName;
             Id = id;
             Namespace = @namespace;
             Status = status;
@@ -38,7 +38,7 @@ namespace OpenAI.Decisions
 
         public string CallId { get; set; }
 
-        public string Name { get; set; }
+        public string FunctionName { get; set; }
 
         public string Id { get; set; }
 

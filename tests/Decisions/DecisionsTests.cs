@@ -283,7 +283,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
                 new DecisionsFunctionToolCallItem
                 {
                     CallId = "call_price",
-                    Name = "lookup_price",
+                    FunctionName = "lookup_price",
                     Arguments = """{"product":"widget"}""",
                     Status = DecisionsToolCallStatus.Completed,
                 },
@@ -296,7 +296,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
                 new DecisionsCustomToolCallItem
                 {
                     CallId = "call_stock",
-                    Name = "lookup_inventory",
+                    ToolName = "lookup_inventory",
                     Input = "widget",
                     Status = DecisionsToolCallStatus.Completed,
                 },

@@ -86,7 +86,7 @@ namespace OpenAI.Decisions
             if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteStringValue(ToolName);
             }
             if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
             {
@@ -133,7 +133,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             string input = default;
-            string name = default;
+            string toolName = default;
             string id = default;
             string @namespace = default;
             DecisionsToolCallStatus? status = default;
@@ -156,7 +156,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("name"u8))
                 {
-                    name = prop.Value.GetString();
+                    toolName = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -196,7 +196,7 @@ namespace OpenAI.Decisions
                 patch,
                 callId,
                 input,
-                name,
+                toolName,
                 id,
                 @namespace,
                 status);

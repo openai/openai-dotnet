@@ -161,13 +161,13 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsCustomToolCallItem : DecisionsItem, IJsonModel<DecisionsCustomToolCallItem>, IPersistableModel<DecisionsCustomToolCallItem> {
         public DecisionsCustomToolCallItem() : base(default);
-        public DecisionsCustomToolCallItem(string callId, string input, string name) : base(default);
+        public DecisionsCustomToolCallItem(string callId, string input, string toolName) : base(default);
         public string CallId { get; set; }
         public string Id { get; set; }
         public string Input { get; set; }
-        public string Name { get; set; }
         public string Namespace { get; set; }
         public DecisionsToolCallStatus? Status { get; set; }
+        public string ToolName { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DecisionsCustomToolCallOutputItem : DecisionsItem, IJsonModel<DecisionsCustomToolCallOutputItem>, IPersistableModel<DecisionsCustomToolCallOutputItem> {
@@ -187,11 +187,11 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsFunctionToolCallItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallItem>, IPersistableModel<DecisionsFunctionToolCallItem> {
         public DecisionsFunctionToolCallItem() : base(default);
-        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(default);
+        public DecisionsFunctionToolCallItem(string arguments, string callId, string functionName) : base(default);
         public string Arguments { get; set; }
         public string CallId { get; set; }
+        public string FunctionName { get; set; }
         public string Id { get; set; }
-        public string Name { get; set; }
         public string Namespace { get; set; }
         public DecisionsToolCallStatus? Status { get; set; }
     }

@@ -11,23 +11,23 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsCustomToolCallItem : DecisionsItem
     {
-        public DecisionsCustomToolCallItem(string callId, string input, string name) : base(DecisionsItemKind.CustomToolCall)
+        public DecisionsCustomToolCallItem(string callId, string input, string toolName) : base(DecisionsItemKind.CustomToolCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(toolName, nameof(toolName));
 
             CallId = callId;
             Input = input;
-            Name = name;
+            ToolName = toolName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string callId, string input, string name, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string callId, string input, string toolName, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
         {
             CallId = callId;
             Input = input;
-            Name = name;
+            ToolName = toolName;
             Id = id;
             Namespace = @namespace;
             Status = status;
@@ -38,7 +38,7 @@ namespace OpenAI.Decisions
 
         public string Input { get; set; }
 
-        public string Name { get; set; }
+        public string ToolName { get; set; }
 
         public string Id { get; set; }
 

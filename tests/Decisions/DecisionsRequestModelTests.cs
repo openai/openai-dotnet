@@ -214,6 +214,23 @@ public class DecisionsRequestModelTests
     }
 
     [Test]
+    public void ToolNamesUseSpecificClrPropertiesAndPreserveWireName()
+    {
+        DecisionsFunctionToolCallItem function = ModelReaderWriter.Read<DecisionsFunctionToolCallItem>(
+            BinaryData.FromString("""{"type":"function_call","call_id":"f","name":"lookup","arguments":"{}"}"""));
+        DecisionsCustomToolCallItem custom = ModelReaderWriter.Read<DecisionsCustomToolCallItem>(
+            BinaryData.FromString("""{"type":"custom_tool_call","call_id":"c","name":"search","input":"query"}"""));
+
+        Assert.That(function.FunctionName, Is.EqualTo("lookup"));
+        Assert.That(custom.ToolName, Is.EqualTo("search"));
+
+        using JsonDocument functionJson = JsonDocument.Parse(ModelReaderWriter.Write(function));
+        using JsonDocument customJson = JsonDocument.Parse(ModelReaderWriter.Write(custom));
+        Assert.That(functionJson.RootElement.GetProperty("name").GetString(), Is.EqualTo("lookup"));
+        Assert.That(customJson.RootElement.GetProperty("name").GetString(), Is.EqualTo("search"));
+    }
+
+    [Test]
     public void AssistantContentPreservesOutputTextRefusalsAndPhase()
     {
         const string json = """{"type":"message","role":"assistant","content":[{"type":"output_text","text":"answer"},{"type":"refusal","refusal":"No."}],"phase":"future_phase"}""";
