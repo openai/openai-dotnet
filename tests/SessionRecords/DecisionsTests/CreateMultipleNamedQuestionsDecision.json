@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "881",
+        "Content-Length": "974",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
@@ -14,20 +14,25 @@
         "input": [
           {
             "type": "message",
+            "role": "user",
             "content": [
               {
                 "type": "input_text",
                 "text": "Thank you for the excellent support! Please email me the receipt."
               }
-            ],
-            "role": "user"
+            ]
           }
         ],
         "model": "gpt-6-luna",
         "questions": [
           {
             "type": "predicate",
-            "instructions": "The customer is satisfied with the support they received.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "The customer is satisfied with the support they received."
+              }
+            ],
             "name": "satisfied"
           },
           {
@@ -42,12 +47,22 @@
                 "description": "Cancel the order."
               }
             ],
-            "instructions": "Choose the action requested by the customer.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Choose the action requested by the customer."
+              }
+            ],
             "name": "requested_action"
           },
           {
             "type": "score",
-            "instructions": "Rate the customer's sentiment from negative to positive.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Rate the customer's sentiment from negative to positive."
+              }
+            ],
             "levels": [
               {
                 "label": "negative",
@@ -75,14 +90,14 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a528c1f5eef8ba01-SEA",
+        "CF-RAY": "a54a4d308deba390-SEA",
         "Connection": "keep-alive",
         "Content-Length": "696",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-processing-ms": "Sanitized",
         "Server": "cloudflare",
-        "server-timing-total": "234.732",
+        "server-timing-total": "77.990",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": [
           "origin",
@@ -94,7 +109,7 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "180000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "179999586",
+        "x-ratelimit-remaining-tokens": "179999583",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
