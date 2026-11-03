@@ -341,7 +341,19 @@ public class ChatMockTests : ClientTestBase
         Assert.That(document.RootElement.TryGetProperty("stream_options", out _), Is.False);
     }
 
-    private async Task<string> CompleteChatStreamingAndGetRequestBodyAsync(ChatCompletionOptions options)
+    [Test]
+    public async Task CompleteChatStreamingPatchedStreamOptionsKeepMessageBytes()
+    {
+        ChatMessage[] messages = [new UserChatMessage("a<b>&c '\"q\" </script> \u00e9 \ud83d\ude00")];
+        ChatCompletionOptions patched = new();
+        patched.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+
+        using JsonDocument plain = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(new ChatCompletionOptions(), messages));
+        using JsonDocument withPatch = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(patched, messages));
+        Assert.That(withPatch.RootElement.GetProperty("messages").GetRawText(), Is.EqualTo(plain.RootElement.GetProperty("messages").GetRawText()));
+    }
+
+    private async Task<string> CompleteChatStreamingAndGetRequestBodyAsync(ChatCompletionOptions options, IEnumerable<ChatMessage> messages = null)
     {
         string requestBody = null;
         OpenAIClientOptions clientOptions = new()
@@ -361,13 +373,13 @@ public class ChatMockTests : ClientTestBase
 
         if (IsAsync)
         {
-            await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(s_messages, options))
+            await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(messages ?? s_messages, options))
             {
             }
         }
         else
         {
-            foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreaming(s_messages, options))
+            foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreaming(messages ?? s_messages, options))
             {
             }
         }
