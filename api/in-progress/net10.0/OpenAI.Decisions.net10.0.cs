@@ -63,8 +63,8 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsAssistantMessageItem : DecisionsMessageItem, IJsonModel<DecisionsAssistantMessageItem>, IPersistableModel<DecisionsAssistantMessageItem> {
         public DecisionsAssistantMessageItem() : base(default);
-        public DecisionsAssistantMessageItem(IEnumerable<DecisionsContentOutputPart> content) : base(default);
-        public IList<DecisionsContentOutputPart> Content { get; }
+        public DecisionsAssistantMessageItem(IEnumerable<DecisionsOutputContentPart> content) : base(default);
+        public IList<DecisionsOutputContentPart> Content { get; }
         public DecisionsAssistantMessagePhase? Phase { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -159,90 +159,6 @@ namespace OpenAI.Decisions {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
-    public class DecisionsContentInputImagePart : DecisionsContentInputPart, IJsonModel<DecisionsContentInputImagePart>, IPersistableModel<DecisionsContentInputImagePart> {
-        public DecisionsContentInputImagePart() : base(default);
-        public DecisionsContentInputImagePart(string imageUri) : base(default);
-        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
-        public string ImageUri { get; set; }
-        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class DecisionsContentInputJsonPart : DecisionsContentInputPart, IJsonModel<DecisionsContentInputJsonPart>, IPersistableModel<DecisionsContentInputJsonPart> {
-        public DecisionsContentInputJsonPart() : base(default);
-        public DecisionsContentInputJsonPart(IEnumerable<BinaryData> data) : base(default);
-        public IList<BinaryData> Data { get; }
-    }
-    [Experimental("OPENAI001")]
-    public abstract class DecisionsContentInputPart : IJsonModel<DecisionsContentInputPart>, IPersistableModel<DecisionsContentInputPart> {
-        protected internal DecisionsContentInputPart(DecisionsContentInputPartKind kind);
-        public DecisionsContentInputPartKind Kind { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct DecisionsContentInputPartKind : IEquatable<DecisionsContentInputPartKind> {
-        public DecisionsContentInputPartKind(string value);
-        public static DecisionsContentInputPartKind InputImage { get; }
-        public static DecisionsContentInputPartKind InputJson { get; }
-        public static DecisionsContentInputPartKind InputText { get; }
-        public readonly bool Equals(DecisionsContentInputPartKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DecisionsContentInputPartKind left, DecisionsContentInputPartKind right);
-        public static implicit operator DecisionsContentInputPartKind(string value);
-        public static implicit operator DecisionsContentInputPartKind?(string value);
-        public static bool operator !=(DecisionsContentInputPartKind left, DecisionsContentInputPartKind right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public class DecisionsContentInputTextPart : DecisionsContentInputPart, IJsonModel<DecisionsContentInputTextPart>, IPersistableModel<DecisionsContentInputTextPart> {
-        public DecisionsContentInputTextPart() : base(default);
-        public DecisionsContentInputTextPart(string text) : base(default);
-        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
-        public string Text { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public abstract class DecisionsContentOutputPart : IJsonModel<DecisionsContentOutputPart>, IPersistableModel<DecisionsContentOutputPart> {
-        protected internal DecisionsContentOutputPart(DecisionsContentOutputPartKind kind);
-        public DecisionsContentOutputPartKind Kind { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct DecisionsContentOutputPartKind : IEquatable<DecisionsContentOutputPartKind> {
-        public DecisionsContentOutputPartKind(string value);
-        public static DecisionsContentOutputPartKind OutputText { get; }
-        public static DecisionsContentOutputPartKind Refusal { get; }
-        public readonly bool Equals(DecisionsContentOutputPartKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DecisionsContentOutputPartKind left, DecisionsContentOutputPartKind right);
-        public static implicit operator DecisionsContentOutputPartKind(string value);
-        public static implicit operator DecisionsContentOutputPartKind?(string value);
-        public static bool operator !=(DecisionsContentOutputPartKind left, DecisionsContentOutputPartKind right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public class DecisionsContentOutputTextPart : DecisionsContentOutputPart, IJsonModel<DecisionsContentOutputTextPart>, IPersistableModel<DecisionsContentOutputTextPart> {
-        public DecisionsContentOutputTextPart() : base(default);
-        public DecisionsContentOutputTextPart(string text) : base(default);
-        public string Text { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class DecisionsContentRefusalPart : DecisionsContentOutputPart, IJsonModel<DecisionsContentRefusalPart>, IPersistableModel<DecisionsContentRefusalPart> {
-        public DecisionsContentRefusalPart() : base(default);
-        public DecisionsContentRefusalPart(string refusal) : base(default);
-        public string Refusal { get; set; }
-    }
-    [Experimental("OPENAI001")]
     public class DecisionsCustomToolCallItem : DecisionsItem, IJsonModel<DecisionsCustomToolCallItem>, IPersistableModel<DecisionsCustomToolCallItem> {
         public DecisionsCustomToolCallItem() : base(default);
         public DecisionsCustomToolCallItem(string callId, string input, string name) : base(default);
@@ -265,13 +181,13 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsDeveloperMessageItem : DecisionsMessageItem, IJsonModel<DecisionsDeveloperMessageItem>, IPersistableModel<DecisionsDeveloperMessageItem> {
         public DecisionsDeveloperMessageItem() : base(default);
-        public DecisionsDeveloperMessageItem(IEnumerable<DecisionsInstructionMessageContentPart> content) : base(default);
-        public IList<DecisionsInstructionMessageContentPart> Content { get; }
+        public DecisionsDeveloperMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(default);
+        public IList<DecisionsInputContentPart> Content { get; }
     }
     [Experimental("OPENAI001")]
-    public class DecisionsFunctionCallItem : DecisionsItem, IJsonModel<DecisionsFunctionCallItem>, IPersistableModel<DecisionsFunctionCallItem> {
-        public DecisionsFunctionCallItem() : base(default);
-        public DecisionsFunctionCallItem(string arguments, string callId, string name) : base(default);
+    public class DecisionsFunctionToolCallItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallItem>, IPersistableModel<DecisionsFunctionToolCallItem> {
+        public DecisionsFunctionToolCallItem() : base(default);
+        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(default);
         public string Arguments { get; set; }
         public string CallId { get; set; }
         public string Id { get; set; }
@@ -280,9 +196,9 @@ namespace OpenAI.Decisions {
         public DecisionsToolCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
-    public class DecisionsFunctionCallOutputItem : DecisionsItem, IJsonModel<DecisionsFunctionCallOutputItem>, IPersistableModel<DecisionsFunctionCallOutputItem> {
-        public DecisionsFunctionCallOutputItem() : base(default);
-        public DecisionsFunctionCallOutputItem(string callId, IEnumerable<DecisionsToolOutputContentPart> output) : base(default);
+    public class DecisionsFunctionToolCallOutputItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallOutputItem>, IPersistableModel<DecisionsFunctionToolCallOutputItem> {
+        public DecisionsFunctionToolCallOutputItem() : base(default);
+        public DecisionsFunctionToolCallOutputItem(string callId, IEnumerable<DecisionsToolOutputContentPart> output) : base(default);
         public string CallId { get; set; }
         public string Id { get; set; }
         public IList<DecisionsToolOutputContentPart> Output { get; }
@@ -307,6 +223,53 @@ namespace OpenAI.Decisions {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public abstract class DecisionsInputContentPart : IJsonModel<DecisionsInputContentPart>, IPersistableModel<DecisionsInputContentPart> {
+        protected internal DecisionsInputContentPart(DecisionsInputContentPartKind kind);
+        public DecisionsInputContentPartKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsInputContentPartKind : IEquatable<DecisionsInputContentPartKind> {
+        public DecisionsInputContentPartKind(string value);
+        public static DecisionsInputContentPartKind InputImage { get; }
+        public static DecisionsInputContentPartKind InputJson { get; }
+        public static DecisionsInputContentPartKind InputText { get; }
+        public readonly bool Equals(DecisionsInputContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsInputContentPartKind left, DecisionsInputContentPartKind right);
+        public static implicit operator DecisionsInputContentPartKind(string value);
+        public static implicit operator DecisionsInputContentPartKind?(string value);
+        public static bool operator !=(DecisionsInputContentPartKind left, DecisionsInputContentPartKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class DecisionsInputImageContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputImageContentPart>, IPersistableModel<DecisionsInputImageContentPart> {
+        public DecisionsInputImageContentPart() : base(default);
+        public DecisionsInputImageContentPart(string imageUri) : base(default);
+        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+        public string ImageUri { get; set; }
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class DecisionsInputJsonContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputJsonContentPart>, IPersistableModel<DecisionsInputJsonContentPart> {
+        public DecisionsInputJsonContentPart() : base(default);
+        public DecisionsInputJsonContentPart(IEnumerable<BinaryData> data) : base(default);
+        public IList<BinaryData> Data { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class DecisionsInputTextContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputTextContentPart>, IPersistableModel<DecisionsInputTextContentPart> {
+        public DecisionsInputTextContentPart() : base(default);
+        public DecisionsInputTextContentPart(string text) : base(default);
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
+        public string Text { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class DecisionsInputTokenUsageDetails : IJsonModel<DecisionsInputTokenUsageDetails>, IPersistableModel<DecisionsInputTokenUsageDetails> {
         public long CachedTokenCount { get; set; }
         public long CacheWriteTokenCount { get; set; }
@@ -314,37 +277,6 @@ namespace OpenAI.Decisions {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public abstract class DecisionsInstructionMessageContentPart : IJsonModel<DecisionsInstructionMessageContentPart>, IPersistableModel<DecisionsInstructionMessageContentPart> {
-        protected internal DecisionsInstructionMessageContentPart(DecisionsInstructionMessageContentPartKind kind);
-        public DecisionsInstructionMessageContentPartKind Kind { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct DecisionsInstructionMessageContentPartKind : IEquatable<DecisionsInstructionMessageContentPartKind> {
-        public DecisionsInstructionMessageContentPartKind(string value);
-        public static DecisionsInstructionMessageContentPartKind InputText { get; }
-        public readonly bool Equals(DecisionsInstructionMessageContentPartKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DecisionsInstructionMessageContentPartKind left, DecisionsInstructionMessageContentPartKind right);
-        public static implicit operator DecisionsInstructionMessageContentPartKind(string value);
-        public static implicit operator DecisionsInstructionMessageContentPartKind?(string value);
-        public static bool operator !=(DecisionsInstructionMessageContentPartKind left, DecisionsInstructionMessageContentPartKind right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public class DecisionsInstructionMessageTextContentPart : DecisionsInstructionMessageContentPart, IJsonModel<DecisionsInstructionMessageTextContentPart>, IPersistableModel<DecisionsInstructionMessageTextContentPart> {
-        public DecisionsInstructionMessageTextContentPart() : base(default);
-        public DecisionsInstructionMessageTextContentPart(string text) : base(default);
-        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
-        public string Text { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DecisionsInstructionsInputImagePart : DecisionsInstructionsPart, IJsonModel<DecisionsInstructionsInputImagePart>, IPersistableModel<DecisionsInstructionsInputImagePart> {
@@ -441,6 +373,37 @@ namespace OpenAI.Decisions {
         public static implicit operator DecisionsMessageRole?(string value);
         public static bool operator !=(DecisionsMessageRole left, DecisionsMessageRole right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public abstract class DecisionsOutputContentPart : IJsonModel<DecisionsOutputContentPart>, IPersistableModel<DecisionsOutputContentPart> {
+        protected internal DecisionsOutputContentPart(DecisionsOutputContentPartKind kind);
+        public DecisionsOutputContentPartKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsOutputContentPartKind : IEquatable<DecisionsOutputContentPartKind> {
+        public DecisionsOutputContentPartKind(string value);
+        public static DecisionsOutputContentPartKind OutputText { get; }
+        public static DecisionsOutputContentPartKind Refusal { get; }
+        public readonly bool Equals(DecisionsOutputContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsOutputContentPartKind left, DecisionsOutputContentPartKind right);
+        public static implicit operator DecisionsOutputContentPartKind(string value);
+        public static implicit operator DecisionsOutputContentPartKind?(string value);
+        public static bool operator !=(DecisionsOutputContentPartKind left, DecisionsOutputContentPartKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class DecisionsOutputTextContentPart : DecisionsOutputContentPart, IJsonModel<DecisionsOutputTextContentPart>, IPersistableModel<DecisionsOutputTextContentPart> {
+        public DecisionsOutputTextContentPart() : base(default);
+        public DecisionsOutputTextContentPart(string text) : base(default);
+        public string Text { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DecisionsOutputTokenUsageDetails : IJsonModel<DecisionsOutputTokenUsageDetails>, IPersistableModel<DecisionsOutputTokenUsageDetails> {
@@ -560,6 +523,12 @@ namespace OpenAI.Decisions {
         public string Name { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class DecisionsRefusalContentPart : DecisionsOutputContentPart, IJsonModel<DecisionsRefusalContentPart>, IPersistableModel<DecisionsRefusalContentPart> {
+        public DecisionsRefusalContentPart() : base(default);
+        public DecisionsRefusalContentPart(string refusal) : base(default);
+        public string Refusal { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class DecisionsScoreAnswer : DecisionsAnswer, IJsonModel<DecisionsScoreAnswer>, IPersistableModel<DecisionsScoreAnswer> {
         public DecisionsScoreAnswer() : base(default);
         public float Confidence { get; set; }
@@ -599,8 +568,8 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsSystemMessageItem : DecisionsMessageItem, IJsonModel<DecisionsSystemMessageItem>, IPersistableModel<DecisionsSystemMessageItem> {
         public DecisionsSystemMessageItem() : base(default);
-        public DecisionsSystemMessageItem(IEnumerable<DecisionsInstructionMessageContentPart> content) : base(default);
-        public IList<DecisionsInstructionMessageContentPart> Content { get; }
+        public DecisionsSystemMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(default);
+        public IList<DecisionsInputContentPart> Content { get; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct DecisionsToolCallStatus : IEquatable<DecisionsToolCallStatus> {
@@ -674,7 +643,7 @@ namespace OpenAI.Decisions {
     [Experimental("OPENAI001")]
     public class DecisionsUserMessageItem : DecisionsMessageItem, IJsonModel<DecisionsUserMessageItem>, IPersistableModel<DecisionsUserMessageItem> {
         public DecisionsUserMessageItem() : base(default);
-        public DecisionsUserMessageItem(IEnumerable<DecisionsContentInputPart> content) : base(default);
-        public IList<DecisionsContentInputPart> Content { get; }
+        public DecisionsUserMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(default);
+        public IList<DecisionsInputContentPart> Content { get; }
     }
 }
