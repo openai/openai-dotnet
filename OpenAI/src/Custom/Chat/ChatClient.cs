@@ -24,7 +24,6 @@ public partial class ChatClient
 {
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
-    private static readonly InternalChatCompletionStreamOptions s_includeUsageStreamOptions = new(includeUsage: true, patch: default);
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
@@ -398,7 +397,7 @@ public partial class ChatClient
         if (stream)
         {
             clonedOptions.Stream = true;
-            clonedOptions.StreamOptions = s_includeUsageStreamOptions;
+            clonedOptions.Patch.Set("$.stream_options.include_usage"u8, true);
         }
         else
         {
