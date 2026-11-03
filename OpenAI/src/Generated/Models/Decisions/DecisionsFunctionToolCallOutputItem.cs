@@ -26,7 +26,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsFunctionToolCallOutputItem(DecisionsItemKind kind, in JsonPatch patch, string callId, IList<DecisionsInputContentPart> output, string id, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsFunctionToolCallOutputItem(DecisionsItemKind kind, in JsonPatch patch, string callId, IList<DecisionsInputContentPart> output, string id, DecisionsFunctionToolCallOutputStatus? status) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
@@ -43,6 +43,6 @@ namespace OpenAI.Decisions
 
         public string Id { get; set; }
 
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsFunctionToolCallOutputStatus? Status { get; set; }
     }
 }

@@ -166,7 +166,7 @@ namespace OpenAI.Decisions {
         public string Id { get; set; }
         public string Input { get; set; }
         public string Namespace { get; set; }
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsCustomToolCallStatus? Status { get; set; }
         public string ToolName { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -176,7 +176,41 @@ namespace OpenAI.Decisions {
         public string CallId { get; set; }
         public string Id { get; set; }
         public IList<DecisionsInputContentPart> Output { get; }
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsCustomToolCallOutputStatus? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsCustomToolCallOutputStatus : IEquatable<DecisionsCustomToolCallOutputStatus> {
+        public DecisionsCustomToolCallOutputStatus(string value);
+        public static DecisionsCustomToolCallOutputStatus Completed { get; }
+        public static DecisionsCustomToolCallOutputStatus Incomplete { get; }
+        public static DecisionsCustomToolCallOutputStatus InProgress { get; }
+        public readonly bool Equals(DecisionsCustomToolCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsCustomToolCallOutputStatus left, DecisionsCustomToolCallOutputStatus right);
+        public static implicit operator DecisionsCustomToolCallOutputStatus(string value);
+        public static implicit operator DecisionsCustomToolCallOutputStatus?(string value);
+        public static bool operator !=(DecisionsCustomToolCallOutputStatus left, DecisionsCustomToolCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsCustomToolCallStatus : IEquatable<DecisionsCustomToolCallStatus> {
+        public DecisionsCustomToolCallStatus(string value);
+        public static DecisionsCustomToolCallStatus Completed { get; }
+        public static DecisionsCustomToolCallStatus Incomplete { get; }
+        public static DecisionsCustomToolCallStatus InProgress { get; }
+        public readonly bool Equals(DecisionsCustomToolCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsCustomToolCallStatus left, DecisionsCustomToolCallStatus right);
+        public static implicit operator DecisionsCustomToolCallStatus(string value);
+        public static implicit operator DecisionsCustomToolCallStatus?(string value);
+        public static bool operator !=(DecisionsCustomToolCallStatus left, DecisionsCustomToolCallStatus right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class DecisionsDeveloperMessageItem : DecisionsMessageItem, IJsonModel<DecisionsDeveloperMessageItem>, IPersistableModel<DecisionsDeveloperMessageItem> {
@@ -193,7 +227,7 @@ namespace OpenAI.Decisions {
         public string FunctionName { get; set; }
         public string Id { get; set; }
         public string Namespace { get; set; }
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsFunctionToolCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DecisionsFunctionToolCallOutputItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallOutputItem>, IPersistableModel<DecisionsFunctionToolCallOutputItem> {
@@ -202,7 +236,41 @@ namespace OpenAI.Decisions {
         public string CallId { get; set; }
         public string Id { get; set; }
         public IList<DecisionsInputContentPart> Output { get; }
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsFunctionToolCallOutputStatus? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsFunctionToolCallOutputStatus : IEquatable<DecisionsFunctionToolCallOutputStatus> {
+        public DecisionsFunctionToolCallOutputStatus(string value);
+        public static DecisionsFunctionToolCallOutputStatus Completed { get; }
+        public static DecisionsFunctionToolCallOutputStatus Incomplete { get; }
+        public static DecisionsFunctionToolCallOutputStatus InProgress { get; }
+        public readonly bool Equals(DecisionsFunctionToolCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsFunctionToolCallOutputStatus left, DecisionsFunctionToolCallOutputStatus right);
+        public static implicit operator DecisionsFunctionToolCallOutputStatus(string value);
+        public static implicit operator DecisionsFunctionToolCallOutputStatus?(string value);
+        public static bool operator !=(DecisionsFunctionToolCallOutputStatus left, DecisionsFunctionToolCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DecisionsFunctionToolCallStatus : IEquatable<DecisionsFunctionToolCallStatus> {
+        public DecisionsFunctionToolCallStatus(string value);
+        public static DecisionsFunctionToolCallStatus Completed { get; }
+        public static DecisionsFunctionToolCallStatus Incomplete { get; }
+        public static DecisionsFunctionToolCallStatus InProgress { get; }
+        public readonly bool Equals(DecisionsFunctionToolCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(DecisionsFunctionToolCallStatus left, DecisionsFunctionToolCallStatus right);
+        public static implicit operator DecisionsFunctionToolCallStatus(string value);
+        public static implicit operator DecisionsFunctionToolCallStatus?(string value);
+        public static bool operator !=(DecisionsFunctionToolCallStatus left, DecisionsFunctionToolCallStatus right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct DecisionsImageDetailLevel : IEquatable<DecisionsImageDetailLevel> {
@@ -570,23 +638,6 @@ namespace OpenAI.Decisions {
         public DecisionsSystemMessageItem() : base(default);
         public DecisionsSystemMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(default);
         public IList<DecisionsInputContentPart> Content { get; }
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct DecisionsToolCallStatus : IEquatable<DecisionsToolCallStatus> {
-        public DecisionsToolCallStatus(string value);
-        public static DecisionsToolCallStatus Completed { get; }
-        public static DecisionsToolCallStatus Incomplete { get; }
-        public static DecisionsToolCallStatus InProgress { get; }
-        public readonly bool Equals(DecisionsToolCallStatus other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DecisionsToolCallStatus left, DecisionsToolCallStatus right);
-        public static implicit operator DecisionsToolCallStatus(string value);
-        public static implicit operator DecisionsToolCallStatus?(string value);
-        public static bool operator !=(DecisionsToolCallStatus left, DecisionsToolCallStatus right);
-        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class DecisionsUsage : IJsonModel<DecisionsUsage>, IPersistableModel<DecisionsUsage> {

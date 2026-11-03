@@ -23,7 +23,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string callId, string input, string toolName, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string callId, string input, string toolName, string id, string @namespace, DecisionsCustomToolCallStatus? status) : base(kind, patch)
         {
             CallId = callId;
             Input = input;
@@ -44,6 +44,6 @@ namespace OpenAI.Decisions
 
         public string Namespace { get; set; }
 
-        public DecisionsToolCallStatus? Status { get; set; }
+        public DecisionsCustomToolCallStatus? Status { get; set; }
     }
 }

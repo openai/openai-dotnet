@@ -202,13 +202,13 @@ public class DecisionsRequestModelTests
         DecisionsFunctionToolCallItem function = (DecisionsFunctionToolCallItem)options.InputItems[0];
         Assert.That(function.Arguments, Is.EqualTo("""{"id":1}"""));
         Assert.That(function.Namespace, Is.EqualTo("functions"));
-        Assert.That(function.Status, Is.EqualTo(DecisionsToolCallStatus.InProgress));
+        Assert.That(function.Status, Is.EqualTo(DecisionsFunctionToolCallStatus.InProgress));
         DecisionsFunctionToolCallOutputItem output = (DecisionsFunctionToolCallOutputItem)options.InputItems[1];
         Assert.That(output.Output.Select(part => part.GetType()), Is.EqualTo(new[] { typeof(DecisionsInputTextContentPart), typeof(DecisionsInputImageContentPart) }));
         DecisionsCustomToolCallItem custom = (DecisionsCustomToolCallItem)options.InputItems[2];
         Assert.That(custom.Input, Is.EqualTo("query"));
         Assert.That(custom.Namespace, Is.EqualTo("tools"));
-        Assert.That(custom.Status, Is.EqualTo(DecisionsToolCallStatus.Incomplete));
+        Assert.That(custom.Status, Is.EqualTo(DecisionsCustomToolCallStatus.Incomplete));
         Assert.That(((DecisionsCustomToolCallOutputItem)options.InputItems[3]).Status.ToString(), Is.EqualTo("future_status"));
 
         options.Patch.Set("$.input[1].output[0].text"u8, "patched");

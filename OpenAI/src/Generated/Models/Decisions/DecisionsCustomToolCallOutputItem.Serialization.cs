@@ -144,7 +144,7 @@ namespace OpenAI.Decisions
             string callId = default;
             IList<DecisionsInputContentPart> output = default;
             string id = default;
-            DecisionsToolCallStatus? status = default;
+            DecisionsCustomToolCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -179,7 +179,7 @@ namespace OpenAI.Decisions
                         status = null;
                         continue;
                     }
-                    status = new DecisionsToolCallStatus(prop.Value.GetString());
+                    status = new DecisionsCustomToolCallOutputStatus(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

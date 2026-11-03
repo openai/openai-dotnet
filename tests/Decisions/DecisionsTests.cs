@@ -288,26 +288,26 @@ public class DecisionsTests : OpenAIRecordedTestBase
                     CallId = "call_price",
                     FunctionName = "lookup_price",
                     Arguments = """{"product":"widget"}""",
-                    Status = DecisionsToolCallStatus.Completed,
+                    Status = DecisionsFunctionToolCallStatus.Completed,
                 },
                 new DecisionsFunctionToolCallOutputItem
                 {
                     CallId = "call_price",
                     Output = { new DecisionsInputTextContentPart { Text = """{"price":42,"currency":"USD"}""" } },
-                    Status = DecisionsToolCallStatus.Completed,
+                    Status = DecisionsFunctionToolCallOutputStatus.Completed,
                 },
                 new DecisionsCustomToolCallItem
                 {
                     CallId = "call_stock",
                     ToolName = "lookup_inventory",
                     Input = "widget",
-                    Status = DecisionsToolCallStatus.Completed,
+                    Status = DecisionsCustomToolCallStatus.Completed,
                 },
                 new DecisionsCustomToolCallOutputItem
                 {
                     CallId = "call_stock",
                     Output = { new DecisionsInputTextContentPart { Text = "The widget is in stock." } },
-                    Status = DecisionsToolCallStatus.Completed,
+                    Status = DecisionsCustomToolCallOutputStatus.Completed,
                 },
                 new DecisionsAssistantMessageItem
                 {
@@ -361,6 +361,11 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
         Assert.That(answer, Is.Not.Null);
         Assert.That(answer.Name, Is.EqualTo("in_stock"));
+        Assert.That(
+            decision.Usage.InputTokenDetails.CacheWriteTokenCount > 0
+                || decision.Usage.InputTokenDetails.CachedTokenCount > 0,
+            Is.True,
+            "Expected the request to either write prompt-cache tokens or use previously cached tokens.");
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
 

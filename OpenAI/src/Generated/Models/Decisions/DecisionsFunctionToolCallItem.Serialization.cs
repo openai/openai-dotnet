@@ -136,7 +136,7 @@ namespace OpenAI.Decisions
             string functionName = default;
             string id = default;
             string @namespace = default;
-            DecisionsToolCallStatus? status = default;
+            DecisionsFunctionToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -186,7 +186,7 @@ namespace OpenAI.Decisions
                         status = null;
                         continue;
                     }
-                    status = new DecisionsToolCallStatus(prop.Value.GetString());
+                    status = new DecisionsFunctionToolCallStatus(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
