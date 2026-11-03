@@ -111,8 +111,10 @@ namespace OpenAI.Responses
                         return StreamingResponseAudioDeltaUpdate.DeserializeStreamingResponseAudioDeltaUpdate(element, data, options);
                     case "response.audio.done":
                         return StreamingResponseAudioDoneUpdate.DeserializeStreamingResponseAudioDoneUpdate(element, data, options);
+                    case "response.audio.transcript.delta":
                     case "response.audio_transcript.delta":
                         return StreamingResponseAudioTranscriptDeltaUpdate.DeserializeStreamingResponseAudioTranscriptDeltaUpdate(element, data, options);
+                    case "response.audio.transcript.done":
                     case "response.audio_transcript.done":
                         return StreamingResponseAudioTranscriptDoneUpdate.DeserializeStreamingResponseAudioTranscriptDoneUpdate(element, data, options);
                     case "response.code_interpreter_call_code.delta":
