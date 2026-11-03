@@ -30,6 +30,39 @@ public class DecisionsJsonContentPartTests
         }
     }
 
+    // Verifies a single JSON object shorthand normalizes to an equivalent one-item BinaryData collection.
+    [Test]
+    public void JsonDataObjectShorthandNormalizesToSingleItemArray()
+    {
+        const string objectData = """{"nested":{"enabled":true},"value":null}""";
+        const string inputJson = $$"""{"type":"input_json","data":{{objectData}}}""";
+        const string longhandJson = $$"""{"type":"input_json","data":[{{objectData}}]}""";
+        object[] shorthandParts =
+        [
+            ModelReaderWriter.Read<DecisionsInputJsonContentPart>(BinaryData.FromString(inputJson)),
+            ModelReaderWriter.Read<DecisionsInputJsonInstructionsPart>(BinaryData.FromString(inputJson)),
+        ];
+        object[] longhandParts =
+        [
+            ModelReaderWriter.Read<DecisionsInputJsonContentPart>(BinaryData.FromString(longhandJson)),
+            ModelReaderWriter.Read<DecisionsInputJsonInstructionsPart>(BinaryData.FromString(longhandJson)),
+        ];
+
+        for (int i = 0; i < shorthandParts.Length; i++)
+        {
+            foreach (string format in new[] { "J", "W" })
+            {
+                ModelReaderWriterOptions options = new(format);
+                using JsonDocument shorthand = JsonDocument.Parse(ModelReaderWriter.Write(shorthandParts[i], options));
+                using JsonDocument longhand = JsonDocument.Parse(ModelReaderWriter.Write(longhandParts[i], options));
+                JsonElement shorthandData = shorthand.RootElement.GetProperty("data");
+                Assert.That(shorthandData.ValueKind, Is.EqualTo(JsonValueKind.Array));
+                Assert.That(shorthandData.GetArrayLength(), Is.EqualTo(1));
+                Assert.That(JsonElement.DeepEquals(longhand.RootElement, shorthand.RootElement), Is.True);
+            }
+        }
+    }
+
     // Verifies JSON content and instruction data reject values that are not objects or arrays of objects.
     [TestCase("null")]
     [TestCase("true")]

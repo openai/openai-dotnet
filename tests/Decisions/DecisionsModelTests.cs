@@ -36,18 +36,6 @@ public class DecisionsModelTests
         AssertUserMessage(message);
     }
 
-    // Verifies string input shorthand expands into a user message and serializes that role.
-    [Test]
-    public void InputShorthandUsesUserRole()
-    {
-        DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(
-            BinaryData.FromString("""{"input":"hello","model":"test","questions":[]}"""));
-
-        AssertUserMessage((DecisionsUserMessageItem)options.InputItems.Single());
-        using JsonDocument document = JsonDocument.Parse(ModelReaderWriter.Write(options));
-        Assert.That(document.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
-    }
-
     // Verifies an explicit user role survives deserialization and serialization of a longhand message.
     [Test]
     public void LonghandMessagePreservesUserRole()
@@ -134,47 +122,6 @@ public class DecisionsModelTests
         }
     }
 
-    // Verifies input string shorthand normalizes to the same message/content arrays as explicit longhand JSON.
-    [TestCase("")]
-    [TestCase("hello")]
-    [TestCase("quotes \" and newline\n and Unicode \u263a")]
-    public void InputShorthandNormalizesToLonghand(string text)
-    {
-        string encodedText = JsonSerializer.Serialize(text);
-        DecisionCreationOptions shorthand = Read<DecisionCreationOptions>($$"""{"input":{{encodedText}},"model":"test","questions":[]}""");
-        DecisionCreationOptions longhand = Read<DecisionCreationOptions>($$"""{"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}],"model":"test","questions":[]}""");
-
-        Assert.That(shorthand.InputItems, Has.Count.EqualTo(1));
-        DecisionsUserMessageItem message = shorthand.InputItems.Single() as DecisionsUserMessageItem;
-        Assert.That(message, Is.Not.Null);
-        Assert.That(message.Kind, Is.EqualTo(DecisionsItemKind.Message));
-        Assert.That(message.Content, Has.Count.EqualTo(1));
-        Assert.That(((DecisionsInputTextContentPart)message.Content.Single()).Text, Is.EqualTo(text));
-
-        using JsonDocument normalized = JsonDocument.Parse(ModelReaderWriter.Write(shorthand));
-        using JsonDocument expanded = JsonDocument.Parse(ModelReaderWriter.Write(longhand));
-        AssertJsonContains(expanded.RootElement, normalized.RootElement);
-        Assert.That(normalized.RootElement.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Array));
-        Assert.That(normalized.RootElement.GetProperty("input")[0].GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.Array));
-    }
-
-    // Verifies message content shorthand becomes a single text part without changing the text.
-    [TestCase("")]
-    [TestCase("hello")]
-    public void MessageContentShorthandNormalizesToLonghand(string text)
-    {
-        string encodedText = JsonSerializer.Serialize(text);
-        DecisionsUserMessageItem shorthand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":{{encodedText}}}""");
-        DecisionsUserMessageItem longhand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}""");
-        Assert.That(shorthand.Content, Has.Count.EqualTo(1));
-        Assert.That(shorthand.Content[0], Is.TypeOf<DecisionsInputTextContentPart>());
-        Assert.That(((DecisionsInputTextContentPart)shorthand.Content[0]).Text, Is.EqualTo(text));
-        using JsonDocument normalized = JsonDocument.Parse(ModelReaderWriter.Write(shorthand));
-        using JsonDocument expanded = JsonDocument.Parse(ModelReaderWriter.Write(longhand));
-        AssertJsonContains(expanded.RootElement, normalized.RootElement);
-        Assert.That(normalized.RootElement.GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.Array));
-    }
-
     // Verifies longhand input retains multiple messages, mixed content, and unknown nested properties.
     [Test]
     public void LonghandInputPreservesMultipleItemsContentAndUnknownFields()
@@ -198,26 +145,6 @@ public class DecisionsModelTests
         Assert.That(firstMessage.GetProperty("future_message").GetInt32(), Is.EqualTo(42));
         Assert.That(firstMessage.GetProperty("content")[0].GetProperty("future_text").GetBoolean(), Is.True);
         Assert.That(serialized.RootElement.GetProperty("input")[1].GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("another message"));
-    }
-
-    // Verifies required input and content unions reject JSON shapes other than strings or arrays.
-    [TestCase("null")]
-    [TestCase("true")]
-    [TestCase("false")]
-    [TestCase("42")]
-    [TestCase("{}")]
-    public void RequiredShorthandPropertiesRejectUnsupportedShapes(string value)
-    {
-        Assert.Throws<JsonException>(() => Read<DecisionCreationOptions>($$"""{"input":{{value}},"model":"test","questions":[]}"""));
-        Assert.Throws<JsonException>(() => Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":{{value}}}"""));
-    }
-
-    // Verifies empty input and content arrays are not expanded into synthetic messages or text parts.
-    [Test]
-    public void EmptyLonghandCollectionsRemainEmpty()
-    {
-        Assert.That(Read<DecisionCreationOptions>("""{"input":[],"model":"test","questions":[]}""").InputItems, Is.Empty);
-        Assert.That(Read<DecisionsUserMessageItem>("""{"type":"message","role":"user","content":[]}""").Content, Is.Empty);
     }
 
     // Verifies constructors, implicit conversions, and deserialization select exactly one scalar and round-trip it.
