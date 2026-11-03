@@ -120,7 +120,7 @@ public class DecisionsRequestModelTests
         DecisionsMessageItem[] messages =
         [
             new DecisionsUserMessageItem([new DecisionsContentInputTextPart { Text = "user" }]),
-            new DecisionsAssistantMessageItem([new DecisionsOutputTextContentPart { Text = "assistant" }]),
+            new DecisionsAssistantMessageItem([new DecisionsContentOutputTextPart { Text = "assistant" }]),
             new DecisionsDeveloperMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "developer" }]),
             new DecisionsSystemMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "system" }]),
         ];
@@ -218,9 +218,9 @@ public class DecisionsRequestModelTests
     {
         const string json = """{"type":"message","role":"assistant","content":[{"type":"output_text","text":"answer"},{"type":"refusal","refusal":"No."}],"phase":"future_phase"}""";
         DecisionsAssistantMessageItem message = (DecisionsAssistantMessageItem)ModelReaderWriter.Read<DecisionsItem>(BinaryData.FromString(json));
-        Assert.That(message.Content[0], Is.TypeOf<DecisionsOutputTextContentPart>());
-        Assert.That(message.Content[1], Is.TypeOf<DecisionsRefusalContentPart>());
-        Assert.That(((DecisionsRefusalContentPart)message.Content[1]).Refusal, Is.EqualTo("No."));
+        Assert.That(message.Content[0], Is.TypeOf<DecisionsContentOutputTextPart>());
+        Assert.That(message.Content[1], Is.TypeOf<DecisionsContentRefusalPart>());
+        Assert.That(((DecisionsContentRefusalPart)message.Content[1]).Refusal, Is.EqualTo("No."));
         Assert.That(message.Phase.ToString(), Is.EqualTo("future_phase"));
         using JsonDocument expected = JsonDocument.Parse(json);
         using JsonDocument serialized = JsonDocument.Parse(ModelReaderWriter.Write(message));

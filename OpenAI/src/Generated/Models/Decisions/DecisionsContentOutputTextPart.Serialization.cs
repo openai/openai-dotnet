@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsRefusalContentPart : DecisionsContentOutputPart, IJsonModel<DecisionsRefusalContentPart>
+    public partial class DecisionsContentOutputTextPart : DecisionsContentOutputPart, IJsonModel<DecisionsContentOutputTextPart>
     {
-        public DecisionsRefusalContentPart() : this(DecisionsContentOutputPartKind.Refusal, default, null)
+        public DecisionsContentOutputTextPart() : this(DecisionsContentOutputPartKind.OutputText, default, null)
         {
         }
 
         protected override DecisionsContentOutputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsRefusalContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentOutputTextPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsRefusalContentPart(document.RootElement, data, options);
+                        return DeserializeDecisionsContentOutputTextPart(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsRefusalContentPart)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsContentOutputTextPart)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsRefusalContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentOutputTextPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsRefusalContentPart)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsContentOutputTextPart)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<DecisionsRefusalContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DecisionsContentOutputTextPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        DecisionsRefusalContentPart IPersistableModel<DecisionsRefusalContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsRefusalContentPart)PersistableModelCreateCore(data, options);
+        DecisionsContentOutputTextPart IPersistableModel<DecisionsContentOutputTextPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsContentOutputTextPart)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<DecisionsRefusalContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DecisionsContentOutputTextPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<DecisionsRefusalContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DecisionsContentOutputTextPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,37 +66,37 @@ namespace OpenAI.Decisions
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsRefusalContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentOutputTextPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsRefusalContentPart)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsContentOutputTextPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.refusal"u8))
+            if (!Patch.Contains("$.text"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                writer.WritePropertyName("text"u8);
+                writer.WriteStringValue(Text);
             }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        DecisionsRefusalContentPart IJsonModel<DecisionsRefusalContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsRefusalContentPart)JsonModelCreateCore(ref reader, options);
+        DecisionsContentOutputTextPart IJsonModel<DecisionsContentOutputTextPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsContentOutputTextPart)JsonModelCreateCore(ref reader, options);
 
         protected override DecisionsContentOutputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsRefusalContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentOutputTextPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsRefusalContentPart)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsContentOutputTextPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsRefusalContentPart(document.RootElement, null, options);
+            return DeserializeDecisionsContentOutputTextPart(document.RootElement, null, options);
         }
 
-        internal static DecisionsRefusalContentPart DeserializeDecisionsRefusalContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsContentOutputTextPart DeserializeDecisionsContentOutputTextPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -106,7 +106,7 @@ namespace OpenAI.Decisions
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string refusal = default;
+            string text = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -114,14 +114,14 @@ namespace OpenAI.Decisions
                     kind = new DecisionsContentOutputPartKind(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("refusal"u8))
+                if (prop.NameEquals("text"u8))
                 {
-                    refusal = prop.Value.GetString();
+                    text = prop.Value.GetString();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsRefusalContentPart(kind, patch, refusal);
+            return new DecisionsContentOutputTextPart(kind, patch, text);
         }
     }
 }

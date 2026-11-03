@@ -13,7 +13,7 @@ public partial class DecisionsAssistantMessageItem
     {
         content = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsContentOutputPart>(
             property,
-            text => new DecisionsOutputTextContentPart { Text = text },
+            text => new DecisionsContentOutputTextPart { Text = text },
             DecisionsContentOutputPart.DeserializeDecisionsContentOutputPart,
             options);
     }

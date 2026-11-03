@@ -73,8 +73,8 @@ public class DecisionsModelTests
         yield return Model<DecisionsContentInputTextPart>("""{"type":"input_text","text":"hello"}""");
         yield return Model<DecisionsContentInputImagePart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"original"}""");
         yield return Model<DecisionsContentInputJsonPart>("""{"type":"input_json","data":{"count":2}}""");
-        yield return Model<DecisionsOutputTextContentPart>("""{"type":"output_text","text":"hello"}""");
-        yield return Model<DecisionsRefusalContentPart>("""{"type":"refusal","refusal":"No."}""");
+        yield return Model<DecisionsContentOutputTextPart>("""{"type":"output_text","text":"hello"}""");
+        yield return Model<DecisionsContentRefusalPart>("""{"type":"refusal","refusal":"No."}""");
         yield return Model<DecisionsInstructionMessageTextContentPart>("""{"type":"input_text","text":"hello","prompt_cache_breakpoint":{"mode":"explicit"}}""");
         yield return Model<DecisionsToolOutputTextContentPart>("""{"type":"input_text","text":"hello"}""");
         yield return Model<DecisionsToolOutputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"high"}""");

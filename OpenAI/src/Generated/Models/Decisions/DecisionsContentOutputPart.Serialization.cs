@@ -104,9 +104,9 @@ namespace OpenAI.Decisions
                 switch (discriminator.GetString())
                 {
                     case "output_text":
-                        return DecisionsOutputTextContentPart.DeserializeDecisionsOutputTextContentPart(element, data, options);
+                        return DecisionsContentOutputTextPart.DeserializeDecisionsContentOutputTextPart(element, data, options);
                     case "refusal":
-                        return DecisionsRefusalContentPart.DeserializeDecisionsRefusalContentPart(element, data, options);
+                        return DecisionsContentRefusalPart.DeserializeDecisionsContentRefusalPart(element, data, options);
                 }
             }
             return UnknownDecisionsContentOutputPart.DeserializeUnknownDecisionsContentOutputPart(element, data, options);

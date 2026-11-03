@@ -277,7 +277,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
                 },
                 new DecisionsAssistantMessageItem
                 {
-                    Content = { new DecisionsOutputTextContentPart { Text = "I will check the price and availability." } },
+                    Content = { new DecisionsContentOutputTextPart { Text = "I will check the price and availability." } },
                     Phase = DecisionsAssistantMessagePhase.Commentary,
                 },
                 new DecisionsFunctionCallItem
@@ -308,7 +308,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
                 },
                 new DecisionsAssistantMessageItem
                 {
-                    Content = { new DecisionsOutputTextContentPart { Text = "The widget is in stock and costs $42 USD." } },
+                    Content = { new DecisionsContentOutputTextPart { Text = "The widget is in stock and costs $42 USD." } },
                     Phase = DecisionsAssistantMessagePhase.FinalAnswer,
                 },
             },

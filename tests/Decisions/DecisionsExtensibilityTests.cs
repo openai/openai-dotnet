@@ -90,8 +90,8 @@ public class DecisionsExtensibilityTests
         yield return new TestCaseData(new DecisionsContentInputTextPart()).SetName("{m}(InputText)");
         yield return new TestCaseData(new DecisionsContentInputImagePart()).SetName("{m}(InputImage)");
         yield return new TestCaseData(new DecisionsContentInputJsonPart()).SetName("{m}(InputJson)");
-        yield return new TestCaseData(new DecisionsOutputTextContentPart()).SetName("{m}(OutputText)");
-        yield return new TestCaseData(new DecisionsRefusalContentPart()).SetName("{m}(RefusalContent)");
+        yield return new TestCaseData(new DecisionsContentOutputTextPart()).SetName("{m}(OutputText)");
+        yield return new TestCaseData(new DecisionsContentRefusalPart()).SetName("{m}(RefusalContent)");
         yield return new TestCaseData(new DecisionsInstructionsInputTextPart()).SetName("{m}(InstructionText)");
         yield return new TestCaseData(new DecisionsInstructionsInputImagePart()).SetName("{m}(InstructionImage)");
         yield return new TestCaseData(new DecisionsInstructionsInputJsonPart()).SetName("{m}(InstructionJson)");

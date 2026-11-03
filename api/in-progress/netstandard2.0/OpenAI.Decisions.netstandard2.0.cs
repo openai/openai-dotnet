@@ -201,6 +201,16 @@ namespace OpenAI.Decisions {
         public static bool operator !=(DecisionsContentOutputPartKind left, DecisionsContentOutputPartKind right);
         public override readonly string ToString();
     }
+    public class DecisionsContentOutputTextPart : DecisionsContentOutputPart, IJsonModel<DecisionsContentOutputTextPart>, IPersistableModel<DecisionsContentOutputTextPart> {
+        public DecisionsContentOutputTextPart() : base(default);
+        public DecisionsContentOutputTextPart(string text) : base(default);
+        public string Text { get; set; }
+    }
+    public class DecisionsContentRefusalPart : DecisionsContentOutputPart, IJsonModel<DecisionsContentRefusalPart>, IPersistableModel<DecisionsContentRefusalPart> {
+        public DecisionsContentRefusalPart() : base(default);
+        public DecisionsContentRefusalPart(string refusal) : base(default);
+        public string Refusal { get; set; }
+    }
     public class DecisionsCustomToolCallItem : DecisionsItem, IJsonModel<DecisionsCustomToolCallItem>, IPersistableModel<DecisionsCustomToolCallItem> {
         public DecisionsCustomToolCallItem() : base(default);
         public DecisionsCustomToolCallItem(string callId, string input, string name) : base(default);
@@ -378,11 +388,6 @@ namespace OpenAI.Decisions {
         public static bool operator !=(DecisionsMessageRole left, DecisionsMessageRole right);
         public override readonly string ToString();
     }
-    public class DecisionsOutputTextContentPart : DecisionsContentOutputPart, IJsonModel<DecisionsOutputTextContentPart>, IPersistableModel<DecisionsOutputTextContentPart> {
-        public DecisionsOutputTextContentPart() : base(default);
-        public DecisionsOutputTextContentPart(string text) : base(default);
-        public string Text { get; set; }
-    }
     public class DecisionsOutputTokenUsageDetails : IJsonModel<DecisionsOutputTokenUsageDetails>, IPersistableModel<DecisionsOutputTokenUsageDetails> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -484,11 +489,6 @@ namespace OpenAI.Decisions {
     public class DecisionsRefusalAnswer : DecisionsAnswer, IJsonModel<DecisionsRefusalAnswer>, IPersistableModel<DecisionsRefusalAnswer> {
         public DecisionsRefusalAnswer() : base(default);
         public string Name { get; set; }
-    }
-    public class DecisionsRefusalContentPart : DecisionsContentOutputPart, IJsonModel<DecisionsRefusalContentPart>, IPersistableModel<DecisionsRefusalContentPart> {
-        public DecisionsRefusalContentPart() : base(default);
-        public DecisionsRefusalContentPart(string refusal) : base(default);
-        public string Refusal { get; set; }
     }
     public class DecisionsScoreAnswer : DecisionsAnswer, IJsonModel<DecisionsScoreAnswer>, IPersistableModel<DecisionsScoreAnswer> {
         public DecisionsScoreAnswer() : base(default);
