@@ -9,9 +9,9 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsInstructionsInputImagePart : DecisionsInstructionsPart
+    public partial class DecisionsInputImageInstructionsPart : DecisionsInstructionsPart
     {
-        public DecisionsInstructionsInputImagePart(string imageUri) : base(DecisionsInstructionsPartKind.InputImage)
+        public DecisionsInputImageInstructionsPart(string imageUri) : base(DecisionsInstructionsPartKind.InputImage)
         {
             Argument.AssertNotNull(imageUri, nameof(imageUri));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInstructionsInputImagePart(DecisionsInstructionsPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
+        internal DecisionsInputImageInstructionsPart(DecisionsInstructionsPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
         {
             ImageUri = imageUri;
             ImageDetailLevel = imageDetailLevel;

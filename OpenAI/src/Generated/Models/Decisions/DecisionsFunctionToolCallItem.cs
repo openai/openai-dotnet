@@ -11,7 +11,7 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsFunctionToolCallItem : DecisionsItem
     {
-        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(DecisionsItemKind.FunctionCall)
+        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(DecisionsItemKind.FunctionToolCall)
         {
             Argument.AssertNotNull(arguments, nameof(arguments));
             Argument.AssertNotNull(callId, nameof(callId));

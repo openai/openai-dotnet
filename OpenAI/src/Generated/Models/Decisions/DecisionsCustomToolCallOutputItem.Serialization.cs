@@ -142,7 +142,7 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
-            IList<DecisionsToolOutputContentPart> output = default;
+            IList<DecisionsInputContentPart> output = default;
             string id = default;
             DecisionsToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
@@ -188,7 +188,7 @@ namespace OpenAI.Decisions
                 kind,
                 patch,
                 callId,
-                output ?? new ChangeTrackingList<DecisionsToolOutputContentPart>(),
+                output ?? new ChangeTrackingList<DecisionsInputContentPart>(),
                 id,
                 status);
         }
@@ -265,7 +265,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsToolOutputContentPart> ActiveOutput()
+        private IEnumerable<DecisionsInputContentPart> ActiveOutput()
         {
             if (!Optional.IsCollectionDefined(Output))
             {

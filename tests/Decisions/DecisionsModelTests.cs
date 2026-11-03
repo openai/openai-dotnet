@@ -75,11 +75,9 @@ public class DecisionsModelTests
         yield return Model<DecisionsInputJsonContentPart>("""{"type":"input_json","data":{"count":2}}""");
         yield return Model<DecisionsOutputTextContentPart>("""{"type":"output_text","text":"hello"}""");
         yield return Model<DecisionsRefusalContentPart>("""{"type":"refusal","refusal":"No."}""");
-        yield return Model<DecisionsToolOutputTextContentPart>("""{"type":"input_text","text":"hello"}""");
-        yield return Model<DecisionsToolOutputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"high"}""");
-        yield return Model<DecisionsInstructionsInputTextPart>("""{"type":"input_text","text":"hello"}""");
-        yield return Model<DecisionsInstructionsInputImagePart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"low"}""");
-        yield return Model<DecisionsInstructionsInputJsonPart>("""{"type":"input_json","data":[{"count":2}]}""");
+        yield return Model<DecisionsInputTextInstructionsPart>("""{"type":"input_text","text":"hello"}""");
+        yield return Model<DecisionsInputImageInstructionsPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"low"}""");
+        yield return Model<DecisionsInputJsonInstructionsPart>("""{"type":"input_json","data":[{"count":2}]}""");
         yield return Model<DecisionsPromptCacheOptions>("""{"mode":"explicit","ttl":"30m"}""");
         yield return Model<DecisionsPromptCacheBreakpoint>("""{"mode":"explicit"}""");
         yield return Model<DecisionsChoice>("""{"value":false,"description":"negative"}""");
@@ -362,7 +360,7 @@ public class DecisionsModelTests
         {
             Model = "test",
             InputItems = { new DecisionsUserMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
-            Questions = { new DecisionsChoiceQuestion { Instructions = { new DecisionsInstructionsInputTextPart { Text = "choose" } }, Choices = { new DecisionsChoice { Value = true } } } }
+            Questions = { new DecisionsChoiceQuestion { Instructions = { new DecisionsInputTextInstructionsPart { Text = "choose" } }, Choices = { new DecisionsChoice { Value = true } } } }
         };
         if (fromJson)
         {
@@ -415,7 +413,6 @@ public class DecisionsModelTests
     [TestCase(typeof(DecisionsInputContentPart))]
     [TestCase(typeof(DecisionsOutputContentPart))]
     [TestCase(typeof(DecisionsInstructionsPart))]
-    [TestCase(typeof(DecisionsToolOutputContentPart))]
     [TestCase(typeof(DecisionsQuestion))]
     [TestCase(typeof(DecisionsAnswer))]
     public void UnknownDiscriminatorsRoundTripWithKindAndAdditionalProperties(Type modelType)
@@ -453,7 +450,6 @@ public class DecisionsModelTests
     [TestCase(typeof(DecisionsInputContentPart), typeof(DecisionsInputContentPartKind))]
     [TestCase(typeof(DecisionsOutputContentPart), typeof(DecisionsOutputContentPartKind))]
     [TestCase(typeof(DecisionsInstructionsPart), typeof(DecisionsInstructionsPartKind))]
-    [TestCase(typeof(DecisionsToolOutputContentPart), typeof(DecisionsToolOutputContentPartKind))]
     [TestCase(typeof(DecisionsQuestion), typeof(DecisionsQuestionKind))]
     [TestCase(typeof(DecisionsAnswer), typeof(DecisionsAnswerKind))]
     public void DiscriminatorBasesExposeReadOnlyKindsAndProtectedInternalConstructors(Type modelType, Type kindType)

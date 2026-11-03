@@ -221,7 +221,7 @@ public class DecisionsClientTests
                 new DecisionsPredicateQuestion
                 {
                     Name = "valid",
-                    Instructions = { new DecisionsInstructionsInputTextPart { Text = "The JSON value is true." } },
+                    Instructions = { new DecisionsInputTextInstructionsPart { Text = "The JSON value is true." } },
                 },
             },
             PromptCacheKey = "test-cache",

@@ -13,7 +13,7 @@ public partial class DecisionsScoreQuestion
     {
         instructions = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsInstructionsPart>(
             property,
-            text => new DecisionsInstructionsInputTextPart { Text = text },
+            text => new DecisionsInputTextInstructionsPart { Text = text },
             DecisionsInstructionsPart.DeserializeDecisionsInstructionsPart,
             options);
     }

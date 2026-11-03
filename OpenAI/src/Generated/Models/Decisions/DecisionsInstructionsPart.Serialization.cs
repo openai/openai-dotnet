@@ -104,11 +104,11 @@ namespace OpenAI.Decisions
                 switch (discriminator.GetString())
                 {
                     case "input_image":
-                        return DecisionsInstructionsInputImagePart.DeserializeDecisionsInstructionsInputImagePart(element, data, options);
+                        return DecisionsInputImageInstructionsPart.DeserializeDecisionsInputImageInstructionsPart(element, data, options);
                     case "input_json":
-                        return DecisionsInstructionsInputJsonPart.DeserializeDecisionsInstructionsInputJsonPart(element, data, options);
+                        return DecisionsInputJsonInstructionsPart.DeserializeDecisionsInputJsonInstructionsPart(element, data, options);
                     case "input_text":
-                        return DecisionsInstructionsInputTextPart.DeserializeDecisionsInstructionsInputTextPart(element, data, options);
+                        return DecisionsInputTextInstructionsPart.DeserializeDecisionsInputTextInstructionsPart(element, data, options);
                 }
             }
             return UnknownDecisionsInstructionsPart.DeserializeUnknownDecisionsInstructionsPart(element, data, options);

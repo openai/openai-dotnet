@@ -195,7 +195,7 @@ public class DecisionsRequestModelTests
         Assert.That(function.Namespace, Is.EqualTo("functions"));
         Assert.That(function.Status, Is.EqualTo(DecisionsToolCallStatus.InProgress));
         DecisionsFunctionToolCallOutputItem output = (DecisionsFunctionToolCallOutputItem)options.InputItems[1];
-        Assert.That(output.Output.Select(part => part.GetType()), Is.EqualTo(new[] { typeof(DecisionsToolOutputTextContentPart), typeof(DecisionsToolOutputImageContentPart) }));
+        Assert.That(output.Output.Select(part => part.GetType()), Is.EqualTo(new[] { typeof(DecisionsInputTextContentPart), typeof(DecisionsInputImageContentPart) }));
         DecisionsCustomToolCallItem custom = (DecisionsCustomToolCallItem)options.InputItems[2];
         Assert.That(custom.Input, Is.EqualTo("query"));
         Assert.That(custom.Namespace, Is.EqualTo("tools"));
@@ -253,8 +253,8 @@ public class DecisionsRequestModelTests
         Assert.That(instructions[1].GetProperty("image_url").GetString(), Is.EqualTo("https://example.invalid/reference.png"));
         Assert.That(instructions[1].GetProperty("detail").GetString(), Is.EqualTo("original"));
         Assert.That(instructions[2].GetProperty("data")[0].GetProperty("expected").GetBoolean(), Is.True);
-        Assert.That(typeof(DecisionsInstructionsInputTextPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
-        Assert.That(typeof(DecisionsInstructionsInputImagePart).GetProperty("PromptCacheBreakpoint"), Is.Null);
+        Assert.That(typeof(DecisionsInputTextInstructionsPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
+        Assert.That(typeof(DecisionsInputImageInstructionsPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
     }
 
     [Test]

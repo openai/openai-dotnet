@@ -15,8 +15,8 @@ namespace OpenAI.Decisions
         private readonly string _value;
         private const string CustomToolCallValue = "custom_tool_call";
         private const string CustomToolCallOutputValue = "custom_tool_call_output";
-        private const string FunctionCallValue = "function_call";
-        private const string FunctionCallOutputValue = "function_call_output";
+        private const string FunctionToolCallValue = "function_call";
+        private const string FunctionToolCallOutputValue = "function_call_output";
         private const string MessageValue = "message";
 
         public DecisionsItemKind(string value)
@@ -30,9 +30,9 @@ namespace OpenAI.Decisions
 
         public static DecisionsItemKind CustomToolCallOutput { get; } = new DecisionsItemKind(CustomToolCallOutputValue);
 
-        public static DecisionsItemKind FunctionCall { get; } = new DecisionsItemKind(FunctionCallValue);
+        public static DecisionsItemKind FunctionToolCall { get; } = new DecisionsItemKind(FunctionToolCallValue);
 
-        public static DecisionsItemKind FunctionCallOutput { get; } = new DecisionsItemKind(FunctionCallOutputValue);
+        public static DecisionsItemKind FunctionToolCallOutput { get; } = new DecisionsItemKind(FunctionToolCallOutputValue);
 
         public static DecisionsItemKind Message { get; } = new DecisionsItemKind(MessageValue);
 

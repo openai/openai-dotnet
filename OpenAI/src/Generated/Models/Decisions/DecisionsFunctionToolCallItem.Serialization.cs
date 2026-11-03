@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsFunctionToolCallItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallItem>
     {
-        public DecisionsFunctionToolCallItem() : this(DecisionsItemKind.FunctionCall, default, null, null, null, null, null, default)
+        public DecisionsFunctionToolCallItem() : this(DecisionsItemKind.FunctionToolCall, default, null, null, null, null, null, default)
         {
         }
 
