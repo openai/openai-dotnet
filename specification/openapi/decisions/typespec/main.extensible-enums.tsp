@@ -62,7 +62,7 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   output: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union;
   id?: string | null;
   status?:
-    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum
     | null;
 }
 
@@ -107,6 +107,13 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
     | null;
 }
 
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall
   extends createDecision_request_object_Input_union_array_item_discriminatedObject {
   type: "function_call";
@@ -116,8 +123,15 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   id?: string | null;
   `namespace`?: string | null;
   status?:
-    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum
     | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
 }
 
 model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput
@@ -127,8 +141,15 @@ model createDecision_request_object_Input_union_array_item_discriminatedObject_t
   output: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union;
   id?: string | null;
   status?:
-    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum
     | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
 }
 
 @discriminator("role")

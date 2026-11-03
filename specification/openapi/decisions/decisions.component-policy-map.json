@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum",
+      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum",
+      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum",
+      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum"
+      ]
+    },
+    {
+      "id": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum",
+      "type": "duplicate",
+      "representative": "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum",
+      "fingerprint": "sha256:44c60f1aa799a196e8ad8d5da8d47be5b4273acac69bc1bde1c4b21e73f9e9ba",
+      "members": [
+        "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum"
+      ]
+    }
+  ]
+}

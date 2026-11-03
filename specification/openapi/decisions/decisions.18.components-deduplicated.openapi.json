@@ -248,7 +248,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -390,6 +390,14 @@
           }
         ]
       },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
+        ]
+      },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall": {
         "type": "object",
         "required": [
@@ -437,7 +445,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum"
               },
               {
                 "type": "null"
@@ -450,6 +458,14 @@
           {
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
           }
+        ]
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
         ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput": {
@@ -485,7 +501,7 @@
           "status": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum"
+                "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum"
               },
               {
                 "type": "null"
@@ -498,6 +514,14 @@
           {
             "$ref": "#/components/schemas/createDecision_request_object_Input_union_array_item_discriminatedObject"
           }
+        ]
+      },
+      "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "in_progress",
+          "incomplete"
         ]
       },
       "createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage": {
