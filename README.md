@@ -616,7 +616,7 @@ DecisionCreationOptions options = new()
         {
             Content =
             {
-                new DecisionsContentInputJsonPart([BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")]),
+                new DecisionsInputJsonContentPart([BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")]),
             },
         },
     },

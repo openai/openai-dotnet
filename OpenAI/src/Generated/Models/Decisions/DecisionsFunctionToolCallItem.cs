@@ -9,9 +9,9 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsFunctionCallItem : DecisionsItem
+    public partial class DecisionsFunctionToolCallItem : DecisionsItem
     {
-        public DecisionsFunctionCallItem(string arguments, string callId, string name) : base(DecisionsItemKind.FunctionCall)
+        public DecisionsFunctionToolCallItem(string arguments, string callId, string name) : base(DecisionsItemKind.FunctionCall)
         {
             Argument.AssertNotNull(arguments, nameof(arguments));
             Argument.AssertNotNull(callId, nameof(callId));
@@ -23,7 +23,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsFunctionCallItem(DecisionsItemKind kind, in JsonPatch patch, string arguments, string callId, string name, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsFunctionToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string arguments, string callId, string name, string id, string @namespace, DecisionsToolCallStatus? status) : base(kind, patch)
         {
             Arguments = arguments;
             CallId = callId;

@@ -10,18 +10,18 @@ using System.Text.Json.Serialization;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public abstract partial class DecisionsContentInputPart
+    public abstract partial class DecisionsInputContentPart
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        protected internal DecisionsContentInputPart(DecisionsContentInputPartKind kind)
+        protected internal DecisionsInputContentPart(DecisionsInputContentPartKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsContentInputPart(DecisionsContentInputPartKind kind, in JsonPatch patch)
+        internal DecisionsInputContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public DecisionsContentInputPartKind Kind { get; }
+        public DecisionsInputContentPartKind Kind { get; }
     }
 }

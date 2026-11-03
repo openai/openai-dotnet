@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsContentInputImagePart : DecisionsContentInputPart, IJsonModel<DecisionsContentInputImagePart>
+    public partial class DecisionsInputImageContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputImageContentPart>
     {
-        public DecisionsContentInputImagePart() : this(DecisionsContentInputPartKind.InputImage, default, null, default, null)
+        public DecisionsInputImageContentPart() : this(DecisionsInputContentPartKind.InputImage, default, null, default, null)
         {
         }
 
-        protected override DecisionsContentInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override DecisionsInputContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentInputImagePart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputImageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsContentInputImagePart(document.RootElement, data, options);
+                        return DeserializeDecisionsInputImageContentPart(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsContentInputImagePart)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentInputImagePart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputImageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsContentInputImagePart)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<DecisionsContentInputImagePart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DecisionsInputImageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        DecisionsContentInputImagePart IPersistableModel<DecisionsContentInputImagePart>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsContentInputImagePart)PersistableModelCreateCore(data, options);
+        DecisionsInputImageContentPart IPersistableModel<DecisionsInputImageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsInputImageContentPart)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<DecisionsContentInputImagePart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DecisionsInputImageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<DecisionsContentInputImagePart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DecisionsInputImageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Decisions
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentInputImagePart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputImageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsContentInputImagePart)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -93,26 +93,26 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        DecisionsContentInputImagePart IJsonModel<DecisionsContentInputImagePart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsContentInputImagePart)JsonModelCreateCore(ref reader, options);
+        DecisionsInputImageContentPart IJsonModel<DecisionsInputImageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsInputImageContentPart)JsonModelCreateCore(ref reader, options);
 
-        protected override DecisionsContentInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override DecisionsInputContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsContentInputImagePart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputImageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsContentInputImagePart)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsContentInputImagePart(document.RootElement, null, options);
+            return DeserializeDecisionsInputImageContentPart(document.RootElement, null, options);
         }
 
-        internal static DecisionsContentInputImagePart DeserializeDecisionsContentInputImagePart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsInputImageContentPart DeserializeDecisionsInputImageContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            DecisionsContentInputPartKind kind = default;
+            DecisionsInputContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -123,7 +123,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new DecisionsContentInputPartKind(prop.Value.GetString());
+                    kind = new DecisionsInputContentPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))
@@ -153,7 +153,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsContentInputImagePart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint);
+            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

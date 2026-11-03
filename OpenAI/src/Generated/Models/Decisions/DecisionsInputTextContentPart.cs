@@ -9,31 +9,28 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsContentInputImagePart : DecisionsContentInputPart
+    public partial class DecisionsInputTextContentPart : DecisionsInputContentPart
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsContentInputImagePart(string imageUri) : base(DecisionsContentInputPartKind.InputImage)
+        public DecisionsInputTextContentPart(string text) : base(DecisionsInputContentPartKind.InputText)
         {
-            Argument.AssertNotNull(imageUri, nameof(imageUri));
+            Argument.AssertNotNull(text, nameof(text));
 
-            ImageUri = imageUri;
+            Text = text;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsContentInputImagePart(DecisionsContentInputPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
+        internal DecisionsInputTextContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
-            ImageUri = imageUri;
-            ImageDetailLevel = imageDetailLevel;
+            Text = text;
             PromptCacheBreakpoint = promptCacheBreakpoint;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ImageUri { get; set; }
-
-        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+        public string Text { get; set; }
 
         public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
     }

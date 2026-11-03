@@ -9,22 +9,22 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsContentRefusalPart : DecisionsContentOutputPart
+    public partial class DecisionsOutputTextContentPart : DecisionsOutputContentPart
     {
-        public DecisionsContentRefusalPart(string refusal) : base(DecisionsContentOutputPartKind.Refusal)
+        public DecisionsOutputTextContentPart(string text) : base(DecisionsOutputContentPartKind.OutputText)
         {
-            Argument.AssertNotNull(refusal, nameof(refusal));
+            Argument.AssertNotNull(text, nameof(text));
 
-            Refusal = refusal;
+            Text = text;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsContentRefusalPart(DecisionsContentOutputPartKind kind, in JsonPatch patch, string refusal) : base(kind, patch)
+        internal DecisionsOutputTextContentPart(DecisionsOutputContentPartKind kind, in JsonPatch patch, string text) : base(kind, patch)
         {
-            Refusal = refusal;
+            Text = text;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Refusal { get; set; }
+        public string Text { get; set; }
     }
 }

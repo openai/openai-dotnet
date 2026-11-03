@@ -213,7 +213,7 @@ public class DecisionsClientTests
             {
                 new DecisionsUserMessageItem
                 {
-                    Content = { new DecisionsContentInputJsonPart([BinaryData.FromString("""{"value":true}""")]) },
+                    Content = { new DecisionsInputJsonContentPart([BinaryData.FromString("""{"value":true}""")]) },
                 },
             },
             Questions =

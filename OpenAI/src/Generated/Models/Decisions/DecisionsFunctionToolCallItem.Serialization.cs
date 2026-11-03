@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsFunctionCallItem : DecisionsItem, IJsonModel<DecisionsFunctionCallItem>
+    public partial class DecisionsFunctionToolCallItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallItem>
     {
-        public DecisionsFunctionCallItem() : this(DecisionsItemKind.FunctionCall, default, null, null, null, null, null, default)
+        public DecisionsFunctionToolCallItem() : this(DecisionsItemKind.FunctionCall, default, null, null, null, null, null, default)
         {
         }
 
         protected override DecisionsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsFunctionCallItem(document.RootElement, data, options);
+                        return DeserializeDecisionsFunctionToolCallItem(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsFunctionCallItem)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(DecisionsFunctionCallItem)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<DecisionsFunctionCallItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DecisionsFunctionToolCallItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        DecisionsFunctionCallItem IPersistableModel<DecisionsFunctionCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsFunctionCallItem)PersistableModelCreateCore(data, options);
+        DecisionsFunctionToolCallItem IPersistableModel<DecisionsFunctionToolCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (DecisionsFunctionToolCallItem)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<DecisionsFunctionCallItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DecisionsFunctionToolCallItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<DecisionsFunctionCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DecisionsFunctionToolCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Decisions
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsFunctionCallItem)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -108,20 +108,20 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        DecisionsFunctionCallItem IJsonModel<DecisionsFunctionCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsFunctionCallItem)JsonModelCreateCore(ref reader, options);
+        DecisionsFunctionToolCallItem IJsonModel<DecisionsFunctionToolCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsFunctionToolCallItem)JsonModelCreateCore(ref reader, options);
 
         protected override DecisionsItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DecisionsFunctionToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(DecisionsFunctionCallItem)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsFunctionCallItem(document.RootElement, null, options);
+            return DeserializeDecisionsFunctionToolCallItem(document.RootElement, null, options);
         }
 
-        internal static DecisionsFunctionCallItem DeserializeDecisionsFunctionCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsFunctionToolCallItem DeserializeDecisionsFunctionToolCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -191,7 +191,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsFunctionCallItem(
+            return new DecisionsFunctionToolCallItem(
                 kind,
                 patch,
                 arguments,

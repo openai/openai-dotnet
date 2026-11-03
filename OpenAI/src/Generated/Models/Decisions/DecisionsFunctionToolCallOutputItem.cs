@@ -11,10 +11,10 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsFunctionCallOutputItem : DecisionsItem
+    public partial class DecisionsFunctionToolCallOutputItem : DecisionsItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsFunctionCallOutputItem(string callId, IEnumerable<DecisionsToolOutputContentPart> output) : base(DecisionsItemKind.FunctionCallOutput)
+        public DecisionsFunctionToolCallOutputItem(string callId, IEnumerable<DecisionsToolOutputContentPart> output) : base(DecisionsItemKind.FunctionCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(output, nameof(output));
@@ -26,7 +26,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsFunctionCallOutputItem(DecisionsItemKind kind, in JsonPatch patch, string callId, IList<DecisionsToolOutputContentPart> output, string id, DecisionsToolCallStatus? status) : base(kind, patch)
+        internal DecisionsFunctionToolCallOutputItem(DecisionsItemKind kind, in JsonPatch patch, string callId, IList<DecisionsToolOutputContentPart> output, string id, DecisionsToolCallStatus? status) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;

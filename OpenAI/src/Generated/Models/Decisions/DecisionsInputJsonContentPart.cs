@@ -12,9 +12,9 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsContentInputJsonPart : DecisionsContentInputPart
+    public partial class DecisionsInputJsonContentPart : DecisionsInputContentPart
     {
-        public DecisionsContentInputJsonPart(IEnumerable<BinaryData> data) : base(DecisionsContentInputPartKind.InputJson)
+        public DecisionsInputJsonContentPart(IEnumerable<BinaryData> data) : base(DecisionsInputContentPartKind.InputJson)
         {
             Argument.AssertNotNull(data, nameof(data));
 
@@ -22,7 +22,7 @@ namespace OpenAI.Decisions
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsContentInputJsonPart(DecisionsContentInputPartKind kind, in JsonPatch patch, IList<BinaryData> data) : base(kind, patch)
+        internal DecisionsInputJsonContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, IList<BinaryData> data) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Data = data ?? new ChangeTrackingList<BinaryData>();

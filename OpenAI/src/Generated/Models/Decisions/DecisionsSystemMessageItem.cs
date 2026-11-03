@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsSystemMessageItem : DecisionsMessageItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsSystemMessageItem(IEnumerable<DecisionsInstructionMessageContentPart> content) : base(DecisionsMessageRole.System)
+        public DecisionsSystemMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(DecisionsMessageRole.System)
         {
             Argument.AssertNotNull(content, nameof(content));
 
@@ -24,14 +24,14 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsSystemMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsInstructionMessageContentPart> content) : base(kind, patch, role)
+        internal DecisionsSystemMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsInputContentPart> content) : base(kind, patch, role)
         {
             // Plugin customization: ensure initialization of collections
-            Content = content ?? new ChangeTrackingList<DecisionsInstructionMessageContentPart>();
+            Content = content ?? new ChangeTrackingList<DecisionsInputContentPart>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IList<DecisionsInstructionMessageContentPart> Content { get; }
+        public IList<DecisionsInputContentPart> Content { get; }
     }
 }

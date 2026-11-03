@@ -202,7 +202,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
     {
         DecisionsClient client = GetProxiedDecisionsClient();
         DecisionCreationOptions options = CreateTextOptions("Evaluate these order records.");
-        ((DecisionsUserMessageItem)options.InputItems[0]).Content.Add(new DecisionsContentInputJsonPart(
+        ((DecisionsUserMessageItem)options.InputItems[0]).Content.Add(new DecisionsInputJsonContentPart(
         [
             BinaryData.FromString("""{"order_id":"first","total":42}"""),
             BinaryData.FromString("""{"order_id":"second","total":7}"""),
@@ -265,29 +265,29 @@ public class DecisionsTests : OpenAIRecordedTestBase
             {
                 new DecisionsSystemMessageItem
                 {
-                    Content = { new DecisionsInstructionMessageTextContentPart { Text = "You are a shopping assistant." } },
+                    Content = { new DecisionsInputTextContentPart { Text = "You are a shopping assistant." } },
                 },
                 new DecisionsDeveloperMessageItem
                 {
-                    Content = { new DecisionsInstructionMessageTextContentPart { Text = "Use tool results to answer product questions." } },
+                    Content = { new DecisionsInputTextContentPart { Text = "Use tool results to answer product questions." } },
                 },
                 new DecisionsUserMessageItem
                 {
-                    Content = { new DecisionsContentInputTextPart { Text = "Is the widget in stock, and what does it cost?" } },
+                    Content = { new DecisionsInputTextContentPart { Text = "Is the widget in stock, and what does it cost?" } },
                 },
                 new DecisionsAssistantMessageItem
                 {
-                    Content = { new DecisionsContentOutputTextPart { Text = "I will check the price and availability." } },
+                    Content = { new DecisionsOutputTextContentPart { Text = "I will check the price and availability." } },
                     Phase = DecisionsAssistantMessagePhase.Commentary,
                 },
-                new DecisionsFunctionCallItem
+                new DecisionsFunctionToolCallItem
                 {
                     CallId = "call_price",
                     Name = "lookup_price",
                     Arguments = """{"product":"widget"}""",
                     Status = DecisionsToolCallStatus.Completed,
                 },
-                new DecisionsFunctionCallOutputItem
+                new DecisionsFunctionToolCallOutputItem
                 {
                     CallId = "call_price",
                     Output = { new DecisionsToolOutputTextContentPart { Text = """{"price":42,"currency":"USD"}""" } },
@@ -308,7 +308,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
                 },
                 new DecisionsAssistantMessageItem
                 {
-                    Content = { new DecisionsContentOutputTextPart { Text = "The widget is in stock and costs $42 USD." } },
+                    Content = { new DecisionsOutputTextContentPart { Text = "The widget is in stock and costs $42 USD." } },
                     Phase = DecisionsAssistantMessagePhase.FinalAnswer,
                 },
             },
@@ -337,7 +337,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionsClient client = GetProxiedDecisionsClient();
         DecisionCreationOptions options = CreateTextOptions(
             string.Concat(Enumerable.Repeat("Reference fact: the product is in stock.\n", 1024)));
-        DecisionsContentInputTextPart text = (DecisionsContentInputTextPart)((DecisionsUserMessageItem)options.InputItems[0]).Content[0];
+        DecisionsInputTextContentPart text = (DecisionsInputTextContentPart)((DecisionsUserMessageItem)options.InputItems[0]).Content[0];
         text.PromptCacheBreakpoint = new() { Mode = DecisionsPromptCacheBreakpointMode.Explicit };
         options.PromptCacheKey = "openai-dotnet-decisions-cache-test";
         options.PromptCacheOptions = new()
@@ -369,7 +369,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
             {
                 new DecisionsUserMessageItem
                 {
-                    Content = { new DecisionsContentInputTextPart { Text = text } },
+                    Content = { new DecisionsInputTextContentPart { Text = text } },
                 },
             },
         };
@@ -379,7 +379,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
     {
         DecisionCreationOptions options = CreateTextOptions("Evaluate the supplied image.");
         DecisionsUserMessageItem message = (DecisionsUserMessageItem)options.InputItems[0];
-        message.Content.Add(new DecisionsContentInputImagePart
+        message.Content.Add(new DecisionsInputImageContentPart
         {
             ImageUri = imageUri,
             ImageDetailLevel = DecisionsImageDetailLevel.Low,

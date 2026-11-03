@@ -21,7 +21,7 @@ public class DecisionsRequestModelTests
         yield return new(typeof(DecisionsAssistantMessageItem), "content", """{"type":"message","role":"assistant","content":VALUE}""", "output_text");
         yield return new(typeof(DecisionsDeveloperMessageItem), "content", """{"type":"message","role":"developer","content":VALUE}""", "input_text");
         yield return new(typeof(DecisionsSystemMessageItem), "content", """{"type":"message","role":"system","content":VALUE}""", "input_text");
-        yield return new(typeof(DecisionsFunctionCallOutputItem), "output", """{"type":"function_call_output","call_id":"call_1","output":VALUE}""", "input_text");
+        yield return new(typeof(DecisionsFunctionToolCallOutputItem), "output", """{"type":"function_call_output","call_id":"call_1","output":VALUE}""", "input_text");
         yield return new(typeof(DecisionsCustomToolCallOutputItem), "output", """{"type":"custom_tool_call_output","call_id":"call_2","output":VALUE}""", "input_text");
         yield return new(typeof(DecisionsChoiceQuestion), "instructions", """{"type":"choice","choices":[],"instructions":VALUE}""", "input_text");
         yield return new(typeof(DecisionsPredicateQuestion), "instructions", """{"type":"predicate","instructions":VALUE}""", "input_text");
@@ -119,10 +119,10 @@ public class DecisionsRequestModelTests
     {
         DecisionsMessageItem[] messages =
         [
-            new DecisionsUserMessageItem([new DecisionsContentInputTextPart { Text = "user" }]),
-            new DecisionsAssistantMessageItem([new DecisionsContentOutputTextPart { Text = "assistant" }]),
-            new DecisionsDeveloperMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "developer" }]),
-            new DecisionsSystemMessageItem([new DecisionsInstructionMessageTextContentPart { Text = "system" }]),
+            new DecisionsUserMessageItem([new DecisionsInputTextContentPart { Text = "user" }]),
+            new DecisionsAssistantMessageItem([new DecisionsOutputTextContentPart { Text = "assistant" }]),
+            new DecisionsDeveloperMessageItem([new DecisionsInputTextContentPart { Text = "developer" }]),
+            new DecisionsSystemMessageItem([new DecisionsInputTextContentPart { Text = "system" }]),
         ];
         foreach (DecisionsMessageItem message in messages)
         {
@@ -190,11 +190,11 @@ public class DecisionsRequestModelTests
             ]}
             """;
         DecisionCreationOptions options = ModelReaderWriter.Read<DecisionCreationOptions>(BinaryData.FromString(json));
-        DecisionsFunctionCallItem function = (DecisionsFunctionCallItem)options.InputItems[0];
+        DecisionsFunctionToolCallItem function = (DecisionsFunctionToolCallItem)options.InputItems[0];
         Assert.That(function.Arguments, Is.EqualTo("""{"id":1}"""));
         Assert.That(function.Namespace, Is.EqualTo("functions"));
         Assert.That(function.Status, Is.EqualTo(DecisionsToolCallStatus.InProgress));
-        DecisionsFunctionCallOutputItem output = (DecisionsFunctionCallOutputItem)options.InputItems[1];
+        DecisionsFunctionToolCallOutputItem output = (DecisionsFunctionToolCallOutputItem)options.InputItems[1];
         Assert.That(output.Output.Select(part => part.GetType()), Is.EqualTo(new[] { typeof(DecisionsToolOutputTextContentPart), typeof(DecisionsToolOutputImageContentPart) }));
         DecisionsCustomToolCallItem custom = (DecisionsCustomToolCallItem)options.InputItems[2];
         Assert.That(custom.Input, Is.EqualTo("query"));
@@ -218,9 +218,9 @@ public class DecisionsRequestModelTests
     {
         const string json = """{"type":"message","role":"assistant","content":[{"type":"output_text","text":"answer"},{"type":"refusal","refusal":"No."}],"phase":"future_phase"}""";
         DecisionsAssistantMessageItem message = (DecisionsAssistantMessageItem)ModelReaderWriter.Read<DecisionsItem>(BinaryData.FromString(json));
-        Assert.That(message.Content[0], Is.TypeOf<DecisionsContentOutputTextPart>());
-        Assert.That(message.Content[1], Is.TypeOf<DecisionsContentRefusalPart>());
-        Assert.That(((DecisionsContentRefusalPart)message.Content[1]).Refusal, Is.EqualTo("No."));
+        Assert.That(message.Content[0], Is.TypeOf<DecisionsOutputTextContentPart>());
+        Assert.That(message.Content[1], Is.TypeOf<DecisionsRefusalContentPart>());
+        Assert.That(((DecisionsRefusalContentPart)message.Content[1]).Refusal, Is.EqualTo("No."));
         Assert.That(message.Phase.ToString(), Is.EqualTo("future_phase"));
         using JsonDocument expected = JsonDocument.Parse(json);
         using JsonDocument serialized = JsonDocument.Parse(ModelReaderWriter.Write(message));
@@ -272,10 +272,10 @@ public class DecisionsRequestModelTests
         Assert.That(options.PromptCacheOptions.Mode, Is.EqualTo(DecisionsPromptCacheMode.Explicit));
         Assert.That(options.PromptCacheOptions.TimeToLive, Is.EqualTo(DecisionsPromptCacheTimeToLive.ThirtyMinutes));
         DecisionsSystemMessageItem system = (DecisionsSystemMessageItem)options.InputItems[0];
-        Assert.That(((DecisionsInstructionMessageTextContentPart)system.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
+        Assert.That(((DecisionsInputTextContentPart)system.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
         DecisionsUserMessageItem user = (DecisionsUserMessageItem)options.InputItems[1];
-        Assert.That(((DecisionsContentInputTextPart)user.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
-        Assert.That(((DecisionsContentInputImagePart)user.Content[1]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
+        Assert.That(((DecisionsInputTextContentPart)user.Content[0]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
+        Assert.That(((DecisionsInputImageContentPart)user.Content[1]).PromptCacheBreakpoint.Mode, Is.EqualTo(DecisionsPromptCacheBreakpointMode.Explicit));
 
         options.Patch.Set("$.prompt_cache_options.ttl"u8, "future_ttl");
         options.Patch.Set("$.input[1].content[1].prompt_cache_breakpoint.mode"u8, "future_mode");
@@ -294,7 +294,7 @@ public class DecisionsRequestModelTests
         Assert.That(options.PromptCacheKey, Is.Null);
         Assert.That(options.PromptCacheOptions, Is.Null);
         Assert.That(options.SafetyIdentifier, Is.Null);
-        DecisionsContentInputImagePart image = ModelReaderWriter.Read<DecisionsContentInputImagePart>(
+        DecisionsInputImageContentPart image = ModelReaderWriter.Read<DecisionsInputImageContentPart>(
             BinaryData.FromString("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":null,"prompt_cache_breakpoint":null}"""));
         Assert.That(image.ImageDetailLevel, Is.Null);
         Assert.That(image.PromptCacheBreakpoint, Is.Null);

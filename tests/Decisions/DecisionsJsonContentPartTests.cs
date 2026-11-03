@@ -15,7 +15,7 @@ public class DecisionsJsonContentPartTests
     [TestCase("""{"type":"input_json","data":[{"count":2}]}""")]
     public void InputJsonDataUsesRawJsonObjects(string json)
     {
-        DecisionsContentInputJsonPart part = ModelReaderWriter.Read<DecisionsContentInputJsonPart>(BinaryData.FromString(json));
+        DecisionsInputJsonContentPart part = ModelReaderWriter.Read<DecisionsInputJsonContentPart>(BinaryData.FromString(json));
 
         Assert.That(part.Data, Has.Count.EqualTo(1));
         using JsonDocument data = JsonDocument.Parse(part.Data.Single());
@@ -39,7 +39,7 @@ public class DecisionsJsonContentPartTests
     public void JsonDataArrayPreservesEachObjectAndSerializesAsJson()
     {
         const string inputJson = """{"type":"input_json","data":[{"count":2},{"enabled":true}]}""";
-        DecisionsContentInputJsonPart input = ModelReaderWriter.Read<DecisionsContentInputJsonPart>(BinaryData.FromString(inputJson));
+        DecisionsInputJsonContentPart input = ModelReaderWriter.Read<DecisionsInputJsonContentPart>(BinaryData.FromString(inputJson));
         DecisionsInstructionsInputJsonPart instructions = ModelReaderWriter.Read<DecisionsInstructionsInputJsonPart>(BinaryData.FromString(inputJson));
 
         Assert.That(input.Data, Has.Count.EqualTo(2));
@@ -68,7 +68,7 @@ public class DecisionsJsonContentPartTests
             BinaryData content = BinaryData.FromString($$"""{"type":"{{contentType}}","data":{{json}}}""");
             if (contentType == "input_json")
             {
-                Assert.Throws<JsonException>(() => ModelReaderWriter.Read<DecisionsContentInputJsonPart>(content));
+                Assert.Throws<JsonException>(() => ModelReaderWriter.Read<DecisionsInputJsonContentPart>(content));
             }
             else
             {

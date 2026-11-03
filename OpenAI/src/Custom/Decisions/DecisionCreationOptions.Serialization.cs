@@ -13,7 +13,7 @@ public partial class DecisionCreationOptions
     {
         input = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsItem>(
             property,
-            text => new DecisionsUserMessageItem([new DecisionsContentInputTextPart { Text = text }]),
+            text => new DecisionsUserMessageItem([new DecisionsInputTextContentPart { Text = text }]),
             DecisionsItem.DeserializeDecisionsItem,
             options);
     }

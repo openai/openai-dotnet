@@ -9,28 +9,31 @@ using OpenAI;
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
-    public partial class DecisionsInstructionMessageTextContentPart : DecisionsInstructionMessageContentPart
+    public partial class DecisionsInputImageContentPart : DecisionsInputContentPart
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsInstructionMessageTextContentPart(string text) : base(DecisionsInstructionMessageContentPartKind.InputText)
+        public DecisionsInputImageContentPart(string imageUri) : base(DecisionsInputContentPartKind.InputImage)
         {
-            Argument.AssertNotNull(text, nameof(text));
+            Argument.AssertNotNull(imageUri, nameof(imageUri));
 
-            Text = text;
+            ImageUri = imageUri;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInstructionMessageTextContentPart(DecisionsInstructionMessageContentPartKind kind, in JsonPatch patch, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
+        internal DecisionsInputImageContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
-            Text = text;
+            ImageUri = imageUri;
+            ImageDetailLevel = imageDetailLevel;
             PromptCacheBreakpoint = promptCacheBreakpoint;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Text { get; set; }
+        public string ImageUri { get; set; }
+
+        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
 
         public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
     }

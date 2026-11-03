@@ -14,7 +14,7 @@ namespace OpenAI.Decisions
     public partial class DecisionsAssistantMessageItem : DecisionsMessageItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsAssistantMessageItem(IEnumerable<DecisionsContentOutputPart> content) : base(DecisionsMessageRole.Assistant)
+        public DecisionsAssistantMessageItem(IEnumerable<DecisionsOutputContentPart> content) : base(DecisionsMessageRole.Assistant)
         {
             Argument.AssertNotNull(content, nameof(content));
 
@@ -24,16 +24,16 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsAssistantMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsContentOutputPart> content, DecisionsAssistantMessagePhase? phase) : base(kind, patch, role)
+        internal DecisionsAssistantMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsOutputContentPart> content, DecisionsAssistantMessagePhase? phase) : base(kind, patch, role)
         {
             // Plugin customization: ensure initialization of collections
-            Content = content ?? new ChangeTrackingList<DecisionsContentOutputPart>();
+            Content = content ?? new ChangeTrackingList<DecisionsOutputContentPart>();
             Phase = phase;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IList<DecisionsContentOutputPart> Content { get; }
+        public IList<DecisionsOutputContentPart> Content { get; }
 
         public DecisionsAssistantMessagePhase? Phase { get; set; }
     }

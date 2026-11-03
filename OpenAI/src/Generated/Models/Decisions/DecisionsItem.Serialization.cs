@@ -108,9 +108,9 @@ namespace OpenAI.Decisions
                     case "custom_tool_call_output":
                         return DecisionsCustomToolCallOutputItem.DeserializeDecisionsCustomToolCallOutputItem(element, data, options);
                     case "function_call":
-                        return DecisionsFunctionCallItem.DeserializeDecisionsFunctionCallItem(element, data, options);
+                        return DecisionsFunctionToolCallItem.DeserializeDecisionsFunctionToolCallItem(element, data, options);
                     case "function_call_output":
-                        return DecisionsFunctionCallOutputItem.DeserializeDecisionsFunctionCallOutputItem(element, data, options);
+                        return DecisionsFunctionToolCallOutputItem.DeserializeDecisionsFunctionToolCallOutputItem(element, data, options);
                     case "message":
                         return DecisionsMessageItem.DeserializeDecisionsMessageItem(element, data, options);
                 }

@@ -21,7 +21,7 @@ public class DecisionsModelTests
     {
         DecisionsUserMessageItem message = new()
         {
-            Content = { new DecisionsContentInputTextPart { Text = "hello" } }
+            Content = { new DecisionsInputTextContentPart { Text = "hello" } }
         };
 
         AssertUserMessage(message);
@@ -31,7 +31,7 @@ public class DecisionsModelTests
     [Test]
     public void ContentConstructorUsesUserRole()
     {
-        DecisionsUserMessageItem message = new([new DecisionsContentInputTextPart { Text = "hello" }]);
+        DecisionsUserMessageItem message = new([new DecisionsInputTextContentPart { Text = "hello" }]);
 
         AssertUserMessage(message);
     }
@@ -66,16 +66,15 @@ public class DecisionsModelTests
         yield return Model<DecisionsAssistantMessageItem>("""{"type":"message","role":"assistant","content":[{"type":"output_text","text":"hello"}],"phase":"final_answer"}""");
         yield return Model<DecisionsDeveloperMessageItem>("""{"type":"message","role":"developer","content":[{"type":"input_text","text":"hello"}]}""");
         yield return Model<DecisionsSystemMessageItem>("""{"type":"message","role":"system","content":[{"type":"input_text","text":"hello"}]}""");
-        yield return Model<DecisionsFunctionCallItem>("""{"type":"function_call","call_id":"call_1","name":"lookup","arguments":"{}","id":"fc_1","namespace":"tools","status":"completed"}""");
+        yield return Model<DecisionsFunctionToolCallItem>("""{"type":"function_call","call_id":"call_1","name":"lookup","arguments":"{}","id":"fc_1","namespace":"tools","status":"completed"}""");
         yield return Model<DecisionsCustomToolCallItem>("""{"type":"custom_tool_call","call_id":"call_2","name":"lookup","input":"hello","id":"ctc_1","namespace":"tools","status":"completed"}""");
-        yield return Model<DecisionsFunctionCallOutputItem>("""{"type":"function_call_output","call_id":"call_1","output":"result","id":"fco_1","status":"completed"}""");
+        yield return Model<DecisionsFunctionToolCallOutputItem>("""{"type":"function_call_output","call_id":"call_1","output":"result","id":"fco_1","status":"completed"}""");
         yield return Model<DecisionsCustomToolCallOutputItem>("""{"type":"custom_tool_call_output","call_id":"call_2","output":"result","id":"ctco_1","status":"completed"}""");
-        yield return Model<DecisionsContentInputTextPart>("""{"type":"input_text","text":"hello"}""");
-        yield return Model<DecisionsContentInputImagePart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"original"}""");
-        yield return Model<DecisionsContentInputJsonPart>("""{"type":"input_json","data":{"count":2}}""");
-        yield return Model<DecisionsContentOutputTextPart>("""{"type":"output_text","text":"hello"}""");
-        yield return Model<DecisionsContentRefusalPart>("""{"type":"refusal","refusal":"No."}""");
-        yield return Model<DecisionsInstructionMessageTextContentPart>("""{"type":"input_text","text":"hello","prompt_cache_breakpoint":{"mode":"explicit"}}""");
+        yield return Model<DecisionsInputTextContentPart>("""{"type":"input_text","text":"hello","prompt_cache_breakpoint":{"mode":"explicit"}}""");
+        yield return Model<DecisionsInputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"original"}""");
+        yield return Model<DecisionsInputJsonContentPart>("""{"type":"input_json","data":{"count":2}}""");
+        yield return Model<DecisionsOutputTextContentPart>("""{"type":"output_text","text":"hello"}""");
+        yield return Model<DecisionsRefusalContentPart>("""{"type":"refusal","refusal":"No."}""");
         yield return Model<DecisionsToolOutputTextContentPart>("""{"type":"input_text","text":"hello"}""");
         yield return Model<DecisionsToolOutputImageContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png","detail":"high"}""");
         yield return Model<DecisionsInstructionsInputTextPart>("""{"type":"input_text","text":"hello"}""");
@@ -152,7 +151,7 @@ public class DecisionsModelTests
         Assert.That(message, Is.Not.Null);
         Assert.That(message.Kind, Is.EqualTo(DecisionsItemKind.Message));
         Assert.That(message.Content, Has.Count.EqualTo(1));
-        Assert.That(((DecisionsContentInputTextPart)message.Content.Single()).Text, Is.EqualTo(text));
+        Assert.That(((DecisionsInputTextContentPart)message.Content.Single()).Text, Is.EqualTo(text));
 
         using JsonDocument normalized = JsonDocument.Parse(ModelReaderWriter.Write(shorthand));
         using JsonDocument expanded = JsonDocument.Parse(ModelReaderWriter.Write(longhand));
@@ -170,8 +169,8 @@ public class DecisionsModelTests
         DecisionsUserMessageItem shorthand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":{{encodedText}}}""");
         DecisionsUserMessageItem longhand = Read<DecisionsUserMessageItem>($$"""{"type":"message","role":"user","content":[{"type":"input_text","text":{{encodedText}}}]}""");
         Assert.That(shorthand.Content, Has.Count.EqualTo(1));
-        Assert.That(shorthand.Content[0], Is.TypeOf<DecisionsContentInputTextPart>());
-        Assert.That(((DecisionsContentInputTextPart)shorthand.Content[0]).Text, Is.EqualTo(text));
+        Assert.That(shorthand.Content[0], Is.TypeOf<DecisionsInputTextContentPart>());
+        Assert.That(((DecisionsInputTextContentPart)shorthand.Content[0]).Text, Is.EqualTo(text));
         using JsonDocument normalized = JsonDocument.Parse(ModelReaderWriter.Write(shorthand));
         using JsonDocument expanded = JsonDocument.Parse(ModelReaderWriter.Write(longhand));
         AssertJsonContains(expanded.RootElement, normalized.RootElement);
@@ -195,7 +194,7 @@ public class DecisionsModelTests
         Assert.That(options.InputItems, Has.Count.EqualTo(2));
         DecisionsUserMessageItem message = (DecisionsUserMessageItem)options.InputItems[0];
         Assert.That(message.Content, Has.Count.EqualTo(2));
-        Assert.That(((DecisionsContentInputImagePart)message.Content[1]).ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
+        Assert.That(((DecisionsInputImageContentPart)message.Content[1]).ImageDetailLevel, Is.EqualTo(DecisionsImageDetailLevel.High));
         using JsonDocument serialized = JsonDocument.Parse(ModelReaderWriter.Write(options));
         JsonElement firstMessage = serialized.RootElement.GetProperty("input")[0];
         Assert.That(firstMessage.GetProperty("future_message").GetInt32(), Is.EqualTo(42));
@@ -362,7 +361,7 @@ public class DecisionsModelTests
         DecisionCreationOptions options = new()
         {
             Model = "test",
-            InputItems = { new DecisionsUserMessageItem { Content = { new DecisionsContentInputTextPart { Text = "original" } } } },
+            InputItems = { new DecisionsUserMessageItem { Content = { new DecisionsInputTextContentPart { Text = "original" } } } },
             Questions = { new DecisionsChoiceQuestion { Instructions = { new DecisionsInstructionsInputTextPart { Text = "choose" } }, Choices = { new DecisionsChoice { Value = true } } } }
         };
         if (fromJson)
@@ -413,10 +412,9 @@ public class DecisionsModelTests
 
     // Verifies unknown hierarchy kinds and their additional JSON properties survive round-tripping.
     [TestCase(typeof(DecisionsItem))]
-    [TestCase(typeof(DecisionsContentInputPart))]
-    [TestCase(typeof(DecisionsContentOutputPart))]
+    [TestCase(typeof(DecisionsInputContentPart))]
+    [TestCase(typeof(DecisionsOutputContentPart))]
     [TestCase(typeof(DecisionsInstructionsPart))]
-    [TestCase(typeof(DecisionsInstructionMessageContentPart))]
     [TestCase(typeof(DecisionsToolOutputContentPart))]
     [TestCase(typeof(DecisionsQuestion))]
     [TestCase(typeof(DecisionsAnswer))]
@@ -437,11 +435,11 @@ public class DecisionsModelTests
     public void ExternalSubclassesCanSpecifyExtensibleKinds()
     {
         DecisionsItem item = new ExternalItem();
-        DecisionsContentInputPart content = new ExternalContentPart();
+        DecisionsInputContentPart content = new ExternalContentPart();
         DecisionsQuestion question = new ExternalQuestion();
         DecisionsAnswer answer = new ExternalAnswer();
         Assert.That(item.Kind, Is.EqualTo(new DecisionsItemKind("external_item")));
-        Assert.That(content.Kind, Is.EqualTo(new DecisionsContentInputPartKind("external_content")));
+        Assert.That(content.Kind, Is.EqualTo(new DecisionsInputContentPartKind("external_content")));
         Assert.That(question.Kind, Is.EqualTo(new DecisionsQuestionKind("external_question")));
         Assert.That(answer.Kind, Is.EqualTo(new DecisionsAnswerKind("external_answer")));
         AssertSerializedKind(item, "external_item");
@@ -452,10 +450,9 @@ public class DecisionsModelTests
 
     // Verifies hierarchy bases expose public get-only kinds and protected-internal kind constructors.
     [TestCase(typeof(DecisionsItem), typeof(DecisionsItemKind))]
-    [TestCase(typeof(DecisionsContentInputPart), typeof(DecisionsContentInputPartKind))]
-    [TestCase(typeof(DecisionsContentOutputPart), typeof(DecisionsContentOutputPartKind))]
+    [TestCase(typeof(DecisionsInputContentPart), typeof(DecisionsInputContentPartKind))]
+    [TestCase(typeof(DecisionsOutputContentPart), typeof(DecisionsOutputContentPartKind))]
     [TestCase(typeof(DecisionsInstructionsPart), typeof(DecisionsInstructionsPartKind))]
-    [TestCase(typeof(DecisionsInstructionMessageContentPart), typeof(DecisionsInstructionMessageContentPartKind))]
     [TestCase(typeof(DecisionsToolOutputContentPart), typeof(DecisionsToolOutputContentPartKind))]
     [TestCase(typeof(DecisionsQuestion), typeof(DecisionsQuestionKind))]
     [TestCase(typeof(DecisionsAnswer), typeof(DecisionsAnswerKind))]
@@ -476,8 +473,8 @@ public class DecisionsModelTests
     public void KnownDiscriminatorsDeserializeToConcreteModels()
     {
         Assert.That(Read<DecisionsItem>("""{"type":"message","role":"user","content":[]}"""), Is.TypeOf<DecisionsUserMessageItem>());
-        Assert.That(Read<DecisionsContentInputPart>("""{"type":"input_text","text":"hello"}"""), Is.TypeOf<DecisionsContentInputTextPart>());
-        Assert.That(Read<DecisionsContentInputPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png"}"""), Is.TypeOf<DecisionsContentInputImagePart>());
+        Assert.That(Read<DecisionsInputContentPart>("""{"type":"input_text","text":"hello"}"""), Is.TypeOf<DecisionsInputTextContentPart>());
+        Assert.That(Read<DecisionsInputContentPart>("""{"type":"input_image","image_url":"https://example.invalid/image.png"}"""), Is.TypeOf<DecisionsInputImageContentPart>());
         Assert.That(Read<DecisionsQuestion>("""{"type":"choice","instructions":"choose","choices":[]}"""), Is.TypeOf<DecisionsChoiceQuestion>());
         Assert.That(Read<DecisionsQuestion>("""{"type":"predicate","instructions":"evaluate"}"""), Is.TypeOf<DecisionsPredicateQuestion>());
         Assert.That(Read<DecisionsQuestion>("""{"type":"score","instructions":"score","levels":[]}"""), Is.TypeOf<DecisionsScoreQuestion>());
@@ -532,7 +529,7 @@ public class DecisionsModelTests
     }
 
     private sealed class ExternalItem() : DecisionsItem(new DecisionsItemKind("external_item")) { }
-    private sealed class ExternalContentPart() : DecisionsContentInputPart(new DecisionsContentInputPartKind("external_content")) { }
+    private sealed class ExternalContentPart() : DecisionsInputContentPart(new DecisionsInputContentPartKind("external_content")) { }
     private sealed class ExternalQuestion() : DecisionsQuestion(new DecisionsQuestionKind("external_question")) { }
     private sealed class ExternalAnswer() : DecisionsAnswer(new DecisionsAnswerKind("external_answer")) { }
 }
