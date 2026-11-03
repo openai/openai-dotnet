@@ -344,7 +344,7 @@ public class ImagesMockTests : ClientTestBase
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
-    public async Task GenerateImageEditsWithMultipleImagesDeserializesRevisedPrompt(ImageSourceKind imageSourceKind)
+    public async Task GenerateImageEditWithMultipleImagesDeserializesRevisedPrompt(ImageSourceKind imageSourceKind)
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
         {
@@ -356,39 +356,100 @@ public class ImagesMockTests : ClientTestBase
         }
         """);
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
-        string firstImageFilename = "images_empty_room.png";
-        string secondImageFilename = "images_dog_and_cat.png";
-        string firstImagePath = Path.Combine("Assets", firstImageFilename);
-        string secondImagePath = Path.Combine("Assets", secondImageFilename);
-        GeneratedImageCollection images = null;
+        string firstImagePath = Path.Combine("Assets", "images_empty_room.png");
+        string secondImagePath = Path.Combine("Assets", "images_dog_and_cat.png");
+        GeneratedImage image = null;
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
             using Stream firstStream = new MemoryStream();
             using Stream secondStream = new MemoryStream();
 
-            images = await client.GenerateImageEditsAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt");
+            image = await client.GenerateImageEditAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt");
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = await client.GenerateImageEditsAsync([firstImagePath, secondImagePath], "prompt");
+            image = await client.GenerateImageEditAsync([firstImagePath, secondImagePath], "prompt");
         }
         else
         {
             Assert.Fail("Invalid source kind.");
         }
 
-        GeneratedImage image = images.Single();
         Assert.That(image.RevisedPrompt, Is.EqualTo("new prompt"));
     }
 
     [Test]
-    public async Task GenerateImageEditsWithMultipleImagesUsesImageArrayFieldName()
+    [TestCaseSource(nameof(s_imageSourceKindSource))]
+    public async Task GenerateImageEditsWithMultipleImagesSendsImageCount(ImageSourceKind imageSourceKind)
     {
         string requestBody = null;
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
         {
-            "data": []
+            "data": [
+                {
+                    "revised_prompt": "first prompt"
+                },
+                {
+                    "revised_prompt": "second prompt"
+                }
+            ]
+        }
+        """);
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                requestBody = ReadRequestBody(message);
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        string firstImagePath = Path.Combine("Assets", "images_empty_room.png");
+        string secondImagePath = Path.Combine("Assets", "images_dog_and_cat.png");
+        GeneratedImageCollection images = null;
+
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using Stream firstStream = new MemoryStream(Encoding.UTF8.GetBytes("first image payload"));
+            using Stream secondStream = new MemoryStream(Encoding.UTF8.GetBytes("second image payload"));
+
+            images = await client.GenerateImageEditsAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt", imageCount: 2);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageEditsAsync([firstImagePath, secondImagePath], "prompt", imageCount: 2);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(images.Select(image => image.RevisedPrompt), Is.EqualTo(new[] { "first prompt", "second prompt" }));
+
+        string[] lines = SplitLines(requestBody);
+        Assert.That(lines.Count(line => IsFormDataHeader(line, "image[]")), Is.EqualTo(2));
+        int imageCountHeaderIndex = Array.FindIndex(lines, line => IsFormDataHeader(line, "n"));
+        Assert.That(imageCountHeaderIndex, Is.GreaterThanOrEqualTo(0));
+        Assert.That(lines.Skip(imageCountHeaderIndex + 1).First(line => line.Length > 0 && !line.StartsWith("Content-", StringComparison.Ordinal)), Is.EqualTo("2"));
+    }
+
+    [Test]
+    public async Task GenerateImageEditWithMultipleImagesUsesImageArrayFieldName()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
+        {
+            "data": [
+                {
+                    "revised_prompt": "new prompt"
+                }
+            ]
         }
         """);
 
@@ -410,7 +471,7 @@ public class ImagesMockTests : ClientTestBase
         using Stream firstStream = new MemoryStream(Encoding.UTF8.GetBytes(firstImagePayload));
         using Stream secondStream = new MemoryStream(Encoding.UTF8.GetBytes(secondImagePayload));
 
-        await client.GenerateImageEditsAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt");
+        await client.GenerateImageEditAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt");
 
         string[] lines = SplitLines(requestBody);
         string[] imageContentDispositions = lines.Where(line => IsFormDataHeader(line, "image[]")).ToArray();
@@ -437,12 +498,16 @@ public class ImagesMockTests : ClientTestBase
     }
 
     [Test]
-    public async Task GenerateImageEditsWithMultipleImagesClearsImageCountFromReusedOptions()
+    public async Task GenerateImageEditWithMultipleImagesClearsImageCountFromReusedOptions()
     {
         List<string> requestBodies = [];
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
         {
-            "data": []
+            "data": [
+                {
+                    "revised_prompt": "new prompt"
+                }
+            ]
         }
         """);
 
@@ -460,14 +525,15 @@ public class ImagesMockTests : ClientTestBase
 
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         ImageEditOptions options = new();
-        using Stream singleStream = new MemoryStream(Encoding.UTF8.GetBytes("single image payload"));
         using Stream firstStream = new MemoryStream(Encoding.UTF8.GetBytes("first image payload"));
         using Stream secondStream = new MemoryStream(Encoding.UTF8.GetBytes("second image payload"));
+        using Stream thirdStream = new MemoryStream(Encoding.UTF8.GetBytes("third image payload"));
+        using Stream fourthStream = new MemoryStream(Encoding.UTF8.GetBytes("fourth image payload"));
 
-        // The overload with an image count stores it in the options; reusing those options with the
-        // multi-reference overload, which has no image count, must not carry the count over.
-        await client.GenerateImageEditsAsync(singleStream, "single.png", "prompt", imageCount: 3, options);
-        await client.GenerateImageEditsAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt", options);
+        // The plural overload stores its image count in the options; reusing those options with the
+        // singular overload, which generates one image, must not carry the count over.
+        await client.GenerateImageEditsAsync([firstStream, secondStream], ["first.png", "second.png"], "prompt", imageCount: 3, options);
+        await client.GenerateImageEditAsync([thirdStream, fourthStream], ["third.png", "fourth.png"], "prompt", options);
 
         Assert.That(requestBodies, Has.Count.EqualTo(2));
         Assert.That(SplitLines(requestBodies[0]).Any(line => IsFormDataHeader(line, "n")), Is.True);
@@ -496,11 +562,39 @@ public class ImagesMockTests : ClientTestBase
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
 
-        Assert.That(async () => await client.GenerateImageEditsAsync((IEnumerable<Stream>)null, ["first.png"], "prompt"),
+        Assert.That(async () => await client.GenerateImageEditAsync((IEnumerable<Stream>)null, ["first.png"], "prompt"),
                 Throws.InstanceOf<ArgumentNullException>());
-        Assert.That(async () => await client.GenerateImageEditsAsync([stream], ["first.png", "second.png"], "prompt"),
+        Assert.That(async () => await client.GenerateImageEditAsync([stream], ["first.png", "second.png"], "prompt"),
                 Throws.InstanceOf<ArgumentException>());
-        Assert.That(async () => await client.GenerateImageEditsAsync(Array.Empty<Stream>(), Array.Empty<string>(), "prompt"),
+        Assert.That(async () => await client.GenerateImageEditAsync(Array.Empty<Stream>(), Array.Empty<string>(), "prompt"),
+                Throws.InstanceOf<ArgumentException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync((IEnumerable<Stream>)null, ["first.png"], "prompt", 2),
+                Throws.InstanceOf<ArgumentNullException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync([stream], ["first.png", "second.png"], "prompt", 2),
+                Throws.InstanceOf<ArgumentException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync(Array.Empty<Stream>(), Array.Empty<string>(), "prompt", 2),
+                Throws.InstanceOf<ArgumentException>());
+    }
+
+    [Test]
+    public void GenerateImageEditsWithMultipleImageFilePathsValidatesArgumentsBeforeOpeningFiles()
+    {
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
+        string missingImagePath = Path.Combine("Assets", "missing_image.png");
+        Assert.That(File.Exists(missingImagePath), Is.False);
+
+        // Opening the missing file first would throw FileNotFoundException instead.
+        Assert.That(async () => await client.GenerateImageEditAsync([missingImagePath], null),
+                Throws.InstanceOf<ArgumentNullException>());
+        Assert.That(async () => await client.GenerateImageEditAsync([missingImagePath], ""),
+                Throws.InstanceOf<ArgumentException>());
+        Assert.That(async () => await client.GenerateImageEditAsync([missingImagePath, null], "prompt"),
+                Throws.InstanceOf<ArgumentException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync([missingImagePath], null, 2),
+                Throws.InstanceOf<ArgumentNullException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync([missingImagePath], "", 2),
+                Throws.InstanceOf<ArgumentException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync([missingImagePath, null], "prompt", 2),
                 Throws.InstanceOf<ArgumentException>());
     }
 
@@ -512,7 +606,9 @@ public class ImagesMockTests : ClientTestBase
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        Assert.That(async () => await client.GenerateImageEditsAsync([stream], ["filename"], "prompt", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageEditAsync([stream], ["filename"], "prompt", cancellationToken: cancellationSource.Token),
+                Throws.InstanceOf<OperationCanceledException>());
+        Assert.That(async () => await client.GenerateImageEditsAsync([stream], ["filename"], "prompt", 2, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
