@@ -498,6 +498,61 @@ public class ImagesMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task GenerateImageEditsWithMultipleImageFilePathsSendOnlyTheFileNames()
+    {
+        List<string> requestBodies = [];
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                requestBodies.Add(ReadRequestBody(message));
+                return new MockPipelineResponse(200).WithContent("""
+                {
+                    "data": [
+                        {
+                            "revised_prompt": "new prompt"
+                        }
+                    ]
+                }
+                """);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", s_fakeCredential, clientOptions));
+        string localDirectoryName = $"local-{Guid.NewGuid():N}";
+        string localDirectory = Path.Combine(Path.GetTempPath(), localDirectoryName, "nested");
+        Directory.CreateDirectory(localDirectory);
+        try
+        {
+            string firstImagePath = Path.Combine(localDirectory, "first.png");
+            string secondImagePath = Path.Combine(localDirectory, "second.png");
+            File.WriteAllText(firstImagePath, "first image payload");
+            File.WriteAllText(secondImagePath, "second image payload");
+
+            await client.GenerateImageEditAsync([firstImagePath, secondImagePath], "prompt");
+            await client.GenerateImageEditsAsync([firstImagePath, secondImagePath], "prompt", imageCount: 2);
+
+            Assert.That(requestBodies, Has.Count.EqualTo(2));
+            foreach (string requestBody in requestBodies)
+            {
+                string[] imageContentDispositions = SplitLines(requestBody).Where(line => IsFormDataHeader(line, "image[]")).ToArray();
+
+                Assert.That(imageContentDispositions, Has.Length.EqualTo(2));
+                Assert.That(imageContentDispositions[0], Does.Contain("first.png"));
+                Assert.That(imageContentDispositions[1], Does.Contain("second.png"));
+                Assert.That(requestBody, Does.Not.Contain(localDirectoryName));
+            }
+        }
+        finally
+        {
+            Directory.Delete(Path.Combine(Path.GetTempPath(), localDirectoryName), recursive: true);
+        }
+    }
+
+    [Test]
     public async Task GenerateImageEditWithMultipleImagesClearsImageCountFromReusedOptions()
     {
         List<string> requestBodies = [];

@@ -761,7 +761,7 @@ public partial class ImageClient
         List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
         try
         {
-            return await GenerateImageEditAsync(imageStreams, imageFilePathList, prompt, options, cancellationToken).ConfigureAwait(false);
+            return await GenerateImageEditAsync(imageStreams, GetImageFilenames(imageFilePathList), prompt, options, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -791,7 +791,7 @@ public partial class ImageClient
         List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
         try
         {
-            return GenerateImageEdit(imageStreams, imageFilePathList, prompt, options, cancellationToken);
+            return GenerateImageEdit(imageStreams, GetImageFilenames(imageFilePathList), prompt, options, cancellationToken);
         }
         finally
         {
@@ -880,7 +880,7 @@ public partial class ImageClient
         List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
         try
         {
-            return await GenerateImageEditsAsync(imageStreams, imageFilePathList, prompt, imageCount, options, cancellationToken).ConfigureAwait(false);
+            return await GenerateImageEditsAsync(imageStreams, GetImageFilenames(imageFilePathList), prompt, imageCount, options, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -911,7 +911,7 @@ public partial class ImageClient
         List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
         try
         {
-            return GenerateImageEdits(imageStreams, imageFilePathList, prompt, imageCount, options, cancellationToken);
+            return GenerateImageEdits(imageStreams, GetImageFilenames(imageFilePathList), prompt, imageCount, options, cancellationToken);
         }
         finally
         {
@@ -1180,6 +1180,13 @@ public partial class ImageClient
         }
 
         return imageStreams;
+    }
+
+    // The multipart body carries only each file's name. Sending the full path would pass the caller's local
+    // directory names to the service.
+    private static List<string> GetImageFilenames(List<string> imageFilePaths)
+    {
+        return imageFilePaths.Select(imageFilePath => Path.GetFileName(imageFilePath)).ToList();
     }
 
     private static void DisposeImageFiles(List<FileStream> imageStreams)
