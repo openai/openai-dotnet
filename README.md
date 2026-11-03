@@ -635,14 +635,6 @@ DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
 Console.WriteLine(answer.Probability);
 ```
 
-Input supports user, assistant, developer, and system message items, as well as function-call and custom-tool-call history. Message roles have their own content types: user messages support input text, images, and JSON; assistant messages support output text and refusals; developer and system messages support text. Function-call and custom-tool-call outputs support text and images. Supplying tool history does not execute tools.
-
-Question `Instructions` collections support `DecisionsInputTextInstructionsPart`, `DecisionsInputImageInstructionsPart`, and `DecisionsInputJsonInstructionsPart`. JSON input and instruction parts expose `Data` as a collection of `BinaryData`, with each item containing a free-form JSON object. A single object is accepted as shorthand during deserialization and normalized to a one-item array when serialized. Arbitrary JSON properties, including nested values and nulls, are preserved.
-
-Configure prompt caching through `DecisionCreationOptions.PromptCacheKey` and `PromptCacheOptions`. Cache options expose `Mode` (`Implicit` or `Explicit`) and `TimeToLive` (`ThirtyMinutes`). Explicit breakpoints use `DecisionsPromptCacheBreakpoint` on supported message or tool-output text/image parts; question instruction parts do not expose breakpoints. These settings request service-side caching but do not guarantee a cache hit.
-
-When migrating from the preliminary Decisions API, replace direct construction of `DecisionsMessageItem` with `DecisionsUserMessageItem` (or another role-specific subtype), and replace string `Instructions` assignments with text content in the instruction collection. String shorthand remains supported during deserialization of input, message content, tool outputs, and question instructions; serialization emits the equivalent longhand arrays. To send a shorthand representation explicitly, use `JsonPatch` or a protocol method.
-
 See the [Decisions API guide](https://developers.openai.com/api/docs/guides/decisions) for service behavior and constraints.
 
 ## How to generate text embeddings

@@ -28,6 +28,7 @@ public class DecisionsRequestModelTests
         yield return new(typeof(DecisionsScoreQuestion), "instructions", """{"type":"score","levels":[],"instructions":VALUE}""", "input_text");
     }
 
+    // Verifies string shorthands across request models deserialize and serialize as equivalent text-part arrays.
     [TestCaseSource(nameof(TextOrPartsModels))]
     public void TextShorthandNormalizesToEquivalentLonghand(Type modelType, string property, string template, string textKind)
     {
@@ -58,6 +59,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies request-model content properties reject invalid shorthand values and malformed part arrays.
     [TestCaseSource(nameof(TextOrPartsModels))]
     public void TextOrPartsPropertiesRejectUnsupportedShapes(Type modelType, string property, string template, string textKind)
     {
@@ -69,6 +71,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies empty request-model content collections remain empty through serialization.
     [TestCaseSource(nameof(TextOrPartsModels))]
     public void EmptyLonghandCollectionsRemainEmpty(Type modelType, string property, string template, string textKind)
     {
@@ -77,6 +80,7 @@ public class DecisionsRequestModelTests
         Assert.That(document.RootElement.GetProperty(property).GetArrayLength(), Is.Zero);
     }
 
+    // Verifies message roles dispatch to the correct subtype through both item and message bases.
     [TestCase("user", typeof(DecisionsUserMessageItem))]
     [TestCase("assistant", typeof(DecisionsAssistantMessageItem))]
     [TestCase("developer", typeof(DecisionsDeveloperMessageItem))]
@@ -98,6 +102,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies role-specific default constructors initialize the message and role discriminators.
     [TestCase(typeof(DecisionsUserMessageItem), "user")]
     [TestCase(typeof(DecisionsAssistantMessageItem), "assistant")]
     [TestCase(typeof(DecisionsDeveloperMessageItem), "developer")]
@@ -114,6 +119,7 @@ public class DecisionsRequestModelTests
         Assert.That(serialized.RootElement.EnumerateObject().Select(property => property.Name), Is.Unique);
     }
 
+    // Verifies content-taking message constructors initialize both discriminators and serialize role/content.
     [Test]
     public void ContentConstructorsInitializeBothDiscriminators()
     {
@@ -135,6 +141,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies unknown message roles and nested unknown properties survive round-tripping.
     [Test]
     public void UnknownMessageRolesRoundTripThroughTheItemHierarchy()
     {
@@ -151,6 +158,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies external message subclasses can set future roles and patch both discriminator wire properties.
     [Test]
     public void ExternalMessagesCanSpecifyFutureRolesAndPatchBothDiscriminators()
     {
@@ -177,6 +185,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies function and custom tool history preserve fields, concrete types, and nested patches.
     [Test]
     [Ignore("Pending generator array-path fix: https://github.com/microsoft/typespec/issues/12431")]
     public void ToolHistoryPreservesAllFieldsAndConcreteTypes()
@@ -213,6 +222,7 @@ public class DecisionsRequestModelTests
         }
     }
 
+    // Verifies function and custom tool names use distinct CLR properties while retaining the "name" wire key.
     [Test]
     public void ToolNamesUseSpecificClrPropertiesAndPreserveWireName()
     {
@@ -230,6 +240,7 @@ public class DecisionsRequestModelTests
         Assert.That(customJson.RootElement.GetProperty("name").GetString(), Is.EqualTo("search"));
     }
 
+    // Verifies assistant output text, refusal content, and unknown phases round-trip without loss.
     [Test]
     public void AssistantContentPreservesOutputTextRefusalsAndPhase()
     {
@@ -244,6 +255,7 @@ public class DecisionsRequestModelTests
         Assert.That(JsonElement.DeepEquals(expected.RootElement, serialized.RootElement), Is.True);
     }
 
+    // Verifies choice, predicate, and score questions accept text, image, and JSON instruction parts.
     [TestCase("choice")]
     [TestCase("predicate")]
     [TestCase("score")]
@@ -274,6 +286,7 @@ public class DecisionsRequestModelTests
         Assert.That(typeof(DecisionsInputImageInstructionsPart).GetProperty("PromptCacheBreakpoint"), Is.Null);
     }
 
+    // Verifies request cache settings and content breakpoints round-trip and propagate patches.
     [Test]
     [Ignore("Pending generator array-path fix: https://github.com/microsoft/typespec/issues/12431")]
     public void PromptCacheOptionsAndBreakpointsRoundTripAndPropagatePatches()
@@ -303,6 +316,7 @@ public class DecisionsRequestModelTests
         Assert.That(new DecisionsPromptCacheOptions { Mode = DecisionsPromptCacheMode.Implicit }.Mode, Is.EqualTo(DecisionsPromptCacheMode.Implicit));
     }
 
+    // Verifies nullable request cache and image settings preserve explicit null values.
     [Test]
     public void NullableRequestSettingsRemainNull()
     {
@@ -317,6 +331,7 @@ public class DecisionsRequestModelTests
         Assert.That(image.PromptCacheBreakpoint, Is.Null);
     }
 
+    // Verifies all exported Decisions API types carry the expected experimental diagnostic.
     [Test]
 #pragma warning disable SCME0002
     public void DecisionsTypesRemainExperimental()

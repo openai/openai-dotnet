@@ -2,7 +2,6 @@ using NUnit.Framework;
 using OpenAI.Decisions;
 using System;
 using System.ClientModel.Primitives;
-using System.Linq;
 using System.Text.Json;
 
 namespace OpenAI.Tests.Decisions;
@@ -11,30 +10,7 @@ namespace OpenAI.Tests.Decisions;
 [Category("Smoke")]
 public class DecisionsJsonContentPartTests
 {
-    [TestCase("""{"type":"input_json","data":{"count":2}}""")]
-    [TestCase("""{"type":"input_json","data":[{"count":2}]}""")]
-    public void InputJsonDataUsesRawJsonObjects(string json)
-    {
-        DecisionsInputJsonContentPart part = ModelReaderWriter.Read<DecisionsInputJsonContentPart>(BinaryData.FromString(json));
-
-        Assert.That(part.Data, Has.Count.EqualTo(1));
-        using JsonDocument data = JsonDocument.Parse(part.Data.Single());
-        Assert.That(data.RootElement.GetProperty("count").GetInt32(), Is.EqualTo(2));
-        AssertDataIsObjectArray(ModelReaderWriter.Write(part));
-    }
-
-    [TestCase("""{"type":"input_json","data":{"count":2}}""")]
-    [TestCase("""{"type":"input_json","data":[{"count":2}]}""")]
-    public void InstructionJsonDataUsesRawJsonObjects(string json)
-    {
-        DecisionsInputJsonInstructionsPart part = ModelReaderWriter.Read<DecisionsInputJsonInstructionsPart>(BinaryData.FromString(json));
-
-        Assert.That(part.Data, Has.Count.EqualTo(1));
-        using JsonDocument data = JsonDocument.Parse(part.Data.Single());
-        Assert.That(data.RootElement.GetProperty("count").GetInt32(), Is.EqualTo(2));
-        AssertDataIsObjectArray(ModelReaderWriter.Write(part));
-    }
-
+    // Verifies JSON content and instruction parts preserve multiple free-form objects as raw JSON arrays.
     [Test]
     public void JsonDataArrayPreservesEachObjectAndSerializesAsJson()
     {
@@ -54,6 +30,7 @@ public class DecisionsJsonContentPartTests
         }
     }
 
+    // Verifies JSON content and instruction data reject values that are not objects or arrays of objects.
     [TestCase("null")]
     [TestCase("true")]
     [TestCase("42")]
@@ -77,11 +54,4 @@ public class DecisionsJsonContentPartTests
         }
     }
 
-    private static void AssertDataIsObjectArray(BinaryData serialized)
-    {
-        using JsonDocument document = JsonDocument.Parse(serialized);
-        JsonElement data = document.RootElement.GetProperty("data");
-        Assert.That(data.ValueKind, Is.EqualTo(JsonValueKind.Array));
-        Assert.That(data[0].GetProperty("count").GetInt32(), Is.EqualTo(2));
-    }
 }

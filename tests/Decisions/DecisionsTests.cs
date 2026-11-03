@@ -197,6 +197,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertImageDecision(decision, options);
     }
 
+    // Evaluates a structured JSON request and verifies the predicate answer and usage.
     [RecordedTest]
     public async Task CreateStructuredJsonDecision()
     {
@@ -226,6 +227,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
 
+    // Evaluates an image supplied as multimodal question instructions and verifies the predicate answer.
     [RecordedTest]
     public async Task CreateMultimodalInstructionsDecision()
     {
@@ -254,6 +256,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
 
+    // Evaluates conversation and tool-call history and verifies the predicate answer is grounded in tool outputs.
     [RecordedTest]
     public async Task CreateConversationAndToolHistoryDecision()
     {
@@ -331,6 +334,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
 
+    // Evaluates a cache-configured request and verifies the predicate answer and usage shape.
     [RecordedTest]
     public async Task CreatePromptCachedDecision()
     {

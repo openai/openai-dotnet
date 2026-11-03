@@ -185,6 +185,7 @@ public class DecisionsClientTests
         Assert.That(headers["X-Custom"], Is.EqualTo("custom-value"));
     }
 
+    // Verifies typed Decisions requests serialize GA message, JSON, instruction, and prompt-cache models.
     [TestCase(false)]
     [TestCase(true)]
     public async Task TypedRequestsSerializeGaModels(bool isAsync)
