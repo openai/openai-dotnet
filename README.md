@@ -602,21 +602,18 @@ foreach (ResponseItem item in response.OutputItems)
 
 The Decisions API evaluates predicate, choice, and score questions against supplied input. The .NET APIs remain experimental (`OPENAI001`), even though the REST API is generally available.
 
-```csharp
-#pragma warning disable OPENAI001
-using OpenAI.Decisions;
-
+```C# Snippet:ReadMe_Decisions
 DecisionsClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 DecisionCreationOptions options = new()
 {
-    Model = "YOUR_DECISIONS_MODEL",
+    Model = "gpt-6-luna",
     InputItems =
     {
         new DecisionsUserMessageItem
         {
             Content =
             {
-                new DecisionsInputJsonContentPart([BinaryData.FromString("""{"order_total":42,"currency":"USD"}""")]),
+                new DecisionsInputTextContentPart("The order total is $42."),
             },
         },
     },
@@ -637,8 +634,6 @@ DecisionResource decision = await client.CreateDecisionAsync(options);
 DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
 Console.WriteLine(answer.Probability);
 ```
-
-Replace `YOUR_DECISIONS_MODEL` with a model supported by the Decisions API.
 
 Input supports user, assistant, developer, and system message items, as well as function-call and custom-tool-call history. Message roles have their own content types: user messages support input text, images, and JSON; assistant messages support output text and refusals; developer and system messages support text. Function-call and custom-tool-call outputs support text and images. Supplying tool history does not execute tools.
 

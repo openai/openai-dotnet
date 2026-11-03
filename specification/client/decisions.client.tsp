@@ -19,63 +19,53 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_request_object.input, "InputItems");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject, "DecisionsItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator, "DecisionsItemKind");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call, "FunctionToolCall");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call_output, "FunctionToolCallOutput");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall, "DecisionsCustomToolCallItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum, "DecisionsToolCallStatus");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput, "DecisionsCustomToolCallOutputItem");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object, "DecisionsPromptCacheBreakpoint");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum, "DecisionsPromptCacheBreakpointMode");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall, "DecisionsFunctionToolCallItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput, "DecisionsFunctionToolCallOutputItem");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call, "FunctionToolCall");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call_output, "FunctionToolCallOutput");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage, "DecisionsMessageItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator, "DecisionsMessageRole");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant, "DecisionsAssistantMessageItem");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject, "DecisionsOutputContentPart");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator, "DecisionsOutputContentPartKind");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText, "DecisionsOutputTextContentPart");
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal, "DecisionsRefusalContentPart");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum, "DecisionsAssistantMessagePhase");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper, "DecisionsDeveloperMessageItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem, "DecisionsSystemMessageItem");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser, "DecisionsUserMessageItem");
-
-// The role-specific models repeat the inherited fixed item type. Keep a single CLR member and wire property.
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.type, "!csharp");
-@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser.type, "!csharp");
-
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject, "DecisionsInputContentPart");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator, "DecisionsInputContentPartKind");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage, "DecisionsInputImageContentPart");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage.image_url, "ImageUri");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage.detail, "ImageDetailLevel");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextContentPart");
 @@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson, "DecisionsInputJsonContentPart");
-
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject, "DecisionsOutputContentPart");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator, "DecisionsOutputContentPartKind");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText, "DecisionsOutputTextContentPart");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal, "DecisionsRefusalContentPart");
-
+@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextContentPart");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject, "DecisionsQuestion");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_discriminator, "DecisionsQuestionKind");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice, "DecisionsChoiceQuestion");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object, "DecisionsChoice");
-@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate, "DecisionsPredicateQuestion");
-@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore, "DecisionsScoreQuestion");
-@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Levels_array_item_object, "DecisionsScoreLevel");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject, "DecisionsInstructionsPart");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator, "DecisionsInstructionsPartKind");
-@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextInstructionsPart");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage, "DecisionsInputImageInstructionsPart");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage.image_url, "ImageUri");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage.detail, "ImageDetailLevel");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum, "DecisionsImageDetailLevel");
 @@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson, "DecisionsInputJsonInstructionsPart");
-
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputText, "DecisionsInputTextInstructionsPart");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate, "DecisionsPredicateQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore, "DecisionsScoreQuestion");
+@@clientName(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Levels_array_item_object, "DecisionsScoreLevel");
 @@clientName(createDecision_request_object_PromptCacheOptions_object, "DecisionsPromptCacheOptions");
-@@clientName(createDecision_request_object_PromptCacheOptions_object_Mode_enum, "DecisionsPromptCacheMode");
 @@clientName(createDecision_request_object_PromptCacheOptions_object.ttl, "TimeToLive");
+@@clientName(createDecision_request_object_PromptCacheOptions_object_Mode_enum, "DecisionsPromptCacheMode");
 @@clientName(createDecision_request_object_PromptCacheOptions_object_Ttl_enum, "DecisionsPromptCacheTimeToLive");
 @@clientName(createDecision_request_object_PromptCacheOptions_object_Ttl_enum.`30m`, "ThirtyMinutes");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object, "DecisionsPromptCacheBreakpoint");
-@@clientName(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum, "DecisionsPromptCacheBreakpointMode");
 
 @@clientName(createDecision_response_200_object, "DecisionResource");
 @@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject, "DecisionsAnswer");
@@ -88,15 +78,25 @@ namespace OpenAI.Decisions;
 @@clientName(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object, "DecisionsScoreProbability");
 @@clientName(createDecision_response_200_object_Usage_object, "DecisionsUsage");
 @@clientName(createDecision_response_200_object_Usage_object.input_tokens, "InputTokenCount");
-@@clientName(createDecision_response_200_object_Usage_object.output_tokens, "OutputTokenCount");
-@@clientName(createDecision_response_200_object_Usage_object.total_tokens, "TotalTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object.input_tokens_details, "InputTokenDetails");
+@@clientName(createDecision_response_200_object_Usage_object.output_tokens, "OutputTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object.output_tokens_details, "OutputTokenDetails");
+@@clientName(createDecision_response_200_object_Usage_object.total_tokens, "TotalTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object, "DecisionsInputTokenUsageDetails");
-@@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object.cached_tokens, "CachedTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object.cache_write_tokens, "CacheWriteTokenCount");
+@@clientName(createDecision_response_200_object_Usage_object_InputTokensDetails_object.cached_tokens, "CachedTokenCount");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object, "DecisionsOutputTokenUsageDetails");
 @@clientName(createDecision_response_200_object_Usage_object_OutputTokensDetails_object.reasoning_tokens, "ReasoningTokenCount");
+
+// --------- Others ---------
+/**
+ * The role-specific models repeat the inherited `type` property with fixed value of `"message"`.
+ * Scope this repeated property out from each model to keep a single CLR member and wire property.
+ */
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.type, "!csharp");
+@@scope(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser.type, "!csharp");
 
 // --------- Numeric overrides ---------
 @@alternateType(createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice.confidence, float32);
@@ -117,22 +117,78 @@ namespace OpenAI.Decisions;
 /**
  * This property is a non-discriminated union between a string and an array of content parts.
  * The string component is shorthand notation for the array component.
- * Specifically, the string represents an array with a single text content part appropriate to its message role.
+ * Specifically, the string represents an array with a single input text content part containing the provided text.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single output text content part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text content part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text content part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text content part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput.output, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of content parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text content part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput.output, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of instruction parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text instruction part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice.instructions, createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of instruction parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text instruction part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate.instructions, createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject[]);
+
+/**
+ * This property is a non-discriminated union between a string and an array of instruction parts.
+ * The string component is shorthand notation for the array component.
+ * Specifically, the string represents an array with a single input text instruction part containing the provided text.
+ */
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore.instructions, createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject[]);
 
 /**
- * JSON data accepts either one object or an array of objects. A single object is shorthand for a one-item array.
+ * This property is a non-discriminated union between a JSON object and an array of JSON objects.
+ * The JSON object component is shorthand notation for the array component.
+ * Specifically, the object represents an array with a single item containing the provided JSON object.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson.data, unknown[]);
+
+/**
+ * This property is a non-discriminated union between a JSON object and an array of JSON objects.
+ * The JSON object component is shorthand notation for the array component.
+ * Specifically, the object represents an array with a single item containing the provided JSON object.
+ */
 @@alternateType(createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson.data, unknown[]);
 
 /**
