@@ -9,12 +9,12 @@ namespace OpenAI.Decisions;
 [CodeGenSerialization(nameof(Content), DeserializationValueHook = nameof(DeserializeContentValue))]
 public partial class DecisionsAssistantMessageItem
 {
-    private static void DeserializeContentValue(JsonProperty property, ref IList<DecisionsContentOutputPart> content, ModelReaderWriterOptions options = null)
+    private static void DeserializeContentValue(JsonProperty property, ref IList<DecisionsOutputContentPart> content, ModelReaderWriterOptions options = null)
     {
-        content = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsContentOutputPart>(
+        content = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsOutputContentPart>(
             property,
-            text => new DecisionsContentOutputTextPart { Text = text },
-            DecisionsContentOutputPart.DeserializeDecisionsContentOutputPart,
+            text => new DecisionsOutputTextContentPart { Text = text },
+            DecisionsOutputContentPart.DeserializeDecisionsOutputContentPart,
             options);
     }
 }

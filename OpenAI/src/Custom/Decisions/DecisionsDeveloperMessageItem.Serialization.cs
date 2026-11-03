@@ -5,16 +5,16 @@ using System.Text.Json;
 
 namespace OpenAI.Decisions;
 
-// CUSTOM: Accept string shorthand developer content and normalize it into an instruction message text content collection.
+// CUSTOM: Accept string shorthand developer content and normalize it into an input text content collection.
 [CodeGenSerialization(nameof(Content), DeserializationValueHook = nameof(DeserializeContentValue))]
 public partial class DecisionsDeveloperMessageItem
 {
-    private static void DeserializeContentValue(JsonProperty property, ref IList<DecisionsInstructionMessageContentPart> content, ModelReaderWriterOptions options = null)
+    private static void DeserializeContentValue(JsonProperty property, ref IList<DecisionsInputContentPart> content, ModelReaderWriterOptions options = null)
     {
-        content = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsInstructionMessageContentPart>(
+        content = DecisionsSerializationHelpers.DeserializeTextOrParts<DecisionsInputContentPart>(
             property,
-            text => new DecisionsInstructionMessageTextContentPart { Text = text },
-            DecisionsInstructionMessageContentPart.DeserializeDecisionsInstructionMessageContentPart,
+            text => new DecisionsInputTextContentPart { Text = text },
+            DecisionsInputContentPart.DeserializeDecisionsInputContentPart,
             options);
     }
 }
