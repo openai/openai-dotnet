@@ -31,9 +31,9 @@ public class DecisionsExtensibilityTests
         object model = hierarchy switch
         {
             "item" => new CustomItem(),
-            "content" => new CustomContentPart(),
-            "assistant-content" => new CustomAssistantContentPart(),
-            "instruction-content" => new CustomInstructionContentPart(),
+            "content" => new CustomInputContentPart(),
+            "assistant-content" => new CustomOutputContentPart(),
+            "instruction-content" => new CustomInstructionsPart(),
             "question" => new CustomQuestion(),
             "answer" => new CustomAnswer(),
             _ => throw new ArgumentOutOfRangeException(nameof(hierarchy))
@@ -196,7 +196,7 @@ public class DecisionsExtensibilityTests
         }
     }
 
-    private sealed class CustomContentPart() : DecisionsInputContentPart(new DecisionsInputContentPartKind("custom"))
+    private sealed class CustomInputContentPart() : DecisionsInputContentPart(new DecisionsInputContentPartKind("custom"))
     {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -214,7 +214,7 @@ public class DecisionsExtensibilityTests
         }
     }
 
-    private sealed class CustomAssistantContentPart() : DecisionsOutputContentPart(new DecisionsOutputContentPartKind("custom"))
+    private sealed class CustomOutputContentPart() : DecisionsOutputContentPart(new DecisionsOutputContentPartKind("custom"))
     {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -223,7 +223,7 @@ public class DecisionsExtensibilityTests
         }
     }
 
-    private sealed class CustomInstructionContentPart() : DecisionsInstructionsPart(new DecisionsInstructionsPartKind("custom"))
+    private sealed class CustomInstructionsPart() : DecisionsInstructionsPart(new DecisionsInstructionsPartKind("custom"))
     {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

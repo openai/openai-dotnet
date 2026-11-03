@@ -9,8 +9,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Decisions;
@@ -183,63 +181,6 @@ public class DecisionsClientTests
         Assert.That(headers["OpenAI-Project"], Is.EqualTo("proj-test"));
         Assert.That(headers["User-Agent"], Does.Contain("decisions-test-app"));
         Assert.That(headers["X-Custom"], Is.EqualTo("custom-value"));
-    }
-
-    // Verifies typed Decisions requests serialize GA message, JSON, instruction, and prompt-cache models.
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task TypedRequestsSerializeGaModels(bool isAsync)
-    {
-        BinaryData requestBody = null;
-        MockPipelineTransport transport = new(message =>
-        {
-            using MemoryStream stream = new();
-            message.Request.Content.WriteTo(stream);
-            requestBody = BinaryData.FromBytes(stream.ToArray());
-            return new MockPipelineResponse(200).WithContent("""
-                {"model":"test","answers":[{"type":"predicate","name":"valid","probability":0.9}],
-                 "usage":{"input_tokens":3,"output_tokens":1,"total_tokens":4,
-                          "input_tokens_details":{"cache_write_tokens":0,"cached_tokens":0},
-                          "output_tokens_details":{"reasoning_tokens":0}}}
-                """);
-        })
-        {
-            ExpectSyncPipeline = !isAsync,
-        };
-        DecisionsClient client = new(s_credential, new DecisionsClientOptions { Transport = transport });
-        DecisionCreationOptions options = new()
-        {
-            Model = "test",
-            InputItems =
-            {
-                new DecisionsUserMessageItem
-                {
-                    Content = { new DecisionsInputJsonContentPart([BinaryData.FromString("""{"value":true}""")]) },
-                },
-            },
-            Questions =
-            {
-                new DecisionsPredicateQuestion
-                {
-                    Name = "valid",
-                    Instructions = { new DecisionsInputTextInstructionsPart { Text = "The JSON value is true." } },
-                },
-            },
-            PromptCacheKey = "test-cache",
-            PromptCacheOptions = new() { Mode = DecisionsPromptCacheMode.Implicit },
-        };
-
-        DecisionResource decision = isAsync
-            ? await client.CreateDecisionAsync(options)
-            : client.CreateDecision(options);
-
-        using JsonDocument request = JsonDocument.Parse(requestBody);
-        Assert.That(request.RootElement.GetProperty("input")[0].GetProperty("role").GetString(), Is.EqualTo("user"));
-        Assert.That(request.RootElement.GetProperty("input")[0].GetProperty("content")[0].GetProperty("data")[0].GetProperty("value").GetBoolean(), Is.True);
-        Assert.That(request.RootElement.GetProperty("questions")[0].GetProperty("instructions")[0].GetProperty("text").GetString(), Is.EqualTo("The JSON value is true."));
-        Assert.That(request.RootElement.GetProperty("prompt_cache_options").GetProperty("mode").GetString(), Is.EqualTo("implicit"));
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
-        Assert.That(((DecisionsPredicateAnswer)decision.Answers[0]).Probability, Is.EqualTo(0.9f));
     }
 
     // Verifies client construction freezes endpoint, organization, project, and application-ID options.

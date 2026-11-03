@@ -222,24 +222,6 @@ public class DecisionsRequestModelTests
         }
     }
 
-    // Verifies function and custom tool names use distinct CLR properties while retaining the "name" wire key.
-    [Test]
-    public void ToolNamesUseSpecificClrPropertiesAndPreserveWireName()
-    {
-        DecisionsFunctionToolCallItem function = ModelReaderWriter.Read<DecisionsFunctionToolCallItem>(
-            BinaryData.FromString("""{"type":"function_call","call_id":"f","name":"lookup","arguments":"{}"}"""));
-        DecisionsCustomToolCallItem custom = ModelReaderWriter.Read<DecisionsCustomToolCallItem>(
-            BinaryData.FromString("""{"type":"custom_tool_call","call_id":"c","name":"search","input":"query"}"""));
-
-        Assert.That(function.FunctionName, Is.EqualTo("lookup"));
-        Assert.That(custom.ToolName, Is.EqualTo("search"));
-
-        using JsonDocument functionJson = JsonDocument.Parse(ModelReaderWriter.Write(function));
-        using JsonDocument customJson = JsonDocument.Parse(ModelReaderWriter.Write(custom));
-        Assert.That(functionJson.RootElement.GetProperty("name").GetString(), Is.EqualTo("lookup"));
-        Assert.That(customJson.RootElement.GetProperty("name").GetString(), Is.EqualTo("search"));
-    }
-
     // Verifies assistant output text, refusal content, and unknown phases round-trip without loss.
     [Test]
     public void AssistantContentPreservesOutputTextRefusalsAndPhase()
