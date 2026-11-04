@@ -30,11 +30,11 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
-        DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
-        Assert.That(answer.Name, Is.Null);
-        Assert.That(answer.Probability, Is.InRange(0, 1));
-        Assert.That(answer.Probability, Is.GreaterThan(0.5));
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.Null);
+        Assert.That(answer!.Probability, Is.InRange(0, 1));
+        Assert.That(answer!.Probability, Is.GreaterThan(0.5));
     }
 
     // Classifies a request using string choices and verifies the selected value, confidence, and probability distribution.
@@ -58,20 +58,20 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsChoiceAnswer>());
-        DecisionsChoiceAnswer answer = (DecisionsChoiceAnswer)decision.Answers[0];
-        Assert.That(answer.Name, Is.EqualTo("request_category"));
-        Assert.That(answer.Choice.StringValue, Is.EqualTo("replacement"));
-        Assert.That(answer.Choice.BooleanValue, Is.Null);
-        Assert.That(answer.Confidence, Is.InRange(0, 1));
-        Assert.That(answer.Probabilities.Select(probability => probability.Value.StringValue),
+        DecisionsChoiceAnswer answer = decision.Answers[0] as DecisionsChoiceAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.EqualTo("request_category"));
+        Assert.That(answer!.Choice.StringValue, Is.EqualTo("replacement"));
+        Assert.That(answer!.Choice.BooleanValue, Is.Null);
+        Assert.That(answer!.Confidence, Is.InRange(0, 1));
+        Assert.That(answer!.Probabilities.Select(probability => probability.Value.StringValue),
             Is.EquivalentTo(new[] { "replacement", "refund", "delivery" }));
-        Assert.That(answer.Probabilities.All(probability => probability.Value.BooleanValue is null), Is.True);
-        foreach (DecisionsChoiceProbability probability in answer.Probabilities)
+        Assert.That(answer!.Probabilities.All(probability => probability.Value.BooleanValue is null), Is.True);
+        foreach (DecisionsChoiceProbability probability in answer!.Probabilities)
         {
             Assert.That(probability.Probability, Is.InRange(0, 1));
         }
-        Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
+        Assert.That(answer!.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
 
     // Evaluates boolean choices and verifies the active boolean component and normalized choice probabilities.
@@ -94,20 +94,20 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsChoiceAnswer>());
-        DecisionsChoiceAnswer answer = (DecisionsChoiceAnswer)decision.Answers[0];
-        Assert.That(answer.Name, Is.EqualTo("send_receipt"));
-        Assert.That(answer.Choice.BooleanValue, Is.True);
-        Assert.That(answer.Choice.StringValue, Is.Null);
-        Assert.That(answer.Confidence, Is.InRange(0, 1));
-        Assert.That(answer.Probabilities.Select(probability => probability.Value.BooleanValue),
+        DecisionsChoiceAnswer answer = decision.Answers[0] as DecisionsChoiceAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.EqualTo("send_receipt"));
+        Assert.That(answer!.Choice.BooleanValue, Is.True);
+        Assert.That(answer!.Choice.StringValue, Is.Null);
+        Assert.That(answer!.Confidence, Is.InRange(0, 1));
+        Assert.That(answer!.Probabilities.Select(probability => probability.Value.BooleanValue),
             Is.EquivalentTo(new bool?[] { true, false }));
-        Assert.That(answer.Probabilities.All(probability => probability.Value.StringValue is null), Is.True);
-        foreach (DecisionsChoiceProbability probability in answer.Probabilities)
+        Assert.That(answer!.Probabilities.All(probability => probability.Value.StringValue is null), Is.True);
+        foreach (DecisionsChoiceProbability probability in answer!.Probabilities)
         {
             Assert.That(probability.Probability, Is.InRange(0, 1));
         }
-        Assert.That(answer.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
+        Assert.That(answer!.Probabilities.Sum(probability => probability.Probability), Is.EqualTo(1).Within(0.01));
     }
 
     // Scores text sentiment and verifies the answer name, level probabilities, and probability-weighted score.
@@ -121,8 +121,9 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsScoreAnswer>());
-        AssertSentimentAnswer((DecisionsScoreAnswer)decision.Answers[0], "sentiment");
+        DecisionsScoreAnswer answer = decision.Answers[0] as DecisionsScoreAnswer;
+        Assert.That(answer, Is.Not.Null);
+        AssertSentimentAnswer(answer!, "sentiment");
     }
 
     // Submits predicate, choice, and score questions together and verifies answer order, names, and concrete types.
@@ -151,21 +152,22 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
-        DecisionsPredicateAnswer predicateAnswer = (DecisionsPredicateAnswer)decision.Answers[0];
-        Assert.That(predicateAnswer.Name, Is.EqualTo("satisfied"));
-        Assert.That(predicateAnswer.Probability, Is.InRange(0, 1));
-        Assert.That(predicateAnswer.Probability, Is.GreaterThan(0.5));
+        DecisionsPredicateAnswer predicateAnswer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(predicateAnswer, Is.Not.Null);
+        Assert.That(predicateAnswer!.Name, Is.EqualTo("satisfied"));
+        Assert.That(predicateAnswer!.Probability, Is.InRange(0, 1));
+        Assert.That(predicateAnswer!.Probability, Is.GreaterThan(0.5));
 
-        Assert.That(decision.Answers[1], Is.TypeOf<DecisionsChoiceAnswer>());
-        DecisionsChoiceAnswer choiceAnswer = (DecisionsChoiceAnswer)decision.Answers[1];
-        Assert.That(choiceAnswer.Name, Is.EqualTo("requested_action"));
-        Assert.That(choiceAnswer.Choice.StringValue, Is.EqualTo("email_receipt"));
-        Assert.That(choiceAnswer.Choice.BooleanValue, Is.Null);
-        Assert.That(choiceAnswer.Confidence, Is.InRange(0, 1));
+        DecisionsChoiceAnswer choiceAnswer = decision.Answers[1] as DecisionsChoiceAnswer;
+        Assert.That(choiceAnswer, Is.Not.Null);
+        Assert.That(choiceAnswer!.Name, Is.EqualTo("requested_action"));
+        Assert.That(choiceAnswer!.Choice.StringValue, Is.EqualTo("email_receipt"));
+        Assert.That(choiceAnswer!.Choice.BooleanValue, Is.Null);
+        Assert.That(choiceAnswer!.Confidence, Is.InRange(0, 1));
 
-        Assert.That(decision.Answers[2], Is.TypeOf<DecisionsScoreAnswer>());
-        AssertSentimentAnswer((DecisionsScoreAnswer)decision.Answers[2], "sentiment");
+        DecisionsScoreAnswer scoreAnswer = decision.Answers[2] as DecisionsScoreAnswer;
+        Assert.That(scoreAnswer, Is.Not.Null);
+        AssertSentimentAnswer(scoreAnswer!, "sentiment");
     }
 
     // Evaluates an image supplied by HTTPS URI and verifies the image predicate answer and usage.
@@ -221,9 +223,10 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0] is DecisionsPredicateAnswer answer, Is.True);
-        Assert.That(answer.Name, Is.EqualTo("positive_totals"));
-        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.EqualTo("positive_totals"));
+        Assert.That(answer!.Probability, Is.InRange(0.5, 1));
     }
 
     // Evaluates an image supplied as multimodal question instructions and verifies the predicate answer.
@@ -249,9 +252,10 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0] is DecisionsPredicateAnswer answer, Is.True);
-        Assert.That(answer.Name, Is.EqualTo("matches_reference"));
-        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.EqualTo("matches_reference"));
+        Assert.That(answer!.Probability, Is.InRange(0.5, 1));
     }
 
     // Evaluates conversation and tool-call history and verifies the predicate answer is grounded in tool outputs.
@@ -328,8 +332,8 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertDecision(decision, options);
         DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
         Assert.That(answer, Is.Not.Null);
-        Assert.That(answer.Name, Is.EqualTo("grounded_answer"));
-        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+        Assert.That(answer!.Name, Is.EqualTo("grounded_answer"));
+        Assert.That(answer!.Probability, Is.InRange(0.5, 1));
     }
 
     // Evaluates a cache-configured request and verifies the predicate answer and usage shape.
@@ -358,13 +362,13 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertDecision(decision, options);
         DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
         Assert.That(answer, Is.Not.Null);
-        Assert.That(answer.Name, Is.EqualTo("in_stock"));
+        Assert.That(answer!.Name, Is.EqualTo("in_stock"));
         Assert.That(
-            decision.Usage.InputTokenDetails.CacheWriteTokenCount > 0
-                || decision.Usage.InputTokenDetails.CachedTokenCount > 0,
+            decision.Usage!.InputTokenDetails!.CacheWriteTokenCount > 0
+                || decision.Usage!.InputTokenDetails!.CachedTokenCount > 0,
             Is.True,
             "Expected the request to either write prompt-cache tokens or use previously cached tokens.");
-        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+        Assert.That(answer!.Probability, Is.InRange(0.5, 1));
     }
 
     private DecisionCreationOptions CreateTextOptions(string text)
@@ -417,18 +421,18 @@ public class DecisionsTests : OpenAIRecordedTestBase
     private static void AssertDecision(DecisionResource decision, DecisionCreationOptions options)
     {
         Assert.That(decision, Is.Not.Null);
-        Assert.That(decision.Model, Does.StartWith(options.Model));
-        Assert.That(decision.Answers, Has.Count.EqualTo(options.Questions.Count));
-        Assert.That(decision.Usage, Is.Not.Null);
-        Assert.That(decision.Usage.InputTokenCount, Is.GreaterThan(0));
-        Assert.That(decision.Usage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.TotalTokenCount,
-            Is.EqualTo(decision.Usage.InputTokenCount + decision.Usage.OutputTokenCount));
-        Assert.That(decision.Usage.InputTokenDetails, Is.Not.Null);
-        Assert.That(decision.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.InputTokenDetails.CacheWriteTokenCount, Is.GreaterThanOrEqualTo(0));
-        Assert.That(decision.Usage.OutputTokenDetails, Is.Not.Null);
-        Assert.That(decision.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision!.Model, Does.StartWith(options.Model));
+        Assert.That(decision!.Answers, Has.Count.EqualTo(options.Questions.Count));
+        Assert.That(decision!.Usage, Is.Not.Null);
+        Assert.That(decision!.Usage!.InputTokenCount, Is.GreaterThan(0));
+        Assert.That(decision!.Usage!.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision!.Usage!.TotalTokenCount,
+            Is.EqualTo(decision!.Usage!.InputTokenCount + decision!.Usage!.OutputTokenCount));
+        Assert.That(decision!.Usage!.InputTokenDetails, Is.Not.Null);
+        Assert.That(decision!.Usage!.InputTokenDetails!.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision!.Usage!.InputTokenDetails!.CacheWriteTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(decision!.Usage!.OutputTokenDetails, Is.Not.Null);
+        Assert.That(decision!.Usage!.OutputTokenDetails!.ReasoningTokenCount, Is.GreaterThanOrEqualTo(0));
     }
 
     private static void AssertSentimentAnswer(DecisionsScoreAnswer answer, string name)
@@ -454,10 +458,10 @@ public class DecisionsTests : OpenAIRecordedTestBase
     private static void AssertImageDecision(DecisionResource decision, DecisionCreationOptions options)
     {
         AssertDecision(decision, options);
-        Assert.That(decision.Answers[0], Is.TypeOf<DecisionsPredicateAnswer>());
-        DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
-        Assert.That(answer.Name, Is.EqualTo("image_content"));
-        Assert.That(answer.Probability, Is.InRange(0, 1));
-        Assert.That(answer.Probability, Is.GreaterThan(0.5));
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer!.Name, Is.EqualTo("image_content"));
+        Assert.That(answer!.Probability, Is.InRange(0, 1));
+        Assert.That(answer!.Probability, Is.GreaterThan(0.5));
     }
 }
