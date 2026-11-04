@@ -127,6 +127,7 @@ namespace OpenAI.Decisions;
  * This property is a non-discriminated union between a string and an array of content parts.
  * The string component is shorthand notation for the array component.
  * Specifically, the string represents an array with a single input text content part containing the provided text.
+ * The CLR collection intentionally uses the broader shared input-content hierarchy than this property's current REST schema, so future service support for additional kinds can be added without a breaking API change.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
 
@@ -134,6 +135,7 @@ namespace OpenAI.Decisions;
  * This property is a non-discriminated union between a string and an array of content parts.
  * The string component is shorthand notation for the array component.
  * Specifically, the string represents an array with a single input text content part containing the provided text.
+ * The CLR collection intentionally uses the broader shared input-content hierarchy than this property's current REST schema, so future service support for additional kinds can be added without a breaking API change.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem.content, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
 
@@ -141,6 +143,7 @@ namespace OpenAI.Decisions;
  * This property is a non-discriminated union between a string and an array of content parts.
  * The string component is shorthand notation for the array component.
  * Specifically, the string represents an array with a single input text content part containing the provided text.
+ * The CLR collection intentionally uses the broader shared input-content hierarchy than this property's current REST schema, so future service support for additional kinds can be added without a breaking API change.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput.output, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
 
@@ -148,6 +151,7 @@ namespace OpenAI.Decisions;
  * This property is a non-discriminated union between a string and an array of content parts.
  * The string component is shorthand notation for the array component.
  * Specifically, the string represents an array with a single input text content part containing the provided text.
+ * The CLR collection intentionally uses the broader shared input-content hierarchy than this property's current REST schema, so future service support for additional kinds can be added without a breaking API change.
  */
 @@alternateType(createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput.output, createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[]);
 
