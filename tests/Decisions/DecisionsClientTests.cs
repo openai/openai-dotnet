@@ -230,7 +230,7 @@ public class DecisionsClientTests
     [TestCase(true)]
     public void HostingRegistersConfiguredClient(bool keyed)
     {
-        ConfigurationManager configuration = new();
+        using ConfigurationManager configuration = new();
         configuration.AddInMemoryCollection(CreateConfiguration());
         ServiceCollection services = new();
         Mock<IHostApplicationBuilder> builder = new();
