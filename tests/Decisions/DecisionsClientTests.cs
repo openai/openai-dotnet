@@ -122,6 +122,7 @@ public class DecisionsClientTests
     {
         Uri requestUri = null;
         Dictionary<string, string> headers = new();
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("{}");
         MockPipelineTransport transport = new(message =>
         {
             requestUri = message.Request.Uri;
@@ -130,7 +131,7 @@ public class DecisionsClientTests
                 message.Request.Headers.TryGetValue(name, out string value);
                 headers[name] = value;
             }
-            return new MockPipelineResponse(200).WithContent("{}");
+            return response;
         })
         {
             ExpectSyncPipeline = !isAsync,
