@@ -221,8 +221,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
-        Assert.That(answer, Is.Not.Null);
+        Assert.That(decision.Answers[0] is DecisionsPredicateAnswer answer, Is.True);
         Assert.That(answer.Name, Is.EqualTo("positive_totals"));
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
@@ -250,8 +249,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionResource decision = await client.CreateDecisionAsync(options);
 
         AssertDecision(decision, options);
-        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
-        Assert.That(answer, Is.Not.Null);
+        Assert.That(decision.Answers[0] is DecisionsPredicateAnswer answer, Is.True);
         Assert.That(answer.Name, Is.EqualTo("matches_reference"));
         Assert.That(answer.Probability, Is.InRange(0.5, 1));
     }
