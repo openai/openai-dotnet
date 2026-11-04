@@ -13,6 +13,10 @@ namespace OpenAI.Decisions
     public readonly partial struct DecisionsItemKind : IEquatable<DecisionsItemKind>
     {
         private readonly string _value;
+        private const string CustomToolCallValue = "custom_tool_call";
+        private const string CustomToolCallOutputValue = "custom_tool_call_output";
+        private const string FunctionToolCallValue = "function_call";
+        private const string FunctionToolCallOutputValue = "function_call_output";
         private const string MessageValue = "message";
 
         public DecisionsItemKind(string value)
@@ -21,6 +25,14 @@ namespace OpenAI.Decisions
 
             _value = value;
         }
+
+        public static DecisionsItemKind CustomToolCall { get; } = new DecisionsItemKind(CustomToolCallValue);
+
+        public static DecisionsItemKind CustomToolCallOutput { get; } = new DecisionsItemKind(CustomToolCallOutputValue);
+
+        public static DecisionsItemKind FunctionToolCall { get; } = new DecisionsItemKind(FunctionToolCallValue);
+
+        public static DecisionsItemKind FunctionToolCallOutput { get; } = new DecisionsItemKind(FunctionToolCallOutputValue);
 
         public static DecisionsItemKind Message { get; } = new DecisionsItemKind(MessageValue);
 

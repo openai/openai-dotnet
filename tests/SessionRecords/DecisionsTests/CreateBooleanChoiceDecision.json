@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "426",
+        "Content-Length": "457",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
@@ -14,13 +14,13 @@
         "input": [
           {
             "type": "message",
+            "role": "user",
             "content": [
               {
                 "type": "input_text",
                 "text": "Yes, please email me a copy of the receipt."
               }
-            ],
-            "role": "user"
+            ]
           }
         ],
         "model": "gpt-6-luna",
@@ -37,7 +37,12 @@
                 "description": "The customer does not request a receipt."
               }
             ],
-            "instructions": "Decide whether the customer wants an emailed receipt.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Decide whether the customer wants an emailed receipt."
+              }
+            ],
             "name": "send_receipt"
           }
         ]
@@ -51,14 +56,14 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a528c1e22eeeba01-SEA",
+        "CF-RAY": "a54a4d192d38a390-SEA",
         "Connection": "keep-alive",
         "Content-Length": "369",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-processing-ms": "Sanitized",
         "Server": "cloudflare",
-        "server-timing-total": "681.618",
+        "server-timing-total": "348.261",
         "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": [

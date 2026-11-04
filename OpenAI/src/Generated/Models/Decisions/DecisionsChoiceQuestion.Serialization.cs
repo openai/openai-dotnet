@@ -98,10 +98,29 @@ namespace OpenAI.Decisions
                 Patch.WriteTo(writer, "$.choices"u8);
                 writer.WriteEndArray();
             }
-            if (!Patch.Contains("$.instructions"u8))
+            if (Patch.Contains("$.instructions"u8))
+            {
+                if (!Patch.IsRemoved("$.instructions"u8))
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    Patch.WriteTo(writer, "$.instructions"u8);
+                }
+            }
+            else
             {
                 writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
+                writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "instructions"u8);
+                for (int i = 0; i < Instructions.Count; i++)
+                {
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.instructions[{i}]")) || Instructions[i] != null && Instructions[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Instructions[i], options);
+                }
+                Patch.WriteTo(writer, "$.instructions"u8);
+                writer.WriteEndArray();
             }
             if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
             {
@@ -137,7 +156,7 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<DecisionsChoice> choices = default;
-            string instructions = default;
+            IList<DecisionsInstructionsPart> instructions = default;
             string name = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -158,7 +177,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
-                    instructions = prop.Value.GetString();
+                    DeserializeInstructionsValue(prop, ref instructions, options);
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -168,7 +187,7 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsChoiceQuestion(kind, patch, choices ?? new ChangeTrackingList<DecisionsChoice>(), instructions, name);
+            return new DecisionsChoiceQuestion(kind, patch, choices ?? new ChangeTrackingList<DecisionsChoice>(), instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>(), name);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -199,6 +218,28 @@ namespace OpenAI.Decisions
                 }
                 return Choices[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+            if (local.StartsWith("instructions"u8))
+            {
+                int propertyLength = "instructions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Instructions == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveInstructionsArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
+                {
+                    return false;
+                }
+                if (Instructions[index] == null)
+                {
+                    return false;
+                }
+                return Instructions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -225,6 +266,25 @@ namespace OpenAI.Decisions
                     return false;
                 }
                 Choices[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("instructions"u8))
+            {
+                int propertyLength = "instructions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Instructions == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
+                {
+                    return false;
+                }
+                if (Instructions[index] == null)
+                {
+                    return false;
+                }
+                Instructions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;
@@ -255,6 +315,35 @@ namespace OpenAI.Decisions
                 if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]"))) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Choices[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveInstructionsArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveInstructions(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<DecisionsInstructionsPart> ActiveInstructions()
+        {
+            if (!Optional.IsCollectionDefined(Instructions))
+            {
+                yield break;
+            }
+            bool hasPatch = Patch.Contains("$"u8, "instructions"u8);
+            for (int i = 0; i < Instructions.Count; i++)
+            {
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.instructions[{i}]"))) && (Instructions[i] == null || !Instructions[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return Instructions[i];
                 }
             }
         }

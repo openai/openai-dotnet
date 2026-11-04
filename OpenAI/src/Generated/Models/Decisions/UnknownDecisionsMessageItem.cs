@@ -6,11 +6,11 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Decisions
 {
-    internal partial class UnknownDecisionsContentPart : DecisionsContentPart
+    internal partial class UnknownDecisionsMessageItem : DecisionsMessageItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal UnknownDecisionsContentPart(DecisionsContentPartKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal UnknownDecisionsMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role) : base(kind != default ? kind : "unknown", patch, role != default ? role : "unknown")
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

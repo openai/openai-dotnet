@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsInputTextContentPart : DecisionsContentPart, IJsonModel<DecisionsInputTextContentPart>
+    public partial class DecisionsInputTextContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputTextContentPart>
     {
-        public DecisionsInputTextContentPart() : this(DecisionsContentPartKind.InputText, default, null)
+        public DecisionsInputTextContentPart() : this(DecisionsInputContentPartKind.InputText, default, null, null)
         {
         }
 
-        protected override DecisionsContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override DecisionsInputContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -78,6 +78,11 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            if (Optional.IsDefined(PromptCacheBreakpoint) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            {
+                writer.WritePropertyName("prompt_cache_breakpoint"u8);
+                writer.WriteObjectValue(PromptCacheBreakpoint, options);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -85,7 +90,7 @@ namespace OpenAI.Decisions
 
         DecisionsInputTextContentPart IJsonModel<DecisionsInputTextContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsInputTextContentPart)JsonModelCreateCore(ref reader, options);
 
-        protected override DecisionsContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override DecisionsInputContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsInputTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -102,16 +107,17 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            DecisionsContentPartKind kind = default;
+            DecisionsInputContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string text = default;
+            DecisionsPromptCacheBreakpoint promptCacheBreakpoint = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new DecisionsContentPartKind(prop.Value.GetString());
+                    kind = new DecisionsInputContentPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -119,9 +125,55 @@ namespace OpenAI.Decisions
                     text = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("prompt_cache_breakpoint"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        promptCacheBreakpoint = null;
+                        continue;
+                    }
+                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputTextContentPart(kind, patch, text);
+            return new DecisionsInputTextContentPart(kind, patch, text, promptCacheBreakpoint);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("prompt_cache_breakpoint"u8))
+            {
+                if (PromptCacheBreakpoint == null)
+                {
+                    return false;
+                }
+                return PromptCacheBreakpoint.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("prompt_cache_breakpoint"u8))
+            {
+                if (PromptCacheBreakpoint == null)
+                {
+                    return false;
+                }
+                PromptCacheBreakpoint.Patch.Set([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

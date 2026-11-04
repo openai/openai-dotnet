@@ -1,0 +1,121 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/decisions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "469",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
+      },
+      "RequestBody": {
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Evaluate these order records."
+              },
+              {
+                "type": "input_json",
+                "data": [
+                  {
+                    "order_id": "first",
+                    "total": 42
+                  },
+                  {
+                    "order_id": "second",
+                    "total": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "model": "gpt-6-luna",
+        "questions": [
+          {
+            "type": "predicate",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Every order's total is greater than the minimum total in the reference JSON."
+              },
+              {
+                "type": "input_json",
+                "data": [
+                  {
+                    "minimum_total": 0
+                  }
+                ]
+              }
+            ],
+            "name": "positive_totals"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": [
+          "x-request-id,retry-after,server-timing-total",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a54a4d602c1aa390-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "277",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "Server": "cloudflare",
+        "server-timing-total": "139.766",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Vary": [
+          "origin",
+          "access-control-request-method",
+          "access-control-request-headers"
+        ],
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "180000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "179999805",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "model": "gpt-6-luna",
+        "answers": [
+          {
+            "type": "predicate",
+            "name": "positive_totals",
+            "probability": 1.0
+          }
+        ],
+        "usage": {
+          "input_tokens": 194,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 194
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

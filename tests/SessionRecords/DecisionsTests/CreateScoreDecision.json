@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "518",
+        "Content-Length": "549",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
@@ -14,20 +14,25 @@
         "input": [
           {
             "type": "message",
+            "role": "user",
             "content": [
               {
                 "type": "input_text",
                 "text": "The service was excellent: fast, friendly, and helpful."
               }
-            ],
-            "role": "user"
+            ]
           }
         ],
         "model": "gpt-6-luna",
         "questions": [
           {
             "type": "score",
-            "instructions": "Rate the customer's sentiment from negative to positive.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Rate the customer's sentiment from negative to positive."
+              }
+            ],
             "levels": [
               {
                 "label": "negative",
@@ -55,14 +60,14 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a528c1f81ffeba01-SEA",
+        "CF-RAY": "a54a4d337e03a390-SEA",
         "Connection": "keep-alive",
         "Content-Length": "442",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-processing-ms": "Sanitized",
         "Server": "cloudflare",
-        "server-timing-total": "98.269",
+        "server-timing-total": "85.754",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": [
           "origin",

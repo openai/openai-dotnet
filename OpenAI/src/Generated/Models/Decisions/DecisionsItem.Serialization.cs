@@ -103,6 +103,14 @@ namespace OpenAI.Decisions
             {
                 switch (discriminator.GetString())
                 {
+                    case "custom_tool_call":
+                        return DecisionsCustomToolCallItem.DeserializeDecisionsCustomToolCallItem(element, data, options);
+                    case "custom_tool_call_output":
+                        return DecisionsCustomToolCallOutputItem.DeserializeDecisionsCustomToolCallOutputItem(element, data, options);
+                    case "function_call":
+                        return DecisionsFunctionToolCallItem.DeserializeDecisionsFunctionToolCallItem(element, data, options);
+                    case "function_call_output":
+                        return DecisionsFunctionToolCallOutputItem.DeserializeDecisionsFunctionToolCallOutputItem(element, data, options);
                     case "message":
                         return DecisionsMessageItem.DeserializeDecisionsMessageItem(element, data, options);
                 }

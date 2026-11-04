@@ -14,29 +14,29 @@ namespace OpenAI.Decisions
     public partial class DecisionsScoreQuestion : DecisionsQuestion
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public DecisionsScoreQuestion(string instructions, IEnumerable<DecisionsScoreLevel> levels) : base(DecisionsQuestionKind.Score)
+        public DecisionsScoreQuestion(IEnumerable<DecisionsInstructionsPart> instructions, IEnumerable<DecisionsScoreLevel> levels) : base(DecisionsQuestionKind.Score)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
             Argument.AssertNotNull(levels, nameof(levels));
 
-            Instructions = instructions;
+            Instructions = instructions.ToList();
             Levels = levels.ToList();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, in JsonPatch patch, string instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, patch)
+        internal DecisionsScoreQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionsPart> instructions, IList<DecisionsScoreLevel> levels, string name) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
-            Instructions = instructions;
+            Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Levels = levels ?? new ChangeTrackingList<DecisionsScoreLevel>();
             Name = name;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Instructions { get; set; }
+        public IList<DecisionsInstructionsPart> Instructions { get; }
 
         public IList<DecisionsScoreLevel> Levels { get; }
 

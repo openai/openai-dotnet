@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "272",
+        "Content-Length": "303",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
@@ -14,20 +14,25 @@
         "input": [
           {
             "type": "message",
+            "role": "user",
             "content": [
               {
                 "type": "input_text",
                 "text": "The customer says: Thank you! That solved my problem."
               }
-            ],
-            "role": "user"
+            ]
           }
         ],
         "model": "gpt-6-luna",
         "questions": [
           {
             "type": "predicate",
-            "instructions": "The customer is satisfied with the support they received."
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "The customer is satisfied with the support they received."
+              }
+            ]
           }
         ]
       },
@@ -40,14 +45,14 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a528c1fa990aba01-SEA",
+        "CF-RAY": "a54a4d379b41a390-SEA",
         "Connection": "keep-alive",
         "Content-Length": "264",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-processing-ms": "Sanitized",
         "Server": "cloudflare",
-        "server-timing-total": "96.158",
+        "server-timing-total": "178.655",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": [
           "origin",

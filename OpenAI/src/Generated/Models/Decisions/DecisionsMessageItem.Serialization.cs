@@ -4,15 +4,18 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Decisions
 {
-    public partial class DecisionsMessageItem : DecisionsItem, IJsonModel<DecisionsMessageItem>
+    [PersistableModelProxy(typeof(UnknownDecisionsMessageItem))]
+    public abstract partial class DecisionsMessageItem : DecisionsItem, IJsonModel<DecisionsMessageItem>
     {
+        internal DecisionsMessageItem() : this(DecisionsItemKind.Message, default, default)
+        {
+        }
+
         protected override DecisionsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DecisionsMessageItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -70,37 +73,11 @@ namespace OpenAI.Decisions
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.content"u8))
-            {
-                if (!Patch.IsRemoved("$.content"u8))
-                {
-                    writer.WritePropertyName("content"u8);
-                    Patch.WriteTo(writer, "$.content"u8);
-                }
-            }
-            else
-            {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "content"u8);
-                for (int i = 0; i < Content.Count; i++)
-                {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Content[i], options);
-                }
-                Patch.WriteTo(writer, "$.content"u8);
-                writer.WriteEndArray();
-            }
             if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role);
+                writer.WriteStringValue(Role.ToString());
             }
-
-            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
@@ -123,121 +100,21 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
-            DecisionsItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            IList<DecisionsContentPart> content = default;
-            string role = default;
-            foreach (var prop in element.EnumerateObject())
+            if (element.TryGetProperty("role"u8, out JsonElement discriminator))
             {
-                if (prop.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    kind = new DecisionsItemKind(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content, options);
-                    continue;
-                }
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString();
-                    continue;
-                }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
-            }
-            return new DecisionsMessageItem(kind, patch, content ?? new ChangeTrackingList<DecisionsContentPart>(), role);
-        }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("content"u8))
-            {
-                int propertyLength = "content"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Content == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveContentArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
-                {
-                    return false;
-                }
-                if (Content[index] == null)
-                {
-                    return false;
-                }
-                return Content[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("content"u8))
-            {
-                int propertyLength = "content"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Content == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
-                {
-                    return false;
-                }
-                if (Content[index] == null)
-                {
-                    return false;
-                }
-                Content[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveContentArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveContent(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsContentPart> ActiveContent()
-        {
-            if (!Optional.IsCollectionDefined(Content))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "content"u8);
-            for (int i = 0; i < Content.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]"))) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Content[i];
+                    case "assistant":
+                        return DecisionsAssistantMessageItem.DeserializeDecisionsAssistantMessageItem(element, data, options);
+                    case "developer":
+                        return DecisionsDeveloperMessageItem.DeserializeDecisionsDeveloperMessageItem(element, data, options);
+                    case "system":
+                        return DecisionsSystemMessageItem.DeserializeDecisionsSystemMessageItem(element, data, options);
+                    case "user":
+                        return DecisionsUserMessageItem.DeserializeDecisionsUserMessageItem(element, data, options);
                 }
             }
+            return UnknownDecisionsMessageItem.DeserializeUnknownDecisionsMessageItem(element, data, options);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

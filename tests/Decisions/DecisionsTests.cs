@@ -24,7 +24,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         DecisionCreationOptions options = CreateTextOptions("The customer says: Thank you! That solved my problem.");
         options.Questions.Add(new DecisionsPredicateQuestion
         {
-            Instructions = "The customer is satisfied with the support they received.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "The customer is satisfied with the support they received." } },
         });
 
         DecisionResource decision = await client.CreateDecisionAsync(options);
@@ -46,7 +46,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         options.Questions.Add(new DecisionsChoiceQuestion
         {
             Name = "request_category",
-            Instructions = "Choose the category that best describes the customer's request.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "Choose the category that best describes the customer's request." } },
             Choices =
             {
                 new DecisionsChoice { Value = new DecisionsChoiceValue("replacement"), Description = "Replace a damaged item." },
@@ -83,7 +83,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         options.Questions.Add(new DecisionsChoiceQuestion
         {
             Name = "send_receipt",
-            Instructions = "Decide whether the customer wants an emailed receipt.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "Decide whether the customer wants an emailed receipt." } },
             Choices =
             {
                 new DecisionsChoice { Value = new DecisionsChoiceValue(true), Description = "The customer requests a receipt." },
@@ -134,12 +134,12 @@ public class DecisionsTests : OpenAIRecordedTestBase
         options.Questions.Add(new DecisionsPredicateQuestion
         {
             Name = "satisfied",
-            Instructions = "The customer is satisfied with the support they received.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "The customer is satisfied with the support they received." } },
         });
         options.Questions.Add(new DecisionsChoiceQuestion
         {
             Name = "requested_action",
-            Instructions = "Choose the action requested by the customer.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "Choose the action requested by the customer." } },
             Choices =
             {
                 new DecisionsChoice { Value = "email_receipt", Description = "Email the receipt." },
@@ -197,6 +197,178 @@ public class DecisionsTests : OpenAIRecordedTestBase
         AssertImageDecision(decision, options);
     }
 
+    // Evaluates a structured JSON request and verifies the predicate answer and usage.
+    [RecordedTest]
+    public async Task CreateStructuredJsonDecision()
+    {
+        DecisionsClient client = GetProxiedDecisionsClient();
+        DecisionCreationOptions options = CreateTextOptions("Evaluate these order records.");
+        ((DecisionsUserMessageItem)options.InputItems[0]).Content.Add(new DecisionsInputJsonContentPart(
+        [
+            BinaryData.FromString("""{"order_id":"first","total":42}"""),
+            BinaryData.FromString("""{"order_id":"second","total":7}"""),
+        ]));
+        options.Questions.Add(new DecisionsPredicateQuestion
+        {
+            Name = "positive_totals",
+            Instructions =
+            {
+                new DecisionsInputTextInstructionsPart { Text = "Every order's total is greater than the minimum total in the reference JSON." },
+                new DecisionsInputJsonInstructionsPart([BinaryData.FromString("""{"minimum_total":0}""")]),
+            },
+        });
+
+        DecisionResource decision = await client.CreateDecisionAsync(options);
+
+        AssertDecision(decision, options);
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer.Name, Is.EqualTo("positive_totals"));
+        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+    }
+
+    // Evaluates an image supplied as multimodal question instructions and verifies the predicate answer.
+    [RecordedTest]
+    public async Task CreateMultimodalInstructionsDecision()
+    {
+        DecisionsClient client = GetProxiedDecisionsClient();
+        DecisionCreationOptions options = CreateTextOptions("The reference image shows an indoor room.");
+        options.Questions.Add(new DecisionsPredicateQuestion
+        {
+            Name = "matches_reference",
+            Instructions =
+            {
+                new DecisionsInputTextInstructionsPart { Text = "The statement in the input correctly describes the reference image." },
+                new DecisionsInputImageInstructionsPart
+                {
+                    ImageUri = "https://raw.githubusercontent.com/openai/openai-dotnet/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png",
+                    ImageDetailLevel = DecisionsImageDetailLevel.Low,
+                },
+            },
+        });
+
+        DecisionResource decision = await client.CreateDecisionAsync(options);
+
+        AssertDecision(decision, options);
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer.Name, Is.EqualTo("matches_reference"));
+        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+    }
+
+    // Evaluates conversation and tool-call history and verifies the predicate answer is grounded in tool outputs.
+    [RecordedTest]
+    public async Task CreateConversationAndToolHistoryDecision()
+    {
+        DecisionsClient client = GetProxiedDecisionsClient();
+        DecisionCreationOptions options = new()
+        {
+            Model = TestModel.Decisions,
+            InputItems =
+            {
+                new DecisionsSystemMessageItem
+                {
+                    Content = { new DecisionsInputTextContentPart { Text = "You are a shopping assistant." } },
+                },
+                new DecisionsDeveloperMessageItem
+                {
+                    Content = { new DecisionsInputTextContentPart { Text = "Use tool results to answer product questions." } },
+                },
+                new DecisionsUserMessageItem
+                {
+                    Content = { new DecisionsInputTextContentPart { Text = "Is the widget in stock, and what does it cost?" } },
+                },
+                new DecisionsAssistantMessageItem
+                {
+                    Content = { new DecisionsOutputTextContentPart { Text = "I will check the price and availability." } },
+                    Phase = DecisionsAssistantMessagePhase.Commentary,
+                },
+                new DecisionsFunctionToolCallItem
+                {
+                    CallId = "call_price",
+                    FunctionName = "lookup_price",
+                    Arguments = """{"product":"widget"}""",
+                    Status = DecisionsFunctionToolCallStatus.Completed,
+                },
+                new DecisionsFunctionToolCallOutputItem
+                {
+                    CallId = "call_price",
+                    Output = { new DecisionsInputTextContentPart { Text = """{"price":42,"currency":"USD"}""" } },
+                    Status = DecisionsFunctionToolCallOutputStatus.Completed,
+                },
+                new DecisionsCustomToolCallItem
+                {
+                    CallId = "call_stock",
+                    ToolName = "lookup_inventory",
+                    Input = "widget",
+                    Status = DecisionsCustomToolCallStatus.Completed,
+                },
+                new DecisionsCustomToolCallOutputItem
+                {
+                    CallId = "call_stock",
+                    Output = { new DecisionsInputTextContentPart { Text = "The widget is in stock." } },
+                    Status = DecisionsCustomToolCallOutputStatus.Completed,
+                },
+                new DecisionsAssistantMessageItem
+                {
+                    Content = { new DecisionsOutputTextContentPart { Text = "The widget is in stock and costs $42 USD." } },
+                    Phase = DecisionsAssistantMessagePhase.FinalAnswer,
+                },
+            },
+            Questions =
+            {
+                new DecisionsPredicateQuestion
+                {
+                    Name = "grounded_answer",
+                    Instructions = { new DecisionsInputTextInstructionsPart { Text = "The assistant's final answer accurately states the price and availability from both tool results." } },
+                },
+            },
+        };
+
+        DecisionResource decision = await client.CreateDecisionAsync(options);
+
+        AssertDecision(decision, options);
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer.Name, Is.EqualTo("grounded_answer"));
+        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+    }
+
+    // Evaluates a cache-configured request and verifies the predicate answer and usage shape.
+    [RecordedTest]
+    public async Task CreatePromptCachedDecision()
+    {
+        DecisionsClient client = GetProxiedDecisionsClient();
+        DecisionCreationOptions options = CreateTextOptions(
+            string.Concat(Enumerable.Repeat("Reference fact: the product is in stock.\n", 1024)));
+        DecisionsInputTextContentPart text = (DecisionsInputTextContentPart)((DecisionsUserMessageItem)options.InputItems[0]).Content[0];
+        text.PromptCacheBreakpoint = new() { Mode = DecisionsPromptCacheBreakpointMode.Explicit };
+        options.PromptCacheKey = "openai-dotnet-decisions-cache-test";
+        options.PromptCacheOptions = new()
+        {
+            Mode = DecisionsPromptCacheMode.Explicit,
+            TimeToLive = DecisionsPromptCacheTimeToLive.ThirtyMinutes,
+        };
+        options.Questions.Add(new DecisionsPredicateQuestion
+        {
+            Name = "in_stock",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "The reference says that the product is in stock." } },
+        });
+
+        DecisionResource decision = await client.CreateDecisionAsync(options);
+
+        AssertDecision(decision, options);
+        DecisionsPredicateAnswer answer = decision.Answers[0] as DecisionsPredicateAnswer;
+        Assert.That(answer, Is.Not.Null);
+        Assert.That(answer.Name, Is.EqualTo("in_stock"));
+        Assert.That(
+            decision.Usage.InputTokenDetails.CacheWriteTokenCount > 0
+                || decision.Usage.InputTokenDetails.CachedTokenCount > 0,
+            Is.True,
+            "Expected the request to either write prompt-cache tokens or use previously cached tokens.");
+        Assert.That(answer.Probability, Is.InRange(0.5, 1));
+    }
+
     private DecisionCreationOptions CreateTextOptions(string text)
     {
         return new DecisionCreationOptions
@@ -204,7 +376,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
             Model = TestModel.Decisions,
             InputItems =
             {
-                new DecisionsMessageItem
+                new DecisionsUserMessageItem
                 {
                     Content = { new DecisionsInputTextContentPart { Text = text } },
                 },
@@ -215,7 +387,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
     private DecisionCreationOptions CreateImageOptions(string imageUri, string instructions)
     {
         DecisionCreationOptions options = CreateTextOptions("Evaluate the supplied image.");
-        DecisionsMessageItem message = (DecisionsMessageItem)options.InputItems[0];
+        DecisionsUserMessageItem message = (DecisionsUserMessageItem)options.InputItems[0];
         message.Content.Add(new DecisionsInputImageContentPart
         {
             ImageUri = imageUri,
@@ -224,7 +396,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         options.Questions.Add(new DecisionsPredicateQuestion
         {
             Name = "image_content",
-            Instructions = instructions,
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = instructions } },
         });
         return options;
     }
@@ -234,7 +406,7 @@ public class DecisionsTests : OpenAIRecordedTestBase
         return new DecisionsScoreQuestion
         {
             Name = name,
-            Instructions = "Rate the customer's sentiment from negative to positive.",
+            Instructions = { new DecisionsInputTextInstructionsPart { Text = "Rate the customer's sentiment from negative to positive." } },
             Levels =
             {
                 new DecisionsScoreLevel { Label = "negative", Description = "The customer is dissatisfied." },

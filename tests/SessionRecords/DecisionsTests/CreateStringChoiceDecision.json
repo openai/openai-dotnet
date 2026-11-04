@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "499",
+        "Content-Length": "530",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.14.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
@@ -14,13 +14,13 @@
         "input": [
           {
             "type": "message",
+            "role": "user",
             "content": [
               {
                 "type": "input_text",
                 "text": "My order arrived with a broken screen. Please send a replacement."
               }
-            ],
-            "role": "user"
+            ]
           }
         ],
         "model": "gpt-6-luna",
@@ -41,7 +41,12 @@
                 "description": "Track a shipment."
               }
             ],
-            "instructions": "Choose the category that best describes the customer's request.",
+            "instructions": [
+              {
+                "type": "input_text",
+                "text": "Choose the category that best describes the customer's request."
+              }
+            ],
             "name": "request_category"
           }
         ]
@@ -55,14 +60,14 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a528c1f9588cba01-SEA",
+        "CF-RAY": "a54a4d34da58a390-SEA",
         "Connection": "keep-alive",
         "Content-Length": "433",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-processing-ms": "Sanitized",
         "Server": "cloudflare",
-        "server-timing-total": "96.678",
+        "server-timing-total": "64.061",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": [
           "origin",

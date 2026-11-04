@@ -21,6 +21,7 @@ using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Chat;
+using OpenAI.Decisions;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.Images;
@@ -75,6 +76,43 @@ public class ReadMeSnippets
 
         ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
         Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
+        #endregion
+    }
+
+    [Test]
+    public async Task Decisions()
+    {
+        #region Snippet:ReadMe_Decisions
+        DecisionsClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        DecisionCreationOptions options = new()
+        {
+            Model = "gpt-6-luna",
+            InputItems =
+            {
+                new DecisionsUserMessageItem
+                {
+                    Content =
+                    {
+                        new DecisionsInputTextContentPart("The order total is $42."),
+                    },
+                },
+            },
+            Questions =
+            {
+                new DecisionsPredicateQuestion
+                {
+                    Name = "positive_total",
+                    Instructions =
+                    {
+                        new DecisionsInputTextInstructionsPart { Text = "The order total is positive." },
+                    },
+                },
+            },
+        };
+
+        DecisionResource decision = await client.CreateDecisionAsync(options);
+        DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
+        Console.WriteLine(answer.Probability);
         #endregion
     }
 
