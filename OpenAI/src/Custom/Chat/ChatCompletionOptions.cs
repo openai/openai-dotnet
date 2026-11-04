@@ -53,6 +53,20 @@ public partial class ChatCompletionOptions
     [CodeGenMember("StreamOptions")]
     internal InternalChatCompletionStreamOptions StreamOptions { get; set; }
 
+    /// <summary>
+    /// Gets or sets whether usage information is included in streaming chat completions.
+    /// Set to <see langword="null"/> to omit <c>stream_options</c> from the request.
+    /// </summary>
+    public bool? IncludeUsageInStreaming
+    {
+        get => StreamOptions is null ? true : StreamOptions.IncludeUsage;
+        set
+        {
+            StreamOptions ??= new InternalChatCompletionStreamOptions();
+            StreamOptions.IncludeUsage = value;
+        }
+    }
+
     // CUSTOM: Renamed.
     /// <summary> Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the message content. </summary>
     [CodeGenMember("Logprobs")]
