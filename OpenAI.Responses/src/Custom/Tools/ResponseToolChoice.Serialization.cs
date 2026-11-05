@@ -46,7 +46,7 @@ public partial class ResponseToolChoice
             return null;
         }
 
-        ResponseDefaultToolChoice? defaultToolChoice = default;
+        ResponseToolChoiceEnum ? defaultToolChoice = default;
         ResponseCustomToolChoice customToolChoice = default;
 #pragma warning disable SCME0001
         JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -54,7 +54,7 @@ public partial class ResponseToolChoice
 
         if (element.ValueKind == JsonValueKind.String)
         {
-            defaultToolChoice = new ResponseDefaultToolChoice(element.GetString());
+            defaultToolChoice = new ResponseToolChoiceEnum (element.GetString());
         }
         else
         {

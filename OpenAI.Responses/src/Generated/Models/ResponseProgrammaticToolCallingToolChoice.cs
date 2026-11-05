@@ -8,14 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice
+    public partial class ResponseProgrammaticToolCallingToolChoice : ResponseToolChoiceObject
     {
-        public ResponseCustomProgrammaticToolCallingToolChoice() : this(ResponseCustomToolChoiceKind.ProgrammaticToolCalling, default)
+        public ResponseProgrammaticToolCallingToolChoice() : this(ResponseToolChoiceKind.ProgrammaticToolCalling, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomProgrammaticToolCallingToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseProgrammaticToolCallingToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -8,14 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice
+    public partial class ResponseCodeInterpreterToolChoice : ResponseToolChoiceObject
     {
-        public ResponseCustomFileSearchToolChoice() : this(ResponseCustomToolChoiceKind.FileSearch, default)
+        public ResponseCodeInterpreterToolChoice() : this(ResponseToolChoiceKind.CodeInterpreter, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomFileSearchToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCodeInterpreterToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

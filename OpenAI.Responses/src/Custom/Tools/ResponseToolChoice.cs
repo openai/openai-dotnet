@@ -8,7 +8,7 @@ namespace OpenAI.Responses;
 [CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class ResponseToolChoice
 {
-    public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice)
+    public ResponseToolChoice(ResponseToolChoiceEnum  defaultToolChoice)
     {
         DefaultToolChoice = defaultToolChoice;
     }
@@ -21,12 +21,12 @@ public partial class ResponseToolChoice
     }
 
     [CodeGenMember("DefaultToolChoice")]
-    public ResponseDefaultToolChoice? DefaultToolChoice { get; }
+    public ResponseToolChoiceEnum? DefaultToolChoice { get; }
 
     [CodeGenMember("CustomToolChoice")]
     public ResponseCustomToolChoice CustomToolChoice { get; }
 
-    public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice) => new(defaultToolChoice);
+    public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum  defaultToolChoice) => new(defaultToolChoice);
 
     public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
 }
