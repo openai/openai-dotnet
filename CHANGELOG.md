@@ -8,6 +8,11 @@
 
 ### Features Added
 
+- OpenAI.Decisions:
+  - Added experimental .NET support for the generally available Decisions API, including role-specific user, assistant, developer, and system message items and function-call and custom-tool-call history. User messages support input text, images, and JSON; assistant messages support output text and refusals; developer and system messages support text. Function-call and custom-tool-call outputs support text and images. Supplying tool history does not execute tools.
+  - Added multimodal question instructions through `DecisionsInputTextInstructionsPart`, `DecisionsInputImageInstructionsPart`, and `DecisionsInputJsonInstructionsPart`. JSON input and instruction parts expose `Data` as a collection of `BinaryData` containing free-form JSON objects. A single object is accepted as shorthand during deserialization and normalized to a one-item array when serialized; arbitrary JSON properties, including nested values and nulls, are preserved.
+  - Added prompt caching through `DecisionCreationOptions.PromptCacheKey` and `PromptCacheOptions`, with `Mode` (`Implicit` or `Explicit`) and `TimeToLive` (`ThirtyMinutes`). Explicit breakpoints use `DecisionsPromptCacheBreakpoint` on supported message or tool-output text/image parts; question instruction parts do not expose breakpoints. These settings request service-side caching but do not guarantee a cache hit.
+
 - OpenAI.Chat and OpenAI.Responses:
   - Expanded latest-mode OpenTelemetry span attributes for request settings, response metadata, and token-usage details.
   - Added privacy-conscious operation exception logs through the existing client logging configuration. Records contain the exception type without exception messages, stack traces, or request/response content.

@@ -15,6 +15,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Conversations;
+using OpenAI.Decisions;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -146,6 +147,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(ChatClient) => new ChatClient(modelName ?? TestModel.Chat, credential, NormalizeOptions<OpenAIClientOptions>(options)),
             nameof(ContainerClient) => new ContainerClient(credential, NormalizeOptions<ContainerClientOptions>(options)),
             nameof(ConversationClient) => new ConversationClient(credential, NormalizeOptions<ConversationClientOptions>(options)),
+			nameof(DecisionsClient) => new DecisionsClient(credential, NormalizeOptions<DecisionsClientOptions>(options)),
             nameof(EmbeddingClient) => new EmbeddingClient(modelName ?? TestModel.Embeddings, credential, NormalizeOptions<OpenAIClientOptions>(options)),
             nameof(OpenAIFileClient) => new OpenAIFileClient(credential, NormalizeOptions<OpenAIClientOptions>(options)),
             nameof(FineTuningClient) => new FineTuningClient(credential, NormalizeOptions<FineTuningClientOptions>(options)),
@@ -171,6 +173,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(ChatClient) => new OpenAIClientOptions(),
             nameof(ContainerClient) => new ContainerClientOptions(),
             nameof(ConversationClient) => new ConversationClientOptions(),
+            nameof(DecisionsClient) => new DecisionsClientOptions(),
             nameof(EmbeddingClient) => new OpenAIClientOptions(),
             nameof(OpenAIFileClient) => new OpenAIClientOptions(),
             nameof(FineTuningClient) => new FineTuningClientOptions(),
