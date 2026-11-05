@@ -10,6 +10,9 @@ public readonly partial struct ResponsesWebSocketMessageKind : IEquatable<Respon
 {
     private readonly string _value;
 
+    /// <summary>Creates a message kind from its wire event type.</summary>
+    /// <param name="value">The event type string.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
     public ResponsesWebSocketMessageKind(string value)
     {
         Argument.AssertNotNull(value, nameof(value));
