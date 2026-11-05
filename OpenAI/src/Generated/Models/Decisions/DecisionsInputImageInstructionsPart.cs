@@ -11,6 +11,9 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputImageInstructionsPart : DecisionsInstructionsPart
     {
+        private DecisionsImageDetailLevel? _imageDetailLevel;
+        private bool _imageDetailLevelIsDefined;
+
         public DecisionsInputImageInstructionsPart(string imageUri) : base(DecisionsInstructionsPartKind.InputImage)
         {
             Argument.AssertNotNull(imageUri, nameof(imageUri));
@@ -22,12 +25,23 @@ namespace OpenAI.Decisions
         internal DecisionsInputImageInstructionsPart(DecisionsInstructionsPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
         {
             ImageUri = imageUri;
-            ImageDetailLevel = imageDetailLevel;
+            _imageDetailLevel = imageDetailLevel;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUri { get; set; }
 
-        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+        public DecisionsImageDetailLevel? ImageDetailLevel
+        {
+            get
+            {
+                return _imageDetailLevel;
+            }
+            set
+            {
+                _imageDetailLevel = value;
+                _imageDetailLevelIsDefined = true;
+            }
+        }
     }
 }

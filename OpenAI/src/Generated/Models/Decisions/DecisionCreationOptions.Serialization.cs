@@ -136,20 +136,41 @@ namespace OpenAI.Decisions
                 Patch.WriteTo(writer, "$.questions"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(PromptCacheKey) && !Patch.Contains("$.prompt_cache_key"u8))
+            if (Optional.IsDefined(PromptCacheKey, _promptCacheKeyIsDefined) && !Patch.Contains("$.prompt_cache_key"u8))
             {
-                writer.WritePropertyName("prompt_cache_key"u8);
-                writer.WriteStringValue(PromptCacheKey);
+                if (PromptCacheKey != null)
+                {
+                    writer.WritePropertyName("prompt_cache_key"u8);
+                    writer.WriteStringValue(PromptCacheKey);
+                }
+                else
+                {
+                    writer.WriteNull("prompt_cache_key"u8);
+                }
             }
-            if (Optional.IsDefined(PromptCacheOptions) && !Patch.Contains("$.prompt_cache_options"u8))
+            if (Optional.IsDefined(PromptCacheOptions, _promptCacheOptionsIsDefined) && !Patch.Contains("$.prompt_cache_options"u8))
             {
-                writer.WritePropertyName("prompt_cache_options"u8);
-                writer.WriteObjectValue(PromptCacheOptions, options);
+                if (PromptCacheOptions != null)
+                {
+                    writer.WritePropertyName("prompt_cache_options"u8);
+                    writer.WriteObjectValue(PromptCacheOptions, options);
+                }
+                else
+                {
+                    writer.WriteNull("prompt_cache_options"u8);
+                }
             }
-            if (Optional.IsDefined(SafetyIdentifier) && !Patch.Contains("$.safety_identifier"u8))
+            if (Optional.IsDefined(SafetyIdentifier, _safetyIdentifierIsDefined) && !Patch.Contains("$.safety_identifier"u8))
             {
-                writer.WritePropertyName("safety_identifier"u8);
-                writer.WriteStringValue(SafetyIdentifier);
+                if (SafetyIdentifier != null)
+                {
+                    writer.WritePropertyName("safety_identifier"u8);
+                    writer.WriteStringValue(SafetyIdentifier);
+                }
+                else
+                {
+                    writer.WriteNull("safety_identifier"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -178,8 +199,11 @@ namespace OpenAI.Decisions
             IList<DecisionsItem> inputItems = default;
             string model = default;
             IList<DecisionsQuestion> questions = default;
+            bool promptCacheKeyIsDefined = false;
             string promptCacheKey = default;
+            bool promptCacheOptionsIsDefined = false;
             DecisionsPromptCacheOptions promptCacheOptions = default;
+            bool safetyIdentifierIsDefined = false;
             string safetyIdentifier = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -208,6 +232,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("prompt_cache_key"u8))
                 {
+                    promptCacheKeyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         promptCacheKey = null;
@@ -218,6 +243,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("prompt_cache_options"u8))
                 {
+                    promptCacheOptionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         promptCacheOptions = null;
@@ -228,6 +254,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("safety_identifier"u8))
                 {
+                    safetyIdentifierIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         safetyIdentifier = null;
@@ -245,7 +272,12 @@ namespace OpenAI.Decisions
                 promptCacheKey,
                 promptCacheOptions,
                 safetyIdentifier,
-                patch);
+                patch)
+            {
+                _promptCacheKeyIsDefined = promptCacheKeyIsDefined,
+                _promptCacheOptionsIsDefined = promptCacheOptionsIsDefined,
+                _safetyIdentifierIsDefined = safetyIdentifierIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -78,10 +78,17 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteStringValue(ImageUri);
             }
-            if (Optional.IsDefined(ImageDetailLevel) && !Patch.Contains("$.detail"u8))
+            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && !Patch.Contains("$.detail"u8))
             {
-                writer.WritePropertyName("detail"u8);
-                writer.WriteStringValue(ImageDetailLevel.Value.ToString());
+                if (ImageDetailLevel != null)
+                {
+                    writer.WritePropertyName("detail"u8);
+                    writer.WriteStringValue(ImageDetailLevel.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("detail"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -112,6 +119,7 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string imageUri = default;
+            bool imageDetailLevelIsDefined = false;
             DecisionsImageDetailLevel? imageDetailLevel = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -127,6 +135,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("detail"u8))
                 {
+                    imageDetailLevelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         imageDetailLevel = null;
@@ -137,7 +146,10 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageInstructionsPart(kind, patch, imageUri, imageDetailLevel);
+            return new DecisionsInputImageInstructionsPart(kind, patch, imageUri, imageDetailLevel)
+            {
+                _imageDetailLevelIsDefined = imageDetailLevelIsDefined
+            };
         }
     }
 }

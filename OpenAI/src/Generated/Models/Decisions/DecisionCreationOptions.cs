@@ -17,6 +17,12 @@ namespace OpenAI.Decisions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _promptCacheKey;
+        private bool _promptCacheKeyIsDefined;
+        private DecisionsPromptCacheOptions _promptCacheOptions;
+        private bool _promptCacheOptionsIsDefined;
+        private string _safetyIdentifier;
+        private bool _safetyIdentifierIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionCreationOptions(IEnumerable<DecisionsItem> inputItems, string model, IEnumerable<DecisionsQuestion> questions)
@@ -39,9 +45,9 @@ namespace OpenAI.Decisions
             InputItems = inputItems ?? new ChangeTrackingList<DecisionsItem>();
             Model = model;
             Questions = questions ?? new ChangeTrackingList<DecisionsQuestion>();
-            PromptCacheKey = promptCacheKey;
-            PromptCacheOptions = promptCacheOptions;
-            SafetyIdentifier = safetyIdentifier;
+            _promptCacheKey = promptCacheKey;
+            _promptCacheOptions = promptCacheOptions;
+            _safetyIdentifier = safetyIdentifier;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -58,10 +64,43 @@ namespace OpenAI.Decisions
 
         public IList<DecisionsQuestion> Questions { get; }
 
-        public string PromptCacheKey { get; set; }
+        public string PromptCacheKey
+        {
+            get
+            {
+                return _promptCacheKey;
+            }
+            set
+            {
+                _promptCacheKey = value;
+                _promptCacheKeyIsDefined = true;
+            }
+        }
 
-        public DecisionsPromptCacheOptions PromptCacheOptions { get; set; }
+        public DecisionsPromptCacheOptions PromptCacheOptions
+        {
+            get
+            {
+                return _promptCacheOptions;
+            }
+            set
+            {
+                _promptCacheOptions = value;
+                _promptCacheOptionsIsDefined = true;
+            }
+        }
 
-        public string SafetyIdentifier { get; set; }
+        public string SafetyIdentifier
+        {
+            get
+            {
+                return _safetyIdentifier;
+            }
+            set
+            {
+                _safetyIdentifier = value;
+                _safetyIdentifierIsDefined = true;
+            }
+        }
     }
 }

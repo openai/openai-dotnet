@@ -13,6 +13,9 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsAssistantMessageItem : DecisionsMessageItem
     {
+        private DecisionsAssistantMessagePhase? _phase;
+        private bool _phaseIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsAssistantMessageItem(IEnumerable<DecisionsOutputContentPart> content) : base(DecisionsMessageRole.Assistant)
         {
@@ -28,13 +31,24 @@ namespace OpenAI.Decisions
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<DecisionsOutputContentPart>();
-            Phase = phase;
+            _phase = phase;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsOutputContentPart> Content { get; }
 
-        public DecisionsAssistantMessagePhase? Phase { get; set; }
+        public DecisionsAssistantMessagePhase? Phase
+        {
+            get
+            {
+                return _phase;
+            }
+            set
+            {
+                _phase = value;
+                _phaseIsDefined = true;
+            }
+        }
     }
 }

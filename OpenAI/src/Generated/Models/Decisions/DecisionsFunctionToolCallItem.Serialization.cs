@@ -88,20 +88,41 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id, _idIsDefined) && !Patch.Contains("$.id"u8))
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                if (Id != null)
+                {
+                    writer.WritePropertyName("id"u8);
+                    writer.WriteStringValue(Id);
+                }
+                else
+                {
+                    writer.WriteNull("id"u8);
+                }
             }
-            if (Optional.IsDefined(Namespace) && !Patch.Contains("$.namespace"u8))
+            if (Optional.IsDefined(Namespace, _namespaceIsDefined) && !Patch.Contains("$.namespace"u8))
             {
-                writer.WritePropertyName("namespace"u8);
-                writer.WriteStringValue(Namespace);
+                if (Namespace != null)
+                {
+                    writer.WritePropertyName("namespace"u8);
+                    writer.WriteStringValue(Namespace);
+                }
+                else
+                {
+                    writer.WriteNull("namespace"u8);
+                }
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status, _statusIsDefined) && !Patch.Contains("$.status"u8))
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToString());
+                if (Status != null)
+                {
+                    writer.WritePropertyName("status"u8);
+                    writer.WriteStringValue(Status.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("status"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -134,8 +155,11 @@ namespace OpenAI.Decisions
             string arguments = default;
             string callId = default;
             string functionName = default;
+            bool idIsDefined = false;
             string id = default;
+            bool namespaceIsDefined = false;
             string @namespace = default;
+            bool statusIsDefined = false;
             DecisionsFunctionToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -161,6 +185,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("id"u8))
                 {
+                    idIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         id = null;
@@ -171,6 +196,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("namespace"u8))
                 {
+                    namespaceIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         @namespace = null;
@@ -181,6 +207,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    statusIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         status = null;
@@ -199,7 +226,12 @@ namespace OpenAI.Decisions
                 functionName,
                 id,
                 @namespace,
-                status);
+                status)
+            {
+                _idIsDefined = idIsDefined,
+                _namespaceIsDefined = namespaceIsDefined,
+                _statusIsDefined = statusIsDefined
+            };
         }
     }
 }

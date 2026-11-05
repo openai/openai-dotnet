@@ -68,10 +68,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsPromptCacheOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Mode) && !Patch.Contains("$.mode"u8))
+            if (Optional.IsDefined(Mode, _modeIsDefined) && !Patch.Contains("$.mode"u8))
             {
-                writer.WritePropertyName("mode"u8);
-                writer.WriteStringValue(Mode.Value.ToString());
+                if (Mode != null)
+                {
+                    writer.WritePropertyName("mode"u8);
+                    writer.WriteStringValue(Mode.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("mode"u8);
+                }
             }
             if (Optional.IsDefined(TimeToLive) && !Patch.Contains("$.ttl"u8))
             {
@@ -102,6 +109,7 @@ namespace OpenAI.Decisions
             {
                 return null;
             }
+            bool modeIsDefined = false;
             DecisionsPromptCacheMode? mode = default;
             DecisionsPromptCacheTimeToLive? timeToLive = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,6 +119,7 @@ namespace OpenAI.Decisions
             {
                 if (prop.NameEquals("mode"u8))
                 {
+                    modeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         mode = null;
@@ -130,7 +139,10 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsPromptCacheOptions(mode, timeToLive, patch);
+            return new DecisionsPromptCacheOptions(mode, timeToLive, patch)
+            {
+                _modeIsDefined = modeIsDefined
+            };
         }
     }
 }

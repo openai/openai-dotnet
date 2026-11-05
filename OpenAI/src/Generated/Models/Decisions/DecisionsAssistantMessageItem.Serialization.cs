@@ -94,10 +94,17 @@ namespace OpenAI.Decisions
                 Patch.WriteTo(writer, "$.content"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Phase) && !Patch.Contains("$.phase"u8))
+            if (Optional.IsDefined(Phase, _phaseIsDefined) && !Patch.Contains("$.phase"u8))
             {
-                writer.WritePropertyName("phase"u8);
-                writer.WriteStringValue(Phase.Value.ToString());
+                if (Phase != null)
+                {
+                    writer.WritePropertyName("phase"u8);
+                    writer.WriteStringValue(Phase.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("phase"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -129,6 +136,7 @@ namespace OpenAI.Decisions
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             DecisionsMessageRole role = default;
             IList<DecisionsOutputContentPart> content = default;
+            bool phaseIsDefined = false;
             DecisionsAssistantMessagePhase? phase = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -149,6 +157,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("phase"u8))
                 {
+                    phaseIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         phase = null;
@@ -159,7 +168,10 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsAssistantMessageItem(kind, patch, role, content ?? new ChangeTrackingList<DecisionsOutputContentPart>(), phase);
+            return new DecisionsAssistantMessageItem(kind, patch, role, content ?? new ChangeTrackingList<DecisionsOutputContentPart>(), phase)
+            {
+                _phaseIsDefined = phaseIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
