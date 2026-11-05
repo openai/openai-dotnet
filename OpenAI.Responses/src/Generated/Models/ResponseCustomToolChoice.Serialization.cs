@@ -4,19 +4,19 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownToolChoiceObject))]
-    public partial class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>
+    public partial class ResponseCustomToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCustomToolChoice>
     {
-        internal ResponseCustomToolChoice()
+        public ResponseCustomToolChoice() : this(ResponseToolChoiceKind.Custom, default, null)
         {
         }
 
-        protected virtual ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override ResponseToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -31,7 +31,7 @@ namespace OpenAI.Responses
             }
         }
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -45,7 +45,7 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ResponseCustomToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ResponseCustomToolChoice IPersistableModel<ResponseCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ResponseCustomToolChoice IPersistableModel<ResponseCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseCustomToolChoice)PersistableModelCreateCore(data, options);
 
         string IPersistableModel<ResponseCustomToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -64,25 +64,28 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support writing '{format}' format.");
             }
+            base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (!Patch.Contains("$.name"u8))
             {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(ToolName);
             }
+
+            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ResponseCustomToolChoice IJsonModel<ResponseCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ResponseCustomToolChoice IJsonModel<ResponseCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseCustomToolChoice)JsonModelCreateCore(ref reader, options);
 
-        protected virtual ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override ResponseToolChoiceObject JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -99,41 +102,26 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
+            ResponseToolChoiceKind kind = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            string toolName = default;
+            foreach (var prop in element.EnumerateObject())
             {
-                switch (discriminator.GetString())
+                if (prop.NameEquals("type"u8))
                 {
-                    case "allowed_tools":
-                        return ResponseCustomAllowedToolsToolChoice.DeserializeResponseCustomAllowedToolsToolChoice(element, data, options);
-                    case "apply_patch":
-                        return ResponseCustomApplyPatchToolChoice.DeserializeResponseCustomApplyPatchToolChoice(element, data, options);
-                    case "code_interpreter":
-                        return ResponseCustomCodeInterpreterToolChoice.DeserializeResponseCustomCodeInterpreterToolChoice(element, data, options);
-                    case "computer":
-                        return ResponseCustomComputerToolChoice.DeserializeResponseCustomComputerToolChoice(element, data, options);
-                    case "computer_use_preview":
-                        return ResponseCustomComputerUsePreviewToolChoice.DeserializeResponseCustomComputerUsePreviewToolChoice(element, data, options);
-                    case "custom":
-                        return ResponseCustomCustomToolChoice.DeserializeResponseCustomCustomToolChoice(element, data, options);
-                    case "file_search":
-                        return ResponseCustomFileSearchToolChoice.DeserializeResponseCustomFileSearchToolChoice(element, data, options);
-                    case "function":
-                        return ResponseCustomFunctionToolChoice.DeserializeResponseCustomFunctionToolChoice(element, data, options);
-                    case "image_generation":
-                        return ResponseCustomImageGenerationToolChoice.DeserializeResponseCustomImageGenerationToolChoice(element, data, options);
-                    case "mcp":
-                        return ResponseCustomMcpToolChoice.DeserializeResponseCustomMcpToolChoice(element, data, options);
-                    case "programmatic_tool_calling":
-                        return ResponseCustomProgrammaticToolCallingToolChoice.DeserializeResponseCustomProgrammaticToolCallingToolChoice(element, data, options);
-                    case "shell":
-                        return ResponseCustomShellToolChoice.DeserializeResponseCustomShellToolChoice(element, data, options);
-                    case "web_search_preview":
-                        return ResponseCustomWebSearchPreviewToolChoice.DeserializeResponseCustomWebSearchPreviewToolChoice(element, data, options);
-                    case "web_search":
-                        return ResponseCustomWebSearchToolChoice.DeserializeResponseCustomWebSearchToolChoice(element, data, options);
+                    kind = new ResponseToolChoiceKind(prop.Value.GetString());
+                    continue;
                 }
+                if (prop.NameEquals("name"u8))
+                {
+                    toolName = prop.Value.GetString();
+                    continue;
+                }
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, data, options);
+            return new ResponseCustomToolChoice(kind, patch, toolName);
         }
     }
 }

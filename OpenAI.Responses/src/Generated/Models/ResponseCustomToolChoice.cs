@@ -3,28 +3,28 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomToolChoice
+    public partial class ResponseCustomToolChoice : ResponseToolChoiceObject
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
         protected internal ResponseCustomToolChoice(InternalResponseCustomToolChoiceKind kind)
         {
-            Kind = kind;
+            Argument.AssertNotNull(toolName, nameof(toolName));
+
+            ToolName = toolName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch)
+        internal ResponseCustomToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch, string toolName) : base(kind, patch)
         {
-            Kind = kind;
-            _patch = patch;
+            ToolName = toolName;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

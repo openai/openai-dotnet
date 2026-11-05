@@ -11,10 +11,10 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice
+    public partial class ResponseAllowedToolsChoice : ResponseToolChoiceObject
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public ResponseCustomAllowedToolsToolChoice(ResponseToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools) : base(ResponseCustomToolChoiceKind.AllowedTools)
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools) : base(ResponseToolChoiceKind.AllowedTools)
         {
             Argument.AssertNotNull(tools, nameof(tools));
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomAllowedToolsToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch, ResponseToolChoiceAllowedMode mode, IList<ResponseTool> tools) : base(kind, patch)
+        internal ResponseAllowedToolsChoice(ResponseToolChoiceKind kind, in JsonPatch patch, ResponseAllowedToolsChoiceMode mode, IList<ResponseTool> tools) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Mode = mode;
@@ -34,7 +34,7 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public ResponseToolChoiceAllowedMode Mode { get; set; }
+        public ResponseAllowedToolsChoiceMode Mode { get; set; }
 
         public IList<ResponseTool> Tools { get; }
     }

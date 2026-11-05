@@ -23,7 +23,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseToolChoice(ResponseDefaultToolChoice? defaultToolChoice, ResponseCustomToolChoice customToolChoice, in JsonPatch patch)
+        internal ResponseToolChoice(ResponseToolChoiceEnum? defaultToolChoice, ResponseCustomToolChoice customToolChoice, in JsonPatch patch)
         {
             DefaultToolChoice = defaultToolChoice;
             CustomToolChoice = customToolChoice;

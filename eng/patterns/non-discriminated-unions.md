@@ -65,6 +65,8 @@ public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDe
 }
 ```
 
+Modelling extensible string enums in this format is the default behavior of the code generator; it should not be done with code customization. 
+
 ## Pattern 1: Represent distinct components through composition
 
 When the components represent distinct concepts, define a public type for each component. For `require_approval`, the object component represents a custom policy:
