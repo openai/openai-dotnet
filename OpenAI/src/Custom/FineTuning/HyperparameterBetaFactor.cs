@@ -30,6 +30,11 @@ public partial class HyperparameterBetaFactor : IEquatable<double>, IEquatable<i
 
     public HyperparameterBetaFactor(double beta)
     {
+        if (double.IsNaN(beta) || double.IsInfinity(beta))
+        {
+            throw new ArgumentOutOfRangeException(nameof(beta), beta, "Beta must be finite.");
+        }
+
         _doubleValue = beta;
     }
 

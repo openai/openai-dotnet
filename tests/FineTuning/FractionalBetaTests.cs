@@ -77,6 +77,20 @@ public class FractionalBetaTests
         Assert.That(ModelReaderWriter.Write(original).ToObjectFromJson<int>(), Is.EqualTo(value));
     }
 
+    [TestCase(double.NaN)]
+    [TestCase(double.PositiveInfinity)]
+    [TestCase(double.NegativeInfinity)]
+    public void NonFiniteBetaIsRejectedAcrossPublicConstructionPaths(double beta)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new HyperparameterBetaFactor(beta));
+        Assert.Throws<ArgumentOutOfRangeException>(() => HyperparameterBetaFactor.CreateBeta(beta));
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            HyperparameterBetaFactor converted = beta;
+            _ = converted;
+        });
+    }
+
     [Test]
     public void AutomaticAndNullSemanticsRemainUnchanged()
     {
