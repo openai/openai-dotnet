@@ -8,6 +8,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -671,6 +672,44 @@ public class ChatSmokeTests : ClientTestBase
         Assert.That(
             explicitNullJson.RootElement.GetProperty("choices")[0].GetProperty("logprobs").ValueKind,
             Is.EqualTo(JsonValueKind.Null));
+
+    }
+
+    [Test]
+    public void StreamingChoiceSerializerRespectsLogprobsPatch()
+    {
+        // Patch the internal choice directly until microsoft/typespec#12431 fixes array-path propagation.
+        StreamingChatCompletionUpdate update = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {"id":"chatcmpl-test","choices":[{"delta":{},"logprobs":null,"finish_reason":null,"index":0}],
+                 "created":0,"model":"gpt-test","object":"chat.completion.chunk"}
+                """));
+        PropertyInfo choicesProperty = typeof(StreamingChatCompletionUpdate).GetProperty("Choices", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(choicesProperty, Is.Not.Null);
+        object choice = ((System.Collections.IList)choicesProperty.GetValue(update))[0];
+        FieldInfo patchField = choice.GetType().GetField("_patch", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(patchField, Is.Not.Null);
+        JsonPatch patch = (JsonPatch)patchField.GetValue(choice);
+
+        patch.Remove("$.logprobs"u8);
+        patchField.SetValue(choice, patch);
+        using JsonDocument removedJson = JsonDocument.Parse(ModelReaderWriter.Write(update));
+        Assert.That(removedJson.RootElement.GetProperty("choices")[0].TryGetProperty("logprobs", out _), Is.False);
+
+        patch.Set("$.logprobs"u8, BinaryData.FromString("""{"content":[]}"""));
+        patchField.SetValue(choice, patch);
+        using JsonDocument replacedJson = JsonDocument.Parse(ModelReaderWriter.Write(update));
+        JsonElement replacedChoice = replacedJson.RootElement.GetProperty("choices")[0];
+        int logprobsPropertyCount = 0;
+        foreach (JsonProperty property in replacedChoice.EnumerateObject())
+        {
+            if (property.NameEquals("logprobs"))
+            {
+                logprobsPropertyCount++;
+            }
+        }
+        Assert.That(logprobsPropertyCount, Is.EqualTo(1));
+        Assert.That(replacedChoice.GetProperty("logprobs").GetProperty("content").GetArrayLength(), Is.Zero);
     }
 
     [Test]
