@@ -17,7 +17,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, BinaryData toolChoice, bool? parallelToolCalls, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, ResponseToolChoice toolChoice, bool? parallelToolCalls, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Model = model;
@@ -57,7 +57,9 @@ namespace OpenAI.Responses
 
         public BinaryData Conversation { get; set; }
 
-        public BinaryData ToolChoice { get; set; }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        public ResponseToolChoice ToolChoice { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public bool? ParallelToolCalls { get; set; }
 

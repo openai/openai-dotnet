@@ -578,7 +578,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("truncation"u8))
@@ -746,6 +746,14 @@ namespace OpenAI.Responses
                 }
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
+                return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
+            }
             if (local.StartsWith("error"u8))
             {
                 if (Error == null)
@@ -869,6 +877,15 @@ namespace OpenAI.Responses
                     return false;
                 }
                 TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
+                ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("error"u8))

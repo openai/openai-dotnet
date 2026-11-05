@@ -9,18 +9,19 @@ using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalToolChoiceObject
+    [Experimental("OPENAI001")]
+    public partial class ResponseToolChoiceObject
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected InternalToolChoiceObject(InternalToolChoiceObjectType kind)
+        private protected ResponseToolChoiceObject(ResponseToolChoiceKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObject(InternalToolChoiceObjectType kind, in JsonPatch patch)
+        internal ResponseToolChoiceObject(ResponseToolChoiceKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -32,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalToolChoiceObjectType Kind { get; set; }
+        internal ResponseToolChoiceKind Kind { get; set; }
     }
 }
