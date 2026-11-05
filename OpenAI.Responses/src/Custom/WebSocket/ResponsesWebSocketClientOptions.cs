@@ -12,10 +12,11 @@ public class ResponsesWebSocketClientOptions
     public bool ShouldReconnect { get; set; } = true;
 
     /// <summary>Maximum queued incoming messages, excluding the active callback. Defaults to 1024. Must be positive.</summary>
-    /// <remarks>Overflow terminates the client with an error rather than dropping ordered updates.</remarks>
+    /// <remarks>Each subscription has its own bounded queue. A full queue delays receiving until capacity is available.</remarks>
     public int MaxBufferedMessages { get; set; } = 1024;
 
-    /// <summary>Maximum queued incoming UTF-8 payload bytes. Zero (the default) disables this limit.</summary>
+    /// <summary>Maximum incoming UTF-8 payload bytes pending across all message subscriptions. Zero disables this limit.</summary>
+    /// <remarks>Exceeding this limit terminates the connection with a local error.</remarks>
     public long MaxBufferedBytes { get; set; }
 
     /// <summary>Maximum UTF-8 payload bytes in one incoming or outgoing message. Zero (the default) disables this limit.</summary>

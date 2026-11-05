@@ -28,6 +28,8 @@ namespace OpenAI.Responses;
 public partial class ResponsesClient
 {
     private readonly OpenTelemetrySource _telemetry;
+    private readonly AuthenticationPolicy _webSocketAuthenticationPolicy;
+    private readonly ResponsesClientOptions _webSocketClientOptions;
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
@@ -76,6 +78,8 @@ public partial class ResponsesClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new ResponsesClientOptions();
 
+        _webSocketAuthenticationPolicy = authenticationPolicy;
+        _webSocketClientOptions = options;
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _telemetry = new OpenTelemetrySource(_endpoint, options.ClientLoggingOptions);
