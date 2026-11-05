@@ -9,7 +9,7 @@ internal static class TestModel
     public const string Chat = "gpt-4o-mini";
     public const string Decisions = "gpt-6-luna";
     public const string Embeddings = "text-embedding-3-small";
-    public const string Images = "gpt-image-1";
+    public const string Images = "gpt-image-2.6-flare";
     public const string Moderations = "omni-moderation-latest";
     public const string Realtime = "gpt-realtime";
     public const string Responses = "gpt-4o-mini";

@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "229",
+        "Content-Length": "232",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "messages": [
@@ -17,18 +17,22 @@
             "content": "Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?"
           }
         ],
-        "model": "o3-mini",
+        "model": "gpt-6-luna",
         "reasoning_effort": "low",
         "max_completion_tokens": 2148
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102715c48a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a559814dc88af500-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4655",
+        "Content-Length": "3584",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -36,29 +40,28 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
-        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-limit-tokens": "180000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999967",
+        "x-ratelimit-remaining-tokens": "179999970",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWhGvH6uZaZXh0vill8EYCVORxL",
+        "id": "chatcmpl-EgkRrDqQGzLNBnd3T5WYkv6Y42v7Q",
         "object": "chat.completion",
-        "created": 1770950935,
-        "model": "o3-mini-2025-01-31",
+        "created": 1793857031,
+        "model": "gpt-6-luna",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "A survey of popular films, television shows, novels, and other media from the 1970s and 1980s reveals several recurring science-fiction themes that resonated with audiences during that period. These themes often reflected both the rapid technological advancements of the era and prevailing social, cultural, and political concerns:\n\n1. Space Opera and Intergalactic Adventure  \n\u2003• Following the blockbuster success of Star Wars (1977), sprawling space operas became emblematic of the era. They combined classic mythology with futuristic technology, representing epic struggles between good and evil in distant galaxies.  \n\u2003• Popular TV series like Star Trek continued to explore varied aspects of space exploration, diplomacy, and the human condition.\n\n2. Dystopian Futures and Post-Apocalyptic Worlds  \n\u2003• Films such as A Clockwork Orange (1971), Soylent Green (1973), Mad Max (1979), and Escape from New York (1981) reflected Cold War anxieties. They depicted societies in decline or in radical transformation due to authoritarian regimes, environmental collapse, or technological overreach.  \n\u2003• These narratives often critiqued contemporary political systems and highlighted fears of unchecked technological and military power.\n\n3. Alien Encounters and Extraterrestrial Life  \n\u2003• Alien-themed movies like Close Encounters of the Third Kind (1977), Alien (1979), and E.T. the Extra-Terrestrial (1982) not only sparked imagination but also served as metaphors for ‘the other,’ exploring themes of communication, misunderstanding, and coexistence.  \n\u2003• These works questioned what it meant to be human when confronted with radically different forms of life.\n\n4. Artificial Intelligence, Robots, and the Nature of Humanity  \n\u2003• Films such as Blade Runner (1982) and television episodes exploring sentient machines raised questions about what defines humanity.  \n\u2003• The portrayal of artificial intelligence often balanced hope about progress with fears of dehumanization and loss of control, reflecting anxieties about technology’s rapid integration into everyday life.\n\n5. Time Travel and Alternate Realities  \n\u2003• Time travel became a popular motif in narratives like Back to the Future (1985). These stories provided a creative means to examine historical events, personal identity, and the consequences of technological intervention.  \n\u2003• Alternate realities and multiversal explorations also began to gain traction, inviting audiences to consider the possibility of many worlds coexisting.\n\n6. Cyberpunk and Early Visions of a Digital Future  \n\u2003• Although the punk aesthetic didn’t become fully crystallized until later, seeds of cyberpunk began to appear in media during the 1980s. Works like Ridley Scott’s Blade Runner hinted at the fusion of high technology and urban decay, laying the groundwork for later explorations of virtual reality, corporate dominance, and a dystopian digital landscape.\n\u2003• Literature like William Gibson’s Neuromancer (1984) also redefined the genre with its vision of cyberspace and a darker, technology-saturated future.\n\n7. Societal Anxieties and Technology’s Impact on Identity  \n\u2003• Many works from the era used sci-fi not just to imagine futuristic technologies but to reflect on modern society’s concerns. The impact of fast-paced technological change on individual identity, privacy, and human relationships was a recurring exploration.\n\u2003• These narratives often blurred the lines between the organic and the artificial, questioning the nature of consciousness and the boundaries of self.\n\nIn summary, sci-fi media of the 1970s and 1980s commonly grappled with the excitement and trepidation accompanying rapid technological change, environmental concerns, and shifting geopolitical landscapes. By envisioning alternative futures—whether utopian, dystopian, or somewhere in between—these works provided a creative lens through which audiences could explore the promises and perils of modernity and the enduring mysteries of our universe.",
+              "content": "Across popular science fiction in the 1970s and 1980s, the most common themes were **rapid technological change, political anxiety, and encounters with the unknown**. Their emphasis shifted over time: much of the 1970s’ science fiction was wary and socially critical, while a lot of 1980s popular sci-fi paired similar anxieties with action, adventure, and spectacle.\n\n- **Space travel and alien contact:** Exploration, first contact, and humanity’s place in the universe were central in films and television such as *Star Wars*, *Close Encounters of the Third Kind*, *Alien*, and *Star Trek*. Aliens might be wondrous, threatening, or a way to reflect on human behavior.\n- **Dystopias and authoritarian control:** Many stories imagined societies shaped by surveillance, corporate power, rigid social rules, or the loss of individual freedom. Examples include *Logan’s Run*, *Rollerball*, *Blade Runner*, and *Brazil*.\n- **Technology turning against—or transforming—humanity:** Computers, robots, artificial intelligence, and automation raised questions about control and dependence. *Westworld*, *The Terminator*, *WarGames*, and *RoboCop* explore different versions of this concern.\n- **Nuclear war and post-apocalyptic survival:** Cold War fears fueled stories of nuclear catastrophe, social collapse, and life afterward. *Mad Max*, *The Day After*, and *Threads* are prominent examples.\n- **What counts as human:** Artificial beings, aliens, body modification, and genetic change prompted questions about identity, consciousness, and humanity. This theme runs through *Blade Runner*, *Alien*, *The Terminator*, and *The Fly*.\n- **Environmental crisis and resource scarcity:** Pollution, ecological damage, overpopulation, and dwindling resources appeared in works such as *Silent Running*, *Soylent Green*, and *Mad Max*.\n- **Time travel and alternate histories:** These stories used altered timelines and time travel to explore fate, consequences, and the possibility of changing the past—most famously in the 1980s with *Back to the Future* and *The Terminator*.\n- **Corporate power and consumer culture:** Especially in the 1980s, sci-fi often pictured corporations as powerful, invasive forces, while also reflecting the era’s fascination with gadgets, computers, and commercial technology.\n\nIn broad terms, **1970s sci-fi often foregrounded distrust of institutions, ecological limits, and the possibility of catastrophe**. **1980s sci-fi more often made technology and space adventure into blockbuster spectacle**, but it retained concerns about corporate control, machines, nuclear danger, and the definition of humanity. These are recurring patterns, not a precise ranking: popular sci-fi varied considerably across film, television, books, and comics.",
               "refusal": null,
               "annotations": []
             },
@@ -67,21 +70,22 @@
         ],
         "usage": {
           "prompt_tokens": 34,
-          "completion_tokens": 1041,
-          "total_tokens": 1075,
+          "completion_tokens": 690,
+          "total_tokens": 724,
           "prompt_tokens_details": {
             "cached_tokens": 0,
+            "cache_write_tokens": 0,
             "audio_tokens": 0
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 256,
+            "reasoning_tokens": 109,
             "audio_tokens": 0,
             "accepted_prediction_tokens": 0,
             "rejected_prediction_tokens": 0
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "Sanitized"
+        "system_fingerprint": null
       }
     }
   ],

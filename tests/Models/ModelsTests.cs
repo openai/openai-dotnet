@@ -24,14 +24,14 @@ public class ModelsTests : OpenAIRecordedTestBase
         OpenAIModelCollection allModels = await client.GetModelsAsync();
 
         OpenAIModel whisper = allModels.First(m => m.Id.Contains("whisper", StringComparison.InvariantCultureIgnoreCase));
-        OpenAIModel turbo = allModels.First(m => m.Id.Contains("turbo", StringComparison.InvariantCultureIgnoreCase));
+        OpenAIModel luna = allModels.First(m => m.Id.Contains("luna", StringComparison.InvariantCultureIgnoreCase));
         long unixTime2020 = (new DateTimeOffset(2020, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-        Assert.That(whisper.Id, Is.Not.EqualTo(turbo.Id));
+        Assert.That(whisper.Id, Is.Not.EqualTo(luna.Id));
         Assert.That(whisper.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2020));
-        Assert.That(turbo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2020));
+        Assert.That(luna.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2020));
         Assert.That(whisper.OwnedBy.ToLowerInvariant(), Contains.Substring("system").Or.Contains("openai"));
-        Assert.That(turbo.OwnedBy.ToLowerInvariant(), Contains.Substring("system").Or.Contains("openai"));
+        Assert.That(luna.OwnedBy.ToLowerInvariant(), Contains.Substring("system").Or.Contains("openai"));
 
         Console.WriteLine($"Total model count: {allModels.Count}");
     }
