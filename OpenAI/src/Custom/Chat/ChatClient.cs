@@ -5,7 +5,11 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -251,7 +255,7 @@ public partial class ChatClient
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
+        using BinaryContent content = CreateStreamingContent(clonedOptions);
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
             async () => await CompleteChatAsync(content, requestOptions).ConfigureAwait(false),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -278,7 +282,7 @@ public partial class ChatClient
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
+        using BinaryContent content = CreateStreamingContent(clonedOptions);
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
             () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -406,5 +410,29 @@ public partial class ChatClient
             clonedOptions.StreamOptions = null;
         }
         return clonedOptions;
+    }
+
+    // CUSTOM: A patched "stream_options" replaces the modeled StreamOptions on the wire, which drops "include_usage".
+    // Add it to the serialized request instead of to the patch, because the cloned options share their patch with
+    // the caller's options. Respect a caller who removed "stream_options" or set "include_usage" themselves.
+    private static BinaryContent CreateStreamingContent(ChatCompletionOptions clonedOptions)
+    {
+        if (!clonedOptions.Patch.Contains("$.stream_options"u8) || clonedOptions.Patch.IsRemoved("$.stream_options"u8))
+        {
+            return clonedOptions.ToBinaryContent();
+        }
+
+        JsonNode body = JsonNode.Parse(ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default).ToMemory().Span);
+        if (body["stream_options"] is JsonObject streamOptions && !streamOptions.ContainsKey("include_usage"))
+        {
+            streamOptions["include_usage"] = true;
+        }
+
+        using MemoryStream stream = new();
+        using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }))
+        {
+            body.WriteTo(writer);
+        }
+        return BinaryContent.Create(new BinaryData(stream.ToArray()));
     }
 }

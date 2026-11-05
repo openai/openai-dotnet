@@ -6,7 +6,10 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -290,6 +293,98 @@ public class ChatMockTests : ClientTestBase
         stopwatch.Stop();
 
         Assert.That(response.IsDisposed);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingKeepsUsageWhenStreamOptionsArePatched()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
+        Assert.That(streamOptions.GetProperty("include_obfuscation").GetBoolean(), Is.False);
+        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.True);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingDoesNotModifyPatchedOptions()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+        options.Patch.Set("$.temperature"u8, 0.5);
+        string patchBefore = options.Patch.ToString("JP");
+
+        await CompleteChatStreamingAndGetRequestBodyAsync(options);
+        await CompleteChatStreamingAndGetRequestBodyAsync(options);
+
+        Assert.That(options.Patch.ToString("JP"), Is.EqualTo(patchBefore));
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingRespectsPatchedIncludeUsage()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Set("$.stream_options.include_usage"u8, false);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        Assert.That(document.RootElement.GetProperty("stream_options").GetProperty("include_usage").GetBoolean(), Is.False);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingRespectsRemovedStreamOptions()
+    {
+        ChatCompletionOptions options = new();
+        options.Patch.Remove("$.stream_options"u8);
+
+        using JsonDocument document = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(options));
+        Assert.That(document.RootElement.TryGetProperty("stream_options", out _), Is.False);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingPatchedStreamOptionsKeepMessageBytes()
+    {
+        ChatMessage[] messages = [new UserChatMessage("a<b>&c '\"q\" </script> \u00e9 \ud83d\ude00")];
+        ChatCompletionOptions patched = new();
+        patched.Patch.Set("$.stream_options.include_obfuscation"u8, false);
+
+        using JsonDocument plain = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(new ChatCompletionOptions(), messages));
+        using JsonDocument withPatch = JsonDocument.Parse(await CompleteChatStreamingAndGetRequestBodyAsync(patched, messages));
+        Assert.That(withPatch.RootElement.GetProperty("messages").GetRawText(), Is.EqualTo(plain.RootElement.GetProperty("messages").GetRawText()));
+    }
+
+    private async Task<string> CompleteChatStreamingAndGetRequestBodyAsync(ChatCompletionOptions options, IEnumerable<ChatMessage> messages = null)
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = Encoding.UTF8.GetString(stream.ToArray());
+                return CreateStreamingChatResponse();
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ChatClient client = new("model", s_fakeCredential, clientOptions);
+
+        if (IsAsync)
+        {
+            await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(messages ?? s_messages, options))
+            {
+            }
+        }
+        else
+        {
+            foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreaming(messages ?? s_messages, options))
+            {
+            }
+        }
+
+        return requestBody;
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)

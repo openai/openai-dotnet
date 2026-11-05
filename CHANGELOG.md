@@ -36,6 +36,7 @@
 
 - OpenAI.Chat:
   - Fixed `JsonPatch` precedence for message content and content-part properties, preventing patched values from being emitted alongside modeled values as duplicate JSON properties. _(A community contribution, courtesy of [sylvesterkaczmarek](https://github.com/sylvesterkaczmarek))_
+  - Fixed `ChatClient.CompleteChatStreaming` and `CompleteChatStreamingAsync` dropping `include_usage` from the request when `stream_options` is set through `ChatCompletionOptions.Patch`. Because of this, the stream carried no usage chunk and `StreamingChatCompletionUpdate.Usage` stayed null.
 - OpenAI.Assistants:
   - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`. The asynchronous methods were not affected.
   - Fixed `AssistantClient.CreateThreadAndRun` and `CreateThreadAndRunStreamingAsync` throwing a `NullReferenceException` when the optional `threadOptions` parameter is omitted.
