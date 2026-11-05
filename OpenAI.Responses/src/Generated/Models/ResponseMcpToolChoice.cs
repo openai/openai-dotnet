@@ -9,22 +9,25 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomCustomToolChoice : ResponseCustomToolChoice
+    public partial class ResponseMcpToolChoice : ResponseToolChoiceObject
     {
-        public ResponseCustomCustomToolChoice(string toolName) : base(ResponseCustomToolChoiceKind.Custom)
+        public ResponseMcpToolChoice(string serverLabel) : base(ResponseToolChoiceKind.Mcp)
         {
-            Argument.AssertNotNull(toolName, nameof(toolName));
+            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 
-            ToolName = toolName;
+            ServerLabel = serverLabel;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomCustomToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch, string toolName) : base(kind, patch)
+        internal ResponseMcpToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch, string toolName, string serverLabel) : base(kind, patch)
         {
             ToolName = toolName;
+            ServerLabel = serverLabel;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ToolName { get; set; }
+
+        public string ServerLabel { get; set; }
     }
 }

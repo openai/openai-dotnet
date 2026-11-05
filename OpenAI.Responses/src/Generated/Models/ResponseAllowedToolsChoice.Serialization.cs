@@ -11,46 +11,46 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>
+    public partial class ResponseAllowedToolsChoice : ResponseToolChoiceObject, IJsonModel<ResponseAllowedToolsChoice>
     {
-        public ResponseCustomAllowedToolsToolChoice() : this(ResponseCustomToolChoiceKind.AllowedTools, default, default, null)
+        public ResponseAllowedToolsChoice() : this(ResponseToolChoiceKind.AllowedTools, default, default, null)
         {
         }
 
-        protected override ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override ResponseToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomAllowedToolsToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseAllowedToolsChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseCustomAllowedToolsToolChoice(document.RootElement, data, options);
+                        return DeserializeResponseAllowedToolsChoice(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomAllowedToolsToolChoice)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseAllowedToolsChoice)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomAllowedToolsToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseAllowedToolsChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomAllowedToolsToolChoice)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseAllowedToolsChoice)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<ResponseCustomAllowedToolsToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ResponseAllowedToolsChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ResponseCustomAllowedToolsToolChoice IPersistableModel<ResponseCustomAllowedToolsToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseCustomAllowedToolsToolChoice)PersistableModelCreateCore(data, options);
+        ResponseAllowedToolsChoice IPersistableModel<ResponseAllowedToolsChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseAllowedToolsChoice)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<ResponseCustomAllowedToolsToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ResponseAllowedToolsChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<ResponseCustomAllowedToolsToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ResponseAllowedToolsChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -67,10 +67,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomAllowedToolsToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseAllowedToolsChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomAllowedToolsToolChoice)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseAllowedToolsChoice)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -108,41 +108,41 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ResponseCustomAllowedToolsToolChoice IJsonModel<ResponseCustomAllowedToolsToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseCustomAllowedToolsToolChoice)JsonModelCreateCore(ref reader, options);
+        ResponseAllowedToolsChoice IJsonModel<ResponseAllowedToolsChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseAllowedToolsChoice)JsonModelCreateCore(ref reader, options);
 
-        protected override ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override ResponseToolChoiceObject JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomAllowedToolsToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseAllowedToolsChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomAllowedToolsToolChoice)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseAllowedToolsChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseCustomAllowedToolsToolChoice(document.RootElement, null, options);
+            return DeserializeResponseAllowedToolsChoice(document.RootElement, null, options);
         }
 
-        internal static ResponseCustomAllowedToolsToolChoice DeserializeResponseCustomAllowedToolsToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseAllowedToolsChoice DeserializeResponseAllowedToolsChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            ResponseCustomToolChoiceKind kind = default;
+            ResponseToolChoiceKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            ResponseToolChoiceAllowedMode mode = default;
+            ResponseAllowedToolsChoiceMode mode = default;
             IList<ResponseTool> tools = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new ResponseCustomToolChoiceKind(prop.Value.GetString());
+                    kind = new ResponseToolChoiceKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("mode"u8))
                 {
-                    mode = new ResponseToolChoiceAllowedMode(prop.Value.GetString());
+                    mode = new ResponseAllowedToolsChoiceMode(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -157,7 +157,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseCustomAllowedToolsToolChoice(kind, patch, mode, tools ?? new ChangeTrackingList<ResponseTool>());
+            return new ResponseAllowedToolsChoice(kind, patch, mode, tools ?? new ChangeTrackingList<ResponseTool>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

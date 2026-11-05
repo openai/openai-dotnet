@@ -9,9 +9,9 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice
+    public partial class ResponseFunctionToolChoice : ResponseToolChoiceObject
     {
-        public ResponseCustomFunctionToolChoice(string functionName) : base(ResponseCustomToolChoiceKind.Function)
+        public ResponseFunctionToolChoice(string functionName) : base(ResponseToolChoiceKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomFunctionToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch, string functionName) : base(kind, patch)
+        internal ResponseFunctionToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch, string functionName) : base(kind, patch)
         {
             FunctionName = functionName;
         }
