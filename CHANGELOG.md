@@ -22,7 +22,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Added support for new reasoning capabilities.
     - Added the `ExtraHigh` and `Max` values to the `ChatReasoningEffortLevel` extensible enum.
 - OpenAI.Decisions:
-  - Added support for the Decisions API, which evaluates text, images, and JSON and returns answers about 10x faster than the Responses API. Get the probability that a condition is true, a choice from a fixed set, or a score against a rubric. Use those answers to classify content, route requests, and prioritize work in your application.
+  - Added experimental support for the Decisions API, which evaluates text, images, and JSON and returns answers about 10x faster than the Responses API. Get the probability that a condition is true, a choice from a fixed set, or a score against a rubric. Use those answers to classify content, route requests, and prioritize work in your application.
     - Introduced the new `DecisionsClient` with the following methods: `CreateDecision` and `CreateDecisionAsync`.
     - Added support for three types of questions:
       - Predicate questions (`DecisionsPredicateQuestion`), which return the probability that a condition is true.
@@ -45,13 +45,13 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Added privacy-conscious operation exception logs through the existing client logging configuration. Records contain the exception type without exception messages, stack traces, or request/response content.
   - Added experimental support for OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations.
     - The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
-  - Added experimental support for OpenTelemetry instrumentation of `CreateResponseStreaming`.
+  - Added experimental support for OpenTelemetry instrumentation of `CreateResponseStreamingAsync`.
     - Added support for recording terminal usage, errors, cancellation, and early disposal without capturing streaming content.
     - The latest semantic-convention opt-in adds request streaming attributes and first-chunk/output-chunk timing histograms.
   - Added support for specifying the amount of reasoning context preserved across turns.
     - Added the `ResponseReasoningContext` extensible enum with the `Auto`, `CurrentTurn`, and `AllTurns` values.
     - Added the `Context` property to `ResponseReasoningOptions`.
-  - Added the protected `CreateStreamingResult` method to `ResponseClient`, which lets derived clients observe or transform the updates of a streaming response while the returned result keeps sole ownership of that response.
+  - Added the protected `CreateStreamingResult` method to `ResponsesClient`, which lets derived clients observe or transform the updates of a streaming response while the returned result keeps sole ownership of that response.
   - Added extensibility to the `ApplyPatchOperation` class hierarchy.
     - Added the `ApplyPatchOperationKind` extensible enum.
     - Added the `Kind` property to `ApplyPatchOperation`.
@@ -89,10 +89,12 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Assistants:
   - Fixed an issue where the synchronous `CreateThreadAndRun` protocol method of `AssistantClient` discarded the caller's `RequestOptions`. This caused the synchronous `CreateThreadAndRun` convenience method to ignore its `CancellationToken`. The asynchronous methods were not affected.
-  - Fixed an issue where the `CreateThreadAndRun` method of `AssistantClient` threw a `NullReferenceException` when the optional `threadOptions` parameter was omitted.
+  - Fixed an issue where the `CreateThreadAndRun` and `CreateThreadAndRunStreamingAsync` methods of `AssistantClient` threw a `NullReferenceException` when the optional `threadOptions` parameter was omitted.
   - Fixed an issue where the `EndIndex` property of `TextAnnotationUpdate` returned the start index for streamed text annotations of a type that the library does not model.
+  - Fixed an issue where the `ModifyAssistant` protocol method of `AssistantClient` would incorrectly discard its `CancellationToken`.
 - OpenAI.Chat:
   - Fixed an issue where `JsonPatch` values for message content and content-part properties were emitted alongside modeled values as duplicate JSON properties instead of taking precedence.
+  - Fixed an issue in the serialization of `ChatResponseFormat` to honor root-level `JsonPatch` values.
   - Latest-mode operation exception logs now include final API errors and rate limiting.
   - Latest-mode spans and metrics omit cache or reasoning token subsets that exceed their reported totals.
 - OpenAI.Responses:
