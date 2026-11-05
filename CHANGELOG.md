@@ -113,6 +113,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Assistants:
   - Changed the type of the `options` parameter of the constructors of `AssistantClient` from `OpenAIClientOptions` to the functionally-equivalent `AssistantClientOptions`.
+  - The experimental streaming methods are now async-only and return `Task<AsyncStreamingResult<T>>` instead of `AsyncCollectionResult<T>`. Awaiting the call sends the request and completes once the service response is established, so its `Status`, `ReasonPhrase`, and `Headers` are available before the updates are read. The result can be enumerated once and owns the response; enumerate it to completion or dispose it to release the connection. The synchronous counterparts have been removed:
+    - Removed the `CreateRunStreaming`, `CreateThreadAndRunStreaming`, and `SubmitToolOutputsToRunStreaming` methods of the `AssistantClient`; use the corresponding `*Async` methods instead.
+- OpenAI.Audio:
+  - The experimental streaming methods are now async-only and return `Task<AsyncStreamingResult<T>>` instead of `AsyncCollectionResult<T>`. Awaiting the call sends the request and completes once the service response is established, so its `Status`, `ReasonPhrase`, and `Headers` are available before the updates are read. The result can be enumerated once and owns the response; enumerate it to completion or dispose it to release the connection. The synchronous counterparts have been removed:
+    - Removed the `GenerateSpeechStreaming` and `TranscribeAudioStreaming` methods of the `AudioClient`; use the corresponding `*Async` methods instead.
 - OpenAI.Batch:
   - Changed the type of the `options` parameter of the constructors of `BatchClient` from `OpenAIClientOptions` to the functionally-equivalent `BatchClientOptions`.
 - OpenAI.Containers:
@@ -127,18 +132,15 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Changed the type of the `options` parameter of the constructors of `GraderClient` from `OpenAIClientOptions` to the functionally-equivalent `GraderClientOptions`.
 - OpenAI.Realtime:
   - The service and session operations on `RealtimeClient` and `RealtimeSessionClient` are now async-only. The synchronous service and session operations they previously exposed (session and client-secret creation, sending commands and audio, receiving updates, session configuration, and conversation item helpers) have been removed, along with the underlying synchronous connection path. Use the corresponding `*Async` APIs instead.
+- OpenAI.Responses:
+  - The experimental streaming methods are now async-only and return `Task<AsyncStreamingResult<T>>` instead of `AsyncCollectionResult<T>`. Awaiting the call sends the request and completes once the service response is established, so its `Status`, `ReasonPhrase`, and `Headers` are available before the updates are read. The result can be enumerated once and owns the response; enumerate it to completion or dispose it to release the connection. The synchronous counterparts have been removed:
+    - Removed the `CreateResponseStreaming` and `GetResponseStreaming` methods of the `ResponsesClient`; use the corresponding `*Async` methods instead.
 - OpenAI.Skills:
   - Changed the type of the `options` parameter of the constructors of `SkillClient` from `OpenAIClientOptions` to the functionally-equivalent `SkillClientOptions`.
 - OpenAI.VectorStores:
   - Changed the type of the `options` parameter of the constructors of `VectorStoreClient` from `OpenAIClientOptions` to the functionally-equivalent `VectorStoreClientOptions`.
 - OpenAI.Videos:
   - Changed the type of the `options` parameter of the constructors of `VideoClient` from `OpenAIClientOptions` to the functionally-equivalent `VideoClientOptions`.
-- OpenAI.Responses, OpenAI.Assistants, and OpenAI.Audio:
-  - The experimental streaming methods are now async-only and return `Task<AsyncStreamingResult<T>>` instead of `AsyncCollectionResult<T>`. Awaiting the call sends the request and completes once the service response is established, so its `Status`, `ReasonPhrase`, and `Headers` are available before the updates are read. The result can be enumerated once and owns the response; enumerate it to completion or dispose it to release the connection. The synchronous counterparts have been removed:
-    - `ResponsesClient`: removed `CreateResponseStreaming` and `GetResponseStreaming`; use `CreateResponseStreamingAsync` and `GetResponseStreamingAsync`.
-    - `AssistantClient`: removed `CreateRunStreaming`, `CreateThreadAndRunStreaming`, and `SubmitToolOutputsToRunStreaming`; use the corresponding `*Async` methods.
-    - `AudioClient`: removed `GenerateSpeechStreaming` and both `TranscribeAudioStreaming` overloads; use `GenerateSpeechStreamingAsync` and `TranscribeAudioStreamingAsync`.
-  - The stable `ChatClient` streaming methods are unchanged.
 
 ## 2.14.0 (2026-09-15)
 
