@@ -214,7 +214,7 @@ namespace OpenAI.Responses
             return new FileSearchTool(
                 kind,
                 patch,
-                vectorStoreIds,
+                vectorStoreIds ?? new ChangeTrackingList<string>(),
                 maxResultCount,
                 rankingOptions,
                 filters);

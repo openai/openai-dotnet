@@ -649,7 +649,7 @@ namespace OpenAI.Assistants
                 incompleteDetails,
                 model,
                 instructions,
-                tools,
+                tools ?? new ChangeTrackingList<ToolDefinition>(),
                 metadata,
                 usage,
                 temperature,

@@ -232,7 +232,7 @@ namespace OpenAI.Chat
             }
             return new StreamingChatCompletionUpdate(
                 completionId,
-                choices,
+                choices ?? new ChangeTrackingList<InternalCreateChatCompletionStreamResponseChoice>(),
                 createdAt,
                 model,
                 serviceTier,

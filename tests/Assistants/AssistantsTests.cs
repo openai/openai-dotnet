@@ -529,6 +529,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingRunWorks()
     {
         AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
@@ -544,8 +545,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncCollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> streamingResult
+            = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
 
@@ -577,6 +578,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     }
 
     [TestCase]
+    [AsyncOnly]
     public async Task StreamingToolCall()
     {
         AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
@@ -594,7 +596,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncStreamingResult<StreamingUpdate> asyncResults = await client.CreateThreadAndRunStreamingAsync(
             assistant.Id,
             new()
             {
@@ -632,7 +634,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             }
             if (toolOutputs.Count > 0)
             {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
+                asyncResults = await client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
             }
         } while (run?.Status.IsTerminal == false);
     }
@@ -840,6 +842,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
     [RecordedTest]
     [LiveOnly]
+    [AsyncOnly]
     public async Task FileOnMessageWorks()
     {
         // First, we need to upload a simple test file.
@@ -880,10 +883,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
             );
         Validate(message);
 
-        var result = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> result = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FileSearchStreamingWorks()
     {
         const string fileContent = """
@@ -936,7 +940,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         string message = string.Empty;
 
         // Create run and stream the results.
-        AsyncCollectionResult<StreamingUpdate> streamingResult = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> streamingResult = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         await foreach (StreamingUpdate update in streamingResult)
         {

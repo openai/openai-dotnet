@@ -101,11 +101,13 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("run_id"u8);
                 writer.WriteStringValue(RunId);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);

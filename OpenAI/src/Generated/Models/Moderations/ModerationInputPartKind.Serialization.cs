@@ -8,13 +8,16 @@ namespace OpenAI.Moderations
 {
     internal static partial class ModerationInputPartKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ModerationInputPartKind value) => value switch
         {
             ModerationInputPartKind.Image => "image_url",
             ModerationInputPartKind.Text => "text",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ModerationInputPartKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ModerationInputPartKind ToModerationInputPartKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "image_url"))
@@ -27,5 +30,6 @@ namespace OpenAI.Moderations
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ModerationInputPartKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

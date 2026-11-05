@@ -186,7 +186,7 @@ namespace OpenAI.Responses
             return new InternalCompactResource(
                 id,
                 @object,
-                output,
+                output ?? new ChangeTrackingList<ResponseItem>(),
                 createdOn,
                 usage,
                 additionalBinaryDataProperties);

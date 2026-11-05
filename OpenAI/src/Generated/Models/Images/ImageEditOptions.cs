@@ -12,6 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, GeneratedImageBackground? background, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, string endUserId, ImageInputFidelity? inputFidelity, bool? stream, int? partialImages, GeneratedImageQuality? quality, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Image = image;
@@ -31,6 +32,7 @@ namespace OpenAI.Images
             Quality = quality;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [Experimental("OPENAI001")]
         public ImageInputFidelity? InputFidelity { get; set; }

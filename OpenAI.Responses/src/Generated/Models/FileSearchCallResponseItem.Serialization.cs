@@ -223,7 +223,7 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 status,
-                queries,
+                queries ?? new ChangeTrackingList<string>(),
                 results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 

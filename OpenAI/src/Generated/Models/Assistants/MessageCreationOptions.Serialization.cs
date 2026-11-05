@@ -63,11 +63,13 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
@@ -200,7 +202,7 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
+            return new MessageCreationOptions(role, content ?? new ChangeTrackingList<MessageContent>(), attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
     }
 }

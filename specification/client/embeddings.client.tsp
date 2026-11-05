@@ -6,6 +6,11 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(CreateEmbeddingRequest.dimensions, int32);
+@@alternateType(Embedding.index, int32);
+@@alternateType(CreateEmbeddingResponseUsage.prompt_tokens, int32);
+@@alternateType(CreateEmbeddingResponseUsage.total_tokens, int32);
+
 @@clientName(createEmbedding, "GenerateEmbeddings");
 
 @@clientLocation(createEmbedding, "Embeddings");

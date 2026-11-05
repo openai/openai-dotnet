@@ -103,7 +103,7 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "computer_screenshot":
-                        return InternalComputerToolCallOutputItemOutputComputerScreenshot.DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(element, data, options);
+                        return ComputerCallComputerScreenshotOutput.DeserializeComputerCallComputerScreenshotOutput(element, data, options);
                 }
             }
             return InternalUnknownComputerToolCallOutputItemOutput.DeserializeInternalUnknownComputerToolCallOutputItemOutput(element, data, options);

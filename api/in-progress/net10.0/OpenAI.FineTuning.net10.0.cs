@@ -31,11 +31,11 @@ namespace OpenAI.FineTuning {
         protected FineTuningClient();
         [Experimental("SCME0002")]
         public FineTuningClient(FineTuningClientSettings settings);
-        public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public FineTuningClient(ApiKeyCredential credential, FineTuningClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
-        public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy, FineTuningClientOptions options);
         public FineTuningClient(AuthenticationPolicy authenticationPolicy);
-        protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal FineTuningClient(ClientPipeline pipeline, FineTuningClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -60,9 +60,16 @@ namespace OpenAI.FineTuning {
         public virtual ClientResult ResumeFineTuningJob(string fineTuningJobId, RequestOptions options);
         public virtual Task<ClientResult> ResumeFineTuningJobAsync(string fineTuningJobId, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class FineTuningClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class FineTuningClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public FineTuningClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]

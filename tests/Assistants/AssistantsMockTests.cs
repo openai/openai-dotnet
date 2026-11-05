@@ -35,7 +35,7 @@ public class AssistantsMockTests : ClientTestBase
             cancellationSource.Cancel();
         }
 
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 {"id":"asst_abc","object":"assistant","created_at":0,"model":"gpt-4o","name":"updated","tools":[]}
@@ -79,7 +79,7 @@ public class AssistantsMockTests : ClientTestBase
             cancellationSource.Cancel();
         }
 
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 {"id":"run_abc","object":"thread.run","status":"queued"}
@@ -112,11 +112,12 @@ public class AssistantsMockTests : ClientTestBase
         }
     }
 
+    [AsyncOnly]
     [Test]
     public async Task CreateThreadAndRunStreamingDoesNotBufferTheResponse()
     {
         bool? bufferResponse = null;
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
@@ -136,25 +137,16 @@ public class AssistantsMockTests : ClientTestBase
         AssistantClient client = new(s_fakeCredential, clientOptions);
 
         List<StreamingUpdate> updates = new();
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateThreadAndRunStreamingAsync("asst_abc", new ThreadCreationOptions()))
         {
-            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc", new ThreadCreationOptions()))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc", new ThreadCreationOptions()))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(bufferResponse, Is.False);
     }
 
+    [AsyncOnly]
     [Test]
     public void StreamingRunSurfacesErrorEventAsException()
     {
@@ -177,7 +169,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -190,38 +182,22 @@ public class AssistantsMockTests : ClientTestBase
         int updateCount = 0;
 
         // The run.created event surfaces normally, then the error event throws.
-        if (IsAsync)
-        {
-            Assert.That(
-                async () =>
+        Assert.That(
+            async () =>
+            {
+                await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
                 {
-                    await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-                    {
-                        updateCount++;
-                    }
-                },
-                Throws.TypeOf<ClientResultException>()
-                    .With.Message.Contains("server_error")
-                    .And.Message.Contains("The server had an error processing your request."));
-        }
-        else
-        {
-            Assert.That(
-                () =>
-                {
-                    foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-                    {
-                        updateCount++;
-                    }
-                },
-                Throws.TypeOf<ClientResultException>()
-                    .With.Message.Contains("server_error")
-                    .And.Message.Contains("The server had an error processing your request."));
-        }
+                    updateCount++;
+                }
+            },
+            Throws.TypeOf<ClientResultException>()
+                .With.Message.Contains("server_error")
+                .And.Message.Contains("The server had an error processing your request."));
 
         Assert.That(updateCount, Is.EqualTo(1));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunIgnoresBenignUnknownEvent()
     {
@@ -241,7 +217,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -253,25 +229,16 @@ public class AssistantsMockTests : ClientTestBase
 
         List<StreamingUpdate> updates = new();
 
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunContinuesAfterBenignUnknownEvent()
     {
@@ -300,7 +267,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -312,19 +279,9 @@ public class AssistantsMockTests : ClientTestBase
 
         List<StreamingUpdate> updates = new();
 
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         // All three modeled events must arrive. Before the fix, the stream ended at the
@@ -335,11 +292,58 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates[2].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCompleted));
     }
 
+    [AsyncOnly]
+    [Test]
+    public async Task StreamingTextAnnotationOfUnknownTypeReportsIndices()
+    {
+        // Annotation types that the library does not model keep their raw properties, from which
+        // the start and end indices are read.
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
+            """
+            event: thread.message.delta
+            data: {"id":"msg_abc","object":"thread.message.delta","delta":{"content":[{"index":0,"type":"text","text":{"value":"abc","annotations":[{"index":0,"type":"some_future_annotation","text":"abc","start_index":5,"end_index":12}]}}]}}
+
+            event: done
+            data: [DONE]
+            """);
+
+        AssistantClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        AssistantClient client = new(s_fakeCredential, options);
+
+        List<StreamingUpdate> updates = new();
+
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+        {
+            updates.Add(update);
+        }
+
+        TextAnnotationUpdate annotation = null;
+        foreach (StreamingUpdate update in updates)
+        {
+            if (update is MessageContentUpdate contentUpdate && contentUpdate.TextAnnotation is not null)
+            {
+                annotation = contentUpdate.TextAnnotation;
+            }
+        }
+
+        Assert.That(annotation, Is.Not.Null);
+        Assert.That(annotation.ContentIndex, Is.EqualTo(0));
+        Assert.That(annotation.StartIndex, Is.EqualTo(5));
+        Assert.That(annotation.EndIndex, Is.EqualTo(12));
+    }
+
     [Test]
     public async Task CreateThreadAndRunWithoutThreadOptions()
     {
         string requestBody = null;
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
             {
@@ -365,10 +369,11 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(requestBody, Does.Not.Contain("\"thread\""));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task CreateThreadAndRunStreamingWithoutThreadOptions()
     {
-        OpenAIClientOptions clientOptions = new()
+        AssistantClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
                 event: thread.run.created
@@ -384,19 +389,9 @@ public class AssistantsMockTests : ClientTestBase
         AssistantClient client = new(s_fakeCredential, clientOptions);
 
         List<StreamingUpdate> updates = new();
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateThreadAndRunStreamingAsync("asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         Assert.That(updates, Has.Count.EqualTo(1));

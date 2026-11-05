@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput
     {
-        public CodeInterpreterCallImageOutput(Uri imageUri) : base(InternalCodeInterpreterToolOutputType.Image)
+        public CodeInterpreterCallImageOutput(Uri imageUri) : base(CodeInterpreterCallOutputKind.Image)
         {
             Argument.AssertNotNull(imageUri, nameof(imageUri));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterCallImageOutput(InternalCodeInterpreterToolOutputType kind, in JsonPatch patch, Uri imageUri) : base(kind, patch)
+        internal CodeInterpreterCallImageOutput(CodeInterpreterCallOutputKind kind, in JsonPatch patch, Uri imageUri) : base(kind, patch)
         {
             ImageUri = imageUri;
         }

@@ -19,6 +19,7 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string model, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolChoice, bool? parallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -40,14 +41,19 @@ namespace OpenAI.Assistants
             ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string AssistantId { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ThreadCreationOptions Thread { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Instructions { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ToolDefinition> Tools { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public IDictionary<string, string> Metadata { get; }
 
@@ -61,7 +67,9 @@ namespace OpenAI.Assistants
 
         public int? MaxCompletionTokens { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public RunTruncationStrategy TruncationStrategy { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public bool? ParallelToolCalls { get; set; }
 

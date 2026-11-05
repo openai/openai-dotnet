@@ -186,7 +186,7 @@ namespace OpenAI.Assistants
             }
             return new InternalListAssistantsResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<Assistant>(),
                 firstId,
                 lastId,
                 hasMore,

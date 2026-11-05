@@ -13,12 +13,15 @@ namespace OpenAI.Batch
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListBatchesResponse(IEnumerable<BatchJob> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListBatchesResponse(IList<BatchJob> data, string firstId, string lastId, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -29,8 +32,11 @@ namespace OpenAI.Batch
             Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<BatchJob> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FirstId { get; }
 

@@ -12,14 +12,17 @@ namespace OpenAI.Responses
     internal partial class InternalReasoningItemParam : InternalItemParam
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalReasoningItemParam(IEnumerable<ReasoningSummaryPart> summary) : base(ResponseItemKind.Reasoning)
         {
             Summary = summary.ToList();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalReasoningItemParam(ResponseItemKind kind, in JsonPatch patch, string encryptedContent, IList<ReasoningSummaryPart> summary) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -28,9 +31,12 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string EncryptedContent { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ReasoningSummaryPart> Summary { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

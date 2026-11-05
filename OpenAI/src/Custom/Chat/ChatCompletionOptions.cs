@@ -153,8 +153,8 @@ public partial class ChatCompletionOptions
     // - Renamed.
     /// <summary>
     /// (o1 and newer reasoning models only) Constrains effort on reasoning for reasoning models.
-    /// Currently supported values are <see cref="ChatReasoningEffortLevel.Low"/>, <see cref="ChatReasoningEffortLevel.Medium"/>, and <see cref="ChatReasoningEffortLevel.High"/>.
     /// Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
+    /// Not all reasoning models support every value.
     /// </summary>
     [Experimental("OPENAI001")]
     [CodeGenMember("ReasoningEffort")]

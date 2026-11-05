@@ -41,6 +41,7 @@ using Azure.ClientGenerator.Core;
 @@clientName(RunCollectionOptions.after, "AfterId");
 @@clientName(RunCollectionOptions.before, "BeforeId");
 @@clientName(RunCollectionOptions.limit, "PageSizeLimit");
+@@clientName(RunsReasoningEffort.xhigh, "ExtraHigh");
 
 @@clientName(RunStepCollectionOptions.after, "AfterId");
 @@clientName(RunStepCollectionOptions.before, "BeforeId");

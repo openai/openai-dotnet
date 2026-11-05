@@ -197,7 +197,7 @@ namespace OpenAI.Containers
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ContainerAllowlistNetworkPolicy(kind, patch, allowedDomains, domainSecrets ?? new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>());
+            return new ContainerAllowlistNetworkPolicy(kind, patch, allowedDomains ?? new ChangeTrackingList<string>(), domainSecrets ?? new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

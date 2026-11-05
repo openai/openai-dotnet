@@ -103,11 +103,13 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("vector_store_id"u8);
                 writer.WriteStringValue(VectorStoreId);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
                 if (Optional.IsDefined(LastError))

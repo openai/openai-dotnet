@@ -13,6 +13,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
         {
             ImageUri = imageUri;
@@ -20,11 +21,14 @@ namespace OpenAI.Responses
             Detail = detail;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ImageUri { get; set; }
 
         public string FileId { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseImageDetailLevel? Detail { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }
