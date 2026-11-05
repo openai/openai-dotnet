@@ -673,7 +673,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ReasoningTokensWork()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-6-luna");
 
         UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         ChatCompletionOptions options = new()
@@ -774,7 +774,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task O3miniDeveloperMessagesWork()
+    public async Task DeveloperMessagesWork()
     {
         List<ChatMessage> messages =
         [
@@ -787,7 +787,7 @@ public class ChatTests : OpenAIRecordedTestBase
             ReasoningEffortLevel = ChatReasoningEffortLevel.Low,
         };
 
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-6-luna");
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
 
         Assert.That(completion.Content, Has.Count.EqualTo(1));
@@ -920,7 +920,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatServiceTierWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-6-luna");
 
         UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         ChatCompletionOptions options = new()

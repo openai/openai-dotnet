@@ -6,25 +6,25 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "57",
+        "Content-Length": "65",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
-        "model": "gpt-image-1"
+        "model": "gpt-image-2.6-flare"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a347f6c66b5ab9df-SEA",
+        "CF-RAY": "a5597c9bdf86a341-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "411",
+        "Content-Length": "485",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -37,28 +37,30 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1788304406,
+        "created": 1793856846,
         "background": "opaque",
         "data": [
           {
-            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=",
+            "generation_id": "9788bbad-352b-4992-9b40-90a7e438d338"
           }
         ],
         "output_format": "png",
-        "quality": "medium",
-        "size": "1024x1536",
+        "quality": "low",
+        "safety_identifier": null,
+        "size": "1254x1254",
         "usage": {
           "input_tokens": 11,
           "input_tokens_details": {
             "image_tokens": 0,
             "text_tokens": 11
           },
-          "output_tokens": 1584,
+          "output_tokens": 962,
           "output_tokens_details": {
-            "image_tokens": 1584,
+            "image_tokens": 962,
             "text_tokens": 0
           },
-          "total_tokens": 1595
+          "total_tokens": 973
         }
       }
     },
@@ -70,7 +72,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "messages": [
@@ -102,7 +104,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a347f7309ec2b9df-SEA",
+        "CF-Ray": "a5597cd22f8aa341-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -127,16 +129,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-EJRxQhZYUkyfGrBO0u8GnT791Qoiq",
+        "id": "chatcmpl-EgkOv7GFFuoTQTsvzqMiyDnE9DEct",
         "object": "chat.completion",
-        "created": 1788304408,
+        "created": 1793856849,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a classic stop sign, which is octagonal in shape and painted a bright red color. The word \"STOP\" is displayed prominently in large, white uppercase letters. The sign is mounted on a metallic pole, which has a series of holes running along its length for installation purposes. The background appears to be plain, emphasizing the stop sign as the main focus of the image.",
+              "content": "The image features a classic octagonal stop sign. The sign is bright red with bold white letters spelling the word \"STOP\" in the center. The edges of the stop sign are bordered in white, and there are two metal screws visible at the top and bottom of the sign. This design is widely recognized as a traffic control sign used to indicate that vehicles must come to a complete stop at an intersection or similar location.",
               "refusal": null,
               "annotations": []
             },
@@ -145,9 +147,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 36849,
-          "completion_tokens": 78,
-          "total_tokens": 36927,
+          "prompt_tokens": 25515,
+          "completion_tokens": 84,
+          "total_tokens": 25599,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

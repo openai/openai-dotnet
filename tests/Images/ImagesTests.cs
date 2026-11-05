@@ -31,7 +31,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GenerationWithOptionsWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>("gpt-image-1");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
 
         string prompt = "An isolated stop sign.";
 
