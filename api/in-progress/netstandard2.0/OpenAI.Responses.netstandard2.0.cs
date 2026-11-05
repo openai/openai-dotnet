@@ -831,6 +831,39 @@ namespace OpenAI.Responses {
     public class ReferenceResponseItem : ResponseItem, IJsonModel<ReferenceResponseItem>, IPersistableModel<ReferenceResponseItem> {
         public ReferenceResponseItem(string id) : base(default);
     }
+    public class ResponseAllowedToolsChoice : ResponseToolChoiceObject, IJsonModel<ResponseAllowedToolsChoice>, IPersistableModel<ResponseAllowedToolsChoice> {
+        public ResponseAllowedToolsChoice();
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools);
+        public ResponseAllowedToolsChoiceMode Mode { get; set; }
+        public IList<ResponseTool> Tools { get; }
+    }
+    public readonly partial struct ResponseAllowedToolsChoiceMode : IEquatable<ResponseAllowedToolsChoiceMode> {
+        public ResponseAllowedToolsChoiceMode(string value);
+        public static ResponseAllowedToolsChoiceMode Auto { get; }
+        public static ResponseAllowedToolsChoiceMode Required { get; }
+        public readonly bool Equals(ResponseAllowedToolsChoiceMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseAllowedToolsChoiceMode left, ResponseAllowedToolsChoiceMode right);
+        public static implicit operator ResponseAllowedToolsChoiceMode(string value);
+        public static implicit operator ResponseAllowedToolsChoiceMode?(string value);
+        public static bool operator !=(ResponseAllowedToolsChoiceMode left, ResponseAllowedToolsChoiceMode right);
+        public override readonly string ToString();
+    }
+    public class ResponseApplyPatchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseApplyPatchToolChoice>, IPersistableModel<ResponseApplyPatchToolChoice> {
+        public ResponseApplyPatchToolChoice();
+    }
+    public class ResponseCodeInterpreterToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCodeInterpreterToolChoice>, IPersistableModel<ResponseCodeInterpreterToolChoice> {
+        public ResponseCodeInterpreterToolChoice();
+    }
+    public class ResponseComputerToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerToolChoice>, IPersistableModel<ResponseComputerToolChoice> {
+        public ResponseComputerToolChoice();
+    }
+    public class ResponseComputerUsePreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerUsePreviewToolChoice>, IPersistableModel<ResponseComputerUsePreviewToolChoice> {
+        public ResponseComputerUsePreviewToolChoice();
+    }
     public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
         public BinaryData InputFileBytes { get; }
         public string InputFileBytesMediaType { get; }
@@ -874,105 +907,10 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
-    public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
-        public ResponseCustomAllowedToolsToolChoice();
-        public ResponseCustomAllowedToolsToolChoice(ResponseToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools);
-        public ResponseToolChoiceAllowedMode Mode { get; set; }
-        public IList<ResponseTool> Tools { get; }
-    }
-    public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
-        public ResponseCustomApplyPatchToolChoice();
-    }
-    public class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCodeInterpreterToolChoice>, IPersistableModel<ResponseCustomCodeInterpreterToolChoice> {
-        public ResponseCustomCodeInterpreterToolChoice();
-    }
-    public class ResponseCustomComputerToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerToolChoice>, IPersistableModel<ResponseCustomComputerToolChoice> {
-        public ResponseCustomComputerToolChoice();
-    }
-    public class ResponseCustomComputerUsePreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerUsePreviewToolChoice>, IPersistableModel<ResponseCustomComputerUsePreviewToolChoice> {
-        public ResponseCustomComputerUsePreviewToolChoice();
-    }
-    public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
-        public ResponseCustomCustomToolChoice();
-        public ResponseCustomCustomToolChoice(string toolName);
+    public class ResponseCustomToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
+        public ResponseCustomToolChoice();
+        public ResponseCustomToolChoice(string toolName);
         public string ToolName { get; set; }
-    }
-    public class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFileSearchToolChoice>, IPersistableModel<ResponseCustomFileSearchToolChoice> {
-        public ResponseCustomFileSearchToolChoice();
-    }
-    public class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFunctionToolChoice>, IPersistableModel<ResponseCustomFunctionToolChoice> {
-        public ResponseCustomFunctionToolChoice();
-        public ResponseCustomFunctionToolChoice(string functionName);
-        public string FunctionName { get; set; }
-    }
-    public class ResponseCustomImageGenerationToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomImageGenerationToolChoice>, IPersistableModel<ResponseCustomImageGenerationToolChoice> {
-        public ResponseCustomImageGenerationToolChoice();
-    }
-    public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
-        public ResponseCustomMcpToolChoice();
-        public ResponseCustomMcpToolChoice(string serverLabel);
-        public string ServerLabel { get; set; }
-        public string ToolName { get; set; }
-    }
-    public class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseCustomProgrammaticToolCallingToolChoice> {
-        public ResponseCustomProgrammaticToolCallingToolChoice();
-    }
-    public class ResponseCustomShellToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomShellToolChoice>, IPersistableModel<ResponseCustomShellToolChoice> {
-        public ResponseCustomShellToolChoice();
-    }
-    public class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-    }
-    public readonly partial struct ResponseCustomToolChoiceKind : IEquatable<ResponseCustomToolChoiceKind> {
-        public ResponseCustomToolChoiceKind(string value);
-        public static ResponseCustomToolChoiceKind AllowedTools { get; }
-        public static ResponseCustomToolChoiceKind ApplyPatch { get; }
-        public static ResponseCustomToolChoiceKind CodeInterpreter { get; }
-        public static ResponseCustomToolChoiceKind Computer { get; }
-        public static ResponseCustomToolChoiceKind ComputerUsePreview { get; }
-        public static ResponseCustomToolChoiceKind Custom { get; }
-        public static ResponseCustomToolChoiceKind FileSearch { get; }
-        public static ResponseCustomToolChoiceKind Function { get; }
-        public static ResponseCustomToolChoiceKind ImageGeneration { get; }
-        public static ResponseCustomToolChoiceKind Mcp { get; }
-        public static ResponseCustomToolChoiceKind ProgrammaticToolCalling { get; }
-        public static ResponseCustomToolChoiceKind Shell { get; }
-        public static ResponseCustomToolChoiceKind WebSearch { get; }
-        public static ResponseCustomToolChoiceKind WebSearchPreview { get; }
-        public readonly bool Equals(ResponseCustomToolChoiceKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
-        public static implicit operator ResponseCustomToolChoiceKind(string value);
-        public static implicit operator ResponseCustomToolChoiceKind?(string value);
-        public static bool operator !=(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
-        public override readonly string ToString();
-    }
-    public class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchPreviewToolChoice>, IPersistableModel<ResponseCustomWebSearchPreviewToolChoice> {
-        public ResponseCustomWebSearchPreviewToolChoice();
-    }
-    public class ResponseCustomWebSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchToolChoice>, IPersistableModel<ResponseCustomWebSearchToolChoice> {
-        public ResponseCustomWebSearchToolChoice();
-    }
-    public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDefaultToolChoice> {
-        public ResponseDefaultToolChoice(string value);
-        public static ResponseDefaultToolChoice Auto { get; }
-        public static ResponseDefaultToolChoice None { get; }
-        public static ResponseDefaultToolChoice Required { get; }
-        public readonly bool Equals(ResponseDefaultToolChoice other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
-        public static implicit operator ResponseDefaultToolChoice(string value);
-        public static implicit operator ResponseDefaultToolChoice?(string value);
-        public static bool operator !=(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
-        public override readonly string ToString();
     }
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
         public bool Deleted { get; set; }
@@ -1024,6 +962,14 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseErrorCode left, ResponseErrorCode right);
         public override readonly string ToString();
     }
+    public class ResponseFileSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFileSearchToolChoice>, IPersistableModel<ResponseFileSearchToolChoice> {
+        public ResponseFileSearchToolChoice();
+    }
+    public class ResponseFunctionToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFunctionToolChoice>, IPersistableModel<ResponseFunctionToolChoice> {
+        public ResponseFunctionToolChoice();
+        public ResponseFunctionToolChoice(string functionName);
+        public string FunctionName { get; set; }
+    }
     public readonly partial struct ResponseImageDetailLevel : IEquatable<ResponseImageDetailLevel> {
         public ResponseImageDetailLevel(string value);
         public static ResponseImageDetailLevel Auto { get; }
@@ -1039,6 +985,9 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseImageDetailLevel?(string value);
         public static bool operator !=(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
         public override readonly string ToString();
+    }
+    public class ResponseImageGenerationToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseImageGenerationToolChoice>, IPersistableModel<ResponseImageGenerationToolChoice> {
+        public ResponseImageGenerationToolChoice();
     }
     public class ResponseIncompleteStatusDetails : IJsonModel<ResponseIncompleteStatusDetails>, IPersistableModel<ResponseIncompleteStatusDetails> {
         [Serialization.JsonIgnore]
@@ -1168,6 +1117,12 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseItemKind left, ResponseItemKind right);
         public override readonly string ToString();
     }
+    public class ResponseMcpToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseMcpToolChoice>, IPersistableModel<ResponseMcpToolChoice> {
+        public ResponseMcpToolChoice();
+        public ResponseMcpToolChoice(string serverLabel);
+        public string ServerLabel { get; set; }
+        public string ToolName { get; set; }
+    }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
         protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
@@ -1186,6 +1141,9 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public int ReasoningTokenCount { get; set; }
+    }
+    public class ResponseProgrammaticToolCallingToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseProgrammaticToolCallingToolChoice> {
+        public ResponseProgrammaticToolCallingToolChoice();
     }
     public readonly partial struct ResponsePromptCacheRetentionPolicy : IEquatable<ResponsePromptCacheRetentionPolicy> {
         public ResponsePromptCacheRetentionPolicy(string value);
@@ -1383,6 +1341,9 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseServiceTier left, ResponseServiceTier right);
         public override readonly string ToString();
     }
+    public class ResponseShellToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseShellToolChoice>, IPersistableModel<ResponseShellToolChoice> {
+        public ResponseShellToolChoice();
+    }
     public enum ResponseStatus {
         InProgress = 0,
         Completed = 1,
@@ -1463,26 +1424,59 @@ namespace OpenAI.Responses {
     }
     public class ResponseToolChoice : IJsonModel<ResponseToolChoice>, IPersistableModel<ResponseToolChoice> {
         public ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
-        public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+        public ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
         public ResponseCustomToolChoice CustomToolChoice { get; }
-        public ResponseDefaultToolChoice? DefaultToolChoice { get; }
+        public ResponseToolChoiceEnum? DefaultToolChoice { get; }
         public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
-        public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+        public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
     }
-    public readonly partial struct ResponseToolChoiceAllowedMode : IEquatable<ResponseToolChoiceAllowedMode> {
-        public ResponseToolChoiceAllowedMode(string value);
-        public static ResponseToolChoiceAllowedMode Auto { get; }
-        public static ResponseToolChoiceAllowedMode Required { get; }
-        public readonly bool Equals(ResponseToolChoiceAllowedMode other);
+    public readonly partial struct ResponseToolChoiceEnum : IEquatable<ResponseToolChoiceEnum> {
+        public ResponseToolChoiceEnum(string value);
+        public static ResponseToolChoiceEnum Auto { get; }
+        public static ResponseToolChoiceEnum None { get; }
+        public static ResponseToolChoiceEnum Required { get; }
+        public readonly bool Equals(ResponseToolChoiceEnum other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
-        public static implicit operator ResponseToolChoiceAllowedMode(string value);
-        public static implicit operator ResponseToolChoiceAllowedMode?(string value);
-        public static bool operator !=(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public static bool operator ==(ResponseToolChoiceEnum left, ResponseToolChoiceEnum right);
+        public static implicit operator ResponseToolChoiceEnum(string value);
+        public static implicit operator ResponseToolChoiceEnum?(string value);
+        public static bool operator !=(ResponseToolChoiceEnum left, ResponseToolChoiceEnum right);
         public override readonly string ToString();
+    }
+    public readonly partial struct ResponseToolChoiceKind : IEquatable<ResponseToolChoiceKind> {
+        public ResponseToolChoiceKind(string value);
+        public static ResponseToolChoiceKind AllowedTools { get; }
+        public static ResponseToolChoiceKind ApplyPatch { get; }
+        public static ResponseToolChoiceKind CodeInterpreter { get; }
+        public static ResponseToolChoiceKind Computer { get; }
+        public static ResponseToolChoiceKind ComputerUsePreview { get; }
+        public static ResponseToolChoiceKind Custom { get; }
+        public static ResponseToolChoiceKind FileSearch { get; }
+        public static ResponseToolChoiceKind Function { get; }
+        public static ResponseToolChoiceKind ImageGeneration { get; }
+        public static ResponseToolChoiceKind Mcp { get; }
+        public static ResponseToolChoiceKind ProgrammaticToolCalling { get; }
+        public static ResponseToolChoiceKind Shell { get; }
+        public static ResponseToolChoiceKind WebSearch { get; }
+        public static ResponseToolChoiceKind WebSearchPreview { get; }
+        public readonly bool Equals(ResponseToolChoiceKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public static implicit operator ResponseToolChoiceKind(string value);
+        public static implicit operator ResponseToolChoiceKind?(string value);
+        public static bool operator !=(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public override readonly string ToString();
+    }
+    public class ResponseToolChoiceObject : IJsonModel<ResponseToolChoiceObject>, IPersistableModel<ResponseToolChoiceObject> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
     }
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
         public ResponseToolKind(string value);
@@ -1520,6 +1514,12 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    public class ResponseWebSearchPreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchPreviewToolChoice>, IPersistableModel<ResponseWebSearchPreviewToolChoice> {
+        public ResponseWebSearchPreviewToolChoice();
+    }
+    public class ResponseWebSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchToolChoice>, IPersistableModel<ResponseWebSearchToolChoice> {
+        public ResponseWebSearchToolChoice();
     }
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
         public StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : base(default, default);

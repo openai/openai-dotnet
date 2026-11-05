@@ -935,6 +935,45 @@ namespace OpenAI.Responses {
         public ReferenceResponseItem(string id) : base(default);
     }
     [Experimental("OPENAI001")]
+    public class ResponseAllowedToolsChoice : ResponseToolChoiceObject, IJsonModel<ResponseAllowedToolsChoice>, IPersistableModel<ResponseAllowedToolsChoice> {
+        public ResponseAllowedToolsChoice();
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools);
+        public ResponseAllowedToolsChoiceMode Mode { get; set; }
+        public IList<ResponseTool> Tools { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseAllowedToolsChoiceMode : IEquatable<ResponseAllowedToolsChoiceMode> {
+        public ResponseAllowedToolsChoiceMode(string value);
+        public static ResponseAllowedToolsChoiceMode Auto { get; }
+        public static ResponseAllowedToolsChoiceMode Required { get; }
+        public readonly bool Equals(ResponseAllowedToolsChoiceMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseAllowedToolsChoiceMode left, ResponseAllowedToolsChoiceMode right);
+        public static implicit operator ResponseAllowedToolsChoiceMode(string value);
+        public static implicit operator ResponseAllowedToolsChoiceMode?(string value);
+        public static bool operator !=(ResponseAllowedToolsChoiceMode left, ResponseAllowedToolsChoiceMode right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseApplyPatchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseApplyPatchToolChoice>, IPersistableModel<ResponseApplyPatchToolChoice> {
+        public ResponseApplyPatchToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCodeInterpreterToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCodeInterpreterToolChoice>, IPersistableModel<ResponseCodeInterpreterToolChoice> {
+        public ResponseCodeInterpreterToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseComputerToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerToolChoice>, IPersistableModel<ResponseComputerToolChoice> {
+        public ResponseComputerToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseComputerUsePreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerUsePreviewToolChoice>, IPersistableModel<ResponseComputerUsePreviewToolChoice> {
+        public ResponseComputerUsePreviewToolChoice();
+    }
+    [Experimental("OPENAI001")]
     public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
         public BinaryData InputFileBytes { get; }
         public string InputFileBytesMediaType { get; }
@@ -983,122 +1022,10 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
-    public class ResponseCustomAllowedToolsToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomAllowedToolsToolChoice>, IPersistableModel<ResponseCustomAllowedToolsToolChoice> {
-        public ResponseCustomAllowedToolsToolChoice();
-        public ResponseCustomAllowedToolsToolChoice(ResponseToolChoiceAllowedMode mode, IEnumerable<ResponseTool> tools);
-        public ResponseToolChoiceAllowedMode Mode { get; set; }
-        public IList<ResponseTool> Tools { get; }
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
-        public ResponseCustomApplyPatchToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCodeInterpreterToolChoice>, IPersistableModel<ResponseCustomCodeInterpreterToolChoice> {
-        public ResponseCustomCodeInterpreterToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomComputerToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerToolChoice>, IPersistableModel<ResponseCustomComputerToolChoice> {
-        public ResponseCustomComputerToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomComputerUsePreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerUsePreviewToolChoice>, IPersistableModel<ResponseCustomComputerUsePreviewToolChoice> {
-        public ResponseCustomComputerUsePreviewToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
-        public ResponseCustomCustomToolChoice();
-        public ResponseCustomCustomToolChoice(string toolName);
+    public class ResponseCustomToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
+        public ResponseCustomToolChoice();
+        public ResponseCustomToolChoice(string toolName);
         public string ToolName { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFileSearchToolChoice>, IPersistableModel<ResponseCustomFileSearchToolChoice> {
-        public ResponseCustomFileSearchToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFunctionToolChoice>, IPersistableModel<ResponseCustomFunctionToolChoice> {
-        public ResponseCustomFunctionToolChoice();
-        public ResponseCustomFunctionToolChoice(string functionName);
-        public string FunctionName { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomImageGenerationToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomImageGenerationToolChoice>, IPersistableModel<ResponseCustomImageGenerationToolChoice> {
-        public ResponseCustomImageGenerationToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
-        public ResponseCustomMcpToolChoice();
-        public ResponseCustomMcpToolChoice(string serverLabel);
-        public string ServerLabel { get; set; }
-        public string ToolName { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseCustomProgrammaticToolCallingToolChoice> {
-        public ResponseCustomProgrammaticToolCallingToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomShellToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomShellToolChoice>, IPersistableModel<ResponseCustomShellToolChoice> {
-        public ResponseCustomShellToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ResponseCustomToolChoiceKind : IEquatable<ResponseCustomToolChoiceKind> {
-        public ResponseCustomToolChoiceKind(string value);
-        public static ResponseCustomToolChoiceKind AllowedTools { get; }
-        public static ResponseCustomToolChoiceKind ApplyPatch { get; }
-        public static ResponseCustomToolChoiceKind CodeInterpreter { get; }
-        public static ResponseCustomToolChoiceKind Computer { get; }
-        public static ResponseCustomToolChoiceKind ComputerUsePreview { get; }
-        public static ResponseCustomToolChoiceKind Custom { get; }
-        public static ResponseCustomToolChoiceKind FileSearch { get; }
-        public static ResponseCustomToolChoiceKind Function { get; }
-        public static ResponseCustomToolChoiceKind ImageGeneration { get; }
-        public static ResponseCustomToolChoiceKind Mcp { get; }
-        public static ResponseCustomToolChoiceKind ProgrammaticToolCalling { get; }
-        public static ResponseCustomToolChoiceKind Shell { get; }
-        public static ResponseCustomToolChoiceKind WebSearch { get; }
-        public static ResponseCustomToolChoiceKind WebSearchPreview { get; }
-        public readonly bool Equals(ResponseCustomToolChoiceKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
-        public static implicit operator ResponseCustomToolChoiceKind(string value);
-        public static implicit operator ResponseCustomToolChoiceKind?(string value);
-        public static bool operator !=(ResponseCustomToolChoiceKind left, ResponseCustomToolChoiceKind right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchPreviewToolChoice>, IPersistableModel<ResponseCustomWebSearchPreviewToolChoice> {
-        public ResponseCustomWebSearchPreviewToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public class ResponseCustomWebSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchToolChoice>, IPersistableModel<ResponseCustomWebSearchToolChoice> {
-        public ResponseCustomWebSearchToolChoice();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDefaultToolChoice> {
-        public ResponseDefaultToolChoice(string value);
-        public static ResponseDefaultToolChoice Auto { get; }
-        public static ResponseDefaultToolChoice None { get; }
-        public static ResponseDefaultToolChoice Required { get; }
-        public readonly bool Equals(ResponseDefaultToolChoice other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
-        public static implicit operator ResponseDefaultToolChoice(string value);
-        public static implicit operator ResponseDefaultToolChoice?(string value);
-        public static bool operator !=(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
-        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
@@ -1156,6 +1083,16 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class ResponseFileSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFileSearchToolChoice>, IPersistableModel<ResponseFileSearchToolChoice> {
+        public ResponseFileSearchToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseFunctionToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFunctionToolChoice>, IPersistableModel<ResponseFunctionToolChoice> {
+        public ResponseFunctionToolChoice();
+        public ResponseFunctionToolChoice(string functionName);
+        public string FunctionName { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct ResponseImageDetailLevel : IEquatable<ResponseImageDetailLevel> {
         public ResponseImageDetailLevel(string value);
         public static ResponseImageDetailLevel Auto { get; }
@@ -1171,6 +1108,10 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseImageDetailLevel?(string value);
         public static bool operator !=(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseImageGenerationToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseImageGenerationToolChoice>, IPersistableModel<ResponseImageGenerationToolChoice> {
+        public ResponseImageGenerationToolChoice();
     }
     [Experimental("OPENAI001")]
     public class ResponseIncompleteStatusDetails : IJsonModel<ResponseIncompleteStatusDetails>, IPersistableModel<ResponseIncompleteStatusDetails> {
@@ -1317,6 +1258,13 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class ResponseMcpToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseMcpToolChoice>, IPersistableModel<ResponseMcpToolChoice> {
+        public ResponseMcpToolChoice();
+        public ResponseMcpToolChoice(string serverLabel);
+        public string ServerLabel { get; set; }
+        public string ToolName { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
         protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
@@ -1339,6 +1287,10 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int ReasoningTokenCount { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseProgrammaticToolCallingToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseProgrammaticToolCallingToolChoice> {
+        public ResponseProgrammaticToolCallingToolChoice();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponsePromptCacheRetentionPolicy : IEquatable<ResponsePromptCacheRetentionPolicy> {
@@ -1551,6 +1503,10 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class ResponseShellToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseShellToolChoice>, IPersistableModel<ResponseShellToolChoice> {
+        public ResponseShellToolChoice();
+    }
+    [Experimental("OPENAI001")]
     public enum ResponseStatus {
         InProgress = 0,
         Completed = 1,
@@ -1647,27 +1603,63 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseToolChoice : IJsonModel<ResponseToolChoice>, IPersistableModel<ResponseToolChoice> {
         public ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
-        public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+        public ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
         public ResponseCustomToolChoice CustomToolChoice { get; }
-        public ResponseDefaultToolChoice? DefaultToolChoice { get; }
+        public ResponseToolChoiceEnum? DefaultToolChoice { get; }
         public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
-        public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+        public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseToolChoiceAllowedMode : IEquatable<ResponseToolChoiceAllowedMode> {
-        public ResponseToolChoiceAllowedMode(string value);
-        public static ResponseToolChoiceAllowedMode Auto { get; }
-        public static ResponseToolChoiceAllowedMode Required { get; }
-        public readonly bool Equals(ResponseToolChoiceAllowedMode other);
+    public readonly partial struct ResponseToolChoiceEnum : IEquatable<ResponseToolChoiceEnum> {
+        public ResponseToolChoiceEnum(string value);
+        public static ResponseToolChoiceEnum Auto { get; }
+        public static ResponseToolChoiceEnum None { get; }
+        public static ResponseToolChoiceEnum Required { get; }
+        public readonly bool Equals(ResponseToolChoiceEnum other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
-        public static implicit operator ResponseToolChoiceAllowedMode(string value);
-        public static implicit operator ResponseToolChoiceAllowedMode?(string value);
-        public static bool operator !=(ResponseToolChoiceAllowedMode left, ResponseToolChoiceAllowedMode right);
+        public static bool operator ==(ResponseToolChoiceEnum left, ResponseToolChoiceEnum right);
+        public static implicit operator ResponseToolChoiceEnum(string value);
+        public static implicit operator ResponseToolChoiceEnum?(string value);
+        public static bool operator !=(ResponseToolChoiceEnum left, ResponseToolChoiceEnum right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseToolChoiceKind : IEquatable<ResponseToolChoiceKind> {
+        public ResponseToolChoiceKind(string value);
+        public static ResponseToolChoiceKind AllowedTools { get; }
+        public static ResponseToolChoiceKind ApplyPatch { get; }
+        public static ResponseToolChoiceKind CodeInterpreter { get; }
+        public static ResponseToolChoiceKind Computer { get; }
+        public static ResponseToolChoiceKind ComputerUsePreview { get; }
+        public static ResponseToolChoiceKind Custom { get; }
+        public static ResponseToolChoiceKind FileSearch { get; }
+        public static ResponseToolChoiceKind Function { get; }
+        public static ResponseToolChoiceKind ImageGeneration { get; }
+        public static ResponseToolChoiceKind Mcp { get; }
+        public static ResponseToolChoiceKind ProgrammaticToolCalling { get; }
+        public static ResponseToolChoiceKind Shell { get; }
+        public static ResponseToolChoiceKind WebSearch { get; }
+        public static ResponseToolChoiceKind WebSearchPreview { get; }
+        public readonly bool Equals(ResponseToolChoiceKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public static implicit operator ResponseToolChoiceKind(string value);
+        public static implicit operator ResponseToolChoiceKind?(string value);
+        public static bool operator !=(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseToolChoiceObject : IJsonModel<ResponseToolChoiceObject>, IPersistableModel<ResponseToolChoiceObject> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
@@ -1707,6 +1699,14 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSearchPreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchPreviewToolChoice>, IPersistableModel<ResponseWebSearchPreviewToolChoice> {
+        public ResponseWebSearchPreviewToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchToolChoice>, IPersistableModel<ResponseWebSearchToolChoice> {
+        public ResponseWebSearchToolChoice();
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {

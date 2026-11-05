@@ -8,14 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCustomWebSearchPreviewToolChoice : ResponseCustomToolChoice
+    public partial class ResponseFileSearchToolChoice : ResponseToolChoiceObject
     {
-        public ResponseCustomWebSearchPreviewToolChoice() : this(ResponseCustomToolChoiceKind.WebSearchPreview, default)
+        public ResponseFileSearchToolChoice() : this(ResponseToolChoiceKind.FileSearch, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomWebSearchPreviewToolChoice(ResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseFileSearchToolChoice(ResponseToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
