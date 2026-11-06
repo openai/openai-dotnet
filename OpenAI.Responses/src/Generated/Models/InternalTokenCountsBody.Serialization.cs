@@ -69,27 +69,48 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
+            if (Optional.IsDefined(Model, _modelIsDefined) && !Patch.Contains("$.model"u8))
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(Input) && !Patch.Contains("$.input"u8))
-            {
-                writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+                if (Model != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("model"u8);
+                    writer.WriteStringValue(Model);
                 }
-#endif
+                else
+                {
+                    writer.WriteNull("model"u8);
+                }
             }
-            if (Optional.IsDefined(PreviousResponseId) && !Patch.Contains("$.previous_response_id"u8))
+            if (Optional.IsDefined(Input, _inputIsDefined) && !Patch.Contains("$.input"u8))
             {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
+                if (Input != null)
+                {
+                    writer.WritePropertyName("input"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Input);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Input))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("input"u8);
+                }
+            }
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
+            {
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
             }
             if (Patch.Contains("$.tools"u8))
             {
@@ -101,68 +122,117 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(Tools))
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
-                for (int i = 0; i < Tools.Count; i++)
+                if (Tools != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "tools"u8);
+                    for (int i = 0; i < Tools.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(Tools[i], options);
                     }
-                    writer.WriteObjectValue(Tools[i], options);
+                    Patch.WriteTo(writer, "$.tools"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.tools"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
             }
-            if (Optional.IsDefined(Text) && !Patch.Contains("$.text"u8))
+            if (Optional.IsDefined(Text, _textIsDefined) && !Patch.Contains("$.text"u8))
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteObjectValue(Text, options);
+                if (Text != null)
+                {
+                    writer.WritePropertyName("text"u8);
+                    writer.WriteObjectValue(Text, options);
+                }
+                else
+                {
+                    writer.WriteNull("text"u8);
+                }
             }
-            if (Optional.IsDefined(Reasoning) && !Patch.Contains("$.reasoning"u8))
+            if (Optional.IsDefined(Reasoning, _reasoningIsDefined) && !Patch.Contains("$.reasoning"u8))
             {
-                writer.WritePropertyName("reasoning"u8);
-                writer.WriteObjectValue(Reasoning, options);
+                if (Reasoning != null)
+                {
+                    writer.WritePropertyName("reasoning"u8);
+                    writer.WriteObjectValue(Reasoning, options);
+                }
+                else
+                {
+                    writer.WriteNull("reasoning"u8);
+                }
             }
             if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
             {
                 writer.WritePropertyName("truncation"u8);
                 writer.WriteStringValue(Truncation.Value.ToString());
             }
-            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && !Patch.Contains("$.instructions"u8))
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
-            if (Optional.IsDefined(Conversation) && !Patch.Contains("$.conversation"u8))
-            {
-                writer.WritePropertyName("conversation"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Conversation);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Conversation))
+                if (Instructions != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
                 }
-#endif
-            }
-            if (Optional.IsDefined(ToolChoice) && !Patch.Contains("$.tool_choice"u8))
-            {
-                writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                else
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WriteNull("instructions"u8);
                 }
-#endif
             }
-            if (Optional.IsDefined(ParallelToolCalls) && !Patch.Contains("$.parallel_tool_calls"u8))
+            if (Optional.IsDefined(Conversation, _conversationIsDefined) && !Patch.Contains("$.conversation"u8))
             {
-                writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(ParallelToolCalls.Value);
+                if (Conversation != null)
+                {
+                    writer.WritePropertyName("conversation"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Conversation);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Conversation))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("conversation"u8);
+                }
+            }
+            if (Optional.IsDefined(ToolChoice, _toolChoiceIsDefined) && !Patch.Contains("$.tool_choice"u8))
+            {
+                if (ToolChoice != null)
+                {
+                    writer.WritePropertyName("tool_choice"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(ToolChoice);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("tool_choice"u8);
+                }
+            }
+            if (Optional.IsDefined(ParallelToolCalls, _parallelToolCallsIsDefined) && !Patch.Contains("$.parallel_tool_calls"u8))
+            {
+                if (ParallelToolCalls != null)
+                {
+                    writer.WritePropertyName("parallel_tool_calls"u8);
+                    writer.WriteBooleanValue(ParallelToolCalls.Value);
+                }
+                else
+                {
+                    writer.WriteNull("parallel_tool_calls"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -188,16 +258,25 @@ namespace OpenAI.Responses
             {
                 return null;
             }
+            bool modelIsDefined = false;
             string model = default;
+            bool inputIsDefined = false;
             BinaryData input = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
-            IList<ResponseTool> tools = default;
+            IList<ResponseTool> tools = new ChangeTrackingList<ResponseTool>();
+            bool textIsDefined = false;
             InternalResponseTextParam text = default;
+            bool reasoningIsDefined = false;
             ResponseReasoningOptions reasoning = default;
             InternalTruncationEnum? truncation = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
+            bool conversationIsDefined = false;
             BinaryData conversation = default;
+            bool toolChoiceIsDefined = false;
             BinaryData toolChoice = default;
+            bool parallelToolCallsIsDefined = false;
             bool? parallelToolCalls = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -206,6 +285,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("model"u8))
                 {
+                    modelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         model = null;
@@ -216,6 +296,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    inputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         input = null;
@@ -226,6 +307,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -238,6 +320,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        tools = null;
                         continue;
                     }
                     List<ResponseTool> array = new List<ResponseTool>();
@@ -250,6 +333,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("text"u8))
                 {
+                    textIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         text = null;
@@ -260,6 +344,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("reasoning"u8))
                 {
+                    reasoningIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reasoning = null;
@@ -279,6 +364,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -289,6 +375,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("conversation"u8))
                 {
+                    conversationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         conversation = null;
@@ -299,6 +386,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tool_choice"u8))
                 {
+                    toolChoiceIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         toolChoice = null;
@@ -309,6 +397,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
                 {
+                    parallelToolCallsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         parallelToolCalls = null;
@@ -323,7 +412,7 @@ namespace OpenAI.Responses
                 model,
                 input,
                 previousResponseId,
-                tools ?? new ChangeTrackingList<ResponseTool>(),
+                tools,
                 text,
                 reasoning,
                 truncation,
@@ -331,7 +420,18 @@ namespace OpenAI.Responses
                 conversation,
                 toolChoice,
                 parallelToolCalls,
-                patch);
+                patch)
+            {
+                _modelIsDefined = modelIsDefined,
+                _inputIsDefined = inputIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _textIsDefined = textIsDefined,
+                _reasoningIsDefined = reasoningIsDefined,
+                _instructionsIsDefined = instructionsIsDefined,
+                _conversationIsDefined = conversationIsDefined,
+                _toolChoiceIsDefined = toolChoiceIsDefined,
+                _parallelToolCallsIsDefined = parallelToolCallsIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

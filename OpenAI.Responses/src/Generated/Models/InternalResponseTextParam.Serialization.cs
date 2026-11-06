@@ -73,10 +73,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(Format, options);
             }
-            if (Optional.IsDefined(Verbosity) && !Patch.Contains("$.verbosity"u8))
+            if (Optional.IsDefined(Verbosity, _verbosityIsDefined) && !Patch.Contains("$.verbosity"u8))
             {
-                writer.WritePropertyName("verbosity"u8);
-                writer.WriteStringValue(Verbosity.Value.ToString());
+                if (Verbosity != null)
+                {
+                    writer.WritePropertyName("verbosity"u8);
+                    writer.WriteStringValue(Verbosity.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("verbosity"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -103,6 +110,7 @@ namespace OpenAI.Responses
                 return null;
             }
             ResponseTextFormat format = default;
+            bool verbosityIsDefined = false;
             InternalTokenCountsBodyTextVerbosity? verbosity = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -120,6 +128,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("verbosity"u8))
                 {
+                    verbosityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         verbosity = null;
@@ -130,7 +139,10 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseTextParam(format, verbosity, patch);
+            return new InternalResponseTextParam(format, verbosity, patch)
+            {
+                _verbosityIsDefined = verbosityIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

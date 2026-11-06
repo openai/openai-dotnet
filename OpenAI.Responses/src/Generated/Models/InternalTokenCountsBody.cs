@@ -16,6 +16,26 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _model;
+        private bool _modelIsDefined;
+        private BinaryData _input;
+        private bool _inputIsDefined;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
+        private InternalResponseTextParam _text;
+        private bool _textIsDefined;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private ResponseReasoningOptions _reasoning;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _reasoningIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
+        private BinaryData _conversation;
+        private bool _conversationIsDefined;
+        private BinaryData _toolChoice;
+        private bool _toolChoiceIsDefined;
+        private bool? _parallelToolCalls;
+        private bool _parallelToolCallsIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalTokenCountsBody() : this(null, null, null, null, null, null, default, null, null, null, default, default)
@@ -28,17 +48,17 @@ namespace OpenAI.Responses
         internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, BinaryData toolChoice, bool? parallelToolCalls, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Model = model;
-            Input = input;
-            PreviousResponseId = previousResponseId;
+            _model = model;
+            _input = input;
+            _previousResponseId = previousResponseId;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
-            Text = text;
-            Reasoning = reasoning;
+            _text = text;
+            _reasoning = reasoning;
             Truncation = truncation;
-            Instructions = instructions;
-            Conversation = conversation;
-            ToolChoice = toolChoice;
-            ParallelToolCalls = parallelToolCalls;
+            _instructions = instructions;
+            _conversation = conversation;
+            _toolChoice = toolChoice;
+            _parallelToolCalls = parallelToolCalls;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -50,30 +70,129 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Model { get; set; }
+        public string Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                _model = value;
+                _modelIsDefined = true;
+            }
+        }
 
-        public BinaryData Input { get; set; }
+        public BinaryData Input
+        {
+            get
+            {
+                return _input;
+            }
+            set
+            {
+                _input = value;
+                _inputIsDefined = true;
+            }
+        }
 
-        public string PreviousResponseId { get; set; }
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseTool> Tools { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalResponseTextParam Text { get; set; }
+        internal InternalResponseTextParam Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                _textIsDefined = true;
+            }
+        }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        public ResponseReasoningOptions Reasoning { get; set; }
+        public ResponseReasoningOptions Reasoning
+        {
+            get
+            {
+                return _reasoning;
+            }
+            set
+            {
+                _reasoning = value;
+                _reasoningIsDefined = true;
+            }
+        }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalTruncationEnum? Truncation { get; set; }
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
 
-        public BinaryData Conversation { get; set; }
+        public BinaryData Conversation
+        {
+            get
+            {
+                return _conversation;
+            }
+            set
+            {
+                _conversation = value;
+                _conversationIsDefined = true;
+            }
+        }
 
-        public BinaryData ToolChoice { get; set; }
+        public BinaryData ToolChoice
+        {
+            get
+            {
+                return _toolChoice;
+            }
+            set
+            {
+                _toolChoice = value;
+                _toolChoiceIsDefined = true;
+            }
+        }
 
-        public bool? ParallelToolCalls { get; set; }
+        public bool? ParallelToolCalls
+        {
+            get
+            {
+                return _parallelToolCalls;
+            }
+            set
+            {
+                _parallelToolCalls = value;
+                _parallelToolCallsIsDefined = true;
+            }
+        }
     }
 }
