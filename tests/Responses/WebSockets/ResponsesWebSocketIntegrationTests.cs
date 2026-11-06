@@ -144,7 +144,7 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
 
         options.StreamingEnabled = true;
         ResponseResult response = null;
-        await foreach (var update in client.CreateResponseStreamingAsync(options, cancellationToken))
+        await foreach (var update in await client.CreateResponseStreamingAsync(options, cancellationToken))
         {
             switch (update)
             {
