@@ -73,10 +73,17 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            if (Optional.IsDefined(Stream, _streamIsDefined) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
-                writer.WritePropertyName("stream"u8);
-                writer.WriteBooleanValue(Stream.Value);
+                if (Stream != null)
+                {
+                    writer.WritePropertyName("stream"u8);
+                    writer.WriteBooleanValue(Stream.Value);
+                }
+                else
+                {
+                    writer.WriteNull("stream"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -120,6 +127,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             IList<ToolOutput> toolOutputs = default;
+            bool streamIsDefined = false;
             bool? stream = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -136,6 +144,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("stream"u8))
                 {
+                    streamIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stream = null;
@@ -147,7 +156,10 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalSubmitToolOutputsRunRequest(toolOutputs ?? new ChangeTrackingList<ToolOutput>(), stream, additionalBinaryDataProperties);
+            return new InternalSubmitToolOutputsRunRequest(toolOutputs ?? new ChangeTrackingList<ToolOutput>(), stream, additionalBinaryDataProperties)
+            {
+                _streamIsDefined = streamIsDefined
+            };
         }
     }
 }

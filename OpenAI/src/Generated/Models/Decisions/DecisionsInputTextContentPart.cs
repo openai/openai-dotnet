@@ -11,6 +11,9 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputTextContentPart : DecisionsInputContentPart
     {
+        private DecisionsPromptCacheBreakpoint _promptCacheBreakpoint;
+        private bool _promptCacheBreakpointIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputTextContentPart(string text) : base(DecisionsInputContentPartKind.InputText)
         {
@@ -25,13 +28,24 @@ namespace OpenAI.Decisions
         internal DecisionsInputTextContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
             Text = text;
-            PromptCacheBreakpoint = promptCacheBreakpoint;
+            _promptCacheBreakpoint = promptCacheBreakpoint;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Text { get; set; }
 
-        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint
+        {
+            get
+            {
+                return _promptCacheBreakpoint;
+            }
+            set
+            {
+                _promptCacheBreakpoint = value;
+                _promptCacheBreakpointIsDefined = true;
+            }
+        }
     }
 }

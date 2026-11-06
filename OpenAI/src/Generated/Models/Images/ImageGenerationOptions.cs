@@ -11,6 +11,18 @@ namespace OpenAI.Images
     public partial class ImageGenerationOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private GeneratedImageQuality? _quality;
+        private bool _qualityIsDefined;
+        private GeneratedImageFormat? _responseFormat;
+        private bool _responseFormatIsDefined;
+        private GeneratedImageSize? _size;
+        private bool _sizeIsDefined;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private GeneratedImageBackground? _background;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _backgroundIsDefined;
+        private GeneratedImageStyle? _style;
+        private bool _styleIsDefined;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, bool? stream, int? partialImages, GeneratedImageSize? size, GeneratedImageModerationLevel? moderationLevel, GeneratedImageBackground? background, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
@@ -18,31 +30,86 @@ namespace OpenAI.Images
             Prompt = prompt;
             Model = model;
             N = n;
-            Quality = quality;
-            ResponseFormat = responseFormat;
+            _quality = quality;
+            _responseFormat = responseFormat;
             OutputFileFormat = outputFileFormat;
             OutputCompressionFactor = outputCompressionFactor;
             Stream = stream;
             PartialImages = partialImages;
-            Size = size;
+            _size = size;
             ModerationLevel = moderationLevel;
-            Background = background;
-            Style = style;
+            _background = background;
+            _style = style;
             EndUserId = endUserId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public GeneratedImageQuality? Quality { get; set; }
+        public GeneratedImageQuality? Quality
+        {
+            get
+            {
+                return _quality;
+            }
+            set
+            {
+                _quality = value;
+                _qualityIsDefined = true;
+            }
+        }
 
-        public GeneratedImageFormat? ResponseFormat { get; set; }
+        public GeneratedImageFormat? ResponseFormat
+        {
+            get
+            {
+                return _responseFormat;
+            }
+            set
+            {
+                _responseFormat = value;
+                _responseFormatIsDefined = true;
+            }
+        }
 
-        public GeneratedImageSize? Size { get; set; }
+        public GeneratedImageSize? Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                _size = value;
+                _sizeIsDefined = true;
+            }
+        }
 
         [Experimental("OPENAI001")]
-        public GeneratedImageBackground? Background { get; set; }
+        public GeneratedImageBackground? Background
+        {
+            get
+            {
+                return _background;
+            }
+            set
+            {
+                _background = value;
+                _backgroundIsDefined = true;
+            }
+        }
 
-        public GeneratedImageStyle? Style { get; set; }
+        public GeneratedImageStyle? Style
+        {
+            get
+            {
+                return _style;
+            }
+            set
+            {
+                _style = value;
+                _styleIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

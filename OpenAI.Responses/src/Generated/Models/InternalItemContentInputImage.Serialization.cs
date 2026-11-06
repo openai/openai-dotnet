@@ -71,15 +71,29 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
+            if (Optional.IsDefined(ImageUri, _imageUriIsDefined) && !Patch.Contains("$.image_url"u8))
             {
-                writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUri);
+                if (ImageUri != null)
+                {
+                    writer.WritePropertyName("image_url"u8);
+                    writer.WriteStringValue(ImageUri);
+                }
+                else
+                {
+                    writer.WriteNull("image_url"u8);
+                }
             }
-            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            if (Optional.IsDefined(FileId, _fileIdIsDefined) && !Patch.Contains("$.file_id"u8))
             {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
+                if (FileId != null)
+                {
+                    writer.WritePropertyName("file_id"u8);
+                    writer.WriteStringValue(FileId);
+                }
+                else
+                {
+                    writer.WriteNull("file_id"u8);
+                }
             }
             if (Optional.IsDefined(Detail) && !Patch.Contains("$.detail"u8))
             {
@@ -116,7 +130,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool imageUriIsDefined = false;
             string imageUri = default;
+            bool fileIdIsDefined = false;
             string fileId = default;
             ResponseImageDetailLevel? detail = default;
             foreach (var prop in element.EnumerateObject())
@@ -128,6 +144,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("image_url"u8))
                 {
+                    imageUriIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         imageUri = null;
@@ -138,6 +155,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("file_id"u8))
                 {
+                    fileIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         fileId = null;
@@ -157,7 +175,11 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentInputImage(internalType, patch, imageUri, fileId, detail);
+            return new InternalItemContentInputImage(internalType, patch, imageUri, fileId, detail)
+            {
+                _imageUriIsDefined = imageUriIsDefined,
+                _fileIdIsDefined = fileIdIsDefined
+            };
         }
     }
 }

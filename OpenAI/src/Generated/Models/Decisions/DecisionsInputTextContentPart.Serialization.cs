@@ -78,10 +78,17 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (Optional.IsDefined(PromptCacheBreakpoint) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
             {
-                writer.WritePropertyName("prompt_cache_breakpoint"u8);
-                writer.WriteObjectValue(PromptCacheBreakpoint, options);
+                if (PromptCacheBreakpoint != null)
+                {
+                    writer.WritePropertyName("prompt_cache_breakpoint"u8);
+                    writer.WriteObjectValue(PromptCacheBreakpoint, options);
+                }
+                else
+                {
+                    writer.WriteNull("prompt_cache_breakpoint"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -112,6 +119,7 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string text = default;
+            bool promptCacheBreakpointIsDefined = false;
             DecisionsPromptCacheBreakpoint promptCacheBreakpoint = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -127,6 +135,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("prompt_cache_breakpoint"u8))
                 {
+                    promptCacheBreakpointIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         promptCacheBreakpoint = null;
@@ -137,7 +146,10 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputTextContentPart(kind, patch, text, promptCacheBreakpoint);
+            return new DecisionsInputTextContentPart(kind, patch, text, promptCacheBreakpoint)
+            {
+                _promptCacheBreakpointIsDefined = promptCacheBreakpointIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

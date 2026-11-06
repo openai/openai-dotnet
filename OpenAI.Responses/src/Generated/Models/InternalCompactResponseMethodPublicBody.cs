@@ -14,6 +14,12 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private BinaryData _input;
+        private bool _inputIsDefined;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
 
         internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model)
         {
@@ -24,9 +30,9 @@ namespace OpenAI.Responses
         internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, in JsonPatch patch)
         {
             Model = model;
-            Input = input;
-            PreviousResponseId = previousResponseId;
-            Instructions = instructions;
+            _input = input;
+            _previousResponseId = previousResponseId;
+            _instructions = instructions;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,10 +44,43 @@ namespace OpenAI.Responses
 
         internal InternalModelIdsCompaction? Model { get; set; }
 
-        public BinaryData Input { get; set; }
+        public BinaryData Input
+        {
+            get
+            {
+                return _input;
+            }
+            set
+            {
+                _input = value;
+                _inputIsDefined = true;
+            }
+        }
 
-        public string PreviousResponseId { get; set; }
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private InternalTokenCountsBodyTextVerbosity? _verbosity;
+        private bool _verbosityIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalResponseTextParam()
@@ -26,7 +28,7 @@ namespace OpenAI.Responses
         internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, in JsonPatch patch)
         {
             Format = format;
-            Verbosity = verbosity;
+            _verbosity = verbosity;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -42,6 +44,17 @@ namespace OpenAI.Responses
         public ResponseTextFormat Format { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalTokenCountsBodyTextVerbosity? Verbosity { get; set; }
+        internal InternalTokenCountsBodyTextVerbosity? Verbosity
+        {
+            get
+            {
+                return _verbosity;
+            }
+            set
+            {
+                _verbosity = value;
+                _verbosityIsDefined = true;
+            }
+        }
     }
 }

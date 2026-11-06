@@ -24,14 +24,14 @@ namespace OpenAI.Files
             Status = status;
         }
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresOn, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             SizeInBytesLong = sizeInBytesLong;
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             CreatedAt = createdAt;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             Filename = filename;
             Object = @object;
             Purpose = purpose;
@@ -45,7 +45,7 @@ namespace OpenAI.Files
         public DateTimeOffset CreatedAt { get; }
 
         [Experimental("OPENAI001")]
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
 
         public string Filename { get; }
 

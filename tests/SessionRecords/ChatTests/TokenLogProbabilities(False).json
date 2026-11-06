@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "134",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -21,10 +21,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd0fdff49f9c37c-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513acbaaffa0882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -33,7 +37,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -41,22 +44,22 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999977",
+        "x-ratelimit-remaining-tokens": "149999980",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dTlkoqZS9MODa3FDuW6oCGIBVML",
+        "id": "chatcmpl-EdfxnSFZgT2dFhpIkEqlb5VRvdFQr",
         "object": "chat.completion",
-        "created": 1770950753,
+        "created": 1793124807,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The best pizza toppings can be subjective since personal preferences vary widely. However, some toppings are celebrated for their flavors, textures, and ability to complement other ingredients. Here's a breakdown of popular pizza toppings and reasons why they are often considered the best:\n\n### 1. **Pepperoni**\n   - **Flavor:** Spicy and savory with a robust taste that complements cheese and sauce well.\n   - **Texture:** Crispy edges when cooked, providing a satisfying crunch.\n   - **Popularity:** A classic topping that appeals to a broad audience, making it a staple in many pizzerias.\n\n### 2. **Mushrooms**\n   - **Flavor:** Earthy and umami-rich, they add depth to the pizza's flavor profile.\n   - **Texture:** Tender and juicy, providing a contrast to the crispiness of the crust.\n   - **Versatility:** Pairs well with various cheeses and other toppings, making it a great addition to many combinations.\n\n### 3. **Onions**\n   - **Flavor:** Sweet when caramelized and sharp when raw, they enhance the overall taste of the pizza.\n   - **Texture:** Adds crunch when raw and a soft, sweet quality when cooked.\n   - **Variety:** Different types of onions (red, yellow, green) can provide different flavor notes.\n\n### 4. **Sausage**\n   - **Flavor:** Savory and often seasoned with herbs and spices, adding richness to the pizza.\n   - **Texture:** Crumbled sausage can provide a hearty bite, making the pizza more filling.\n   - **Regional Variations:** Different styles (Italian, Chorizo, etc.) can introduce unique flavors.\n\n### 5. **Olives**\n   - **Flavor:** Salty and tangy, olives offer a unique taste that contrasts with the cheese and sauce.\n   - **Texture:** Firm and slightly chewy, adding variety to the mouthfeel.\n   - **Mediterranean Influence:** Often used in Mediterranean-inspired pizzas, giving them a distinctive character.\n\n### 6. **Bell Peppers**\n   - **Flavor:** Sweet and slightly crunchy, they offer a fresh taste that balances richer toppings.\n   - **Color:** Adds vibrant color to the pizza, making it visually appealing.\n   - **Nutritional Value:** Adds vitamins and antioxidants, making the pizza a bit healthier.\n\n### 7. **Bacon**\n   - **Flavor:** Smoky and salty, bacon adds indulgence and richness.\n   - **Texture:** Crispy pieces add a satisfying crunch amidst softer toppings.\n   - **Versatile:** Pairs well with many other toppings, enhancing their flavors.\n\n### 8. **Pineapple**\n   - **Flavor:** Sweet and juicy, pineapple provides a contrast to savory toppings like ham and cheese, appealing to those who enjoy sweet and savory combinations.\n   - **Texture:** Soft and succulent, adding a refreshing element to the mix.\n   - **Controversial yet Popular:** While it sparks debate, it has a dedicated following among pizza lovers.\n\n### 9. **Fresh Basil**\n   - **Flavor:** Aromatic and slightly peppery, fresh basil brightens up the pizza.\n   - **Visual Appeal:** Adds a pop of green, enhancing the presentation.\n   - **Pairing:** Works especially well with tomato sauce and mozzarella, reminiscent of traditional Margherita pizza.\n\n### 10. **Cheese**\n   - **Variety:** Beyond the classic mozzarella, options like feta, goat cheese, provolone, and cheddar can elevate a pizza’s flavor.\n   - **Texture:** Provides a gooey and rich base, essential for any pizza.\n   - **Flavor Profile:** Different cheeses add complexity and can complement other toppings well.\n\n### Conclusion\nChoosing the best pizza toppings often depends on individual taste preferences, regional influences, and experimental combinations. A successful pizza usually balances flavors and textures, providing a delightful culinary experience. Whether you prefer classic combinations or more adventurous choices, the key is to create a pizza that's enjoyable for your palate.",
+              "content": "The best pizza toppings can vary based on personal preferences, cultural influences, and regional specialties. However, here are some popular toppings, categorized with reasons for their appeal:\n\n### Classic Toppings\n\n1. **Pepperoni**\n   - **Reasons:** \n     - **Flavor:** The spicy, smoky taste adds a bold flavor.\n     - **Popularity:** It’s a classic favorite in many cultures, particularly in the U.S.\n     - **Texture:** The crispy edges that form when baked enhance the overall experience.\n\n2. **Mushrooms**\n   - **Reasons:** \n     - **Umami:** Adds a rich, savory flavor that complements the cheese and sauce.\n     - **Texture:** Provides a delightful chewiness that contrasts with the crisp crust.\n     - **Versatility:** Pairs well with various other toppings, both meat and vegetarian.\n\n3. **Bell Peppers**\n   - **Reasons:** \n     - **Color:** Brightens the pizza visually, making it more appealing.\n     - **Crunch:** Adds a refreshing crunch and sweetness, balancing out spicy or savory flavors.\n     - **Nutrition:** Provides vitamins and nutrients, making the pizza more wholesome.\n\n### Gourmet Toppings\n\n4. **Prosciutto**\n   - **Reasons:** \n     - **Salinity:** Offers a rich, salty flavor that pairs well with other ingredients, especially sweet ones like figs or melon.\n     - **Texture:** The thin, delicate slices add a refined touch.\n     - **Pairing:** Works well with arugula or a drizzle of balsamic glaze.\n\n5. **Arugula**\n   - **Reasons:** \n     - **Bitterness:** Provides a peppery taste that cuts through richer cheeses and meats.\n     - **Freshness:** Adds a fresh, light aspect to the pizza.\n     - **Presentation:** The vibrant green color enhances the overall visual appeal.\n\n### Vegetarian Options\n\n6. **Spinach**\n   - **Reasons:** \n     - **Nutritional Value:** High in vitamins and adds a healthy component to the pizza.\n     - **Flavor:** Offers a subtle earthiness that pairs well with cheese.\n     - **Pairing:** Complements ricotta or feta cheese beautifully.\n\n7. **Onions**\n   - **Reasons:** \n     - **Sweetness:** When caramelized, onions provide a sweet, rich flavor.\n     - **Versatility:** Can be used raw for a crunch or cooked for depth.\n     - **Balance:** Complements a variety of meats and other vegetables.\n\n### Cheeses\n\n8. **Fresh Mozzarella**\n   - **Reasons:** \n     - **Texture:** Creamy and soft, it melts beautifully and adds a luxurious mouthfeel.\n     - **Flavor:** Milder than other cheeses, it lets other toppings shine.\n     - **Gourmet Appeal:** Often associated with artisanal pizzas.\n\n9. **Feta Cheese**\n   - **Reasons:** \n     - **Tanginess:** Provides a sharp contrast to the sweetness of tomato sauce.\n     - **Texture:** Crumbly and adds a different mouthfeel.\n     - **Mediterranean Flair:** Enhances pizzas with Mediterranean ingredients like olives and spinach.\n\n### Unique Toppings\n\n10. **Pineapple**\n    - **Reasons:** \n      - **Sweetness:** Brings a juicy, sweet contrast to the savory elements.\n      - **Cultural Appeal:** A polarizing yet popular choice, especially in Hawaiian pizza.\n      - **Texture:** Adds a unique chewiness that differs from traditional toppings.\n\n11. **Olives**\n    - **Reasons:** \n      - **Brininess:** Contributes a salty, savory note that enhances flavor complexity.\n      - **Variety:** Comes in many types (black, green, kalamata) offering different tastes.\n      - **Mediterranean Influence:** Often used in pizzas with other Mediterranean toppings.\n\n### Conclusion\n\nThe best pizza toppings ultimately depend on individual tastes and preferences. Combining various toppings can create complex flavor profiles and unique culinary experiences. Whether you prefer classic combinations or innovative flavors, the key is balancing flavors and textures to suit your palate.",
               "refusal": null,
               "annotations": []
             },
@@ -66,8 +69,8 @@
         ],
         "usage": {
           "prompt_tokens": 22,
-          "completion_tokens": 815,
-          "total_tokens": 837,
+          "completion_tokens": 833,
+          "total_tokens": 855,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

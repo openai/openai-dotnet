@@ -13,6 +13,11 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsFunctionToolCallOutputItem : DecisionsItem
     {
+        private string _id;
+        private bool _idIsDefined;
+        private DecisionsFunctionToolCallOutputStatus? _status;
+        private bool _statusIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsFunctionToolCallOutputItem(string callId, IEnumerable<DecisionsInputContentPart> output) : base(DecisionsItemKind.FunctionToolCallOutput)
         {
@@ -31,8 +36,8 @@ namespace OpenAI.Decisions
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Output = output ?? new ChangeTrackingList<DecisionsInputContentPart>();
-            Id = id;
-            Status = status;
+            _id = id;
+            _status = status;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -41,8 +46,30 @@ namespace OpenAI.Decisions
 
         public IList<DecisionsInputContentPart> Output { get; }
 
-        public string Id { get; set; }
+        public string Id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                _idIsDefined = true;
+            }
+        }
 
-        public DecisionsFunctionToolCallOutputStatus? Status { get; set; }
+        public DecisionsFunctionToolCallOutputStatus? Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                _statusIsDefined = true;
+            }
+        }
     }
 }

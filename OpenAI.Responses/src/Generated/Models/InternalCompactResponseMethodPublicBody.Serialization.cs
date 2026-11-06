@@ -81,27 +81,48 @@ namespace OpenAI.Responses
             {
                 writer.WriteNull("model"u8);
             }
-            if (Optional.IsDefined(Input) && !Patch.Contains("$.input"u8))
+            if (Optional.IsDefined(Input, _inputIsDefined) && !Patch.Contains("$.input"u8))
             {
-                writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+                if (Input != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    writer.WritePropertyName("input"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Input);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Input))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("input"u8);
+                }
             }
-            if (Optional.IsDefined(PreviousResponseId) && !Patch.Contains("$.previous_response_id"u8))
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
             {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
             }
-            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && !Patch.Contains("$.instructions"u8))
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -128,8 +149,11 @@ namespace OpenAI.Responses
                 return null;
             }
             InternalModelIdsCompaction? model = default;
+            bool inputIsDefined = false;
             BinaryData input = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -148,6 +172,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    inputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         input = null;
@@ -158,6 +183,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -168,6 +194,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -178,7 +205,12 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCompactResponseMethodPublicBody(model, input, previousResponseId, instructions, patch);
+            return new InternalCompactResponseMethodPublicBody(model, input, previousResponseId, instructions, patch)
+            {
+                _inputIsDefined = inputIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _instructionsIsDefined = instructionsIsDefined
+            };
         }
     }
 }

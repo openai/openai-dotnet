@@ -11,6 +11,11 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsInputImageContentPart : DecisionsInputContentPart
     {
+        private DecisionsImageDetailLevel? _imageDetailLevel;
+        private bool _imageDetailLevelIsDefined;
+        private DecisionsPromptCacheBreakpoint _promptCacheBreakpoint;
+        private bool _promptCacheBreakpointIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputImageContentPart(string imageUri) : base(DecisionsInputContentPartKind.InputImage)
         {
@@ -25,16 +30,38 @@ namespace OpenAI.Decisions
         internal DecisionsInputImageContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
         {
             ImageUri = imageUri;
-            ImageDetailLevel = imageDetailLevel;
-            PromptCacheBreakpoint = promptCacheBreakpoint;
+            _imageDetailLevel = imageDetailLevel;
+            _promptCacheBreakpoint = promptCacheBreakpoint;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUri { get; set; }
 
-        public DecisionsImageDetailLevel? ImageDetailLevel { get; set; }
+        public DecisionsImageDetailLevel? ImageDetailLevel
+        {
+            get
+            {
+                return _imageDetailLevel;
+            }
+            set
+            {
+                _imageDetailLevel = value;
+                _imageDetailLevelIsDefined = true;
+            }
+        }
 
-        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint { get; set; }
+        public DecisionsPromptCacheBreakpoint PromptCacheBreakpoint
+        {
+            get
+            {
+                return _promptCacheBreakpoint;
+            }
+            set
+            {
+                _promptCacheBreakpoint = value;
+                _promptCacheBreakpointIsDefined = true;
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace OpenAI.Realtime {
         public static implicit operator BinaryContent(CreateClientSecretOptions createClientSecretOptions);
     }
     public class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>, IPersistableModel<CreateClientSecretResult> {
-        public DateTimeOffset ExpiresAt { get; set; }
+        public DateTimeOffset ExpiresOn { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -160,7 +160,7 @@ namespace OpenAI.Realtime {
         public string UserAgentApplicationId { get; set; }
     }
     public class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>, IPersistableModel<RealtimeClientSecret> {
-        public DateTimeOffset ExpiresAt { get; set; }
+        public DateTimeOffset ExpiresOn { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -1052,7 +1052,7 @@ namespace OpenAI.Realtime {
     public class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
         public RealtimeServerUpdateInputAudioBufferDtmfEventReceived() : base(default);
         public string Event { get; set; }
-        public DateTimeOffset ReceivedAt { get; set; }
+        public DateTimeOffset ReceivedOn { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStarted> {
         public RealtimeServerUpdateInputAudioBufferSpeechStarted() : base(default);
@@ -1434,7 +1434,7 @@ namespace OpenAI.Realtime {
     public class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>, IPersistableModel<RealtimeTranscriptionSession> {
         public RealtimeTranscriptionSession();
         public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
-        public DateTimeOffset? ExpiresAt { get; set; }
+        public DateTimeOffset? ExpiresOn { get; set; }
         public string Id { get; set; }
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
         public string Object { get; set; }

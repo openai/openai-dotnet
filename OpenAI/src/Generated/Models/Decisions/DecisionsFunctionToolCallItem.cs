@@ -11,6 +11,13 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsFunctionToolCallItem : DecisionsItem
     {
+        private string _id;
+        private bool _idIsDefined;
+        private string _namespace;
+        private bool _namespaceIsDefined;
+        private DecisionsFunctionToolCallStatus? _status;
+        private bool _statusIsDefined;
+
         public DecisionsFunctionToolCallItem(string arguments, string callId, string functionName) : base(DecisionsItemKind.FunctionToolCall)
         {
             Argument.AssertNotNull(arguments, nameof(arguments));
@@ -28,9 +35,9 @@ namespace OpenAI.Decisions
             Arguments = arguments;
             CallId = callId;
             FunctionName = functionName;
-            Id = id;
-            Namespace = @namespace;
-            Status = status;
+            _id = id;
+            _namespace = @namespace;
+            _status = status;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -40,10 +47,43 @@ namespace OpenAI.Decisions
 
         public string FunctionName { get; set; }
 
-        public string Id { get; set; }
+        public string Id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                _idIsDefined = true;
+            }
+        }
 
-        public string Namespace { get; set; }
+        public string Namespace
+        {
+            get
+            {
+                return _namespace;
+            }
+            set
+            {
+                _namespace = value;
+                _namespaceIsDefined = true;
+            }
+        }
 
-        public DecisionsFunctionToolCallStatus? Status { get; set; }
+        public DecisionsFunctionToolCallStatus? Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                _statusIsDefined = true;
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace OpenAI.Decisions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private DecisionsPromptCacheMode? _mode;
+        private bool _modeIsDefined;
 
         public DecisionsPromptCacheOptions()
         {
@@ -22,7 +24,7 @@ namespace OpenAI.Decisions
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionsPromptCacheOptions(DecisionsPromptCacheMode? mode, DecisionsPromptCacheTimeToLive? timeToLive, in JsonPatch patch)
         {
-            Mode = mode;
+            _mode = mode;
             TimeToLive = timeToLive;
             _patch = patch;
         }
@@ -33,7 +35,18 @@ namespace OpenAI.Decisions
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public DecisionsPromptCacheMode? Mode { get; set; }
+        public DecisionsPromptCacheMode? Mode
+        {
+            get
+            {
+                return _mode;
+            }
+            set
+            {
+                _mode = value;
+                _modeIsDefined = true;
+            }
+        }
 
         public DecisionsPromptCacheTimeToLive? TimeToLive { get; set; }
     }

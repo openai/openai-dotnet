@@ -86,15 +86,29 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(FirstId) && _additionalBinaryDataProperties?.ContainsKey("first_id") != true)
+            if (Optional.IsDefined(FirstId, _firstIdIsDefined) && _additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
-                writer.WritePropertyName("first_id"u8);
-                writer.WriteStringValue(FirstId);
+                if (FirstId != null)
+                {
+                    writer.WritePropertyName("first_id"u8);
+                    writer.WriteStringValue(FirstId);
+                }
+                else
+                {
+                    writer.WriteNull("first_id"u8);
+                }
             }
-            if (Optional.IsDefined(LastId) && _additionalBinaryDataProperties?.ContainsKey("last_id") != true)
+            if (Optional.IsDefined(LastId, _lastIdIsDefined) && _additionalBinaryDataProperties?.ContainsKey("last_id") != true)
             {
-                writer.WritePropertyName("last_id"u8);
-                writer.WriteStringValue(LastId);
+                if (LastId != null)
+                {
+                    writer.WritePropertyName("last_id"u8);
+                    writer.WriteStringValue(LastId);
+                }
+                else
+                {
+                    writer.WriteNull("last_id"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
             {
@@ -144,7 +158,9 @@ namespace OpenAI.FineTuning
             }
             IList<InternalFineTuningCheckpointPermission> data = default;
             string @object = default;
+            bool firstIdIsDefined = false;
             string firstId = default;
+            bool lastIdIsDefined = false;
             string lastId = default;
             bool hasMore = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -167,6 +183,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("first_id"u8))
                 {
+                    firstIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         firstId = null;
@@ -177,6 +194,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("last_id"u8))
                 {
+                    lastIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         lastId = null;
@@ -199,7 +217,11 @@ namespace OpenAI.FineTuning
                 firstId,
                 lastId,
                 hasMore,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _firstIdIsDefined = firstIdIsDefined,
+                _lastIdIsDefined = lastIdIsDefined
+            };
         }
     }
 }

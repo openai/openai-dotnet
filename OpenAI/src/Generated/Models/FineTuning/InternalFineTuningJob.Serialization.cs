@@ -84,7 +84,7 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
@@ -105,10 +105,10 @@ namespace OpenAI.FineTuning
             }
             if (_additionalBinaryDataProperties?.ContainsKey("finished_at") != true)
             {
-                if (Optional.IsDefined(FinishedAt))
+                if (Optional.IsDefined(FinishedOn))
                 {
                     writer.WritePropertyName("finished_at"u8);
-                    writer.WriteNumberValue(FinishedAt.Value, "U");
+                    writer.WriteNumberValue(FinishedOn.Value, "U");
                 }
                 else
                 {
@@ -186,13 +186,20 @@ namespace OpenAI.FineTuning
             }
             if (Optional.IsCollectionDefined(Integrations) && _additionalBinaryDataProperties?.ContainsKey("integrations") != true)
             {
-                writer.WritePropertyName("integrations"u8);
-                writer.WriteStartArray();
-                foreach (FineTuningIntegration item in Integrations)
+                if (Integrations != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("integrations"u8);
+                    writer.WriteStartArray();
+                    foreach (FineTuningIntegration item in Integrations)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("integrations"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
@@ -275,10 +282,10 @@ namespace OpenAI.FineTuning
             }
             string userProvidedSuffix = default;
             string jobId = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             FineTuningError error = default;
             string fineTunedModel = default;
-            DateTimeOffset? finishedAt = default;
+            DateTimeOffset? finishedOn = default;
             FineTuningHyperparameters hyperparameters = default;
             string baseModel = default;
             string @object = default;
@@ -288,7 +295,7 @@ namespace OpenAI.FineTuning
             int? billableTrainedTokenCount = default;
             string trainingFileId = default;
             string validationFileId = default;
-            IReadOnlyList<FineTuningIntegration> integrations = default;
+            IReadOnlyList<FineTuningIntegration> integrations = new ChangeTrackingList<FineTuningIntegration>();
             int seed = default;
             DateTimeOffset? estimatedFinishAt = default;
             FineTuningTrainingMethod @method = default;
@@ -313,7 +320,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
@@ -339,10 +346,10 @@ namespace OpenAI.FineTuning
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        finishedAt = null;
+                        finishedOn = null;
                         continue;
                     }
-                    finishedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    finishedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("hyperparameters"u8))
@@ -416,6 +423,7 @@ namespace OpenAI.FineTuning
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        integrations = null;
                         continue;
                     }
                     List<FineTuningIntegration> array = new List<FineTuningIntegration>();
@@ -478,10 +486,10 @@ namespace OpenAI.FineTuning
             return new InternalFineTuningJob(
                 userProvidedSuffix,
                 jobId,
-                createdAt,
+                createdOn,
                 error,
                 fineTunedModel,
-                finishedAt,
+                finishedOn,
                 hyperparameters,
                 baseModel,
                 @object,
@@ -491,7 +499,7 @@ namespace OpenAI.FineTuning
                 billableTrainedTokenCount,
                 trainingFileId,
                 validationFileId,
-                integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
+                integrations,
                 seed,
                 estimatedFinishAt,
                 @method,

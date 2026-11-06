@@ -175,10 +175,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("service_tier"u8);
                 writer.WriteStringValue(ServiceTier.Value.ToString());
             }
-            if (Optional.IsDefined(PreviousResponseId) && !Patch.Contains("$.previous_response_id"u8))
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
             {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
             }
             if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
@@ -262,7 +269,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
             {
@@ -390,6 +397,7 @@ namespace OpenAI.Responses
             string endUserId = default;
             string safetyIdentifier = default;
             ResponseServiceTier? serviceTier = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
             string model = default;
             ResponseReasoningOptions reasoningOptions = default;
@@ -403,7 +411,7 @@ namespace OpenAI.Responses
             string id = default;
             string @object = default;
             ResponseStatus? status = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             ResponseError error = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
@@ -496,6 +504,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -612,7 +621,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
@@ -711,7 +720,7 @@ namespace OpenAI.Responses
                 id,
                 @object,
                 status,
-                createdAt,
+                createdOn,
                 error,
                 incompleteStatusDetails,
                 outputItems ?? new ChangeTrackingList<ResponseItem>(),
@@ -721,7 +730,10 @@ namespace OpenAI.Responses
                 conversationOptions,
                 promptCacheKey,
                 promptCacheRetentionPolicy,
-                patch);
+                patch)
+            {
+                _previousResponseIdIsDefined = previousResponseIdIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

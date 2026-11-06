@@ -11,6 +11,10 @@ namespace OpenAI.Images
     public partial class ImageEditOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private ImageInputFidelity? _inputFidelity;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _inputFidelityIsDefined;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, GeneratedImageBackground? background, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, string endUserId, ImageInputFidelity? inputFidelity, bool? stream, int? partialImages, GeneratedImageQuality? quality, IDictionary<string, BinaryData> additionalBinaryDataProperties)
@@ -26,7 +30,7 @@ namespace OpenAI.Images
             OutputFileFormat = outputFileFormat;
             OutputCompressionFactor = outputCompressionFactor;
             EndUserId = endUserId;
-            InputFidelity = inputFidelity;
+            _inputFidelity = inputFidelity;
             Stream = stream;
             PartialImages = partialImages;
             Quality = quality;
@@ -35,7 +39,18 @@ namespace OpenAI.Images
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [Experimental("OPENAI001")]
-        public ImageInputFidelity? InputFidelity { get; set; }
+        public ImageInputFidelity? InputFidelity
+        {
+            get
+            {
+                return _inputFidelity;
+            }
+            set
+            {
+                _inputFidelity = value;
+                _inputFidelityIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

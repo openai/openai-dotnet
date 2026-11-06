@@ -78,15 +78,29 @@ namespace OpenAI.Decisions
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteStringValue(ImageUri);
             }
-            if (Optional.IsDefined(ImageDetailLevel) && !Patch.Contains("$.detail"u8))
+            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && !Patch.Contains("$.detail"u8))
             {
-                writer.WritePropertyName("detail"u8);
-                writer.WriteStringValue(ImageDetailLevel.Value.ToString());
+                if (ImageDetailLevel != null)
+                {
+                    writer.WritePropertyName("detail"u8);
+                    writer.WriteStringValue(ImageDetailLevel.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("detail"u8);
+                }
             }
-            if (Optional.IsDefined(PromptCacheBreakpoint) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
             {
-                writer.WritePropertyName("prompt_cache_breakpoint"u8);
-                writer.WriteObjectValue(PromptCacheBreakpoint, options);
+                if (PromptCacheBreakpoint != null)
+                {
+                    writer.WritePropertyName("prompt_cache_breakpoint"u8);
+                    writer.WriteObjectValue(PromptCacheBreakpoint, options);
+                }
+                else
+                {
+                    writer.WriteNull("prompt_cache_breakpoint"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -117,7 +131,9 @@ namespace OpenAI.Decisions
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string imageUri = default;
+            bool imageDetailLevelIsDefined = false;
             DecisionsImageDetailLevel? imageDetailLevel = default;
+            bool promptCacheBreakpointIsDefined = false;
             DecisionsPromptCacheBreakpoint promptCacheBreakpoint = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -133,6 +149,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("detail"u8))
                 {
+                    imageDetailLevelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         imageDetailLevel = null;
@@ -143,6 +160,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("prompt_cache_breakpoint"u8))
                 {
+                    promptCacheBreakpointIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         promptCacheBreakpoint = null;
@@ -153,7 +171,11 @@ namespace OpenAI.Decisions
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint);
+            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint)
+            {
+                _imageDetailLevelIsDefined = imageDetailLevelIsDefined,
+                _promptCacheBreakpointIsDefined = promptCacheBreakpointIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

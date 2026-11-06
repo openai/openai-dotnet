@@ -16,23 +16,23 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ContainerFileResource(string id, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source)
+        internal ContainerFileResource(string id, string containerId, DateTimeOffset createdOn, long? sizeInBytes, string path, string source)
         {
             Id = id;
             ContainerId = containerId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             SizeInBytes = sizeInBytes;
             Path = path;
             Source = source;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source, in JsonPatch patch)
+        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdOn, long? sizeInBytes, string path, string source, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
             ContainerId = containerId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             SizeInBytes = sizeInBytes;
             Path = path;
             Source = source;
@@ -51,7 +51,7 @@ namespace OpenAI.Containers
 
         public string ContainerId { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
         public long? SizeInBytes { get; set; }
 
