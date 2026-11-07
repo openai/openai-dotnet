@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 
@@ -22,6 +23,25 @@ internal class FineTuningCollectionPageToken : ContinuationToken
     public int? Limit { get; }
 
     public string? After { get; }
+
+    public override BinaryData ToBytes()
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+        writer.WriteStartObject();
+        if (Limit.HasValue)
+        {
+            writer.WriteNumber("limit", Limit.Value);
+        }
+        if (After is not null)
+        {
+            writer.WriteString("after", After);
+        }
+        writer.WriteEndObject();
+        writer.Flush();
+        stream.Position = 0;
+        return BinaryData.FromStream(stream);
+    }
 
     public static FineTuningCollectionPageToken FromToken(ContinuationToken pageToken)
     {
