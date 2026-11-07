@@ -98,10 +98,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("delta"u8);
                 SerializeDeltaValue(writer, options);
             }
-            if (Optional.IsDefined(Obfuscation) && !Patch.Contains("$.obfuscation"u8))
+            if (Optional.IsDefined(Obfuscation, _obfuscationIsDefined) && !Patch.Contains("$.obfuscation"u8))
             {
-                writer.WritePropertyName("obfuscation"u8);
-                writer.WriteStringValue(Obfuscation);
+                if (Obfuscation != null)
+                {
+                    writer.WritePropertyName("obfuscation"u8);
+                    writer.WriteStringValue(Obfuscation);
+                }
+                else
+                {
+                    writer.WriteNull("obfuscation"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -136,6 +143,7 @@ namespace OpenAI.Realtime
             string itemId = default;
             int outputIndex = default;
             BinaryData delta = default;
+            bool obfuscationIsDefined = false;
             string obfuscation = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -171,6 +179,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("obfuscation"u8))
                 {
+                    obfuscationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         obfuscation = null;
@@ -189,7 +198,10 @@ namespace OpenAI.Realtime
                 itemId,
                 outputIndex,
                 delta,
-                obfuscation);
+                obfuscation)
+            {
+                _obfuscationIsDefined = obfuscationIsDefined
+            };
         }
     }
 }

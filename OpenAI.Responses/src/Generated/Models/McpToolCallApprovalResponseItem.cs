@@ -11,6 +11,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolCallApprovalResponseItem : ResponseItem
     {
+        private string _reason;
+        private bool _reasonIsDefined;
+
         public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(ResponseItemKind.McpApprovalResponse)
         {
             Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
@@ -24,7 +27,7 @@ namespace OpenAI.Responses
         {
             ApprovalRequestId = approvalRequestId;
             Approved = approved;
-            Reason = reason;
+            _reason = reason;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -32,6 +35,17 @@ namespace OpenAI.Responses
 
         public bool Approved { get; set; }
 
-        public string Reason { get; set; }
+        public string Reason
+        {
+            get
+            {
+                return _reason;
+            }
+            set
+            {
+                _reason = value;
+                _reasonIsDefined = true;
+            }
+        }
     }
 }

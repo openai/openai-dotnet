@@ -164,19 +164,26 @@ namespace OpenAI.Chat
             }
             else if (Optional.IsCollectionDefined(ContentParts))
             {
-                writer.WritePropertyName("content_parts"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "content_parts"u8);
-                for (int i = 0; i < ContentParts.Count; i++)
+                if (ContentParts != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content_parts[{i}]")) || ContentParts[i] != null && ContentParts[i].Patch.IsRemoved("$"u8))
+                    writer.WritePropertyName("content_parts"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "content_parts"u8);
+                    for (int i = 0; i < ContentParts.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content_parts[{i}]")) || ContentParts[i] != null && ContentParts[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(ContentParts[i], options);
                     }
-                    writer.WriteObjectValue(ContentParts[i], options);
+                    Patch.WriteTo(writer, "$.content_parts"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.content_parts"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("content_parts"u8);
+                }
             }
             if (!Patch.Contains("$.id"u8))
             {
@@ -214,7 +221,7 @@ namespace OpenAI.Chat
             ChatMessageRole role = default;
             InternalChatCompletionResponseMessageFunctionCall functionCall = default;
             ChatOutputAudio outputAudio = default;
-            IList<ChatMessageContentPart> contentParts = default;
+            IList<ChatMessageContentPart> contentParts = new ChangeTrackingList<ChatMessageContentPart>();
             string id = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -297,6 +304,7 @@ namespace OpenAI.Chat
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        contentParts = null;
                         continue;
                     }
                     List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
@@ -322,7 +330,7 @@ namespace OpenAI.Chat
                 role,
                 functionCall,
                 outputAudio,
-                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
+                contentParts,
                 id,
                 patch);
         }

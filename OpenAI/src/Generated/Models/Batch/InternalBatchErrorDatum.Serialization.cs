@@ -69,15 +69,29 @@ namespace OpenAI.Batch
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (Optional.IsDefined(Param) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
+            if (Optional.IsDefined(Param, _paramIsDefined) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                if (Param != null)
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
             }
-            if (Optional.IsDefined(Line) && _additionalBinaryDataProperties?.ContainsKey("line") != true)
+            if (Optional.IsDefined(Line, _lineIsDefined) && _additionalBinaryDataProperties?.ContainsKey("line") != true)
             {
-                writer.WritePropertyName("line"u8);
-                writer.WriteNumberValue(Line.Value);
+                if (Line != null)
+                {
+                    writer.WritePropertyName("line"u8);
+                    writer.WriteNumberValue(Line.Value);
+                }
+                else
+                {
+                    writer.WriteNull("line"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -122,7 +136,9 @@ namespace OpenAI.Batch
             }
             string code = default;
             string message = default;
+            bool paramIsDefined = false;
             string @param = default;
+            bool lineIsDefined = false;
             int? line = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -139,6 +155,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("param"u8))
                 {
+                    paramIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         @param = null;
@@ -149,6 +166,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("line"u8))
                 {
+                    lineIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         line = null;
@@ -160,7 +178,11 @@ namespace OpenAI.Batch
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalBatchErrorDatum(code, message, @param, line, additionalBinaryDataProperties);
+            return new InternalBatchErrorDatum(code, message, @param, line, additionalBinaryDataProperties)
+            {
+                _paramIsDefined = paramIsDefined,
+                _lineIsDefined = lineIsDefined
+            };
         }
     }
 }

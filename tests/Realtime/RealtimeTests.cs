@@ -718,20 +718,22 @@ public class RealtimeTests : RealtimeTestFixtureBase
                     }
                 case RealtimeServerUpdateInputAudioBufferSpeechStarted:
                     {
-                        Assert.ThrowsAsync<InvalidOperationException>(
+                        Assert.That(
                             async () =>
                             {
                                 using MemoryStream dummyStream = new();
                                 await sessionClient.SendInputAudioAsync(dummyStream, CancellationToken);
                             },
+                            Throws.TypeOf<InvalidOperationException>(),
                             "Sending a Stream while another Stream is being sent should throw!");
 
-                        Assert.ThrowsAsync<InvalidOperationException>(
+                        Assert.That(
                             async () =>
                             {
                                 BinaryData dummyData = BinaryData.FromString("hello, world! this isn't audio.");
                                 await sessionClient.SendInputAudioAsync(dummyData, CancellationToken);
                             },
+                            Throws.TypeOf<InvalidOperationException>(),
                             "Sending BinaryData while a Stream is being sent should throw!");
 
                         gotSpeechStarted = true;
@@ -1333,7 +1335,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
         Assert.That(result.Session, Is.Not.Null);
         Assert.That(result.Session, Is.TypeOf<RealtimeConversationSession>());
-        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+        Assert.That(result.ExpiresOn, Is.GreaterThan(DateTimeOffset.Now));
 
         RealtimeSessionClientOptions sessionClientOptions = new()
         {
@@ -1455,7 +1457,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
         Assert.That(result.Session, Is.Not.Null);
         Assert.That(result.Session, Is.TypeOf<RealtimeTranscriptionSession>());
-        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+        Assert.That(result.ExpiresOn, Is.GreaterThan(DateTimeOffset.Now));
 
         RealtimeSessionClientOptions sessionClientOptions = new()
         {

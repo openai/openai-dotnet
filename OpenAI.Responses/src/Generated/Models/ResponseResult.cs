@@ -18,9 +18,11 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, IEnumerable<ResponseItem> instructions, bool parallelToolCallsEnabled)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdOn, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, IEnumerable<ResponseItem> instructions, bool parallelToolCallsEnabled)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -29,7 +31,7 @@ namespace OpenAI.Responses
             EndUserId = endUserId;
             Tools = new ChangeTrackingList<ResponseTool>();
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Error = error;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems.ToList();
@@ -40,7 +42,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, IList<ResponseItem> instructions, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, in JsonPatch patch)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdOn, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, IList<ResponseItem> instructions, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -50,7 +52,7 @@ namespace OpenAI.Responses
             EndUserId = endUserId;
             SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
-            PreviousResponseId = previousResponseId;
+            _previousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
             BackgroundModeEnabled = backgroundModeEnabled;
@@ -63,7 +65,7 @@ namespace OpenAI.Responses
             Id = id;
             Object = @object;
             Status = status;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Error = error;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems ?? new ChangeTrackingList<ResponseItem>();
@@ -93,7 +95,18 @@ namespace OpenAI.Responses
 
         public ResponseServiceTier? ServiceTier { get; set; }
 
-        public string PreviousResponseId { get; set; }
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
 
         public string Model { get; set; }
 
@@ -103,7 +116,7 @@ namespace OpenAI.Responses
 
         public ResponseStatus? Status { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
         public ResponseError Error { get; set; }
 

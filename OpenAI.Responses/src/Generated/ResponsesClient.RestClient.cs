@@ -30,6 +30,7 @@ namespace OpenAI.Responses
             return message;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options)
         {
@@ -66,6 +67,7 @@ namespace OpenAI.Responses
             message.Apply(options);
             return message;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteResponseRequest(string responseId, RequestOptions options)

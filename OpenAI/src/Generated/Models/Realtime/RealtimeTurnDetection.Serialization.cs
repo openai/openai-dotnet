@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeTurnDetectionBaseGA))]
     public partial class RealtimeTurnDetection : IJsonModel<RealtimeTurnDetection>
     {
         internal RealtimeTurnDetection()

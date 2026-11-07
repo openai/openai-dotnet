@@ -73,20 +73,34 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("effort"u8);
                 writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
-            if (Optional.IsDefined(Context) && !Patch.Contains("$.context"u8))
+            if (Optional.IsDefined(Context, _contextIsDefined) && !Patch.Contains("$.context"u8))
             {
-                writer.WritePropertyName("context"u8);
-                writer.WriteStringValue(Context.Value.ToString());
+                if (Context != null)
+                {
+                    writer.WritePropertyName("context"u8);
+                    writer.WriteStringValue(Context.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("context"u8);
+                }
             }
             if (Optional.IsDefined(ReasoningSummaryVerbosity) && !Patch.Contains("$.summary"u8))
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
             }
-            if (Optional.IsDefined(GenerateSummary) && !Patch.Contains("$.generate_summary"u8))
+            if (Optional.IsDefined(GenerateSummary, _generateSummaryIsDefined) && !Patch.Contains("$.generate_summary"u8))
             {
-                writer.WritePropertyName("generate_summary"u8);
-                writer.WriteStringValue(GenerateSummary.Value.ToString());
+                if (GenerateSummary != null)
+                {
+                    writer.WritePropertyName("generate_summary"u8);
+                    writer.WriteStringValue(GenerateSummary.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("generate_summary"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -113,8 +127,10 @@ namespace OpenAI.Responses
                 return null;
             }
             ResponseReasoningEffortLevel? reasoningEffortLevel = default;
+            bool contextIsDefined = false;
             ResponseReasoningContext? context = default;
             ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity = default;
+            bool generateSummaryIsDefined = false;
             InternalCreateResponseReasoningGenerateSummary? generateSummary = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -133,6 +149,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("context"u8))
                 {
+                    contextIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         context = null;
@@ -153,6 +170,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("generate_summary"u8))
                 {
+                    generateSummaryIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         generateSummary = null;
@@ -163,7 +181,11 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseReasoningOptions(reasoningEffortLevel, context, reasoningSummaryVerbosity, generateSummary, patch);
+            return new ResponseReasoningOptions(reasoningEffortLevel, context, reasoningSummaryVerbosity, generateSummary, patch)
+            {
+                _contextIsDefined = contextIsDefined,
+                _generateSummaryIsDefined = generateSummaryIsDefined
+            };
         }
     }
 }

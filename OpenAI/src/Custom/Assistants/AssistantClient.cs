@@ -32,7 +32,7 @@ public partial class AssistantClient
     /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public AssistantClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public AssistantClient(string apiKey) : this(new ApiKeyCredential(apiKey), new AssistantClientOptions())
     {
     }
 
@@ -42,7 +42,7 @@ public partial class AssistantClient
     /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public AssistantClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public AssistantClient(ApiKeyCredential credential) : this(credential, new AssistantClientOptions())
     {
     }
 
@@ -53,7 +53,7 @@ public partial class AssistantClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public AssistantClient(ApiKeyCredential credential, AssistantClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -61,7 +61,7 @@ public partial class AssistantClient
     /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public AssistantClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public AssistantClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new AssistantClientOptions())
     {
     }
 
@@ -70,16 +70,17 @@ public partial class AssistantClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public AssistantClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new AssistantClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
-        _messageSubClient = new(Pipeline, options);
-        _runSubClient = new(Pipeline, options);
-        _threadSubClient = new(Pipeline, options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
+        _messageSubClient = new(Pipeline, sharedOptions);
+        _runSubClient = new(Pipeline, sharedOptions);
+        _threadSubClient = new(Pipeline, sharedOptions);
     }
 
     [Experimental("SCME0002")]
@@ -103,16 +104,17 @@ public partial class AssistantClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal AssistantClient(ClientPipeline pipeline, AssistantClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new AssistantClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
-        _messageSubClient = new(Pipeline, options);
-        _runSubClient = new(Pipeline, options);
-        _threadSubClient = new(Pipeline, options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
+        _messageSubClient = new(Pipeline, sharedOptions);
+        _runSubClient = new(Pipeline, sharedOptions);
+        _threadSubClient = new(Pipeline, sharedOptions);
     }
 
     /// <summary> Creates a new assistant. </summary>
@@ -204,7 +206,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(options, nameof(options));
 
         using BinaryContent content = options?.ToBinaryContent();
-        ClientResult protocolResult = ModifyAssistant(assistantId, content, null);
+        ClientResult protocolResult = ModifyAssistant(assistantId, content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -585,7 +587,8 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
+    /// <returns> A result that exposes the established service response and streams its updates once. </returns>
+    public virtual Task<AsyncStreamingResult<StreamingUpdate>> CreateRunStreamingAsync(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -598,35 +601,8 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
+        return SseStreamingResult.CreateAsync(
             async () => await CreateRunAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
-            StreamingUpdate.FromSseItem,
-            cancellationToken);
-    }
-
-    /// <summary>
-    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
-    /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
-        string threadId,
-        string assistantId,
-        RunCreationOptions options = null,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = true;
-
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -680,7 +656,8 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    /// <returns> A result that exposes the established service response and streams its updates once. </returns>
+    public virtual Task<AsyncStreamingResult<StreamingUpdate>> CreateThreadAndRunStreamingAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -692,33 +669,8 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
+        return SseStreamingResult.CreateAsync(
             async () => await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
-            StreamingUpdate.FromSseItem,
-            cancellationToken);
-    }
-
-    /// <summary>
-    /// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
-        string assistantId,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-        runOptions ??= new();
-        runOptions.Stream = true;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -829,7 +781,8 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    /// <returns> A result that exposes the established service response and streams its updates once. </returns>
+    public virtual Task<AsyncStreamingResult<StreamingUpdate>> SubmitToolOutputsToRunStreamingAsync(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -839,39 +792,13 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
-        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
+        BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
+        return SseStreamingResult.CreateAsync(
             async () => await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
             StreamingUpdate.FromSseItem,
-            cancellationToken);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
-    /// </summary>
-    /// <param name="threadId"> The thread ID of the thread being run. </param>
-    /// <param name="runId"> The ID of the run that reached a <c>requires_action</c> status. </param>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
-        string threadId,
-        string runId,
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
-        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
-
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingUpdate.FromSseItem,
-            cancellationToken);
+            cancellationToken,
+            requestResource: content);
     }
 
     /// <summary>

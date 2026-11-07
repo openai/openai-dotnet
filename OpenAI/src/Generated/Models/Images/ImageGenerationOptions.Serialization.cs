@@ -82,26 +82,44 @@ namespace OpenAI.Images
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
             }
-            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            if (Optional.IsDefined(Quality, _qualityIsDefined) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
-                writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.Value.ToString());
+                if (Quality != null)
+                {
+                    writer.WritePropertyName("quality"u8);
+                    writer.WriteStringValue(Quality.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("quality"u8);
+                }
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat, _responseFormatIsDefined) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToString());
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteStringValue(ResponseFormat.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("response_format"u8);
+                }
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
                 writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
             {
                 writer.WritePropertyName("output_compression"u8);
                 writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
                 writer.WritePropertyName("stream"u8);
@@ -112,25 +130,48 @@ namespace OpenAI.Images
                 writer.WritePropertyName("partial_images"u8);
                 writer.WriteNumberValue(PartialImages.Value);
             }
-            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
+            if (Optional.IsDefined(Size, _sizeIsDefined) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size"u8);
+                }
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
             {
                 writer.WritePropertyName("moderation"u8);
                 writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
-            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Background, _backgroundIsDefined) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
-                writer.WritePropertyName("background"u8);
-                writer.WriteStringValue(Background.Value.ToString());
+                if (Background != null)
+                {
+                    writer.WritePropertyName("background"u8);
+                    writer.WriteStringValue(Background.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("background"u8);
+                }
             }
-            if (Optional.IsDefined(Style) && _additionalBinaryDataProperties?.ContainsKey("style") != true)
+            if (Optional.IsDefined(Style, _styleIsDefined) && _additionalBinaryDataProperties?.ContainsKey("style") != true)
             {
-                writer.WritePropertyName("style"u8);
-                writer.WriteStringValue(Style.Value.ToString());
+                if (Style != null)
+                {
+                    writer.WritePropertyName("style"u8);
+                    writer.WriteStringValue(Style.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("style"u8);
+                }
             }
             if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
@@ -182,15 +223,20 @@ namespace OpenAI.Images
             string prompt = default;
             InternalCreateImageRequestModel? model = default;
             long? n = default;
+            bool qualityIsDefined = false;
             GeneratedImageQuality? quality = default;
+            bool responseFormatIsDefined = false;
             GeneratedImageFormat? responseFormat = default;
             GeneratedImageFileFormat? outputFileFormat = default;
             int? outputCompressionFactor = default;
             bool? stream = default;
             int? partialImages = default;
+            bool sizeIsDefined = false;
             GeneratedImageSize? size = default;
             GeneratedImageModerationLevel? moderationLevel = default;
+            bool backgroundIsDefined = false;
             GeneratedImageBackground? background = default;
+            bool styleIsDefined = false;
             GeneratedImageStyle? style = default;
             string endUserId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -223,6 +269,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("quality"u8))
                 {
+                    qualityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         quality = null;
@@ -233,6 +280,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("response_format"u8))
                 {
+                    responseFormatIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         responseFormat = null;
@@ -283,6 +331,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("size"u8))
                 {
+                    sizeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         size = null;
@@ -303,6 +352,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("background"u8))
                 {
+                    backgroundIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         background = null;
@@ -313,6 +363,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("style"u8))
                 {
+                    styleIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         style = null;
@@ -344,7 +395,14 @@ namespace OpenAI.Images
                 background,
                 style,
                 endUserId,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _qualityIsDefined = qualityIsDefined,
+                _responseFormatIsDefined = responseFormatIsDefined,
+                _sizeIsDefined = sizeIsDefined,
+                _backgroundIsDefined = backgroundIsDefined,
+                _styleIsDefined = styleIsDefined
+            };
         }
     }
 }

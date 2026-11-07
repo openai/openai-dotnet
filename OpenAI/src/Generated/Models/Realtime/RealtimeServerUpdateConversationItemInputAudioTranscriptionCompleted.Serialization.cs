@@ -104,19 +104,26 @@ namespace OpenAI.Realtime
             }
             else if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
             {
-                writer.WritePropertyName("logprobs"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
-                for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
+                if (TranscriptionTokenLogProbabilities != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TranscriptionTokenLogProbabilities[i] != null && TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
+                    for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TranscriptionTokenLogProbabilities[i] != null && TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(TranscriptionTokenLogProbabilities[i], options);
                     }
-                    writer.WriteObjectValue(TranscriptionTokenLogProbabilities[i], options);
+                    Patch.WriteTo(writer, "$.logprobs"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.logprobs"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("logprobs"u8);
+                }
             }
             if (!Patch.Contains("$.usage"u8))
             {
@@ -155,7 +162,7 @@ namespace OpenAI.Realtime
             string itemId = default;
             int contentIndex = default;
             string transcript = default;
-            IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
+            IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             RealtimeTranscriptionUsage usage = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -188,6 +195,7 @@ namespace OpenAI.Realtime
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        transcriptionTokenLogProbabilities = null;
                         continue;
                     }
                     List<RealtimeTokenLogProbabilityDetails> array = new List<RealtimeTokenLogProbabilityDetails>();
@@ -212,7 +220,7 @@ namespace OpenAI.Realtime
                 itemId,
                 contentIndex,
                 transcript,
-                transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>(),
+                transcriptionTokenLogProbabilities,
                 usage);
         }
 

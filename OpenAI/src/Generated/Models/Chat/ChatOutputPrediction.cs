@@ -15,7 +15,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatOutputPrediction(InternalChatOutputPredictionKind kind)
+        private protected ChatOutputPrediction(InternalChatOutputPredictionKind kind)
         {
             Kind = kind;
         }

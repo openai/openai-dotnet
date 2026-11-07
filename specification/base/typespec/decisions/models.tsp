@@ -1,0 +1,510 @@
+import "@typespec/openapi";
+
+using TypeSpec.OpenAPI;
+
+namespace OpenAI.Decisions;
+
+model createDecision_request_object {
+  input: createDecision_request_object_Input_union;
+  `model`: string;
+  questions: createDecision_request_object_Questions_array_item_discriminatedObject[];
+  prompt_cache_key?: string | null;
+  prompt_cache_options?: createDecision_request_object_PromptCacheOptions_object | null;
+  safety_identifier?: string | null;
+}
+
+// @oneOf
+union createDecision_request_object_Input_union {
+  createDecision_request_object_Input_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator {
+  string,
+  custom_tool_call: "custom_tool_call",
+  custom_tool_call_output: "custom_tool_call_output",
+  function_call: "function_call",
+  function_call_output: "function_call_output",
+  message: "message",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.custom_tool_call;
+  call_id: string;
+  input: string;
+  name: string;
+  id?: string | null;
+  `namespace`?: string | null;
+  status?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum
+    | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.custom_tool_call_output;
+  call_id: string;
+  output: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union;
+  id?: string | null;
+  status?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum
+    | null;
+}
+
+// @oneOf
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union {
+  createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_discriminator {
+  string,
+  input_image: "input_image",
+  input_text: "input_text",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_discriminator.input_image;
+  image_url: string;
+  detail?:
+    | createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum
+    | null;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object {
+  mode: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object_Mode_enum {
+  string,
+  explicit: "explicit",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_discriminator.input_text;
+  text: string;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call;
+  arguments: string;
+  call_id: string;
+  name: string;
+  id?: string | null;
+  `namespace`?: string | null;
+  status?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum
+    | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.function_call_output;
+  call_id: string;
+  output: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union;
+  id?: string | null;
+  status?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum
+    | null;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Status_enum {
+  string,
+  completed: "completed",
+  in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
+@discriminator("role")
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.message;
+  role: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator {
+  string,
+  assistant: "assistant",
+  developer: "developer",
+  system: "system",
+  user: "user",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.message;
+  content: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union;
+  role: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator.assistant;
+  phase?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum
+    | null;
+}
+
+// @oneOf
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union {
+  createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator {
+  string,
+  output_text: "output_text",
+  refusal: "refusal",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfOutputText
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator.output_text;
+  text: string;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_typeOfRefusal
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Content_union_array_item_discriminatedObject_discriminator.refusal;
+  refusal: string;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfAssistant_Phase_enum {
+  string,
+  commentary: "commentary",
+  final_answer: "final_answer",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.message;
+  content: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union;
+  role: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator.developer;
+}
+
+// @oneOf
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union {
+  createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_discriminator {
+  string,
+  input_text: "input_text",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_typeOfInputText
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union_array_item_discriminatedObject_discriminator.input_text;
+  text: string;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfSystem
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.message;
+  content: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfDeveloper_Content_union;
+  role: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator.system;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_discriminator.message;
+  content: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union;
+  role: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_discriminator.user;
+}
+
+// @oneOf
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union {
+  createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator {
+  string,
+  input_image: "input_image",
+  input_json: "input_json",
+  input_text: "input_text",
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputImage
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator.input_image;
+  image_url: string;
+  detail?:
+    | createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum
+    | null;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputJson
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator.input_json;
+  data: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union;
+}
+
+model createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_typeOfInputText
+  extends createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_roleOfUser_Content_union_array_item_discriminatedObject_discriminator.input_text;
+  text: string;
+  prompt_cache_breakpoint?:
+    | createDecision_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object
+    | null;
+}
+
+@discriminator("type")
+model createDecision_request_object_Questions_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Questions_array_item_discriminatedObject_discriminator {
+  string,
+  choice: "choice",
+  predicate: "predicate",
+  score: "score",
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice
+  extends createDecision_request_object_Questions_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_discriminator.choice;
+  choices: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object[];
+  instructions: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union;
+  name?: string;
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Choices_array_item_object {
+  value: createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union;
+  description?: string;
+}
+
+// @oneOf
+union createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union {
+  createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject[],
+  string,
+}
+
+@discriminator("type")
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator {
+  string,
+  input_image: "input_image",
+  input_json: "input_json",
+  input_text: "input_text",
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage
+  extends createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator.input_image;
+  image_url: string;
+  detail?:
+    | createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum
+    | null;
+}
+
+union createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputImage_Detail_enum {
+  string,
+  auto: "auto",
+  high: "high",
+  low: "low",
+  original: "original",
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson
+  extends createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator.input_json;
+  data: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union;
+}
+
+// @oneOf
+union createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union {
+  createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary[],
+  createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary,
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputJson_Data_union_dictionary {
+  ...Record<unknown | null>;
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_typeOfInputText
+  extends createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union_array_item_discriminatedObject_discriminator.input_text;
+  text: string;
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfPredicate
+  extends createDecision_request_object_Questions_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_discriminator.predicate;
+  instructions: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union;
+  name?: string;
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore
+  extends createDecision_request_object_Questions_array_item_discriminatedObject {
+  type: createDecision_request_object_Questions_array_item_discriminatedObject_discriminator.score;
+  instructions: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfChoice_Instructions_union;
+  levels: createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Levels_array_item_object[];
+  name?: string;
+}
+
+model createDecision_request_object_Questions_array_item_discriminatedObject_typeOfScore_Levels_array_item_object {
+  label: string;
+  description?: string;
+}
+
+model createDecision_request_object_PromptCacheOptions_object {
+  mode?: createDecision_request_object_PromptCacheOptions_object_Mode_enum | null;
+  ttl?: createDecision_request_object_PromptCacheOptions_object_Ttl_enum;
+}
+
+union createDecision_request_object_PromptCacheOptions_object_Mode_enum {
+  string,
+  explicit: "explicit",
+  implicit: "implicit",
+}
+
+union createDecision_request_object_PromptCacheOptions_object_Ttl_enum {
+  string,
+  `30m`: "30m",
+}
+
+model createDecision_response_200_object {
+  answers: createDecision_response_200_object_Answers_array_item_discriminatedObject[];
+  `model`: string;
+  usage: createDecision_response_200_object_Usage_object;
+}
+
+@discriminator("type")
+model createDecision_response_200_object_Answers_array_item_discriminatedObject {
+  type: createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator;
+}
+
+union createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator {
+  string,
+  choice: "choice",
+  predicate: "predicate",
+  refusal: "refusal",
+  score: "score",
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice
+  extends createDecision_response_200_object_Answers_array_item_discriminatedObject {
+  type: createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator.choice;
+  choice: createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union;
+  confidence: numeric;
+  name: string | null;
+  probabilities: createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object[];
+}
+
+// @oneOf
+union createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union {
+  boolean,
+  string,
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Probabilities_array_item_object {
+  probability: numeric;
+  value: createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfChoice_Choice_union;
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfPredicate
+  extends createDecision_response_200_object_Answers_array_item_discriminatedObject {
+  type: createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator.predicate;
+  name: string | null;
+  probability: numeric;
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfRefusal
+  extends createDecision_response_200_object_Answers_array_item_discriminatedObject {
+  type: createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator.refusal;
+  name: string | null;
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore
+  extends createDecision_response_200_object_Answers_array_item_discriminatedObject {
+  type: createDecision_response_200_object_Answers_array_item_discriminatedObject_discriminator.score;
+  confidence: numeric;
+  name: string | null;
+  probabilities: createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object[];
+  score: numeric;
+}
+
+model createDecision_response_200_object_Answers_array_item_discriminatedObject_typeOfScore_Probabilities_array_item_object {
+  label: string;
+  probability: numeric;
+  value: int64;
+}
+
+model createDecision_response_200_object_Usage_object {
+  input_tokens: int64;
+  input_tokens_details: createDecision_response_200_object_Usage_object_InputTokensDetails_object;
+  output_tokens: int64;
+  output_tokens_details: createDecision_response_200_object_Usage_object_OutputTokensDetails_object;
+  total_tokens: int64;
+}
+
+model createDecision_response_200_object_Usage_object_InputTokensDetails_object {
+  cache_write_tokens: int64;
+  cached_tokens: int64;
+}
+
+model createDecision_response_200_object_Usage_object_OutputTokensDetails_object {
+  reasoning_tokens: int64;
+}

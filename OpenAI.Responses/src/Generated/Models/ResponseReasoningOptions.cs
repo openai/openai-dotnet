@@ -14,6 +14,10 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private ResponseReasoningContext? _context;
+        private bool _contextIsDefined;
+        private InternalCreateResponseReasoningGenerateSummary? _generateSummary;
+        private bool _generateSummaryIsDefined;
 
         public ResponseReasoningOptions()
         {
@@ -23,9 +27,9 @@ namespace OpenAI.Responses
         internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningContext? context, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, InternalCreateResponseReasoningGenerateSummary? generateSummary, in JsonPatch patch)
         {
             ReasoningEffortLevel = reasoningEffortLevel;
-            Context = context;
+            _context = context;
             ReasoningSummaryVerbosity = reasoningSummaryVerbosity;
-            GenerateSummary = generateSummary;
+            _generateSummary = generateSummary;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -35,8 +39,30 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public ResponseReasoningContext? Context { get; set; }
+        public ResponseReasoningContext? Context
+        {
+            get
+            {
+                return _context;
+            }
+            set
+            {
+                _context = value;
+                _contextIsDefined = true;
+            }
+        }
 
-        internal InternalCreateResponseReasoningGenerateSummary? GenerateSummary { get; set; }
+        internal InternalCreateResponseReasoningGenerateSummary? GenerateSummary
+        {
+            get
+            {
+                return _generateSummary;
+            }
+            set
+            {
+                _generateSummary = value;
+                _generateSummaryIsDefined = true;
+            }
+        }
     }
 }

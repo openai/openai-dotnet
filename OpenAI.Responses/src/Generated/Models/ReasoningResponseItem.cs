@@ -13,6 +13,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningResponseItem : ResponseItem
     {
+        private string _encryptedContent;
+        private bool _encryptedContentIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(ResponseItemKind.Reasoning)
         {
@@ -28,7 +31,7 @@ namespace OpenAI.Responses
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
-            EncryptedContent = encryptedContent;
+            _encryptedContent = encryptedContent;
             SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -36,7 +39,18 @@ namespace OpenAI.Responses
 
         public ReasoningStatus? Status { get; set; }
 
-        public string EncryptedContent { get; set; }
+        public string EncryptedContent
+        {
+            get
+            {
+                return _encryptedContent;
+            }
+            set
+            {
+                _encryptedContent = value;
+                _encryptedContentIsDefined = true;
+            }
+        }
 
         public IList<ReasoningSummaryPart> SummaryParts { get; }
     }

@@ -10,6 +10,9 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateInputAudioBufferCommitted : RealtimeServerUpdate
     {
+        private string _previousItemId;
+        private bool _previousItemIdIsDefined;
+
         internal RealtimeServerUpdateInputAudioBufferCommitted(string eventId, string itemId) : base(RealtimeServerUpdateKind.InputAudioBufferCommitted)
         {
             EventId = eventId;
@@ -20,14 +23,25 @@ namespace OpenAI.Realtime
         internal RealtimeServerUpdateInputAudioBufferCommitted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string previousItemId, string itemId) : base(kind, patch)
         {
             EventId = eventId;
-            PreviousItemId = previousItemId;
+            _previousItemId = previousItemId;
             ItemId = itemId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 
-        public string PreviousItemId { get; set; }
+        public string PreviousItemId
+        {
+            get
+            {
+                return _previousItemId;
+            }
+            set
+            {
+                _previousItemId = value;
+                _previousItemIdIsDefined = true;
+            }
+        }
 
         public string ItemId { get; set; }
     }

@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionScreenshot : ComputerCallAction, IJsonModel<InternalComputerActionScreenshot>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionScreenshot)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -76,6 +78,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionScreenshot IJsonModel<InternalComputerActionScreenshot>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionScreenshot)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
@@ -86,7 +89,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionScreenshot(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionScreenshot DeserializeInternalComputerActionScreenshot(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -108,5 +113,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionScreenshot(kind, patch);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }
