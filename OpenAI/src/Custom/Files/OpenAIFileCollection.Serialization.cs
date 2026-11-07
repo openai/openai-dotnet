@@ -27,6 +27,9 @@ public partial class OpenAIFileCollection : IJsonModel<OpenAIFileCollection>
         writer.WriteEndArray();
         writer.WritePropertyName("object"u8);
         writer.WriteStringValue(instance.Object.ToString());
+        writer.WriteString("first_id"u8, instance.FirstId);
+        writer.WriteString("last_id"u8, instance.LastId);
+        writer.WriteBoolean("has_more"u8, instance.HasMore);
         writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
