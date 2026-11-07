@@ -3,40 +3,84 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalCompactResponseMethodPublicBody
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
+        private BinaryData _input;
+        private bool _inputIsDefined;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
 
         internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model)
         {
             Model = model;
         }
 
-        internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, in JsonPatch patch)
         {
             Model = model;
-            Input = input;
-            PreviousResponseId = previousResponseId;
-            Instructions = instructions;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _input = input;
+            _previousResponseId = previousResponseId;
+            _instructions = instructions;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         internal InternalModelIdsCompaction? Model { get; set; }
 
-        public BinaryData Input { get; set; }
-
-        public string PreviousResponseId { get; set; }
-
-        public string Instructions { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        public BinaryData Input
         {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
+            get
+            {
+                return _input;
+            }
+            set
+            {
+                _input = value;
+                _inputIsDefined = true;
+            }
+        }
+
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
+
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
         }
     }
 }

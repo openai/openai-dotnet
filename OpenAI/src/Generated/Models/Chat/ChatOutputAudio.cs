@@ -16,19 +16,19 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript)
+        internal ChatOutputAudio(string id, DateTimeOffset expiresOn, BinaryData audioBytes, string transcript)
         {
             Id = id;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             AudioBytes = audioBytes;
             Transcript = transcript;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript, in JsonPatch patch)
+        internal ChatOutputAudio(string id, DateTimeOffset expiresOn, BinaryData audioBytes, string transcript, in JsonPatch patch)
         {
             Id = id;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             AudioBytes = audioBytes;
             Transcript = transcript;
             _patch = patch;
@@ -42,7 +42,7 @@ namespace OpenAI.Chat
 
         public string Id { get; }
 
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
 
         public string Transcript { get; }
     }

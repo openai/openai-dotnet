@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "575",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -47,35 +47,38 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801a0460dda08e7-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513b0044ec8dfe0-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:09:04 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "808",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "862",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
         "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999966",
+        "x-ratelimit-remaining-tokens": "29999965",
         "x-ratelimit-reset-requests": "6ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSWmo4Mf12TMnF4DYPSTJ5LnEj4j",
+        "id": "chatcmpl-EdfzxGMpeVzMYZy6HIsJluGQ7Tzub",
         "object": "chat.completion",
-        "created": 1758038944,
+        "created": 1793124941,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
@@ -85,7 +88,7 @@
               "content": null,
               "tool_calls": [
                 {
-                  "id": "call_tPIO7TpidfgKjBbQ1692UMl8",
+                  "id": "call_Rvd3Jy5coUesRLd6VeSp2Eir",
                   "type": "function",
                   "function": {
                     "name": "get_favorite_color_for_day_of_week",
@@ -116,11 +119,11 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_f33640a400"
+        "system_fingerprint": "Sanitized"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

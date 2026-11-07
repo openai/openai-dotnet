@@ -99,7 +99,7 @@ namespace OpenAI.Containers
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (Optional.IsDefined(SizeInBytes) && !Patch.Contains("$.bytes"u8))
             {
@@ -147,7 +147,7 @@ namespace OpenAI.Containers
             string id = default;
             string @object = default;
             string containerId = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             long? sizeInBytes = default;
             string path = default;
             string source = default;
@@ -173,7 +173,7 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("bytes"u8))
@@ -202,7 +202,7 @@ namespace OpenAI.Containers
                 id,
                 @object,
                 containerId,
-                createdAt,
+                createdOn,
                 sizeInBytes,
                 path,
                 source,

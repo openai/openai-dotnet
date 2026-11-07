@@ -105,12 +105,15 @@ public class SseUpdateCollectionTests
             item => DeserializeEventAndCancelOnUnknown(item, source),
             source.Token);
 
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await foreach (string _ in collection)
+        Assert.That(
+            async () =>
             {
-            }
-        });
+                await foreach (string update in collection)
+                {
+                    Assert.That(update, Is.EqualTo("A"));
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     // The terminal event is the next frame after the one that cancels, so the parser has it
@@ -148,12 +151,15 @@ public class SseUpdateCollectionTests
 
         // Without the check ahead of the read, the buffered terminal event is reached first
         // and enumeration ends normally having produced only "A".
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await foreach (string _ in collection)
+        Assert.That(
+            async () =>
             {
-            }
-        });
+                await foreach (string update in collection)
+                {
+                    Assert.That(update, Is.EqualTo("A"));
+                }
+            },
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     [Test]
@@ -185,6 +191,7 @@ public class SseUpdateCollectionTests
             try
             {
                 enumerator.MoveNext();
+
                 return (Exception)null;
             }
             catch (Exception ex)
@@ -196,6 +203,186 @@ public class SseUpdateCollectionTests
         Assert.That(attempt.Wait(TimeSpan.FromSeconds(10)), Is.True,
             "MoveNext blocked on a read instead of observing the canceled token.");
         Assert.That(attempt.Result, Is.InstanceOf<OperationCanceledException>());
+    }
+
+    [TestCase(false, "send")]
+    [TestCase(true, "send")]
+    [TestCase(false, "read")]
+    [TestCase(true, "read")]
+    [TestCase(false, "deserialize")]
+    [TestCase(true, "deserialize")]
+    [TestCase(false, "cancel")]
+    [TestCase(true, "cancel")]
+    [TestCase(false, "dispose")]
+    [TestCase(true, "dispose")]
+    public void FailuresDisposeOpenedResponses(bool useAsync, string phase)
+    {
+        using var cancellation = new CancellationTokenSource();
+        var stream = new FaultStream(StreamContent, phase);
+        ClientResult Send()
+        {
+            if (phase == "send")
+            {
+                throw new IOException("send");
+            }
+
+            if (phase == "cancel")
+            {
+                cancellation.Cancel();
+            }
+
+            return ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
+        }
+        IEnumerable<string> Deserialize(SseItem<byte[]> item)
+        {
+            if (phase == "deserialize")
+            {
+                throw new IOException("deserialize");
+            }
+
+            return DeserializeEvent(item);
+        }
+
+        if (useAsync)
+        {
+            var collection = new AsyncSseUpdateCollection<string>(() => Task.FromResult(Send()), Deserialize, cancellation.Token);
+            Assert.That(async () =>
+            {
+                await foreach (var update in collection)
+                {
+                }
+            }, Throws.Exception);
+        }
+        else
+        {
+            var collection = new SseUpdateCollection<string>(Send, Deserialize, cancellation.Token);
+            Assert.That(() => collection.ToList(), Throws.Exception);
+        }
+
+        Assert.That(stream.Disposals, Is.EqualTo(phase == "send" ? 0 : 1));
+    }
+
+    [TestCase(false, false, false)]
+    [TestCase(false, false, true)]
+    [TestCase(false, true, false)]
+    [TestCase(false, true, true)]
+    [TestCase(true, false, false)]
+    [TestCase(true, false, true)]
+    [TestCase(true, true, false)]
+    [TestCase(true, true, true)]
+    public async Task RawPageHandoffPreservesCallerOwnership(bool useAsync, bool consumeBody, bool disposeEarly)
+    {
+        var stream = new FaultStream(StreamContent, "");
+        var page = ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
+
+        if (useAsync)
+        {
+            var collection = new AsyncSseUpdateCollection<string>(() => Task.FromResult(page), DeserializeEvent, CancellationToken.None);
+            await using var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
+            Assert.That(await enumerator.MoveNextAsync(), Is.True);
+            Assert.That(enumerator.Current, Is.SameAs(page));
+
+            if (consumeBody)
+            {
+                await stream.CopyToAsync(Stream.Null);
+            }
+
+            if (!disposeEarly)
+            {
+                Assert.That(await enumerator.MoveNextAsync(), Is.False);
+            }
+        }
+        else
+        {
+            var collection = new SseUpdateCollection<string>(() => page, DeserializeEvent, CancellationToken.None);
+            using var enumerator = collection.GetRawPages().GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.True);
+            Assert.That(enumerator.Current, Is.SameAs(page));
+
+            if (consumeBody)
+            {
+                stream.CopyTo(Stream.Null);
+            }
+
+            if (!disposeEarly)
+            {
+                Assert.That(enumerator.MoveNext(), Is.False);
+            }
+        }
+
+        Assert.That(stream.Disposals, Is.Zero);
+
+        if (!consumeBody)
+        {
+            Assert.That(stream.Position, Is.Zero);
+            stream.CopyTo(Stream.Null);
+        }
+
+        Assert.That(stream.Position, Is.EqualTo(stream.Length));
+        page.GetRawResponse().Dispose();
+        Assert.That(stream.Disposals, Is.EqualTo(1));
+    }
+
+    private sealed class FaultStream(string content, string phase) : Stream
+    {
+        private readonly MemoryStream _inner = new(Encoding.UTF8.GetBytes(content));
+
+        public int Disposals { get; private set; }
+
+        public override int Read(byte[] buffer, int offset, int count)
+            => phase == "read" ? throw new IOException("read") : _inner.Read(buffer, offset, count);
+
+        public override int Read(Span<byte> buffer)
+            => phase == "read" ? throw new IOException("read") : _inner.Read(buffer);
+
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+            => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            await Task.Yield();
+
+            if (phase == "read")
+            {
+                throw new IOException("read");
+            }
+
+            return await _inner.ReadAsync(buffer, cancellationToken);
+        }
+
+        public override bool CanRead => true;
+
+        public override bool CanSeek => false;
+
+        public override bool CanWrite => false;
+
+        public override long Length => _inner.Length;
+
+        public override long Position
+        {
+            get => _inner.Position;
+            set => throw new NotSupportedException();
+        }
+
+        public override void Flush() => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        protected override void Dispose(bool disposing)
+        {
+            Disposals++;
+            _inner.Dispose();
+            base.Dispose(disposing);
+
+            if (phase == "dispose")
+            {
+                throw new IOException("dispose");
+            }
+        }
     }
 
     /// <summary>
@@ -212,25 +399,37 @@ public class SseUpdateCollectionTests
                 int copied = Math.Min(count, content.Length - _position);
                 Array.Copy(content, _position, buffer, offset, copied);
                 _position += copied;
+
                 return copied;
             }
 
             gate.Wait();
+
             return 0;
         }
 
         public override bool CanRead => true;
+
         public override bool CanSeek => false;
+
         public override bool CanWrite => false;
+
         public override long Length => throw new NotSupportedException();
+
         public override long Position
         {
             get => _position;
             set => throw new NotSupportedException();
         }
-        public override void Flush() { }
+
+        public override void Flush()
+        {
+        }
+
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
         public override void SetLength(long value) => throw new NotSupportedException();
+
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
@@ -254,6 +453,7 @@ public class SseUpdateCollectionTests
         }
 
         using JsonDocument document = JsonDocument.Parse(item.Data);
+
         return [document.RootElement.GetProperty("value").GetString()!];
     }
 

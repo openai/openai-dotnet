@@ -69,10 +69,17 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
-            if (Optional.IsDefined(Output) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
+            if (Optional.IsDefined(Output, _outputIsDefined) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStringValue(Output);
+                if (Output != null)
+                {
+                    writer.WritePropertyName("output"u8);
+                    writer.WriteStringValue(Output);
+                }
+                else
+                {
+                    writer.WriteNull("output"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -117,6 +124,7 @@ namespace OpenAI.Assistants
             }
             string name = default;
             string arguments = default;
+            bool outputIsDefined = false;
             string output = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -133,6 +141,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("output"u8))
                 {
+                    outputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         output = null;
@@ -144,7 +153,10 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction(name, arguments, output, additionalBinaryDataProperties);
+            return new InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction(name, arguments, output, additionalBinaryDataProperties)
+            {
+                _outputIsDefined = outputIsDefined
+            };
         }
     }
 }

@@ -524,8 +524,10 @@ namespace OpenAI.Chat {
     [Experimental("OPENAI001")]
     public readonly partial struct ChatReasoningEffortLevel : IEquatable<ChatReasoningEffortLevel> {
         public ChatReasoningEffortLevel(string value);
+        public static ChatReasoningEffortLevel ExtraHigh { get; }
         public static ChatReasoningEffortLevel High { get; }
         public static ChatReasoningEffortLevel Low { get; }
+        public static ChatReasoningEffortLevel Max { get; }
         public static ChatReasoningEffortLevel Medium { get; }
         public static ChatReasoningEffortLevel Minimal { get; }
         public static ChatReasoningEffortLevel None { get; }

@@ -12,12 +12,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration
     {
-        public AutomaticCodeInterpreterToolContainerConfiguration() : this(InternalCodeInterpreterContainerConfigurationType.Auto, default, null)
+        public AutomaticCodeInterpreterToolContainerConfiguration() : this(CodeInterpreterToolContainerConfigurationKind.Auto, default, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal AutomaticCodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind, in JsonPatch patch, IList<string> fileIds) : base(kind, patch)
+        internal AutomaticCodeInterpreterToolContainerConfiguration(CodeInterpreterToolContainerConfigurationKind kind, in JsonPatch patch, IList<string> fileIds) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             FileIds = fileIds ?? new ChangeTrackingList<string>();

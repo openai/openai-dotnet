@@ -21,6 +21,7 @@ namespace OpenAI.Evals
             PassingLabels = passingLabels.ToList();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalEvalGraderLabelModelParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, IList<BinaryData> input, IList<string> labels, IList<string> passingLabels) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,6 +31,7 @@ namespace OpenAI.Evals
             Labels = labels ?? new ChangeTrackingList<string>();
             PassingLabels = passingLabels ?? new ChangeTrackingList<string>();
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Name { get; }
 

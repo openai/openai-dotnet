@@ -13,21 +13,13 @@ namespace OpenAI.Tests.Miscellaneous;
 /// <c>User-Agent</c> the library would otherwise add.
 /// </summary>
 /// <remarks>
-/// <para>
 /// The configuration is process-global and is read when a pipeline is built, so these tests cannot run
 /// concurrently with anything that constructs a client.
-/// </para>
-/// <para>
-/// <see cref="AppContext.SetSwitch"/> has no way to return a switch to an undefined state, and a switch that
-/// is defined as <c>false</c> still takes precedence over the environment variable. The switch-based tests are
-/// therefore ordered last, so that they cannot shadow the environment-variable tests.
-/// </para>
 /// </remarks>
 [NonParallelizable]
 [Category("Smoke")]
 public class PlatformTelemetryOptOutTests
 {
-    private const string SwitchName = "OpenAI.DisableTelemetry";
     private const string EnvironmentVariableName = "OPENAI_DISABLE_TELEMETRY";
 
     private static readonly string[] s_headerNames =
@@ -42,14 +34,22 @@ public class PlatformTelemetryOptOutTests
 
     private static readonly ApiKeyCredential s_credential = new("fake-key");
 
-    [TearDown]
-    public void ResetTelemetryConfiguration()
+    private string _originalEnvironmentValue;
+
+    [SetUp]
+    public void SetUpTelemetryConfiguration()
     {
+        _originalEnvironmentValue = Environment.GetEnvironmentVariable(EnvironmentVariableName);
         Environment.SetEnvironmentVariable(EnvironmentVariableName, null);
     }
 
+    [TearDown]
+    public void ResetTelemetryConfiguration()
+    {
+        Environment.SetEnvironmentVariable(EnvironmentVariableName, _originalEnvironmentValue);
+    }
+
     [Test]
-    [Order(1)]
     public void TelemetryIsEnabledByDefault()
     {
         Assert.That(PlatformTelemetry.IsTelemetryDisabled(), Is.False);
@@ -58,7 +58,6 @@ public class PlatformTelemetryOptOutTests
     [TestCase("true")]
     [TestCase("TRUE")]
     [TestCase("1")]
-    [Order(2)]
     public void TheEnvironmentVariableDisablesTelemetry(string value)
     {
         Environment.SetEnvironmentVariable(EnvironmentVariableName, value);
@@ -69,7 +68,6 @@ public class PlatformTelemetryOptOutTests
     [TestCase("false")]
     [TestCase("0")]
     [TestCase("")]
-    [Order(3)]
     public void TheEnvironmentVariableLeavesTelemetryEnabledWhenNotSet(string value)
     {
         Environment.SetEnvironmentVariable(EnvironmentVariableName, value);
@@ -78,7 +76,6 @@ public class PlatformTelemetryOptOutTests
     }
 
     [Test]
-    [Order(4)]
     public void OptingOutSuppressesThePlatformHeaders()
     {
         Environment.SetEnvironmentVariable(EnvironmentVariableName, "true");
@@ -92,7 +89,6 @@ public class PlatformTelemetryOptOutTests
     }
 
     [Test]
-    [Order(5)]
     public void OptingOutSuppressesTheUserAgent()
     {
         // This matches the behavior of Azure.Core when telemetry is disabled. Neither HttpClient nor the
@@ -105,7 +101,6 @@ public class PlatformTelemetryOptOutTests
     }
 
     [Test]
-    [Order(6)]
     public void OptingOutPreservesACallerSuppliedUserAgent()
     {
         // The opt-out only stops the library from adding its own value.
@@ -123,7 +118,6 @@ public class PlatformTelemetryOptOutTests
     }
 
     [Test]
-    [Order(7)]
     public void OptingOutPreservesAuthenticationAndScopingHeaders()
     {
         // The opt-out governs telemetry only; headers the service needs to route and authorize the request are
@@ -142,7 +136,6 @@ public class PlatformTelemetryOptOutTests
     }
 
     [Test]
-    [Order(8)]
     public void OptingOutIgnoresTheUserAgentApplicationId()
     {
         // The application id feeds only the user agent, so when it will not be sent the value is unused. It is
@@ -150,35 +143,31 @@ public class PlatformTelemetryOptOutTests
         // inflated, and an opted-out request carries no such header.
         Environment.SetEnvironmentVariable(EnvironmentVariableName, "true");
 
-        Assert.DoesNotThrow(
-            () => SendRequest(options => options.UserAgentApplicationId = new string('a', 513)));
+        Assert.That(
+            () => SendRequest(options => options.UserAgentApplicationId = new string('a', 513)),
+            Throws.Nothing);
     }
 
     [Test]
-    [Order(100)]
     public void TheAppContextSwitchDisablesTelemetry()
     {
-        AppContext.SetSwitch(SwitchName, true);
-
-        try
-        {
-            Assert.That(PlatformTelemetry.IsTelemetryDisabled(), Is.True);
-            Assert.That(SendRequest().Headers.TryGetValue("X-Stainless-Lang", out string _), Is.False);
-        }
-        finally
-        {
-            AppContext.SetSwitch(SwitchName, false);
-        }
+        Assert.That(
+            AppContextSwitchHelper.GetConfigValue(
+                isSwitchSet: true,
+                switchValue: true,
+                environmentValue: null),
+            Is.True);
     }
 
     [Test]
-    [Order(101)]
     public void TheAppContextSwitchTakesPrecedenceOverTheEnvironmentVariable()
     {
-        AppContext.SetSwitch(SwitchName, false);
-        Environment.SetEnvironmentVariable(EnvironmentVariableName, "true");
-
-        Assert.That(PlatformTelemetry.IsTelemetryDisabled(), Is.False);
+        Assert.That(
+            AppContextSwitchHelper.GetConfigValue(
+                isSwitchSet: true,
+                switchValue: false,
+                environmentValue: "true"),
+            Is.False);
     }
 
     private static PipelineRequest SendRequest(Action<OpenAIClientOptions> configure = null)

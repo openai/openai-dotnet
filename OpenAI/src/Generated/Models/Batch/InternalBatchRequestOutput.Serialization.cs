@@ -69,15 +69,29 @@ namespace OpenAI.Batch
                 writer.WritePropertyName("custom_id"u8);
                 writer.WriteStringValue(CustomId);
             }
-            if (Optional.IsDefined(Response) && _additionalBinaryDataProperties?.ContainsKey("response") != true)
+            if (Optional.IsDefined(Response, _responseIsDefined) && _additionalBinaryDataProperties?.ContainsKey("response") != true)
             {
-                writer.WritePropertyName("response"u8);
-                writer.WriteObjectValue(Response, options);
+                if (Response != null)
+                {
+                    writer.WritePropertyName("response"u8);
+                    writer.WriteObjectValue(Response, options);
+                }
+                else
+                {
+                    writer.WriteNull("response"u8);
+                }
             }
-            if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
+            if (Optional.IsDefined(Error, _errorIsDefined) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
-                writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue(Error, options);
+                if (Error != null)
+                {
+                    writer.WritePropertyName("error"u8);
+                    writer.WriteObjectValue(Error, options);
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -122,7 +136,9 @@ namespace OpenAI.Batch
             }
             string id = default;
             string customId = default;
+            bool responseIsDefined = false;
             InternalBatchRequestOutputResponse response = default;
+            bool errorIsDefined = false;
             InternalBatchRequestOutputError error = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -139,6 +155,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("response"u8))
                 {
+                    responseIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         response = null;
@@ -149,6 +166,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("error"u8))
                 {
+                    errorIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         error = null;
@@ -160,7 +178,11 @@ namespace OpenAI.Batch
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalBatchRequestOutput(id, customId, response, error, additionalBinaryDataProperties);
+            return new InternalBatchRequestOutput(id, customId, response, error, additionalBinaryDataProperties)
+            {
+                _responseIsDefined = responseIsDefined,
+                _errorIsDefined = errorIsDefined
+            };
         }
     }
 }

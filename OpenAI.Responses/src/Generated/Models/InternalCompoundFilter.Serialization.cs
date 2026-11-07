@@ -169,7 +169,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCompoundFilter(kind, filters, patch);
+            return new InternalCompoundFilter(kind, filters ?? new ChangeTrackingList<BinaryData>(), patch);
         }
     }
 }

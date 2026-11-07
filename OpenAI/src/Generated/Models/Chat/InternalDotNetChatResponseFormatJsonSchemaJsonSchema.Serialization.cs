@@ -94,10 +94,17 @@ namespace OpenAI.Chat
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
+            if (Optional.IsDefined(Strict, _strictIsDefined) && !Patch.Contains("$.strict"u8))
             {
-                writer.WritePropertyName("strict"u8);
-                writer.WriteBooleanValue(Strict.Value);
+                if (Strict != null)
+                {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -126,6 +133,7 @@ namespace OpenAI.Chat
             string description = default;
             string name = default;
             BinaryData schema = default;
+            bool strictIsDefined = false;
             bool? strict = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -153,6 +161,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("strict"u8))
                 {
+                    strictIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         strict = null;
@@ -163,7 +172,10 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalDotNetChatResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, patch);
+            return new InternalDotNetChatResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, patch)
+            {
+                _strictIsDefined = strictIsDefined
+            };
         }
     }
 }

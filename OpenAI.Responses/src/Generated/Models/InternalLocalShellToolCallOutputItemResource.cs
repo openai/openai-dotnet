@@ -14,12 +14,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalLocalShellToolCallOutputItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallOutputItemResourceStatus? status, string output) : base(kind, id, patch)
         {
             Status = status;
             Output = output;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalLocalShellToolCallOutputItemResourceStatus? Status { get; set; }
 
