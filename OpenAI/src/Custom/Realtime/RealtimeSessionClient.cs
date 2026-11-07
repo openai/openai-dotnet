@@ -45,7 +45,10 @@ public partial class RealtimeSessionClient : IDisposable
     /// <summary>
     /// Transmits audio data from a stream, ending the client turn once the stream is complete.
     /// </summary>
-    /// <param name="audio"> The audio stream to transmit. </param>
+    /// <param name="audio">
+    /// The audio stream to transmit. The stream must remain valid and must not be accessed concurrently until the
+    /// returned task completes.
+    /// </param>
     /// <param name="cancellationToken"> An optional cancellation token. </param>
     /// <exception cref="InvalidOperationException"></exception>
     public virtual async Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default)
@@ -97,7 +100,10 @@ public partial class RealtimeSessionClient : IDisposable
     /// <summary>
     /// Transmits a single chunk of audio.
     /// </summary>
-    /// <param name="audio"></param>
+    /// <param name="audio">
+    /// The audio data to transmit. If the data wraps caller-owned memory, the memory must remain valid and unchanged
+    /// until the returned task completes.
+    /// </param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>

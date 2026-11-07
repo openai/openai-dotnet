@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,30 +61,60 @@ public partial class RealtimeSessionClient
         WebSocket = clientWebSocket;
     }
 
+    /// <summary>
+    /// Transmits a serialized command to the Realtime service.
+    /// </summary>
+    /// <param name="data">
+    /// The serialized command. If the data wraps caller-owned memory, the memory must remain valid and unchanged until
+    /// the returned task completes.
+    /// </param>
+    /// <param name="options"> The options to use for this request. </param>
     public virtual async Task SendCommandAsync(BinaryData data, RequestOptions options)
     {
         Argument.AssertNotNull(data, nameof(data));
 
         _parentClient?.RaiseOnSendingCommand(this, data);
 
-        ArraySegment<byte> messageBytes = new(data.ToArray());
+        ReadOnlyMemory<byte> messageBytes = data.ToMemory();
 
         CancellationToken cancellationToken = options?.CancellationToken ?? default;
 
         await _clientSendSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
+#if NET8_0_OR_GREATER
             await WebSocket.SendAsync(
                 messageBytes,
                 WebSocketMessageType.Text, // TODO: extensibility for binary messages -- via "content"?
                 endOfMessage: true,
                 cancellationToken)
                     .ConfigureAwait(false);
+#else
+            ArraySegment<byte> messageSegment = GetArraySegmentOrCopy(messageBytes);
+
+            await WebSocket.SendAsync(
+                messageSegment,
+                WebSocketMessageType.Text, // TODO: extensibility for binary messages -- via "content"?
+                endOfMessage: true,
+                cancellationToken)
+                    .ConfigureAwait(false);
+#endif
         }
         finally
         {
             _clientSendSemaphore.Release();
         }
+    }
+
+    private static ArraySegment<byte> GetArraySegmentOrCopy(ReadOnlyMemory<byte> memory)
+    {
+        if (!MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment)
+            || segment.Array is null)
+        {
+            segment = new(memory.ToArray());
+        }
+
+        return segment;
     }
 
     public virtual async IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options)

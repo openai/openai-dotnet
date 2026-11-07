@@ -3,8 +3,13 @@ using OpenAI.Realtime;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Realtime;
 
@@ -14,6 +19,136 @@ namespace OpenAI.Tests.Realtime;
 [Category("Smoke")]
 public class RealtimeUnitTests
 {
+    [Test]
+    public async Task SendCommandAsyncUsesExistingMemory()
+    {
+        byte[] backingBytes = "xx{\"type\":\"test\"}yy"u8.ToArray();
+        ReadOnlyMemory<byte> commandBytes = backingBytes.AsMemory(2, backingBytes.Length - 4);
+        RecordingWebSocket webSocket = new();
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+
+        await sessionClient.SendCommandAsync(BinaryData.FromBytes(commandBytes), options: null);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(webSocket.MemorySendCount, Is.EqualTo(1));
+            Assert.That(webSocket.ArraySegmentSendCount, Is.Zero);
+            Assert.That(webSocket.SentBytes, Is.EqualTo(commandBytes.ToArray()));
+        }
+    }
+
+    [Test]
+    public void SendCommandAsyncCompatibilitySegmentPreservesSlice()
+    {
+        byte[] backingBytes = "xx{\"type\":\"test\"}yy"u8.ToArray();
+        ReadOnlyMemory<byte> commandBytes = backingBytes.AsMemory(2, backingBytes.Length - 4);
+        MethodInfo method = typeof(RealtimeSessionClient).GetMethod(
+            "GetArraySegmentOrCopy",
+            BindingFlags.NonPublic | BindingFlags.Static);
+
+        ArraySegment<byte> segment = (ArraySegment<byte>)method.Invoke(null, [commandBytes]);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(segment.Array, Is.SameAs(backingBytes));
+            Assert.That(segment.Offset, Is.EqualTo(2));
+            Assert.That(segment.Count, Is.EqualTo(commandBytes.Length));
+        }
+    }
+
+    [Test]
+    public async Task SendCommandAsyncReleasesSemaphoreAfterFailedSend()
+    {
+        RecordingWebSocket webSocket = new() { FailNextSend = true };
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+
+        Assert.ThrowsAsync<WebSocketException>(
+            async () => await sessionClient.SendCommandAsync(BinaryData.FromString("first"), options: null));
+
+        await sessionClient.SendCommandAsync(BinaryData.FromString("second"), options: null);
+
+        Assert.That(webSocket.SentBytes, Is.EqualTo("second"u8.ToArray()));
+    }
+
+    [Test]
+    public async Task SendInputAudioAsyncResetsStreamStateAfterFailedSend()
+    {
+        RecordingWebSocket webSocket = new() { FailNextSend = true };
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+        using MemoryStream audioStream = new("audio"u8.ToArray());
+
+        Assert.ThrowsAsync<WebSocketException>(
+            async () => await sessionClient.SendInputAudioAsync(audioStream));
+
+        await sessionClient.SendInputAudioAsync(BinaryData.FromBytes("next"u8.ToArray()));
+
+        Assert.That(webSocket.MemorySendCount, Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task SendInputAudioAsyncPreservesSlicedAudioBytes()
+    {
+        byte[] backingBytes = [0, 1, 2, 3, 4, 5, 6];
+        ReadOnlyMemory<byte> audioBytes = backingBytes.AsMemory(2, 3);
+        RecordingWebSocket webSocket = new();
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+
+        await sessionClient.SendInputAudioAsync(BinaryData.FromBytes(audioBytes));
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(webSocket.SentMessages, Has.Count.EqualTo(1));
+            Assert.That(GetAppendedAudio(webSocket.SentMessages[0]), Is.EqualTo(audioBytes.ToArray()));
+        }
+    }
+
+    [Test]
+    public async Task SendInputAudioAsyncStreamPreservesAudioBytes()
+    {
+        byte[] audioBytes = new byte[(16 * 1024) + 37];
+        for (int i = 0; i < audioBytes.Length; i++)
+        {
+            audioBytes[i] = (byte)(i % 251);
+        }
+
+        RecordingWebSocket webSocket = new();
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+        using MemoryStream audioStream = new(audioBytes);
+
+        await sessionClient.SendInputAudioAsync(audioStream);
+
+        using MemoryStream sentAudio = new();
+        foreach (byte[] message in webSocket.SentMessages)
+        {
+            sentAudio.Write(GetAppendedAudio(message));
+        }
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(webSocket.SentMessages, Is.Not.Empty);
+            Assert.That(sentAudio.ToArray(), Is.EqualTo(audioBytes));
+        }
+    }
+
+    [Test]
+    public async Task SendCommandAsyncReleasesSemaphoreAfterCancellation()
+    {
+        RecordingWebSocket webSocket = new() { BlockNextSend = true };
+        using TestRealtimeSessionClient sessionClient = new(webSocket);
+        using CancellationTokenSource cancellation = new();
+        RequestOptions options = new() { CancellationToken = cancellation.Token };
+
+        Task sendTask = sessionClient.SendCommandAsync(BinaryData.FromString("first"), options);
+        await webSocket.SendStarted;
+        cancellation.Cancel();
+
+        Assert.CatchAsync<OperationCanceledException>(async () => await sendTask);
+
+        await sessionClient.SendCommandAsync(BinaryData.FromString("second"), options: null);
+
+        Assert.That(webSocket.SentBytes, Is.EqualTo("second"u8.ToArray()));
+    }
+
     [Test]
     public void DefaultOptionsHaveNullProperties()
     {
@@ -681,5 +816,109 @@ public class RealtimeUnitTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.That(field, Is.Not.Null, "RealtimeClient should expose its WebSocket endpoint field");
         return (Uri)field.GetValue(client);
+    }
+
+    private static byte[] GetAppendedAudio(byte[] message)
+    {
+        using JsonDocument json = JsonDocument.Parse(message);
+        Assert.That(json.RootElement.GetProperty("type").GetString(), Is.EqualTo("input_audio_buffer.append"));
+        return Convert.FromBase64String(json.RootElement.GetProperty("audio").GetString());
+    }
+
+    private sealed class TestRealtimeSessionClient : RealtimeSessionClient
+    {
+        public TestRealtimeSessionClient(WebSocket webSocket)
+            : base(credential: null, endpoint: null, model: null, intent: null, parentClient: null)
+        {
+            WebSocket = webSocket;
+        }
+    }
+
+    private sealed class RecordingWebSocket : WebSocket
+    {
+        public override WebSocketCloseStatus? CloseStatus => null;
+        public override string CloseStatusDescription => null;
+        public override WebSocketState State => WebSocketState.Open;
+        public override string SubProtocol => null;
+
+        public int ArraySegmentSendCount { get; private set; }
+        public int MemorySendCount { get; private set; }
+        public byte[] SentBytes { get; private set; }
+        public List<byte[]> SentMessages { get; } = [];
+        public Task SendStarted => _sendStarted.Task;
+        public bool FailNextSend { get; set; }
+        public bool BlockNextSend { get; set; }
+
+        private readonly TaskCompletionSource<bool> _sendStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public override void Abort()
+        {
+        }
+
+        public override Task CloseAsync(
+            WebSocketCloseStatus closeStatus,
+            string statusDescription,
+            CancellationToken cancellationToken)
+            => Task.CompletedTask;
+
+        public override Task CloseOutputAsync(
+            WebSocketCloseStatus closeStatus,
+            string statusDescription,
+            CancellationToken cancellationToken)
+            => Task.CompletedTask;
+
+        public override void Dispose()
+        {
+        }
+
+        public override Task<WebSocketReceiveResult> ReceiveAsync(
+            ArraySegment<byte> buffer,
+            CancellationToken cancellationToken)
+            => throw new NotSupportedException();
+
+        public override Task SendAsync(
+            ArraySegment<byte> buffer,
+            WebSocketMessageType messageType,
+            bool endOfMessage,
+            CancellationToken cancellationToken)
+        {
+            ArraySegmentSendCount++;
+            if (BlockNextSend)
+            {
+                BlockNextSend = false;
+                _sendStarted.TrySetResult(true);
+                return Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            RecordSend(buffer.Array.AsMemory(buffer.Offset, buffer.Count));
+            return Task.CompletedTask;
+        }
+
+        public override ValueTask SendAsync(
+            ReadOnlyMemory<byte> buffer,
+            WebSocketMessageType messageType,
+            bool endOfMessage,
+            CancellationToken cancellationToken)
+        {
+            MemorySendCount++;
+            if (BlockNextSend)
+            {
+                BlockNextSend = false;
+                _sendStarted.TrySetResult(true);
+                return new(Task.Delay(Timeout.Infinite, cancellationToken));
+            }
+            RecordSend(buffer);
+            return ValueTask.CompletedTask;
+        }
+
+        private void RecordSend(ReadOnlyMemory<byte> buffer)
+        {
+            if (FailNextSend)
+            {
+                FailNextSend = false;
+                throw new WebSocketException();
+            }
+            SentBytes = buffer.ToArray();
+            SentMessages.Add(SentBytes);
+        }
     }
 }
