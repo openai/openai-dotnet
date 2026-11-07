@@ -16,6 +16,7 @@ namespace OpenAI.Realtime
         {
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Realtime
                     throw new FormatException($"The model {nameof(RealtimeAudioFormat)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Realtime
 
         BinaryData IPersistableModel<RealtimeAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeAudioFormat IPersistableModel<RealtimeAudioFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         string IPersistableModel<RealtimeAudioFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeAudioFormat IJsonModel<RealtimeAudioFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Realtime
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRealtimeAudioFormat(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownRealtimeAudioFormatGA DeserializeInternalUnknownRealtimeAudioFormatGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

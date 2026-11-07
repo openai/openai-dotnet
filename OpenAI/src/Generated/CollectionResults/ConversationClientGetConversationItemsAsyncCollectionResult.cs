@@ -12,14 +12,19 @@ namespace OpenAI.Conversations
 {
     internal partial class ConversationClientGetConversationItemsAsyncCollectionResult : AsyncCollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly ConversationClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly string _conversationId;
         private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly IEnumerable<IncludedConversationItemProperty> _include;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ConversationClientGetConversationItemsAsyncCollectionResult(ConversationClient client, string conversationId, int? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
             _client = client;
@@ -30,7 +35,9 @@ namespace OpenAI.Conversations
             _include = include;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
             PipelineMessage message = _client.CreateGetConversationItemsRequest(_conversationId, _limit, _order, _after, _include, _options);
@@ -51,7 +58,9 @@ namespace OpenAI.Conversations
                 message = _client.CreateGetConversationItemsRequest(_conversationId, _limit, _order, nextToken, _include, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalConversationItemCollection)page).LastId;
@@ -64,10 +73,13 @@ namespace OpenAI.Conversations
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
         {
             return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }

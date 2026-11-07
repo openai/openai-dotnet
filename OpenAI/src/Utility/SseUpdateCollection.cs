@@ -20,8 +20,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
-    public List<Action> AdditionalDisposalActions { get; } = [];
-
     public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
         Func<JsonElement, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
@@ -30,7 +28,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                   sendRequestFunc,
                   AsyncSseUpdateCollection<T>.DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
                   cancellationToken)
-
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
     }
@@ -55,7 +52,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                   sendRequestFunc,
                   AsyncSseUpdateCollection<T>.DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
                   cancellationToken)
-
     {
         Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
     }
@@ -85,9 +81,8 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         _cancellationToken = cancellationToken;
     }
 
-    public override ContinuationToken? GetContinuationToken(ClientResult page)
-        // Continuation is not supported for SSE streams.
-        => null;
+    // Continuation is not supported for SSE streams.
+    public override ContinuationToken? GetContinuationToken(ClientResult page) => null;
 
     public override IEnumerable<ClientResult> GetRawPages()
     {
@@ -98,7 +93,8 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
     protected override IEnumerable<T> GetValuesFromPage(ClientResult page)
     {
-        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
+        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken);
+
         while (enumerator.MoveNext())
         {
             yield return enumerator.Current;
@@ -108,8 +104,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     private sealed class SseUpdateEnumerator<U> : IEnumerator<U>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
-
-        private List<Action> _additionalDisposalActions;
 
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
@@ -127,12 +121,12 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         private U? _current;
         private bool _started;
+        private bool _disposed;
 
         public SseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> eventDeserializerFunc,
             ClientResult page,
-            CancellationToken cancellationToken,
-            List<Action> additionalDisposalActions)
+            CancellationToken cancellationToken)
         {
             Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
             Argument.AssertNotNull(page, nameof(page));
@@ -140,7 +134,6 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             _eventDeserializerFunc = eventDeserializerFunc;
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
-            _additionalDisposalActions = additionalDisposalActions;
         }
 
         U IEnumerator<U>.Current => _current!;
@@ -149,7 +142,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         public bool MoveNext()
         {
-            if (_events is null && _started)
+            if ((_events is null) && (_started))
             {
                 throw new ObjectDisposedException(typeof(U).Name);
             }
@@ -158,9 +151,10 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             _events ??= CreateEventEnumerator();
             _started = true;
 
-            if (_updates is not null && _updates.MoveNext())
+            if ((_updates is not null) && (_updates.MoveNext()))
             {
                 _current = _updates.Current;
+
                 return true;
             }
 
@@ -186,6 +180,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
+
                     return false;
                 }
 
@@ -194,11 +189,13 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 if (_updates.MoveNext())
                 {
                     _current = _updates.Current;
+
                     return true;
                 }
             }
 
             _current = default;
+
             return false;
         }
 
@@ -210,6 +207,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             }
 
             IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(_response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
+
             return enumerable.GetEnumerator();
         }
 
@@ -226,20 +224,24 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         private void Dispose(bool disposing)
         {
-            if (disposing && _events is not null)
+            if ((!disposing) || (_disposed))
             {
-                _events.Dispose();
+                return;
+            }
+
+            _disposed = true;
+
+            try
+            {
+                _updates?.Dispose();
+                _events?.Dispose();
+            }
+            finally
+            {
                 _events = null;
-
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+                // Cancellation can occur before the first parser read, but the connection is already open.
+                _response.Dispose();
             }
-
-            foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
-            {
-                additionalDisposalAction?.Invoke();
-            }
-            _additionalDisposalActions?.Clear();
         }
     }
 }

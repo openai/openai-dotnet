@@ -185,7 +185,7 @@ namespace OpenAI.Videos
             }
             return new InternalVideoListResource(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<InternalVideoResource>(),
                 firstId,
                 lastId,
                 hasMore,

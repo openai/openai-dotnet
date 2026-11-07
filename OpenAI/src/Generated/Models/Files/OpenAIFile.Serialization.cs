@@ -81,6 +81,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
                 if (Optional.IsDefined(SizeInBytesLong))
@@ -93,15 +94,16 @@ namespace OpenAI.Files
                     writer.WriteNull("bytes"u8);
                 }
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
@@ -173,7 +175,7 @@ namespace OpenAI.Files
             string id = default;
             long? sizeInBytesLong = default;
             DateTimeOffset createdAt = default;
-            DateTimeOffset? expiresAt = default;
+            DateTimeOffset? expiresOn = default;
             string filename = default;
             string @object = default;
             FilePurpose purpose = default;
@@ -208,7 +210,7 @@ namespace OpenAI.Files
                     {
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -243,7 +245,7 @@ namespace OpenAI.Files
                 id,
                 sizeInBytesLong,
                 createdAt,
-                expiresAt,
+                expiresOn,
                 filename,
                 @object,
                 purpose,

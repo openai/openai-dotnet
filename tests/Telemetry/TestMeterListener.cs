@@ -14,13 +14,14 @@ internal class TestMeterListener : IDisposable
     private readonly ConcurrentDictionary<string, List<TestMeasurement>> _measurements = new();
     private readonly ConcurrentDictionary<string, Instrument> _instruments = new();
     private readonly MeterListener _listener;
-    public TestMeterListener(string meterName)
+    public TestMeterListener(string meterName, string instrumentName = null)
     {
         _listener = new MeterListener();
         _listener.InstrumentPublished = (i, l) =>
         {
-            if (i.Meter.Name == meterName)
+            if ((i.Meter.Name == meterName) && ((instrumentName is null) || (i.Name == instrumentName)))
             {
+                _instruments.TryAdd(i.Name, i);
                 l.EnableMeasurementEvents(i);
             }
         };

@@ -12,6 +12,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalDotNetAssistantResponseFormatText : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatText>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Assistants
                     throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatText)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -64,6 +66,7 @@ namespace OpenAI.Assistants
 
         InternalDotNetAssistantResponseFormatText IJsonModel<InternalDotNetAssistantResponseFormatText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalDotNetAssistantResponseFormatText)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
@@ -74,6 +77,7 @@ namespace OpenAI.Assistants
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalDotNetAssistantResponseFormatText(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalDotNetAssistantResponseFormatText DeserializeInternalDotNetAssistantResponseFormatText(JsonElement element, ModelReaderWriterOptions options)
         {

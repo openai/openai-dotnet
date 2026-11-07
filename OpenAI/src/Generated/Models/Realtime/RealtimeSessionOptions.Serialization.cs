@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeSessionCreateRequestGABaseGA))]
     public partial class RealtimeSessionOptions : IJsonModel<RealtimeSessionOptions>
     {
         internal RealtimeSessionOptions()

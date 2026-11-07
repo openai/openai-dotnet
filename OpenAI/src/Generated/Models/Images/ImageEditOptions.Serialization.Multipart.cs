@@ -20,10 +20,12 @@ namespace OpenAI.Images
             {
                 content.Add("mask", new FileBinaryContent(Mask));
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Background))
             {
                 content.Add("background", Background.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Model))
             {
                 content.Add("model", Model.Value.ToString());
@@ -40,14 +42,18 @@ namespace OpenAI.Images
             {
                 content.Add("response_format", ResponseFormat.Value.ToString());
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputFileFormat))
             {
                 content.Add("output_format", OutputFileFormat.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(OutputCompressionFactor))
             {
                 content.Add("output_compression", OutputCompressionFactor.Value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(EndUserId))
             {
                 content.Add("user", EndUserId);
@@ -64,10 +70,12 @@ namespace OpenAI.Images
             {
                 content.Add("partial_images", PartialImages.Value);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Quality))
             {
                 content.Add("quality", Quality.Value.ToString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
             return content;
         }

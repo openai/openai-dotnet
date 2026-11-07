@@ -139,7 +139,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
-        Assert.That(thread.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(thread.CreatedOn, Is.GreaterThan(s_2024));
         ThreadDeletionResult deletionResult = await client.DeleteThreadAsync(thread.Id);
         Assert.That(deletionResult.ThreadId, Is.EqualTo(thread.Id));
         Assert.That(deletionResult.Deleted, Is.True);
@@ -176,7 +176,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Validate(thread);
         ThreadMessage message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, world!"]);
         Validate(message);
-        Assert.That(message.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(message.CreatedOn, Is.GreaterThan(s_2024));
         Assert.That(message.Content?.Count, Is.EqualTo(1));
         Assert.That(message.Content[0], Is.Not.Null);
         Assert.That(message.Content[0].Text, Is.EqualTo("Hello, world!"));
@@ -304,7 +304,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id);
         Validate(run);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
-        Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(run.CreatedOn, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = await client.GetRunAsync(run.ThreadId, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
         runs = await client.GetRunsAsync(thread.Id).ToListAsync();
@@ -322,10 +322,10 @@ public class AssistantsTests : OpenAIRecordedTestBase
             run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
+        Assert.That(run.CompletedOn, Is.GreaterThan(s_2024));
         Assert.That(run.RequiredActions.Count, Is.EqualTo(0));
         Assert.That(run.AssistantId, Is.EqualTo(assistant.Id));
-        Assert.That(run.FailedAt, Is.Null);
+        Assert.That(run.FailedOn, Is.Null);
         Assert.That(run.IncompleteDetails, Is.Null);
 
         messages = await client.GetMessagesAsync(thread.Id).ToListAsync();
@@ -405,8 +405,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
             Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
             Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
             Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
-            Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
-            Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.CreatedOn, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.CompletedOn, Is.GreaterThan(s_2024));
         });
         RunStepDetails details = firstStep.Details;
         Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
@@ -529,6 +529,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingRunWorks()
     {
         AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
@@ -544,8 +545,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncCollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> streamingResult
+            = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
 
@@ -556,10 +557,10 @@ public class AssistantsTests : OpenAIRecordedTestBase
             {
                 message += $"at {update.UpdateKind switch
                 {
-                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
-                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
+                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedOn,
+                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedOn,
+                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedOn,
+                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedOn,
                     _ => "???",
                 }}";
             }
@@ -577,6 +578,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     }
 
     [TestCase]
+    [AsyncOnly]
     public async Task StreamingToolCall()
     {
         AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
@@ -594,7 +596,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncStreamingResult<StreamingUpdate> asyncResults = await client.CreateThreadAndRunStreamingAsync(
             assistant.Id,
             new()
             {
@@ -632,7 +634,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             }
             if (toolOutputs.Count > 0)
             {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
+                asyncResults = await client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
             }
         } while (run?.Status.IsTerminal == false);
     }
@@ -840,6 +842,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
     [RecordedTest]
     [LiveOnly]
+    [AsyncOnly]
     public async Task FileOnMessageWorks()
     {
         // First, we need to upload a simple test file.
@@ -880,10 +883,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
             );
         Validate(message);
 
-        var result = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> result = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task FileSearchStreamingWorks()
     {
         const string fileContent = """
@@ -936,7 +940,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         string message = string.Empty;
 
         // Create run and stream the results.
-        AsyncCollectionResult<StreamingUpdate> streamingResult = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        await using AsyncStreamingResult<StreamingUpdate> streamingResult = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         await foreach (StreamingUpdate update in streamingResult)
         {
@@ -1009,7 +1013,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
         await foreach (Assistant assistant in assistants)
         {
-            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedOn:s} {assistant.Name}");
             if (assistant.Name?.StartsWith("Test Assistant ") == true)
             {
                 Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
@@ -1066,7 +1070,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         {
             foreach (Assistant assistant in GetAssistantsFromPage(page))
             {
-                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedOn:s} {assistant.Name}");
                 if (assistant.Name?.StartsWith("Test Assistant ") == true)
                 {
                     Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);

@@ -13,6 +13,8 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private InternalCreateChatCompletionStreamResponseChoiceLogprobs _logprobs;
+        private bool _logprobsIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, ChatFinishReason? finishReason, int index)
@@ -28,7 +30,7 @@ namespace OpenAI.Chat
         internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs, ChatFinishReason? finishReason, int index, in JsonPatch patch)
         {
             Delta = delta;
-            Logprobs = logprobs;
+            _logprobs = logprobs;
             FinishReason = finishReason;
             Index = index;
             _patch = patch;
@@ -43,7 +45,13 @@ namespace OpenAI.Chat
 
         internal InternalChatCompletionStreamResponseDelta Delta { get; }
 
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs Logprobs { get; }
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs Logprobs
+        {
+            get
+            {
+                return _logprobs;
+            }
+        }
 
         public int Index { get; }
     }

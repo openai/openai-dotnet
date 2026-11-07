@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(InternalUnknownTranscriptionTokenUsageBaseGA))]
     public partial class RealtimeTranscriptionUsage : IJsonModel<RealtimeTranscriptionUsage>
     {
         internal RealtimeTranscriptionUsage()

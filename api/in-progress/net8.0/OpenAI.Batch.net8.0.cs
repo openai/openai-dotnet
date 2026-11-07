@@ -11,11 +11,11 @@ namespace OpenAI.Batch {
         protected BatchClient();
         [Experimental("SCME0002")]
         public BatchClient(BatchClientSettings settings);
-        public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public BatchClient(ApiKeyCredential credential, BatchClientOptions options);
         public BatchClient(ApiKeyCredential credential);
-        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, BatchClientOptions options);
         public BatchClient(AuthenticationPolicy authenticationPolicy);
-        protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal BatchClient(ClientPipeline pipeline, BatchClientOptions options);
         public BatchClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -29,9 +29,16 @@ namespace OpenAI.Batch {
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class BatchClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class BatchClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public BatchClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -41,19 +48,19 @@ namespace OpenAI.Batch {
     }
     [Experimental("OPENAI001")]
     public class BatchJob : IJsonModel<BatchJob>, IPersistableModel<BatchJob> {
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CancellingAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CancellingOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
         public string CompletionWindow { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Endpoint { get; }
         public string ErrorFileId { get; }
-        public DateTimeOffset? ExpiredAt { get; }
-        public DateTimeOffset? ExpiresAt { get; }
-        public DateTimeOffset? FailedAt { get; }
-        public DateTimeOffset? FinalizingAt { get; }
+        public DateTimeOffset? ExpiredOn { get; }
+        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? FailedOn { get; }
+        public DateTimeOffset? FinalizingOn { get; }
         public string Id { get; }
-        public DateTimeOffset? InProgressAt { get; }
+        public DateTimeOffset? InProgressOn { get; }
         public string InputFileId { get; }
         public IDictionary<string, string> Metadata { get; }
         public string Object { get; }

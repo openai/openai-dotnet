@@ -12,13 +12,16 @@ namespace OpenAI.VectorStores
 {
     internal partial class VectorStoreClientGetVectorStoresAsyncCollectionResult : AsyncCollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly VectorStoreClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly string _afterId;
         private readonly string _beforeId;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public VectorStoreClientGetVectorStoresAsyncCollectionResult(VectorStoreClient client, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
@@ -28,6 +31,7 @@ namespace OpenAI.VectorStores
             _beforeId = beforeId;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {

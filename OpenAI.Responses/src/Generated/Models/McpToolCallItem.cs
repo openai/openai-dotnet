@@ -12,6 +12,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolCallItem : ResponseItem
     {
+        private string _toolOutput;
+        private bool _toolOutputIsDefined;
+        private BinaryData _error;
+        private bool _errorIsDefined;
+
         public McpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(ResponseItemKind.McpCall)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -29,8 +34,8 @@ namespace OpenAI.Responses
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
-            ToolOutput = toolOutput;
-            Error = error;
+            _toolOutput = toolOutput;
+            _error = error;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -40,8 +45,30 @@ namespace OpenAI.Responses
 
         public BinaryData ToolArguments { get; set; }
 
-        public string ToolOutput { get; set; }
+        public string ToolOutput
+        {
+            get
+            {
+                return _toolOutput;
+            }
+            set
+            {
+                _toolOutput = value;
+                _toolOutputIsDefined = true;
+            }
+        }
 
-        public BinaryData Error { get; set; }
+        public BinaryData Error
+        {
+            get
+            {
+                return _error;
+            }
+            set
+            {
+                _error = value;
+                _errorIsDefined = true;
+            }
+        }
     }
 }

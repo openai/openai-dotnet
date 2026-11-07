@@ -211,7 +211,7 @@ namespace OpenAI.LegacyCompletions
             }
             return new InternalCreateCompletionResponse(
                 id,
-                choices,
+                choices ?? new ChangeTrackingList<InternalCreateCompletionResponseChoice>(),
                 created,
                 model,
                 systemFingerprint,

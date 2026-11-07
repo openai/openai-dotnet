@@ -3,25 +3,37 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalCompactResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCompactResource(string id, IEnumerable<ResponseItem> output, DateTimeOffset createdOn, ResponseTokenUsage usage)
         {
             Id = id;
             Output = output.ToList();
             CreatedOn = createdOn;
             Usage = usage;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalCompactResource(string id, string @object, IList<ResponseItem> output, DateTimeOffset createdOn, ResponseTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalCompactResource(string id, string @object, IList<ResponseItem> output, DateTimeOffset createdOn, ResponseTokenUsage usage, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -29,23 +41,29 @@ namespace OpenAI.Responses
             Output = output ?? new ChangeTrackingList<ResponseItem>();
             CreatedOn = createdOn;
             Usage = usage;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; set; }
 
         internal string Object { get; set; } = "response.compaction";
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseItem> Output { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public DateTimeOffset CreatedOn { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseTokenUsage Usage { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

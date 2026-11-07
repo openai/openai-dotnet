@@ -27,7 +27,8 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         writer.WriteStartObject();
         writer.WritePropertyName("delta"u8);
         writer.WriteObjectValue(instance.Delta, options);
-        if (Optional.IsDefined(instance.Logprobs))
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(instance.Logprobs, instance._logprobsIsDefined) && !instance.Patch.Contains("$.logprobs"u8))
         {
             if (instance.Logprobs != null)
             {
@@ -39,6 +40,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
                 writer.WriteNull("logprobs");
             }
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         if (Optional.IsDefined(instance.FinishReason))
         {
             if (instance.FinishReason != null)
@@ -69,6 +71,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         }
         InternalChatCompletionStreamResponseDelta delta = default;
         InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = default;
+        bool logprobsIsDefined = false;
         ChatFinishReason? finishReason = default;
         int index = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,6 +86,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
             if (property.NameEquals("logprobs"u8))
             {
+                logprobsIsDefined = true;
                 if (property.Value.ValueKind == JsonValueKind.Null)
                 {
                     logprobs = null;
@@ -111,6 +115,8 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(property.Name)], property.Value.GetUtf8Bytes());
             }
         }
-        return new InternalCreateChatCompletionStreamResponseChoice(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, patch: patch);
+        InternalCreateChatCompletionStreamResponseChoice result = new(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, patch: patch);
+        result._logprobsIsDefined = logprobsIsDefined;
+        return result;
     }
 }
