@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "370",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -34,11 +34,16 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102405c0ca32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513af911a446c9a-SEA",
         "Connection": "keep-alive",
+        "Content-Length": "650",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -46,9 +51,7 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
@@ -60,9 +63,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWZzZEqjHI9y4Y7vMT9ZzKywiKw",
+        "id": "chatcmpl-Edfzfd9yxOzVK4wznG7Vs2VlP9P9K",
         "object": "chat.completion",
-        "created": 1770950927,
+        "created": 1793124923,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {

@@ -11,6 +11,10 @@ namespace OpenAI.FineTuning
     internal partial class InternalCreateFineTuningJobRequestWandbIntegrationWandb
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _name;
+        private bool _nameIsDefined;
+        private string _entity;
+        private bool _entityIsDefined;
 
         public InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project)
         {
@@ -22,15 +26,37 @@ namespace OpenAI.FineTuning
         {
             // Plugin customization: ensure initialization of collections
             Project = project;
-            Name = name;
-            Entity = entity;
+            _name = name;
+            _entity = entity;
             Tags = tags ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                _nameIsDefined = true;
+            }
+        }
 
-        public string Entity { get; set; }
+        public string Entity
+        {
+            get
+            {
+                return _entity;
+            }
+            set
+            {
+                _entity = value;
+                _entityIsDefined = true;
+            }
+        }
 
         public IList<string> Tags { get; }
 

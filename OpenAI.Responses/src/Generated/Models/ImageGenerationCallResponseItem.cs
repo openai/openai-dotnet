@@ -11,6 +11,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationCallResponseItem : ResponseItem
     {
+        private ImageGenerationToolQuality? _quality;
+        private bool _qualityIsDefined;
+        private ImageGenerationToolSize? _size;
+        private bool _sizeIsDefined;
+
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(ResponseItemKind.ImageGenerationCall)
         {
             ImageResultBytes = imageResultBytes;
@@ -23,8 +28,8 @@ namespace OpenAI.Responses
             Action = action;
             Background = background;
             OutputFileFormat = outputFileFormat;
-            Quality = quality;
-            Size = size;
+            _quality = quality;
+            _size = size;
             RevisedPrompt = revisedPrompt;
             ImageResultBytes = imageResultBytes;
         }
@@ -36,9 +41,31 @@ namespace OpenAI.Responses
 
         public ImageGenerationToolBackground? Background { get; set; }
 
-        public ImageGenerationToolQuality? Quality { get; set; }
+        public ImageGenerationToolQuality? Quality
+        {
+            get
+            {
+                return _quality;
+            }
+            set
+            {
+                _quality = value;
+                _qualityIsDefined = true;
+            }
+        }
 
-        public ImageGenerationToolSize? Size { get; set; }
+        public ImageGenerationToolSize? Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                _size = value;
+                _sizeIsDefined = true;
+            }
+        }
 
         public string RevisedPrompt { get; set; }
 

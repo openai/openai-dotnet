@@ -12,6 +12,7 @@ namespace OpenAI.Responses
     internal partial class InternalItemContentOutputText : ResponseContentPart
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
         {
             InternalText = internalText;
@@ -20,8 +21,10 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(internalType, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -31,9 +34,14 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseMessageAnnotation> Annotations { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ResponseTokenLogProbabilityDetails> Logprobs { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

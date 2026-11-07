@@ -153,8 +153,8 @@ public partial class ChatCompletionOptions
     // - Renamed.
     /// <summary>
     /// (o1 and newer reasoning models only) Constrains effort on reasoning for reasoning models.
-    /// Currently supported values are <see cref="ChatReasoningEffortLevel.Low"/>, <see cref="ChatReasoningEffortLevel.Medium"/>, and <see cref="ChatReasoningEffortLevel.High"/>.
     /// Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
+    /// Not all reasoning models support every value.
     /// </summary>
     [Experimental("OPENAI001")]
     [CodeGenMember("ReasoningEffort")]
@@ -245,14 +245,19 @@ public partial class ChatCompletionOptions
         clone.OutputPrediction = OutputPrediction;
         clone.Messages = Messages?.Select(m => m).ToList();
         foreach (var t in Tools) clone.Tools.Add(t);
-        clone.Temperature = Temperature;
-        clone.TopP = TopP;
+        clone._temperature = _temperature;
+        clone._temperatureIsDefined = _temperatureIsDefined;
+        clone._topP = _topP;
+        clone._topPIsDefined = _topPIsDefined;
         clone.SafetyIdentifier = SafetyIdentifier;
         clone.ServiceTier = ServiceTier;
-        clone.FrequencyPenalty = FrequencyPenalty;
-        clone.PresencePenalty = PresencePenalty;
+        clone._frequencyPenalty = _frequencyPenalty;
+        clone._frequencyPenaltyIsDefined = _frequencyPenaltyIsDefined;
+        clone._presencePenalty = _presencePenalty;
+        clone._presencePenaltyIsDefined = _presencePenaltyIsDefined;
         clone.WebSearchOptions = WebSearchOptions;
-        clone.Seed = Seed;
+        clone._seed = _seed;
+        clone._seedIsDefined = _seedIsDefined;
         clone._patch = _patch;
         clone._patch.SetPropagators(clone.PropagateSet, clone.PropagateGet);
         return clone;

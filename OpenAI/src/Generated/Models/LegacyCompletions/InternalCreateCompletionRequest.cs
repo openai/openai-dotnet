@@ -11,6 +11,34 @@ namespace OpenAI.LegacyCompletions
     internal partial class InternalCreateCompletionRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private int? _bestOf;
+        private bool _bestOfIsDefined;
+        private bool? _echo;
+        private bool _echoIsDefined;
+        private float? _frequencyPenalty;
+        private bool _frequencyPenaltyIsDefined;
+        private int? _logprobs;
+        private bool _logprobsIsDefined;
+        private int? _maxTokens;
+        private bool _maxTokensIsDefined;
+        private int? _n;
+        private bool _nIsDefined;
+        private float? _presencePenalty;
+        private bool _presencePenaltyIsDefined;
+        private long? _seed;
+        private bool _seedIsDefined;
+        private BinaryData _stop;
+        private bool _stopIsDefined;
+        private bool? _stream;
+        private bool _streamIsDefined;
+        private InternalLegacyChatCompletionStreamOptions _streamOptions;
+        private bool _streamOptionsIsDefined;
+        private string _suffix;
+        private bool _suffixIsDefined;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
+        private float? _topP;
+        private bool _topPIsDefined;
 
         internal InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt)
         {
@@ -24,21 +52,21 @@ namespace OpenAI.LegacyCompletions
             // Plugin customization: ensure initialization of collections
             Model = model;
             Prompt = prompt;
-            BestOf = bestOf;
-            Echo = echo;
-            FrequencyPenalty = frequencyPenalty;
+            _bestOf = bestOf;
+            _echo = echo;
+            _frequencyPenalty = frequencyPenalty;
             LogitBias = logitBias ?? new ChangeTrackingDictionary<string, int>();
-            Logprobs = logprobs;
-            MaxTokens = maxTokens;
-            N = n;
-            PresencePenalty = presencePenalty;
-            Seed = seed;
-            Stop = stop;
-            Stream = stream;
-            StreamOptions = streamOptions;
-            Suffix = suffix;
-            Temperature = temperature;
-            TopP = topP;
+            _logprobs = logprobs;
+            _maxTokens = maxTokens;
+            _n = n;
+            _presencePenalty = presencePenalty;
+            _seed = seed;
+            _stop = stop;
+            _stream = stream;
+            _streamOptions = streamOptions;
+            _suffix = suffix;
+            _temperature = temperature;
+            _topP = topP;
             User = user;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -47,35 +75,189 @@ namespace OpenAI.LegacyCompletions
 
         public BinaryData Prompt { get; }
 
-        public int? BestOf { get; set; }
+        public int? BestOf
+        {
+            get
+            {
+                return _bestOf;
+            }
+            set
+            {
+                _bestOf = value;
+                _bestOfIsDefined = true;
+            }
+        }
 
-        public bool? Echo { get; set; }
+        public bool? Echo
+        {
+            get
+            {
+                return _echo;
+            }
+            set
+            {
+                _echo = value;
+                _echoIsDefined = true;
+            }
+        }
 
-        public float? FrequencyPenalty { get; set; }
+        public float? FrequencyPenalty
+        {
+            get
+            {
+                return _frequencyPenalty;
+            }
+            set
+            {
+                _frequencyPenalty = value;
+                _frequencyPenaltyIsDefined = true;
+            }
+        }
 
         public IDictionary<string, int> LogitBias { get; set; }
 
-        public int? Logprobs { get; set; }
+        public int? Logprobs
+        {
+            get
+            {
+                return _logprobs;
+            }
+            set
+            {
+                _logprobs = value;
+                _logprobsIsDefined = true;
+            }
+        }
 
-        public int? MaxTokens { get; set; }
+        public int? MaxTokens
+        {
+            get
+            {
+                return _maxTokens;
+            }
+            set
+            {
+                _maxTokens = value;
+                _maxTokensIsDefined = true;
+            }
+        }
 
-        public int? N { get; set; }
+        public int? N
+        {
+            get
+            {
+                return _n;
+            }
+            set
+            {
+                _n = value;
+                _nIsDefined = true;
+            }
+        }
 
-        public float? PresencePenalty { get; set; }
+        public float? PresencePenalty
+        {
+            get
+            {
+                return _presencePenalty;
+            }
+            set
+            {
+                _presencePenalty = value;
+                _presencePenaltyIsDefined = true;
+            }
+        }
 
-        public long? Seed { get; set; }
+        public long? Seed
+        {
+            get
+            {
+                return _seed;
+            }
+            set
+            {
+                _seed = value;
+                _seedIsDefined = true;
+            }
+        }
 
-        public BinaryData Stop { get; set; }
+        public BinaryData Stop
+        {
+            get
+            {
+                return _stop;
+            }
+            set
+            {
+                _stop = value;
+                _stopIsDefined = true;
+            }
+        }
 
-        public bool? Stream { get; set; }
+        public bool? Stream
+        {
+            get
+            {
+                return _stream;
+            }
+            set
+            {
+                _stream = value;
+                _streamIsDefined = true;
+            }
+        }
 
-        internal InternalLegacyChatCompletionStreamOptions StreamOptions { get; set; }
+        internal InternalLegacyChatCompletionStreamOptions StreamOptions
+        {
+            get
+            {
+                return _streamOptions;
+            }
+            set
+            {
+                _streamOptions = value;
+                _streamOptionsIsDefined = true;
+            }
+        }
 
-        public string Suffix { get; set; }
+        public string Suffix
+        {
+            get
+            {
+                return _suffix;
+            }
+            set
+            {
+                _suffix = value;
+                _suffixIsDefined = true;
+            }
+        }
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
-        public float? TopP { get; set; }
+        public float? TopP
+        {
+            get
+            {
+                return _topP;
+            }
+            set
+            {
+                _topP = value;
+                _topPIsDefined = true;
+            }
+        }
 
         public string User { get; set; }
 

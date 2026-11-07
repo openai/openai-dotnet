@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(ResponseMessageAnnotation)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ResponseMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ResponseMessageAnnotation IPersistableModel<ResponseMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<ResponseMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ResponseMessageAnnotation IJsonModel<ResponseMessageAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,7 +97,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeResponseMessageAnnotation(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalUnknownAnnotation DeserializeInternalUnknownAnnotation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -112,5 +121,6 @@ namespace OpenAI.Responses
             }
             return new InternalUnknownAnnotation(kind, patch);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

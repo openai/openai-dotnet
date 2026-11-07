@@ -109,6 +109,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 writer.WritePropertyName("logprobs"u8);
@@ -119,6 +120,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

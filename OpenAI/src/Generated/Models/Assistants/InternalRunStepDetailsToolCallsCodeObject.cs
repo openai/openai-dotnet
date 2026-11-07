@@ -14,10 +14,12 @@ namespace OpenAI.Assistants
             CodeInterpreter = codeInterpreter;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDetailsToolCallsCodeObject(RunStepToolCallKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(kind, id, additionalBinaryDataProperties)
         {
             CodeInterpreter = codeInterpreter;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter CodeInterpreter { get; }
     }

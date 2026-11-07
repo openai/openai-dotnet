@@ -27,12 +27,23 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
 
         writer.WriteStartObject();
         WriteRoleProperty(writer, options);
-        WriteContentProperty(writer, options);
+        WriteFunctionContentProperty(writer);
         writer.WritePropertyName("name"u8);
         writer.WriteStringValue(FunctionName);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteEndObject();
+    }
+
+    private void WriteFunctionContentProperty(Utf8JsonWriter writer)
+    {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && !Patch.Contains("$.content"u8))
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        {
+            writer.WritePropertyName("content"u8);
+            writer.WriteStringValue(Content.Count == 0 ? null : Content[0]?.Text);
+        }
     }
 }

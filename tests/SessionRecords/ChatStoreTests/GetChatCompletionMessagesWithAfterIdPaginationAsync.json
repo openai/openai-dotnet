@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "214",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": {
         "metadata": {
@@ -25,46 +25,46 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae594ebc4a0a-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a51bd54fbef0f01b-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:47 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "6942",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "6954",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999977",
+        "x-ratelimit-remaining-tokens": "149999975",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu",
+        "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
         "object": "chat.completion",
-        "created": 1758039520,
+        "created": 1793210356,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "ID pagination is a common technique used in databases and APIs to handle the retrieval of large datasets efficiently. By utilizing a unique identifier (ID) for each record, systems can paginate through results by providing specific ID ranges, which can enhance performance and reduce memory overhead. \n\nWhen conducting an ID pagination test, it's crucial to assess both the functionality and the performance of the pagination mechanism. One should verify that the pagination correctly retrieves the expected records based on the provided IDs and that it seamlessly handles edge cases, such as missing IDs or requests that exceed the available range. Additionally, measuring the response times for various pagination scenarios is essential to ensure that the system remains performant as the dataset scales.\n\nAnother vital aspect to consider during the testing process is the user experience. Effective ID pagination should deliver consistent and predictable results, allowing users to navigate through records intuitively. Furthermore, providing additional metadata in responses, such as total record counts or next and previous ID cursors, can significantly enhance usability.\n\nThorough testing should also involve monitoring for any potential pitfalls, such as race conditions where records may be added or deleted during pagination. Implementing robust error handling and logging mechanisms will be beneficial for identifying issues during development and maintaining system integrity in production.\n\nIn conclusion, a comprehensive ID pagination test not only validates that the pagination works as intended but also ensures that it performs well under a variety of conditions, ultimately contributing to a better user experience and more efficient data management.",
+              "content": "ID pagination is a technique used in databases and web applications to manage the retrieval of large datasets, allowing users to navigate through pages of results efficiently. This approach typically involves using a unique identifier, such as an id field, to fetch records in chunks or \"pages.\" \n\nWhen conducting an ID pagination test, several key aspects should be considered. First, it is crucial to verify that the pagination logic correctly returns the expected records for each page request. This includes checking that the correct number of items is displayed per page and that the results correspond accurately to the requested range of IDs.\n\nAdditionally, the performance of the pagination mechanism should be assessed, especially under varying load conditions. This could involve simulating concurrent user requests to ensure that the system can handle multiple pagination queries without degrading performance or causing errors. \n\nFurthermore, edge cases such as navigating to pages that exceed the available number of records or handling scenarios where records are added or removed between requests should be tested. It is vital to ensure that the pagination remains robust and does not result in inconsistencies or errors for users.\n\nIn summary, a thorough ID pagination test helps to ensure not only functionality and accuracy but also performance and resilience of the application when handling data extraction through pagination. Such testing is critical in enhancing user experience and maintaining data integrity within the system.",
               "refusal": null,
               "annotations": []
             },
@@ -74,8 +74,8 @@
         ],
         "usage": {
           "prompt_tokens": 21,
-          "completion_tokens": 286,
-          "total_tokens": 307,
+          "completion_tokens": 259,
+          "total_tokens": 280,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -88,41 +88,41 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae860f1d4a0a-SEA",
+        "CF-RAY": "a51bd56e3e54f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:47 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "163",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "166",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu not found",
+          "message": "Completion chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -130,37 +130,37 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae8d5a084a0a-SEA",
+        "CF-RAY": "a51bd5788a86f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "189",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:48 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "196",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "198",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Completion chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu not found",
+          "message": "Completion chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X not found",
           "type": "invalid_request_error",
           "param": "completion_id",
           "code": "not_found"
@@ -168,31 +168,31 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu/messages",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae98e8854a0a-SEA",
+        "CF-RAY": "a51bd583bee6f01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "345",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:50 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "122",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "124",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -200,44 +200,44 @@
         "object": "list",
         "data": [
           {
-            "id": "chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu-0",
+            "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
             "role": "user",
             "content": "After ID pagination test: Please provide a detailed response with multiple sentences.",
             "content_parts": null,
             "name": null
           }
         ],
-        "first_id": "chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu-0",
-        "last_id": "chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu-0",
+        "first_id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
+        "last_id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0",
         "has_more": false
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu/messages?after=chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu-0&limit=3",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X/messages?after=chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X-0&limit=3",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae9acd004a0a-SEA",
+        "CF-RAY": "a51bd584eaddf01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "75",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:50 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "148",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "150",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -250,42 +250,42 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu",
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.13; macOS 15.8.1)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ae9c58f74a0a-SEA",
+        "CF-RAY": "a51bd586b8adf01b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "97",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:18:51 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "197",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "198",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "chat.completion.deleted",
-        "id": "chatcmpl-CGSg4MV45V5VGxJF4LJCh52vqctpu",
+        "id": "chatcmpl-Ee2DcWVEwKrVRRkuj5RnGXpfLCt7X",
         "deleted": true
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

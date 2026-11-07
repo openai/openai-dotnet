@@ -16,6 +16,7 @@ namespace OpenAI.Audio
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AudioTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Audio
                     throw new FormatException($"The model {nameof(AudioTranscriptionUsage)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Audio
 
         BinaryData IPersistableModel<AudioTranscriptionUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         AudioTranscriptionUsage IPersistableModel<AudioTranscriptionUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<AudioTranscriptionUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -66,8 +70,11 @@ namespace OpenAI.Audio
             base.JsonModelWriteCore(writer, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         AudioTranscriptionUsage IJsonModel<AudioTranscriptionUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -78,6 +85,7 @@ namespace OpenAI.Audio
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeAudioTranscriptionUsage(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownCreateTranscriptionResponseJsonUsage DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(JsonElement element, ModelReaderWriterOptions options)
         {

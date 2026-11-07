@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class ReasoningStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ReasoningStatus value) => value switch
         {
             ReasoningStatus.InProgress => "in_progress",
@@ -15,7 +16,9 @@ namespace OpenAI.Responses
             ReasoningStatus.Incomplete => "incomplete",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ReasoningStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ReasoningStatus ToReasoningStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -32,5 +35,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ReasoningStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

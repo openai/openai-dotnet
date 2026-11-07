@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,6 +32,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalResponsesAssistantMessage)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -105,6 +107,7 @@ namespace OpenAI.Responses
 
         InternalResponsesAssistantMessage IJsonModel<InternalResponsesAssistantMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesAssistantMessage)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -115,7 +118,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponsesAssistantMessage(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalResponsesAssistantMessage DeserializeInternalResponsesAssistantMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -174,8 +179,9 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 internalRole,
-                internalContent);
+                internalContent ?? new ChangeTrackingList<ResponseContentPart>());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -249,6 +255,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseContentPart> ActiveInternalContent()
         {
             if (!Optional.IsCollectionDefined(InternalContent))
@@ -265,5 +272,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

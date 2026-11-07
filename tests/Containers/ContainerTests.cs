@@ -107,7 +107,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         await foreach (ContainerResource container in containers)
         {
             count++;
-            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedOn:s} {container.Name ?? "(no name)"}");
             Validate(container);
 
             if (container.Id == _testContainerId)
@@ -151,7 +151,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options);
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedOn:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
             count++;
@@ -185,7 +185,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync();
         await foreach (ContainerResource container in containers)
         {
-            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedOn:s} {container.Name ?? "(no name)"}");
             Validate(container);
 
             if (container.Id == _testContainerId)
@@ -224,7 +224,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(new ContainerFileCollectionOptions(_testContainerId));
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedOn:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
             count++;
@@ -756,17 +756,20 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test null content
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.UploadContainerFileAsync(_testContainerId, null, "multipart/form-data"));
+        Assert.That(
+            async () => await client.UploadContainerFileAsync(_testContainerId, null, "multipart/form-data"),
+            Throws.TypeOf<ArgumentNullException>());
 
         // Test null/empty container ID
         var testFormData = new MultiPartFormDataBinaryContent();
         testFormData.Add("test", "file", "test.txt", "text/plain");
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.UploadContainerFileAsync(null, testFormData, testFormData.ContentType));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.UploadContainerFileAsync("", testFormData, testFormData.ContentType));
+        Assert.That(
+            async () => await client.UploadContainerFileAsync(null, testFormData, testFormData.ContentType),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.UploadContainerFileAsync("", testFormData, testFormData.ContentType),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed");
     }
@@ -777,23 +780,31 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.GetContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DownloadContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DownloadContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DownloadContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DownloadContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }
@@ -804,14 +815,18 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DeleteContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DeleteContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DeleteContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DeleteContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
     }
@@ -822,10 +837,12 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerAsync(null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerAsync(""));
+        Assert.That(
+            async () => await client.GetContainerAsync(null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerAsync(""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for GetContainer methods");
     }
@@ -835,7 +852,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Assert.That(container, Is.Not.Null);
         Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(container.CreatedOn, Is.GreaterThan(DateTimeOffset.MinValue));
         Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
         // Name can be null/empty for some containers
     }
@@ -846,7 +863,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Assert.That(file.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(file.Object, Is.Not.Null.And.Not.Empty);
         Assert.That(file.ContainerId, Is.Not.Null.And.Not.Empty);
-        Assert.That(file.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(file.CreatedOn, Is.GreaterThan(DateTimeOffset.MinValue));
         Assert.That(file.SizeInBytes, Is.GreaterThanOrEqualTo(0));
         Assert.That(file.Path, Is.Not.Null);
         Assert.That(file.Source, Is.Not.Null);

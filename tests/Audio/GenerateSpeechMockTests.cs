@@ -38,7 +38,7 @@ internal class GenerateSpeechMockTests : ClientTestBase
         AudioClient client = new AudioClient(model, s_fakeCredential);
 
         Assert.That(
-            () => client.GenerateSpeechStreaming("text", GeneratedSpeechVoice.Alloy),
+            () => client.GenerateSpeechStreamingAsync("text", GeneratedSpeechVoice.Alloy),
             Throws.InstanceOf<NotSupportedException>()
                 .With.Message.Contains(model)
                 .And.Message.Contains("OPENAI_ENABLE_TTS_SSE_STREAMING"));

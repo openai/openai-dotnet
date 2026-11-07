@@ -8,6 +8,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -493,6 +494,66 @@ public class ChatSmokeTests : ClientTestBase
         Assert.That(serializedMessage, Does.Contain("openai.com/test"));
     }
 
+#pragma warning disable SCME0001
+    [Test]
+    public void ChatPatchReplacesContentWithoutDuplicateProperty()
+    {
+        SystemChatMessage message = new("original");
+        message.Patch.Set("$.content"u8, BinaryData.FromString("""[{"type":"text","text":"replacement"}]"""));
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(message));
+        Assert.That(CountProperties(json.RootElement, "content"), Is.EqualTo(1));
+        Assert.That(json.RootElement.GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("replacement"));
+    }
+
+    [Test]
+    public void ContentPartPatchHasPrecedenceOverModeledText()
+    {
+        ChatMessageContentPart replacement = ChatMessageContentPart.CreateTextPart("original");
+        replacement.Patch.Set("$.text"u8, "replacement");
+        using JsonDocument replacementJson = JsonDocument.Parse(ModelReaderWriter.Write(replacement));
+        Assert.That(CountProperties(replacementJson.RootElement, "text"), Is.EqualTo(1));
+        Assert.That(replacementJson.RootElement.GetProperty("text").GetString(), Is.EqualTo("replacement"));
+
+        ChatMessageContentPart removal = ChatMessageContentPart.CreateTextPart("original");
+        removal.Patch.Remove("$.text"u8);
+        using JsonDocument removalJson = JsonDocument.Parse(ModelReaderWriter.Write(removal));
+        Assert.That(CountProperties(removalJson.RootElement, "text"), Is.Zero);
+
+        ChatMessageContentPart nullValue = ChatMessageContentPart.CreateTextPart("original");
+        nullValue.Patch.SetNull("$.text"u8);
+        using JsonDocument nullJson = JsonDocument.Parse(ModelReaderWriter.Write(nullValue));
+        Assert.That(CountProperties(nullJson.RootElement, "text"), Is.EqualTo(1));
+        Assert.That(nullJson.RootElement.GetProperty("text").ValueKind, Is.EqualTo(JsonValueKind.Null));
+    }
+
+#pragma warning disable CS0618
+    [Test]
+    public void FunctionMessageKeepsStringContentWhenPartIsPatched()
+    {
+        FunctionChatMessage message = new("get_price", "1");
+        message.Content[0].Patch.Set("$.custom_property"u8, true);
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(message));
+        Assert.That(json.RootElement.GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(json.RootElement.GetProperty("content").GetString(), Is.EqualTo("1"));
+    }
+#pragma warning restore CS0618
+
+    private static int CountProperties(JsonElement element, string name)
+    {
+        int count = 0;
+        foreach (JsonProperty property in element.EnumerateObject())
+        {
+            if (property.NameEquals(name))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+#pragma warning restore SCME0001
+
     [Test]
     public void CanSerializeChatMessage()
     {
@@ -554,6 +615,101 @@ public class ChatSmokeTests : ClientTestBase
         Assert.That(serialized, Does.Contain("No!"));
         Assert.That(serialized, Does.Contain("tool_calls"));
         Assert.That(serialized, Does.Not.Contain("content"));
+    }
+
+    [Test]
+    public void AssistantMessageSerializationPreservesRefusalPresence()
+    {
+        AssistantChatMessage omittedRefusal = new("Hello");
+        using JsonDocument omittedJson = JsonDocument.Parse(ModelReaderWriter.Write(omittedRefusal));
+        Assert.That(omittedJson.RootElement.TryGetProperty("refusal", out _), Is.False);
+
+        AssistantChatMessage explicitNullRefusal = new("Hello")
+        {
+            Refusal = null
+        };
+        using JsonDocument explicitNullJson = JsonDocument.Parse(ModelReaderWriter.Write(explicitNullRefusal));
+        Assert.That(explicitNullJson.RootElement.GetProperty("refusal").ValueKind, Is.EqualTo(JsonValueKind.Null));
+
+        AssistantChatMessage roundTrippedOmittedRefusal = ModelReaderWriter.Read<AssistantChatMessage>(
+            BinaryData.FromString("""{"role":"assistant","content":"Hello"}"""));
+        using JsonDocument roundTrippedOmittedJson = JsonDocument.Parse(ModelReaderWriter.Write(roundTrippedOmittedRefusal));
+        Assert.That(roundTrippedOmittedJson.RootElement.TryGetProperty("refusal", out _), Is.False);
+
+        AssistantChatMessage roundTrippedNullRefusal = ModelReaderWriter.Read<AssistantChatMessage>(
+            BinaryData.FromString("""{"role":"assistant","content":"Hello","refusal":null}"""));
+        using JsonDocument roundTrippedNullJson = JsonDocument.Parse(ModelReaderWriter.Write(roundTrippedNullRefusal));
+        Assert.That(roundTrippedNullJson.RootElement.GetProperty("refusal").ValueKind, Is.EqualTo(JsonValueKind.Null));
+    }
+
+    [Test]
+    public void StreamingChoiceSerializationPreservesLogprobsPresence()
+    {
+        StreamingChatCompletionUpdate omittedLogprobs = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {
+                  "id": "chatcmpl-test",
+                  "choices": [{"delta": {}, "finish_reason": null, "index": 0}],
+                  "created": 0,
+                  "model": "gpt-test",
+                  "object": "chat.completion.chunk"
+                }
+                """));
+        using JsonDocument omittedJson = JsonDocument.Parse(ModelReaderWriter.Write(omittedLogprobs));
+        Assert.That(omittedJson.RootElement.GetProperty("choices")[0].TryGetProperty("logprobs", out _), Is.False);
+
+        StreamingChatCompletionUpdate explicitNullLogprobs = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {
+                  "id": "chatcmpl-test",
+                  "choices": [{"delta": {}, "logprobs": null, "finish_reason": null, "index": 0}],
+                  "created": 0,
+                  "model": "gpt-test",
+                  "object": "chat.completion.chunk"
+                }
+                """));
+        using JsonDocument explicitNullJson = JsonDocument.Parse(ModelReaderWriter.Write(explicitNullLogprobs));
+        Assert.That(
+            explicitNullJson.RootElement.GetProperty("choices")[0].GetProperty("logprobs").ValueKind,
+            Is.EqualTo(JsonValueKind.Null));
+
+    }
+
+    [Test]
+    public void StreamingChoiceSerializerRespectsLogprobsPatch()
+    {
+        // Patch the internal choice directly until microsoft/typespec#12431 fixes array-path propagation.
+        StreamingChatCompletionUpdate update = ModelReaderWriter.Read<StreamingChatCompletionUpdate>(
+            BinaryData.FromString("""
+                {"id":"chatcmpl-test","choices":[{"delta":{},"logprobs":null,"finish_reason":null,"index":0}],
+                 "created":0,"model":"gpt-test","object":"chat.completion.chunk"}
+                """));
+        PropertyInfo choicesProperty = typeof(StreamingChatCompletionUpdate).GetProperty("Choices", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(choicesProperty, Is.Not.Null);
+        object choice = ((System.Collections.IList)choicesProperty.GetValue(update))[0];
+        FieldInfo patchField = choice.GetType().GetField("_patch", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(patchField, Is.Not.Null);
+        JsonPatch patch = (JsonPatch)patchField.GetValue(choice);
+
+        patch.Remove("$.logprobs"u8);
+        patchField.SetValue(choice, patch);
+        using JsonDocument removedJson = JsonDocument.Parse(ModelReaderWriter.Write(update));
+        Assert.That(removedJson.RootElement.GetProperty("choices")[0].TryGetProperty("logprobs", out _), Is.False);
+
+        patch.Set("$.logprobs"u8, BinaryData.FromString("""{"content":[]}"""));
+        patchField.SetValue(choice, patch);
+        using JsonDocument replacedJson = JsonDocument.Parse(ModelReaderWriter.Write(update));
+        JsonElement replacedChoice = replacedJson.RootElement.GetProperty("choices")[0];
+        int logprobsPropertyCount = 0;
+        foreach (JsonProperty property in replacedChoice.EnumerateObject())
+        {
+            if (property.NameEquals("logprobs"))
+            {
+                logprobsPropertyCount++;
+            }
+        }
+        Assert.That(logprobsPropertyCount, Is.EqualTo(1));
+        Assert.That(replacedChoice.GetProperty("logprobs").GetProperty("content").GetArrayLength(), Is.Zero);
     }
 
     [Test]
