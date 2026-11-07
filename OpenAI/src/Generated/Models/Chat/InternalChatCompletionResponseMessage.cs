@@ -15,6 +15,10 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private ChatOutputAudio _audio;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+        private bool _audioIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
@@ -29,6 +33,7 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -38,11 +43,12 @@ namespace OpenAI.Chat
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
             FunctionCall = functionCall;
-            Audio = audio;
+            _audio = audio;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -53,8 +59,18 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public ChatOutputAudio Audio { get; }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        public ChatOutputAudio Audio
+        {
+            get
+            {
+                return _audio;
+            }
+        }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeAudioFormatGA))]
     public partial class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>
     {
         internal RealtimeAudioFormat()

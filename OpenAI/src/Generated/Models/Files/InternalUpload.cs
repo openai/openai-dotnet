@@ -10,6 +10,8 @@ namespace OpenAI.Files
     internal partial class InternalUpload
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private OpenAIFile _file;
+        private bool _fileIsDefined;
 
         internal InternalUpload(string id, DateTimeOffset createdOn, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresOn)
         {
@@ -32,7 +34,7 @@ namespace OpenAI.Files
             Status = status;
             ExpiresOn = expiresOn;
             Object = @object;
-            File = @file;
+            _file = @file;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -52,7 +54,13 @@ namespace OpenAI.Files
 
         internal InternalUploadObject? Object { get; }
 
-        public OpenAIFile File { get; }
+        public OpenAIFile File
+        {
+            get
+            {
+                return _file;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

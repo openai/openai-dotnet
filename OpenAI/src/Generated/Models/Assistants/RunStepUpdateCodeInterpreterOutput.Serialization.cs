@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
+    [PersistableModelProxy(typeof(UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject))]
     public partial class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>
     {
         internal RunStepUpdateCodeInterpreterOutput()

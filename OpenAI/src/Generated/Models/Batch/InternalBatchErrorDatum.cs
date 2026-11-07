@@ -10,6 +10,10 @@ namespace OpenAI.Batch
     internal partial class InternalBatchErrorDatum
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _param;
+        private bool _paramIsDefined;
+        private int? _line;
+        private bool _lineIsDefined;
 
         internal InternalBatchErrorDatum()
         {
@@ -19,8 +23,8 @@ namespace OpenAI.Batch
         {
             Code = code;
             Message = message;
-            Param = @param;
-            Line = line;
+            _param = @param;
+            _line = line;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -28,9 +32,21 @@ namespace OpenAI.Batch
 
         public string Message { get; }
 
-        public string Param { get; }
+        public string Param
+        {
+            get
+            {
+                return _param;
+            }
+        }
 
-        public int? Line { get; }
+        public int? Line
+        {
+            get
+            {
+                return _line;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

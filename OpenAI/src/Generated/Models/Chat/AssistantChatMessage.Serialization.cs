@@ -59,10 +59,17 @@ namespace OpenAI.Chat
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
+            if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                if (Refusal != null)
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
             }
             if (Optional.IsDefined(ParticipantName) && !Patch.Contains("$.name"u8))
             {
@@ -133,6 +140,7 @@ namespace OpenAI.Chat
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool refusalIsDefined = false;
             string refusal = default;
             string participantName = default;
             ChatOutputAudioReference outputAudioReference = default;
@@ -152,6 +160,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("refusal"u8))
                 {
+                    refusalIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         refusal = null;
@@ -209,7 +218,10 @@ namespace OpenAI.Chat
                 participantName,
                 outputAudioReference,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall);
+                functionCall)
+            {
+                _refusalIsDefined = refusalIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -218,6 +230,7 @@ namespace OpenAI.Chat
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (OutputAudioReference == null)
@@ -226,6 +239,7 @@ namespace OpenAI.Chat
                 }
                 return OutputAudioReference.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -265,6 +279,7 @@ namespace OpenAI.Chat
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (OutputAudioReference == null)
@@ -274,6 +289,7 @@ namespace OpenAI.Chat
                 OutputAudioReference.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)

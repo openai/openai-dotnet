@@ -10,6 +10,9 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemDone : RealtimeServerUpdate
     {
+        private string _previousItemId;
+        private bool _previousItemIdIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemDone(string eventId, RealtimeItem item) : base(RealtimeServerUpdateKind.ConversationItemDone)
         {
@@ -23,7 +26,7 @@ namespace OpenAI.Realtime
         internal RealtimeServerUpdateConversationItemDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
         {
             EventId = eventId;
-            PreviousItemId = previousItemId;
+            _previousItemId = previousItemId;
             Item = item;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -31,7 +34,18 @@ namespace OpenAI.Realtime
 
         public string EventId { get; set; }
 
-        public string PreviousItemId { get; set; }
+        public string PreviousItemId
+        {
+            get
+            {
+                return _previousItemId;
+            }
+            set
+            {
+                _previousItemId = value;
+                _previousItemIdIsDefined = true;
+            }
+        }
 
         public RealtimeItem Item { get; set; }
     }

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchActionUriSource : WebSearchActionSource
     {
-        public WebSearchActionUriSource(Uri uri) : base(InternalWebSearchActionSearchSourcesType.Uri)
+        public WebSearchActionUriSource(Uri uri) : base(WebSearchActionSourceKind.Uri)
         {
             Argument.AssertNotNull(uri, nameof(uri));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchActionUriSource(InternalWebSearchActionSearchSourcesType kind, in JsonPatch patch, Uri uri) : base(kind, patch)
+        internal WebSearchActionUriSource(WebSearchActionSourceKind kind, in JsonPatch patch, Uri uri) : base(kind, patch)
         {
             Uri = uri;
         }

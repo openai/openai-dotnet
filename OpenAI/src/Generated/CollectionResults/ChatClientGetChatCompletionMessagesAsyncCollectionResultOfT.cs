@@ -8,6 +8,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Chat
 {
     internal partial class ChatClientGetChatCompletionMessagesAsyncCollectionResultOfT : AsyncCollectionResult<ChatCompletionMessageListDatum>
@@ -29,6 +30,7 @@ namespace OpenAI.Chat
             _options = options;
         }
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
             PipelineMessage message = _client.CreateGetChatCompletionMessagesRequest(_completionId, _afterId, _pageSizeLimit, _order, _options);
@@ -49,7 +51,9 @@ namespace OpenAI.Chat
                 message = _client.CreateGetChatCompletionMessagesRequest(_completionId, nextToken, _pageSizeLimit, _order, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalChatCompletionMessageList)page).LastId;
@@ -62,7 +66,9 @@ namespace OpenAI.Chat
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         protected override async IAsyncEnumerable<ChatCompletionMessageListDatum> GetValuesFromPageAsync(ClientResult page)
         {
             foreach (ChatCompletionMessageListDatum item in ((InternalChatCompletionMessageList)page).Data)
@@ -71,10 +77,14 @@ namespace OpenAI.Chat
                 await Task.Yield();
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
         {
             return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

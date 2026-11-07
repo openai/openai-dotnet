@@ -13,6 +13,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpTool : ResponseTool
     {
+        private McpToolFilter _allowedTools;
+        private bool _allowedToolsIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal McpTool(ResponseToolKind kind, in JsonPatch patch, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
         {
@@ -23,7 +26,7 @@ namespace OpenAI.Responses
             AuthorizationToken = authorizationToken;
             ServerDescription = serverDescription;
             Headers = headers ?? new ChangeTrackingDictionary<string, string>();
-            AllowedTools = allowedTools;
+            _allowedTools = allowedTools;
             ToolCallApprovalPolicy = toolCallApprovalPolicy;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -41,6 +44,17 @@ namespace OpenAI.Responses
 
         public IDictionary<string, string> Headers { get; set; }
 
-        public McpToolFilter AllowedTools { get; set; }
+        public McpToolFilter AllowedTools
+        {
+            get
+            {
+                return _allowedTools;
+            }
+            set
+            {
+                _allowedTools = value;
+                _allowedToolsIsDefined = true;
+            }
+        }
     }
 }

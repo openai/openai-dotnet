@@ -50,6 +50,7 @@ namespace OpenAI.Assistants
                 options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantMessageClientGetMessagesCollectionResultOfT(
@@ -61,7 +62,9 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(
@@ -73,5 +76,6 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -63,11 +63,13 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
@@ -75,13 +77,20 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsCollectionDefined(Attachments) && _additionalBinaryDataProperties?.ContainsKey("attachments") != true)
             {
-                writer.WritePropertyName("attachments"u8);
-                writer.WriteStartArray();
-                foreach (MessageCreationAttachment item in Attachments)
+                if (Attachments != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("attachments"u8);
+                    writer.WriteStartArray();
+                    foreach (MessageCreationAttachment item in Attachments)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("attachments"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -142,7 +151,7 @@ namespace OpenAI.Assistants
             }
             MessageRole role = default;
             IList<MessageContent> content = default;
-            IList<MessageCreationAttachment> attachments = default;
+            IList<MessageCreationAttachment> attachments = new ChangeTrackingList<MessageCreationAttachment>();
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -166,6 +175,7 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        attachments = null;
                         continue;
                     }
                     List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
@@ -200,7 +210,7 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
+            return new MessageCreationOptions(role, content ?? new ChangeTrackingList<MessageContent>(), attachments, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
     }
 }

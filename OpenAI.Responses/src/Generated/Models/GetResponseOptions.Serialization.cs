@@ -100,7 +100,7 @@ namespace OpenAI.Responses
             string responseId = default;
             int? startingAfter = default;
             bool? includeObfuscation = default;
-            IList<IncludedResponseProperty> includedProperties = default;
+            IList<IncludedResponseProperty> includedProperties = new ChangeTrackingList<IncludedResponseProperty>();
             bool? streamingEnabled = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -113,7 +113,7 @@ namespace OpenAI.Responses
                 responseId,
                 startingAfter,
                 includeObfuscation,
-                includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
+                includedProperties,
                 streamingEnabled,
                 patch);
         }

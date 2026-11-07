@@ -22,6 +22,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMCPToolRequireApproval1(McpToolFilter always, McpToolFilter never, in JsonPatch patch)
         {
             Always = always;
@@ -30,14 +31,19 @@ namespace OpenAI.Responses
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public McpToolFilter Always { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public McpToolFilter Never { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

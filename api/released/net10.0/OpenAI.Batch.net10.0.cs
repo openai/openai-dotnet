@@ -11,11 +11,11 @@ namespace OpenAI.Batch {
         protected BatchClient();
         [Experimental("SCME0002")]
         public BatchClient(BatchClientSettings settings);
-        public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public BatchClient(ApiKeyCredential credential, BatchClientOptions options);
         public BatchClient(ApiKeyCredential credential);
-        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, BatchClientOptions options);
         public BatchClient(AuthenticationPolicy authenticationPolicy);
-        protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal BatchClient(ClientPipeline pipeline, BatchClientOptions options);
         public BatchClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -29,9 +29,16 @@ namespace OpenAI.Batch {
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class BatchClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class BatchClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public BatchClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]

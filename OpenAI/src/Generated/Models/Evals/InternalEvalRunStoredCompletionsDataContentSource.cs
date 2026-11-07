@@ -10,6 +10,15 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalRunStoredCompletionsDataContentSource : InternalEvalRunDataContentSource
     {
+        private string _model;
+        private bool _modelIsDefined;
+        private int? _createdAfter;
+        private bool _createdAfterIsDefined;
+        private int? _createdBefore;
+        private bool _createdBeforeIsDefined;
+        private int? _limit;
+        private bool _limitIsDefined;
+
         public InternalEvalRunStoredCompletionsDataContentSource(IDictionary<string, string> metadata) : base(InternalEvalRunDataContentSourceType.StoredCompletions)
         {
             // Plugin customization: ensure initialization of collections
@@ -20,20 +29,64 @@ namespace OpenAI.Evals
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Model = model;
-            CreatedAfter = createdAfter;
-            CreatedBefore = createdBefore;
-            Limit = limit;
+            _model = model;
+            _createdAfter = createdAfter;
+            _createdBefore = createdBefore;
+            _limit = limit;
         }
 
         public IDictionary<string, string> Metadata { get; }
 
-        public string Model { get; set; }
+        public string Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                _model = value;
+                _modelIsDefined = true;
+            }
+        }
 
-        public int? CreatedAfter { get; set; }
+        public int? CreatedAfter
+        {
+            get
+            {
+                return _createdAfter;
+            }
+            set
+            {
+                _createdAfter = value;
+                _createdAfterIsDefined = true;
+            }
+        }
 
-        public int? CreatedBefore { get; set; }
+        public int? CreatedBefore
+        {
+            get
+            {
+                return _createdBefore;
+            }
+            set
+            {
+                _createdBefore = value;
+                _createdBeforeIsDefined = true;
+            }
+        }
 
-        public int? Limit { get; set; }
+        public int? Limit
+        {
+            get
+            {
+                return _limit;
+            }
+            set
+            {
+                _limit = value;
+                _limitIsDefined = true;
+            }
+        }
     }
 }

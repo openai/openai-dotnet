@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownCodeInterpreterContainerConfiguration))]
     public partial class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>
     {
         internal CodeInterpreterToolContainerConfiguration()

@@ -14,6 +14,8 @@ namespace OpenAI
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private bool? _strict;
+        private bool _strictIsDefined;
 
         public InternalChatFunctionDefinition(string name)
         {
@@ -26,7 +28,7 @@ namespace OpenAI
             Description = description;
             Name = name;
             Parameters = parameters;
-            Strict = strict;
+            _strict = strict;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -40,6 +42,17 @@ namespace OpenAI
 
         public string Name { get; }
 
-        public bool? Strict { get; set; }
+        public bool? Strict
+        {
+            get
+            {
+                return _strict;
+            }
+            set
+            {
+                _strict = value;
+                _strictIsDefined = true;
+            }
+        }
     }
 }

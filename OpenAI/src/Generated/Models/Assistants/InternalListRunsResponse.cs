@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             HasMore = hasMore;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListRunsResponse(string @object, IReadOnlyList<ThreadRun> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,10 +31,13 @@ namespace OpenAI.Assistants
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Object { get; } = "list";
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IReadOnlyList<ThreadRun> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FirstId { get; }
 

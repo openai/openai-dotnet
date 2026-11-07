@@ -14,6 +14,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolDefinitionListItem : ResponseItem
     {
+        private BinaryData _error;
+        private bool _errorIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(ResponseItemKind.McpListTools)
         {
@@ -32,7 +35,7 @@ namespace OpenAI.Responses
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>();
-            Error = error;
+            _error = error;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -41,6 +44,17 @@ namespace OpenAI.Responses
 
         public IList<McpToolDefinition> ToolDefinitions { get; }
 
-        public BinaryData Error { get; set; }
+        public BinaryData Error
+        {
+            get
+            {
+                return _error;
+            }
+            set
+            {
+                _error = value;
+                _errorIsDefined = true;
+            }
+        }
     }
 }

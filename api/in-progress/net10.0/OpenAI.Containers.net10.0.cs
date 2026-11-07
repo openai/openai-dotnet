@@ -18,11 +18,11 @@ namespace OpenAI.Containers {
         protected ContainerClient();
         [Experimental("SCME0002")]
         public ContainerClient(ContainerClientSettings settings);
-        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential, ContainerClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
-        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, ContainerClientOptions options);
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ContainerClient(ClientPipeline pipeline, ContainerClientOptions options);
         public ContainerClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -66,9 +66,16 @@ namespace OpenAI.Containers {
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class ContainerClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ContainerClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ContainerClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -217,7 +224,7 @@ namespace OpenAI.Containers {
     [Experimental("OPENAI001")]
     public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
         public string ContainerId { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public string Id { get; set; }
         public string Object { get; set; }
         [Serialization.JsonIgnore]
@@ -286,10 +293,10 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public ContainerExpirationPolicy ExpirationPolicy { get; set; }
         public string Id { get; set; }
-        public DateTimeOffset? LastActiveAt { get; set; }
+        public DateTimeOffset? LastActiveOn { get; set; }
         public ContainerMemoryLimit? MemoryLimit { get; set; }
         public string Name { get; set; }
         public ContainerNetworkPolicy NetworkPolicy { get; set; }
