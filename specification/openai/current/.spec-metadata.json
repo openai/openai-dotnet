@@ -1,0 +1,70 @@
+{
+  "version": "2.3.0",
+  "schemaVersion": 1,
+  "source": "https://raw.githubusercontent.com/openai/openai-openapi/dc708bbe9a149bc35132c567ef3a3fdd7a24ab49/openapi.yaml",
+  "downloadedCommitSha": "dc708bbe9a149bc35132c567ef3a3fdd7a24ab49",
+  "sourceContentHash": "ab0c5306e390c64efbf50bbf71f02aa0dad2dafcaa96066a592186daa6103b87",
+  "processedAt": "2026-08-06T23:52:10.960354+00:00",
+  "featureCount": 24,
+  "unassignedPaths": [
+    {
+      "path": "/content_provenance_checks",
+      "methods": [
+        "POST"
+      ],
+      "operationIds": [
+        "Createcontentprovenancecheck"
+      ],
+      "tags": [],
+      "status": "Unchanged",
+      "reason": "The path carries no tags, and no feature area claims its prefix."
+    }
+  ],
+  "excludedPaths": [
+    "/chatkit/sessions",
+    "/chatkit/sessions/{session_id}/cancel",
+    "/chatkit/threads",
+    "/chatkit/threads/{thread_id}",
+    "/chatkit/threads/{thread_id}/items",
+    "/completions",
+    "/realtime/sessions",
+    "/realtime/transcription_sessions"
+  ],
+  "diffScope": {
+    "version": 1,
+    "compared": [
+      "paths",
+      "operations",
+      "operation summaries and descriptions",
+      "schemas",
+      "schema properties",
+      "required flags",
+      "types and formats",
+      "enum values",
+      "compositions and discriminators",
+      "common schema constraints"
+    ],
+    "notCompared": [
+      "parameter style and explode",
+      "request body encodings",
+      "response headers",
+      "callbacks",
+      "links",
+      "operation-level servers and security",
+      "examples"
+    ],
+    "heuristic": [
+      "renames",
+      "possible duplicates",
+      "duplicate operations",
+      "anomalies"
+    ]
+  },
+  "processingIdentity": {
+    "behaviorVersion": 1,
+    "sanitizerVersion": 1,
+    "diffScopeVersion": 1,
+    "configurationHash": "893b75d1ea2379dd97df968504896dfd0c55e4a97a9fe019e2ef9352e51c16ae",
+    "fingerprint": "aa0cce21c72d78f2b6f89b27025a445b5a4f6350f6d112440e13d4c96397d7f5"
+  }
+}
