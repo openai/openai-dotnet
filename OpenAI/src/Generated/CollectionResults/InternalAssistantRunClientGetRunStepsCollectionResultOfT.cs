@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantRunClientGetRunStepsCollectionResultOfT : CollectionResult<RunStep>
@@ -79,3 +80,4 @@ namespace OpenAI.Assistants
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

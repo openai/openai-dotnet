@@ -8,6 +8,9 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalResponseItemParam : InternalItemParam
     {
+        private string _reason;
+        private bool _reasonIsDefined;
+
         public InternalMCPApprovalResponseItemParam(string approvalRequestId, bool approve) : base(ResponseItemKind.McpApprovalResponse)
         {
             ApprovalRequestId = approvalRequestId;
@@ -15,18 +18,31 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMCPApprovalResponseItemParam(ResponseItemKind kind, in JsonPatch patch, string approvalRequestId, bool approve, string reason) : base(kind, patch)
         {
             ApprovalRequestId = approvalRequestId;
             Approve = approve;
-            Reason = reason;
+            _reason = reason;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ApprovalRequestId { get; set; }
 
         public bool Approve { get; set; }
 
-        public string Reason { get; set; }
+        public string Reason
+        {
+            get
+            {
+                return _reason;
+            }
+            set
+            {
+                _reason = value;
+                _reasonIsDefined = true;
+            }
+        }
     }
 }

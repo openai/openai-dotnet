@@ -21,6 +21,7 @@ namespace OpenAI.VectorStores
             HasMore = hasMore;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListVectorStoresResponse(string @object, IReadOnlyList<VectorStore> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -31,10 +32,13 @@ namespace OpenAI.VectorStores
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Object { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IReadOnlyList<VectorStore> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FirstId { get; }
 

@@ -6,6 +6,9 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(ListSkills::parameters.limit, int32);
+@@alternateType(ListSkillVersions::parameters.limit, int32);
+
 // Move operations into their corresponding interface
 @@clientLocation(ListSkills, "Skills");
 @@clientLocation(CreateSkillMultipart, "Skills");

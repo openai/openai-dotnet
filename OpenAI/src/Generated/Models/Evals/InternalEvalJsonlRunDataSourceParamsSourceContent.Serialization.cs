@@ -196,7 +196,7 @@ namespace OpenAI.Evals
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalEvalJsonlRunDataSourceParamsSourceContent(item, sample ?? new ChangeTrackingDictionary<string, BinaryData>(), additionalBinaryDataProperties);
+            return new InternalEvalJsonlRunDataSourceParamsSourceContent(item ?? new ChangeTrackingDictionary<string, BinaryData>(), sample ?? new ChangeTrackingDictionary<string, BinaryData>(), additionalBinaryDataProperties);
         }
     }
 }

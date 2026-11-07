@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override RunStepCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepCodeInterpreterLogOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
                     throw new FormatException($"The model {nameof(InternalRunStepCodeInterpreterLogOutput)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -73,6 +75,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepCodeInterpreterLogOutput IJsonModel<InternalRunStepCodeInterpreterLogOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepCodeInterpreterLogOutput)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override RunStepCodeInterpreterOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepCodeInterpreterLogOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -83,6 +86,7 @@ namespace OpenAI.Assistants
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRunStepCodeInterpreterLogOutput(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalRunStepCodeInterpreterLogOutput DeserializeInternalRunStepCodeInterpreterLogOutput(JsonElement element, ModelReaderWriterOptions options)
         {

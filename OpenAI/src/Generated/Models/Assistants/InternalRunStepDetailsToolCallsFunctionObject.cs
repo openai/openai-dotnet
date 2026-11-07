@@ -14,10 +14,12 @@ namespace OpenAI.Assistants
             Function = function;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDetailsToolCallsFunctionObject(RunStepToolCallKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRunStepDetailsToolCallsFunctionObjectFunction function) : base(kind, id, additionalBinaryDataProperties)
         {
             Function = function;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalRunStepDetailsToolCallsFunctionObjectFunction Function { get; }
     }

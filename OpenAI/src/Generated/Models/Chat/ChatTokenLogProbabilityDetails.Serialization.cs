@@ -211,7 +211,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities, patch);
+            return new ChatTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities ?? new ChangeTrackingList<ChatTokenTopLogProbabilityDetails>(), patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

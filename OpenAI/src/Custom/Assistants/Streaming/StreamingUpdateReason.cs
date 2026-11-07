@@ -18,7 +18,7 @@ public enum StreamingUpdateReason
     /// Indicates that an update was generated as part of a <c>thread.created</c> event.
     /// </summary>
     /// <remarks> This reason is typically only associated with calls to
-    /// <see cref="AssistantClient.CreateThreadAndRunStreaming(Assistant, ThreadCreationOptions, RunCreationOptions)"/>,
+    /// <see cref="AssistantClient.CreateThreadAndRunStreamingAsync(string, ThreadCreationOptions, RunCreationOptions, System.Threading.CancellationToken)"/>,
     /// as other run-related methods operate on a thread that has previously been created.
     /// </remarks>
     ThreadCreated,

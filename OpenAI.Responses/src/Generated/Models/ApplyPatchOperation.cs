@@ -15,13 +15,13 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ApplyPatchOperation(InternalApplyPatchOperationType kind)
+        protected internal ApplyPatchOperation(ApplyPatchOperationKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchOperation(InternalApplyPatchOperationType kind, in JsonPatch patch)
+        internal ApplyPatchOperation(ApplyPatchOperationKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalApplyPatchOperationType Kind { get; set; }
+        public ApplyPatchOperationKind Kind { get; }
     }
 }

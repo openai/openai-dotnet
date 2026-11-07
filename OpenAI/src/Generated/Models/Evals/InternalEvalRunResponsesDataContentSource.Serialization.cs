@@ -76,70 +76,133 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model, _modelIsDefined) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
+                if (Model != null)
+                {
+                    writer.WritePropertyName("model"u8);
+                    writer.WriteStringValue(Model);
+                }
+                else
+                {
+                    writer.WriteNull("model"u8);
+                }
             }
-            if (Optional.IsDefined(InstructionsSearch) && _additionalBinaryDataProperties?.ContainsKey("instructions_search") != true)
+            if (Optional.IsDefined(InstructionsSearch, _instructionsSearchIsDefined) && _additionalBinaryDataProperties?.ContainsKey("instructions_search") != true)
             {
-                writer.WritePropertyName("instructions_search"u8);
-                writer.WriteStringValue(InstructionsSearch);
+                if (InstructionsSearch != null)
+                {
+                    writer.WritePropertyName("instructions_search"u8);
+                    writer.WriteStringValue(InstructionsSearch);
+                }
+                else
+                {
+                    writer.WriteNull("instructions_search"u8);
+                }
             }
-            if (Optional.IsDefined(CreatedAfter) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
+            if (Optional.IsDefined(CreatedAfter, _createdAfterIsDefined) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
             {
-                writer.WritePropertyName("created_after"u8);
-                writer.WriteNumberValue(CreatedAfter.Value);
+                if (CreatedAfter != null)
+                {
+                    writer.WritePropertyName("created_after"u8);
+                    writer.WriteNumberValue(CreatedAfter.Value);
+                }
+                else
+                {
+                    writer.WriteNull("created_after"u8);
+                }
             }
-            if (Optional.IsDefined(CreatedBefore) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
+            if (Optional.IsDefined(CreatedBefore, _createdBeforeIsDefined) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
             {
-                writer.WritePropertyName("created_before"u8);
-                writer.WriteNumberValue(CreatedBefore.Value);
+                if (CreatedBefore != null)
+                {
+                    writer.WritePropertyName("created_before"u8);
+                    writer.WriteNumberValue(CreatedBefore.Value);
+                }
+                else
+                {
+                    writer.WriteNull("created_before"u8);
+                }
             }
-            if (Optional.IsDefined(ReasoningEffort) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffort, _reasoningEffortIsDefined) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
             {
-                writer.WritePropertyName("reasoning_effort"u8);
-                writer.WriteStringValue(ReasoningEffort.Value.ToString());
+                if (ReasoningEffort != null)
+                {
+                    writer.WritePropertyName("reasoning_effort"u8);
+                    writer.WriteStringValue(ReasoningEffort.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("reasoning_effort"u8);
+                }
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP, _topPIsDefined) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP.Value);
+                if (TopP != null)
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Users) && _additionalBinaryDataProperties?.ContainsKey("users") != true)
             {
-                writer.WritePropertyName("users"u8);
-                writer.WriteStartArray();
-                foreach (string item in Users)
+                if (Users != null)
                 {
-                    if (item == null)
+                    writer.WritePropertyName("users"u8);
+                    writer.WriteStartArray();
+                    foreach (string item in Users)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        if (item == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item);
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("users"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (string item in Tools)
+                if (Tools != null)
                 {
-                    if (item == null)
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    foreach (string item in Tools)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        if (item == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item);
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
             }
         }
 
@@ -165,15 +228,22 @@ namespace OpenAI.Evals
             InternalEvalRunDataContentSourceType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IDictionary<string, string> metadata = default;
+            bool modelIsDefined = false;
             string model = default;
+            bool instructionsSearchIsDefined = false;
             string instructionsSearch = default;
+            bool createdAfterIsDefined = false;
             int? createdAfter = default;
+            bool createdBeforeIsDefined = false;
             int? createdBefore = default;
+            bool reasoningEffortIsDefined = false;
             EvalReasoningEffortLevel? reasoningEffort = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
+            bool topPIsDefined = false;
             float? topP = default;
-            IList<string> users = default;
-            IList<string> tools = default;
+            IList<string> users = new ChangeTrackingList<string>();
+            IList<string> tools = new ChangeTrackingList<string>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -204,6 +274,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("model"u8))
                 {
+                    modelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         model = null;
@@ -214,6 +285,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("instructions_search"u8))
                 {
+                    instructionsSearchIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructionsSearch = null;
@@ -224,6 +296,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_after"u8))
                 {
+                    createdAfterIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         createdAfter = null;
@@ -234,6 +307,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_before"u8))
                 {
+                    createdBeforeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         createdBefore = null;
@@ -244,6 +318,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("reasoning_effort"u8))
                 {
+                    reasoningEffortIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reasoningEffort = null;
@@ -254,6 +329,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -264,6 +340,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("top_p"u8))
                 {
+                    topPIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
@@ -276,6 +353,7 @@ namespace OpenAI.Evals
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        users = null;
                         continue;
                     }
                     List<string> array = new List<string>();
@@ -297,6 +375,7 @@ namespace OpenAI.Evals
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        tools = null;
                         continue;
                     }
                     List<string> array = new List<string>();
@@ -328,8 +407,17 @@ namespace OpenAI.Evals
                 reasoningEffort,
                 temperature,
                 topP,
-                users ?? new ChangeTrackingList<string>(),
-                tools ?? new ChangeTrackingList<string>());
+                users,
+                tools)
+            {
+                _modelIsDefined = modelIsDefined,
+                _instructionsSearchIsDefined = instructionsSearchIsDefined,
+                _createdAfterIsDefined = createdAfterIsDefined,
+                _createdBeforeIsDefined = createdBeforeIsDefined,
+                _reasoningEffortIsDefined = reasoningEffortIsDefined,
+                _temperatureIsDefined = temperatureIsDefined,
+                _topPIsDefined = topPIsDefined
+            };
         }
     }
 }

@@ -1,0 +1,98 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "282",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "developer",
+            "content": "End every response to the user with the exact phrase: 'Hope this helps!'"
+          },
+          {
+            "role": "user",
+            "content": "How long will it take to make a cheesecake from scratch? Including getting ingredients."
+          }
+        ],
+        "model": "gpt-6-luna",
+        "reasoning_effort": "low"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a559813bb846f500-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1267",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "180000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "179999958",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-EgkRojuC62zwk9BLTnY5AtTXA6VGJ",
+        "object": "chat.completion",
+        "created": 1793857028,
+        "model": "gpt-6-luna",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "For a **classic baked cheesecake**, plan on about **8–12 hours total**, including getting ingredients:\n\n- **Shopping:** 30–60 minutes  \n- **Mixing and prep:** 25–40 minutes  \n- **Baking:** about 1 hour  \n- **Cooling and chilling:** at least 5–8 hours  \n\nMost of that time is hands-off, but it’s best to make it **the day before**. A no-bake cheesecake can take less hands-on time, but it still usually needs several hours to chill and set. Hope this helps!",
+              "refusal": null,
+              "annotations": []
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 42,
+          "completion_tokens": 208,
+          "total_tokens": 250,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 82,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": null
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
