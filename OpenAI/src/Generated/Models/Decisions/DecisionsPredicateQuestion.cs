@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,25 +13,19 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsPredicateQuestion : DecisionsQuestion
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsPredicateQuestion(IEnumerable<DecisionsInstructionsPart> instructions) : base(DecisionsQuestionKind.Predicate)
         {
             Argument.AssertNotNull(instructions, nameof(instructions));
 
             Instructions = instructions.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, patch)
+        internal DecisionsPredicateQuestion(DecisionsQuestionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Name = name;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsInstructionsPart> Instructions { get; }
 

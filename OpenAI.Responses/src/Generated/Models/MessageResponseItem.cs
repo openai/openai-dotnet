@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -15,13 +16,11 @@ namespace OpenAI.Responses
             InternalRole = internalRole;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal MessageResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind, id, patch)
+        internal MessageResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind, id, additionalBinaryDataProperties)
         {
             Status = status;
             InternalRole = internalRole;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public MessageStatus? Status { get; set; }
     }

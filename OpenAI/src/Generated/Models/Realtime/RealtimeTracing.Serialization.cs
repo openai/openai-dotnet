@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeTracing(document.RootElement, data, options);
+                        return DeserializeRealtimeTracing(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeTracing)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,42 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTracing)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeTracing(document.RootElement, null, options);
+            return DeserializeRealtimeTracing(document.RootElement, options);
+        }
+
+        internal static RealtimeTracing DeserializeRealtimeTracing(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            RealtimeDefaultTracing? defaultTracing = default;
+            RealtimeCustomTracing customTracing = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("default_tracing"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    defaultTracing = new RealtimeDefaultTracing(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("custom_tracing"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    customTracing = RealtimeCustomTracing.DeserializeRealtimeCustomTracing(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new RealtimeTracing(defaultTracing, customTracing, additionalBinaryDataProperties);
         }
     }
 }

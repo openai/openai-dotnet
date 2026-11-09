@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,23 +11,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputItemAddedUpdate : StreamingResponseUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputItemAddedUpdate(int sequenceNumber, int outputIndex, ResponseItem item) : base(StreamingResponseUpdateKind.ResponseOutputItemAdded, sequenceNumber)
         {
             OutputIndex = outputIndex;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseOutputItemAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, ResponseItem item) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseOutputItemAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, ResponseItem item) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int OutputIndex { get; set; }
 

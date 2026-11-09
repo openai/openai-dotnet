@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeTruncation(document.RootElement, data, options);
+                        return DeserializeRealtimeTruncation(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeTruncation)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,42 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTruncation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeTruncation(document.RootElement, null, options);
+            return DeserializeRealtimeTruncation(document.RootElement, options);
+        }
+
+        internal static RealtimeTruncation DeserializeRealtimeTruncation(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            RealtimeDefaultTruncation? defaultTruncation = default;
+            RealtimeCustomTruncation customTruncation = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("default_truncation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    defaultTruncation = new RealtimeDefaultTruncation(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("custom_truncation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    customTruncation = RealtimeCustomTruncation.DeserializeRealtimeCustomTruncation(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new RealtimeTruncation(defaultTruncation, customTruncation, additionalBinaryDataProperties);
         }
     }
 }

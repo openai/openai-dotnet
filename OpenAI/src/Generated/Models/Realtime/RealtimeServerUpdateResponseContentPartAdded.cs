@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,7 +11,6 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseContentPartAdded : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateResponseContentPartAdded(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(RealtimeServerUpdateKind.ResponseContentPartAdded)
         {
             EventId = eventId;
@@ -19,12 +19,9 @@ namespace OpenAI.Realtime
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Part = part;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseContentPartAdded(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, patch)
+        internal RealtimeServerUpdateResponseContentPartAdded(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -32,9 +29,7 @@ namespace OpenAI.Realtime
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Part = part;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

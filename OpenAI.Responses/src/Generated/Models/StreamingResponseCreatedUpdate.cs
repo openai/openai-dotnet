@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,21 +11,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCreatedUpdate : StreamingResponseUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseCreatedUpdate(int sequenceNumber, ResponseResult response) : base(StreamingResponseUpdateKind.ResponseCreated, sequenceNumber)
         {
             Response = response;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCreatedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCreatedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, ResponseResult response) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Response = response;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ResponseResult Response { get; set; }
     }

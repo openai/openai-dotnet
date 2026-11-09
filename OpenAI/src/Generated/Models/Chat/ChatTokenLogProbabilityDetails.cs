@@ -3,50 +3,40 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class ChatTokenLogProbabilityDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ChatTokenTopLogProbabilityDetails> topLogProbabilities)
         {
             Token = token;
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
             TopLogProbabilities = topLogProbabilities.ToList();
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ChatTokenTopLogProbabilityDetails> topLogProbabilities, in JsonPatch patch)
+        internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ChatTokenTopLogProbabilityDetails> topLogProbabilities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Token = token;
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
             TopLogProbabilities = topLogProbabilities ?? new ChangeTrackingList<ChatTokenTopLogProbabilityDetails>();
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Token { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

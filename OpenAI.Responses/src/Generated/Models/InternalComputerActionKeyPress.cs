@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -16,14 +16,12 @@ namespace OpenAI.Responses
             Keys = keys.ToList();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerActionKeyPress(ComputerCallActionKind kind, in JsonPatch patch, IList<string> keys) : base(kind, patch)
+        internal InternalComputerActionKeyPress(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> keys) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Keys = keys ?? new ChangeTrackingList<string>();
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public IList<string> Keys { get; }

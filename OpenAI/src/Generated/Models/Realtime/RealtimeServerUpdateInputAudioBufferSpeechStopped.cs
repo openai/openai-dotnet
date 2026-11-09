@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -18,14 +18,12 @@ namespace OpenAI.Realtime
             ItemId = itemId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferSpeechStopped(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, TimeSpan audioEndTime, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferSpeechStopped(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, TimeSpan audioEndTime, string itemId) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             AudioEndTime = audioEndTime;
             ItemId = itemId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

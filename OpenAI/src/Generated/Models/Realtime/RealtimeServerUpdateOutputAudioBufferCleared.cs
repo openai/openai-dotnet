@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -16,13 +17,11 @@ namespace OpenAI.Realtime
             ResponseId = responseId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateOutputAudioBufferCleared(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId) : base(kind, patch)
+        internal RealtimeServerUpdateOutputAudioBufferCleared(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

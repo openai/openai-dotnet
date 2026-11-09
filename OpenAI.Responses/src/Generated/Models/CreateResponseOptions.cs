@@ -2,11 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -14,8 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CreateResponseOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private float? _temperature;
         private bool _temperatureIsDefined;
         private float? _topP;
@@ -25,14 +22,11 @@ namespace OpenAI.Responses
         private string _instructions;
         private bool _instructionsIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, default, null, null, default, default)
+        public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, default, null, null, default, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, string instructions, bool? streamingEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, in JsonPatch patch)
+        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, string instructions, bool? streamingEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -61,15 +55,8 @@ namespace OpenAI.Responses
             ConversationOptions = conversationOptions;
             PromptCacheKey = promptCacheKey;
             PromptCacheRetentionPolicy = promptCacheRetentionPolicy;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IDictionary<string, string> Metadata { get; }
 
@@ -136,5 +123,11 @@ namespace OpenAI.Responses
         public string PromptCacheKey { get; set; }
 
         public ResponsePromptCacheRetentionPolicy? PromptCacheRetentionPolicy { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

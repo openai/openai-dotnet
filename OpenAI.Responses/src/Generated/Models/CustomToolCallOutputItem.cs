@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace OpenAI.Responses
         private InternalToolCallCaller _caller;
         private bool _callerIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output) : base(ResponseItemKind.CustomToolCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -26,12 +25,9 @@ namespace OpenAI.Responses
 
             CallId = callId;
             Output = output.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, IList<ResponseContentPart> output, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, CustomToolCallOutputStatus? status) : base(kind, id, patch)
+        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ResponseContentPart> output, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, CustomToolCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
@@ -40,9 +36,7 @@ namespace OpenAI.Responses
             _caller = caller;
             CreatedBy = createdBy;
             Status = status;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 

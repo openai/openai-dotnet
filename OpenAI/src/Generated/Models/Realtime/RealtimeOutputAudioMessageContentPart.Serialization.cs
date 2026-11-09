@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeOutputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeOutputAudioMessageContentPart>
     {
-        public RealtimeOutputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.OutputAudio, default, null, null)
+        public RealtimeOutputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.OutputAudio, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeOutputAudioMessageContentPart(document.RootElement, data, options);
+                        return DeserializeRealtimeOutputAudioMessageContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeOutputAudioMessageContentPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeOutputAudioMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,20 +64,16 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeOutputAudioMessageContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.audio"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteBase64StringValue(AudioBytes, "D");
             }
-            if (!Patch.Contains("$.transcript"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
                 writer.WriteStringValue(Transcript);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeOutputAudioMessageContentPart IJsonModel<RealtimeOutputAudioMessageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeOutputAudioMessageContentPart)JsonModelCreateCore(ref reader, options);
@@ -98,19 +86,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeOutputAudioMessageContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeOutputAudioMessageContentPart(document.RootElement, null, options);
+            return DeserializeRealtimeOutputAudioMessageContentPart(document.RootElement, options);
         }
 
-        internal static RealtimeOutputAudioMessageContentPart DeserializeRealtimeOutputAudioMessageContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeOutputAudioMessageContentPart DeserializeRealtimeOutputAudioMessageContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalRealtimeConversationItemMessageContentPartTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             BinaryData audioBytes = default;
             string transcript = default;
             foreach (var prop in element.EnumerateObject())
@@ -130,9 +116,10 @@ namespace OpenAI.Realtime
                     transcript = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeOutputAudioMessageContentPart(kind, patch, audioBytes, transcript);
+            return new RealtimeOutputAudioMessageContentPart(kind, additionalBinaryDataProperties, audioBytes, transcript);
         }
     }
 }

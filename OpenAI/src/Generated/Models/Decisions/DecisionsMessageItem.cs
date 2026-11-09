@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Decisions
@@ -10,12 +11,10 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public abstract partial class DecisionsMessageItem : DecisionsItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role) : base(kind, patch)
+        internal DecisionsMessageItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DecisionsMessageRole role) : base(kind, additionalBinaryDataProperties)
         {
             Role = role;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public DecisionsMessageRole Role { get; }
     }

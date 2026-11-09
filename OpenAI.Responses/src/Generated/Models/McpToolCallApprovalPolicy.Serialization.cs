@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, data, options);
+                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,42 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, null, options);
+            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
+        }
+
+        internal static McpToolCallApprovalPolicy DeserializeMcpToolCallApprovalPolicy(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            DefaultMcpToolCallApprovalPolicy? defaultPolicy = default;
+            CustomMcpToolCallApprovalPolicy customPolicy = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("default_policy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    defaultPolicy = new DefaultMcpToolCallApprovalPolicy(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("custom_policy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new McpToolCallApprovalPolicy(defaultPolicy, customPolicy, additionalBinaryDataProperties);
         }
     }
 }

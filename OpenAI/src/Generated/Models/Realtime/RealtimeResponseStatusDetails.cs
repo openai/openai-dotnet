@@ -2,46 +2,39 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
     public partial class RealtimeResponseStatusDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeResponseStatusDetails()
         {
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind, RealtimeResponseStatusReason? reason, RealtimeError error, in JsonPatch patch)
+        internal RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind, RealtimeResponseStatusReason? reason, RealtimeError error, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Reason = reason;
             Error = error;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public RealtimeResponseStatusErrorKind? Kind { get; set; }
 
         public RealtimeResponseStatusReason? Reason { get; set; }
 
         public RealtimeError Error { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

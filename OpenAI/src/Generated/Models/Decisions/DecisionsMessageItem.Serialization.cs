@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
     [PersistableModelProxy(typeof(UnknownDecisionsMessageItem))]
     public abstract partial class DecisionsMessageItem : DecisionsItem, IJsonModel<DecisionsMessageItem>
     {
-        internal DecisionsMessageItem() : this(DecisionsItemKind.Message, default, default)
+        internal DecisionsMessageItem() : this(DecisionsItemKind.Message, null, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsMessageItem(document.RootElement, data, options);
+                        return DeserializeDecisionsMessageItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsMessageItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsMessageItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,13 +64,11 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsMessageItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.role"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsMessageItem IJsonModel<DecisionsMessageItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsMessageItem)JsonModelCreateCore(ref reader, options);
@@ -91,10 +81,10 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsMessageItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsMessageItem(document.RootElement, null, options);
+            return DeserializeDecisionsMessageItem(document.RootElement, options);
         }
 
-        internal static DecisionsMessageItem DeserializeDecisionsMessageItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsMessageItem DeserializeDecisionsMessageItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -105,16 +95,16 @@ namespace OpenAI.Decisions
                 switch (discriminator.GetString())
                 {
                     case "assistant":
-                        return DecisionsAssistantMessageItem.DeserializeDecisionsAssistantMessageItem(element, data, options);
+                        return DecisionsAssistantMessageItem.DeserializeDecisionsAssistantMessageItem(element, options);
                     case "developer":
-                        return DecisionsDeveloperMessageItem.DeserializeDecisionsDeveloperMessageItem(element, data, options);
+                        return DecisionsDeveloperMessageItem.DeserializeDecisionsDeveloperMessageItem(element, options);
                     case "system":
-                        return DecisionsSystemMessageItem.DeserializeDecisionsSystemMessageItem(element, data, options);
+                        return DecisionsSystemMessageItem.DeserializeDecisionsSystemMessageItem(element, options);
                     case "user":
-                        return DecisionsUserMessageItem.DeserializeDecisionsUserMessageItem(element, data, options);
+                        return DecisionsUserMessageItem.DeserializeDecisionsUserMessageItem(element, options);
                 }
             }
-            return UnknownDecisionsMessageItem.DeserializeUnknownDecisionsMessageItem(element, data, options);
+            return UnknownDecisionsMessageItem.DeserializeUnknownDecisionsMessageItem(element, options);
         }
     }
 }

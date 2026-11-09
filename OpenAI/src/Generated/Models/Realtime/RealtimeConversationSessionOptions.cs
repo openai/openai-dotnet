@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,14 +12,11 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeConversationSessionOptions : RealtimeSessionOptions
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public RealtimeConversationSessionOptions() : this(InternalRealtimeSessionCreateRequestGABaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, null)
+        public RealtimeConversationSessionOptions() : this(InternalRealtimeSessionCreateRequestGABaseTypeGA.Realtime, null, null, null, null, null, null, null, null, null, null, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeConversationSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA kind, in JsonPatch patch, IList<RealtimeOutputModality> outputModalities, string model, string instructions, RealtimeConversationSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties, RealtimeTracing tracing, IList<RealtimeTool> tools, RealtimeToolChoice toolChoice, RealtimeMaxOutputTokenCount maxOutputTokenCount, RealtimeTruncation truncation) : base(kind, patch)
+        internal RealtimeConversationSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<RealtimeOutputModality> outputModalities, string model, string instructions, RealtimeConversationSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties, RealtimeTracing tracing, IList<RealtimeTool> tools, RealtimeToolChoice toolChoice, RealtimeMaxOutputTokenCount maxOutputTokenCount, RealtimeTruncation truncation) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             OutputModalities = outputModalities ?? new ChangeTrackingList<RealtimeOutputModality>();
@@ -32,9 +29,7 @@ namespace OpenAI.Realtime
             ToolChoice = toolChoice;
             MaxOutputTokenCount = maxOutputTokenCount;
             Truncation = truncation;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<RealtimeOutputModality> OutputModalities { get; }
 

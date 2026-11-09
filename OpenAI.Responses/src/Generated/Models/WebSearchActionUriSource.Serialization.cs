@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>
     {
-        public WebSearchActionUriSource() : this(WebSearchActionSourceKind.Uri, default, null)
+        public WebSearchActionUriSource() : this(WebSearchActionSourceKind.Uri, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchActionUriSource(document.RootElement, data, options);
+                        return DeserializeWebSearchActionUriSource(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<WebSearchActionUriSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,15 +64,11 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.url"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(Uri.AbsoluteUri);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchActionUriSource IJsonModel<WebSearchActionUriSource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchActionUriSource)JsonModelCreateCore(ref reader, options);
@@ -93,19 +81,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchActionUriSource(document.RootElement, null, options);
+            return DeserializeWebSearchActionUriSource(document.RootElement, options);
         }
 
-        internal static WebSearchActionUriSource DeserializeWebSearchActionUriSource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchActionUriSource DeserializeWebSearchActionUriSource(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             WebSearchActionSourceKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             Uri uri = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -119,9 +105,10 @@ namespace OpenAI.Responses
                     uri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchActionUriSource(kind, patch, uri);
+            return new WebSearchActionUriSource(kind, additionalBinaryDataProperties, uri);
         }
     }
 }

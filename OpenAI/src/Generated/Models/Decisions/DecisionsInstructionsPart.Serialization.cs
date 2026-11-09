@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsInstructionsPart(document.RootElement, data, options);
+                        return DeserializeDecisionsInstructionsPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsInstructionsPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsInstructionsPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Decisions
             {
                 throw new FormatException($"The model {nameof(DecisionsInstructionsPart)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         DecisionsInstructionsPart IJsonModel<DecisionsInstructionsPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInstructionsPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsInstructionsPart(document.RootElement, null, options);
+            return DeserializeDecisionsInstructionsPart(document.RootElement, options);
         }
 
-        internal static DecisionsInstructionsPart DeserializeDecisionsInstructionsPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsInstructionsPart DeserializeDecisionsInstructionsPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,14 +114,14 @@ namespace OpenAI.Decisions
                 switch (discriminator.GetString())
                 {
                     case "input_image":
-                        return DecisionsInputImageInstructionsPart.DeserializeDecisionsInputImageInstructionsPart(element, data, options);
+                        return DecisionsInputImageInstructionsPart.DeserializeDecisionsInputImageInstructionsPart(element, options);
                     case "input_json":
-                        return DecisionsInputJsonInstructionsPart.DeserializeDecisionsInputJsonInstructionsPart(element, data, options);
+                        return DecisionsInputJsonInstructionsPart.DeserializeDecisionsInputJsonInstructionsPart(element, options);
                     case "input_text":
-                        return DecisionsInputTextInstructionsPart.DeserializeDecisionsInputTextInstructionsPart(element, data, options);
+                        return DecisionsInputTextInstructionsPart.DeserializeDecisionsInputTextInstructionsPart(element, options);
                 }
             }
-            return UnknownDecisionsInstructionsPart.DeserializeUnknownDecisionsInstructionsPart(element, data, options);
+            return UnknownDecisionsInstructionsPart.DeserializeUnknownDecisionsInstructionsPart(element, options);
         }
     }
 }

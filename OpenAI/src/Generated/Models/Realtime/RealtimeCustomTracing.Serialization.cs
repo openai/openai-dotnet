@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeCustomTracing(document.RootElement, data, options);
+                        return DeserializeRealtimeCustomTracing(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeCustomTracing)} does not support reading '{options.Format}' format.");
@@ -48,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeCustomTracing>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,81 +59,59 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeCustomTracing)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(WorkflowName) && !Patch.Contains("$.workflow_name"u8))
+            if (Optional.IsDefined(WorkflowName) && _additionalBinaryDataProperties?.ContainsKey("workflow_name") != true)
             {
                 writer.WritePropertyName("workflow_name"u8);
                 writer.WriteStringValue(WorkflowName);
             }
-            if (Optional.IsDefined(GroupId) && !Patch.Contains("$.group_id"u8))
+            if (Optional.IsDefined(GroupId) && _additionalBinaryDataProperties?.ContainsKey("group_id") != true)
             {
                 writer.WritePropertyName("group_id"u8);
                 writer.WriteStringValue(GroupId);
             }
-            if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
-                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
-                if (hasPatch)
+                foreach (var item in Metadata)
                 {
-#if NET8_0_OR_GREATER
-                    global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                    foreach (var item in Metadata)
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
                     {
-#if NET8_0_OR_GREATER
-                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
-#endif
-                        if (!patchContains)
-                        {
-                            writer.WritePropertyName(item.Key);
-                            if (item.Value == null)
-                            {
-                                writer.WriteNullValue();
-                                continue;
-                            }
-#if NET6_0_OR_GREATER
-                            writer.WriteRawValue(item.Value);
-#else
-                            using (JsonDocument document = JsonDocument.Parse(item.Value))
-                            {
-                                JsonSerializer.Serialize(writer, document.RootElement);
-                            }
-#endif
-                        }
+                        writer.WriteNullValue();
+                        continue;
                     }
-
-                    Patch.WriteTo(writer, "$.metadata"u8);
-                }
-                else
-                {
-                    foreach (var item in Metadata)
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-#if NET6_0_OR_GREATER
-                        writer.WriteRawValue(item.Value);
-#else
-                        using (JsonDocument document = JsonDocument.Parse(item.Value))
-                        {
-                            JsonSerializer.Serialize(writer, document.RootElement);
-                        }
-#endif
+                        JsonSerializer.Serialize(writer, document.RootElement);
                     }
+#endif
                 }
                 writer.WriteEndObject();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeCustomTracing IJsonModel<RealtimeCustomTracing>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -155,10 +124,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeCustomTracing)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeCustomTracing(document.RootElement, null, options);
+            return DeserializeRealtimeCustomTracing(document.RootElement, options);
         }
 
-        internal static RealtimeCustomTracing DeserializeRealtimeCustomTracing(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeCustomTracing DeserializeRealtimeCustomTracing(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -167,9 +136,7 @@ namespace OpenAI.Realtime
             string workflowName = default;
             string groupId = default;
             IDictionary<string, BinaryData> metadata = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("workflow_name"u8))
@@ -203,9 +170,10 @@ namespace OpenAI.Realtime
                     metadata = dictionary;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeCustomTracing(workflowName, groupId, metadata ?? new ChangeTrackingDictionary<string, BinaryData>(), patch);
+            return new RealtimeCustomTracing(workflowName, groupId, metadata ?? new ChangeTrackingDictionary<string, BinaryData>(), additionalBinaryDataProperties);
         }
     }
 }

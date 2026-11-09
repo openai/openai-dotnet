@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -11,23 +11,17 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionDrag : ComputerCallAction
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalComputerActionDrag(IEnumerable<InternalCoordinate> path) : base(ComputerCallActionKind.Drag)
         {
             Path = path.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerActionDrag(ComputerCallActionKind kind, in JsonPatch patch, IList<InternalCoordinate> path) : base(kind, patch)
+        internal InternalComputerActionDrag(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalCoordinate> path) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Path = path ?? new ChangeTrackingList<InternalCoordinate>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IList<InternalCoordinate> Path { get; }

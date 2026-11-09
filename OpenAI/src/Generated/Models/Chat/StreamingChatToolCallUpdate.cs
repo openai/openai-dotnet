@@ -2,35 +2,30 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class StreamingChatToolCallUpdate
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingChatToolCallUpdate(int index, string toolCallId, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, in JsonPatch patch)
+        internal StreamingChatToolCallUpdate(int index, string toolCallId, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Index = index;
             ToolCallId = toolCallId;
             Kind = kind;
             Function = function;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public int Index { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

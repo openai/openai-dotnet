@@ -2,11 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Conversations
@@ -14,8 +12,7 @@ namespace OpenAI.Conversations
     [Experimental("OPENAI001")]
     public partial class ConversationUpdateOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public ConversationUpdateOptions(IDictionary<string, string> metadata)
         {
@@ -23,20 +20,19 @@ namespace OpenAI.Conversations
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ConversationUpdateOptions(IDictionary<string, string> metadata, in JsonPatch patch)
+        internal ConversationUpdateOptions(IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IDictionary<string, string> Metadata { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

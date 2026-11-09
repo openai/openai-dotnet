@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,11 +19,9 @@ namespace OpenAI.Responses
             Uri = uri;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchActionUriSource(WebSearchActionSourceKind kind, in JsonPatch patch, Uri uri) : base(kind, patch)
+        internal WebSearchActionUriSource(WebSearchActionSourceKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri uri) : base(kind, additionalBinaryDataProperties)
         {
             Uri = uri;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -14,14 +15,12 @@ namespace OpenAI.Responses
             Y = y;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerActionMove(ComputerCallActionKind kind, in JsonPatch patch, int x, int y) : base(kind, patch)
+        internal InternalComputerActionMove(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int x, int y) : base(kind, additionalBinaryDataProperties)
         {
             X = x;
             Y = y;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int X { get; set; }

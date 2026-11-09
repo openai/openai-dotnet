@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -18,13 +19,11 @@ namespace OpenAI.Realtime
             ServerLabel = serverLabel;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeCustomMcpToolChoice(InternalToolChoiceBaseTypeGA kind, in JsonPatch patch, string serverLabel, string mcpToolName) : base(kind, patch)
+        internal RealtimeCustomMcpToolChoice(InternalToolChoiceBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, string mcpToolName) : base(kind, additionalBinaryDataProperties)
         {
             ServerLabel = serverLabel;
             McpToolName = mcpToolName;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
     }

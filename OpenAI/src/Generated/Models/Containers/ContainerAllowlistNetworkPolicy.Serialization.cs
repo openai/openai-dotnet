@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerAllowlistNetworkPolicy>
     {
-        public ContainerAllowlistNetworkPolicy() : this(ContainerNetworkPolicyKind.Allowlist, default, null, null)
+        public ContainerAllowlistNetworkPolicy() : this(ContainerNetworkPolicyKind.Allowlist, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Containers
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeContainerAllowlistNetworkPolicy(document.RootElement, data, options);
+                        return DeserializeContainerAllowlistNetworkPolicy(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ContainerAllowlistNetworkPolicy)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Containers
 
         void IJsonModel<ContainerAllowlistNetworkPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,63 +64,31 @@ namespace OpenAI.Containers
                 throw new FormatException($"The model {nameof(ContainerAllowlistNetworkPolicy)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.allowed_domains"u8))
-            {
-                if (!Patch.IsRemoved("$.allowed_domains"u8))
-                {
-                    writer.WritePropertyName("allowed_domains"u8);
-                    Patch.WriteTo(writer, "$.allowed_domains"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("allowed_domains") != true)
             {
                 writer.WritePropertyName("allowed_domains"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
-                for (int i = 0; i < AllowedDomains.Count; i++)
+                foreach (string item in AllowedDomains)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
-                    {
-                        continue;
-                    }
-                    if (AllowedDomains[i] == null)
+                    if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(AllowedDomains[i]);
+                    writer.WriteStringValue(item);
                 }
-                Patch.WriteTo(writer, "$.allowed_domains"u8);
                 writer.WriteEndArray();
             }
-            if (Patch.Contains("$.domain_secrets"u8))
-            {
-                if (!Patch.IsRemoved("$.domain_secrets"u8))
-                {
-                    writer.WritePropertyName("domain_secrets"u8);
-                    Patch.WriteTo(writer, "$.domain_secrets"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(DomainSecrets))
+            if (Optional.IsCollectionDefined(DomainSecrets) && _additionalBinaryDataProperties?.ContainsKey("domain_secrets") != true)
             {
                 writer.WritePropertyName("domain_secrets"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "domain_secrets"u8);
-                for (int i = 0; i < DomainSecrets.Count; i++)
+                foreach (ContainerNetworkPolicyDomainSecret item in DomainSecrets)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) || DomainSecrets[i] != null && DomainSecrets[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(DomainSecrets[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.domain_secrets"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ContainerAllowlistNetworkPolicy IJsonModel<ContainerAllowlistNetworkPolicy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ContainerAllowlistNetworkPolicy)JsonModelCreateCore(ref reader, options);
@@ -142,19 +101,17 @@ namespace OpenAI.Containers
                 throw new FormatException($"The model {nameof(ContainerAllowlistNetworkPolicy)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeContainerAllowlistNetworkPolicy(document.RootElement, null, options);
+            return DeserializeContainerAllowlistNetworkPolicy(document.RootElement, options);
         }
 
-        internal static ContainerAllowlistNetworkPolicy DeserializeContainerAllowlistNetworkPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ContainerAllowlistNetworkPolicy DeserializeContainerAllowlistNetworkPolicy(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ContainerNetworkPolicyKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<string> allowedDomains = default;
             IList<ContainerNetworkPolicyDomainSecret> domainSecrets = default;
             foreach (var prop in element.EnumerateObject())
@@ -190,103 +147,15 @@ namespace OpenAI.Containers
                     List<ContainerNetworkPolicyDomainSecret> array = new List<ContainerNetworkPolicyDomainSecret>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ContainerNetworkPolicyDomainSecret.DeserializeContainerNetworkPolicyDomainSecret(item, item.GetUtf8Bytes(), options));
+                        array.Add(ContainerNetworkPolicyDomainSecret.DeserializeContainerNetworkPolicyDomainSecret(item, options));
                     }
                     domainSecrets = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new ContainerAllowlistNetworkPolicy(kind, patch, allowedDomains ?? new ChangeTrackingList<string>(), domainSecrets ?? new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>());
+            return new ContainerAllowlistNetworkPolicy(kind, additionalBinaryDataProperties, allowedDomains ?? new ChangeTrackingList<string>(), domainSecrets ?? new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("domain_secrets"u8))
-            {
-                int propertyLength = "domain_secrets"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (DomainSecrets == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveDomainSecretsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
-                {
-                    return false;
-                }
-                if (DomainSecrets[index] == null)
-                {
-                    return false;
-                }
-                return DomainSecrets[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("domain_secrets"u8))
-            {
-                int propertyLength = "domain_secrets"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (DomainSecrets == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
-                {
-                    return false;
-                }
-                if (DomainSecrets[index] == null)
-                {
-                    return false;
-                }
-                DomainSecrets[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveDomainSecretsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveDomainSecrets(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<ContainerNetworkPolicyDomainSecret> ActiveDomainSecrets()
-        {
-            if (!Optional.IsCollectionDefined(DomainSecrets))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "domain_secrets"u8);
-            for (int i = 0; i < DomainSecrets.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]"))) && (DomainSecrets[i] == null || !DomainSecrets[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return DomainSecrets[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

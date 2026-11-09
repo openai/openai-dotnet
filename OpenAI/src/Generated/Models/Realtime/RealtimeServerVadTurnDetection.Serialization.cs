@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerVadTurnDetection(document.RootElement, data, options);
+                        return DeserializeRealtimeServerVadTurnDetection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,40 +60,36 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(DetectionThreshold) && !Patch.Contains("$.threshold"u8))
+            if (Optional.IsDefined(DetectionThreshold) && _additionalBinaryDataProperties?.ContainsKey("threshold") != true)
             {
                 writer.WritePropertyName("threshold"u8);
                 writer.WriteNumberValue(DetectionThreshold.Value);
             }
-            if (Optional.IsDefined(PrefixPadding) && !Patch.Contains("$.prefix_padding_ms"u8))
+            if (Optional.IsDefined(PrefixPadding) && _additionalBinaryDataProperties?.ContainsKey("prefix_padding_ms") != true)
             {
                 writer.WritePropertyName("prefix_padding_ms"u8);
                 writer.WriteNumberValue(Convert.ToInt64(Math.Round(PrefixPadding.Value.TotalMilliseconds)));
             }
-            if (Optional.IsDefined(SilenceDuration) && !Patch.Contains("$.silence_duration_ms"u8))
+            if (Optional.IsDefined(SilenceDuration) && _additionalBinaryDataProperties?.ContainsKey("silence_duration_ms") != true)
             {
                 writer.WritePropertyName("silence_duration_ms"u8);
                 writer.WriteNumberValue(Convert.ToInt64(Math.Round(SilenceDuration.Value.TotalMilliseconds)));
             }
-            if (Optional.IsDefined(CreateResponseEnabled) && !Patch.Contains("$.create_response"u8))
+            if (Optional.IsDefined(CreateResponseEnabled) && _additionalBinaryDataProperties?.ContainsKey("create_response") != true)
             {
                 writer.WritePropertyName("create_response"u8);
                 writer.WriteBooleanValue(CreateResponseEnabled.Value);
             }
-            if (Optional.IsDefined(InterruptResponseEnabled) && !Patch.Contains("$.interrupt_response"u8))
+            if (Optional.IsDefined(InterruptResponseEnabled) && _additionalBinaryDataProperties?.ContainsKey("interrupt_response") != true)
             {
                 writer.WritePropertyName("interrupt_response"u8);
                 writer.WriteBooleanValue(InterruptResponseEnabled.Value);
             }
-            if (Optional.IsDefined(IdleTimeout) && !Patch.Contains("$.idle_timeout_ms"u8))
+            if (Optional.IsDefined(IdleTimeout) && _additionalBinaryDataProperties?.ContainsKey("idle_timeout_ms") != true)
             {
                 writer.WritePropertyName("idle_timeout_ms"u8);
                 writer.WriteNumberValue(Convert.ToInt64(Math.Round(IdleTimeout.Value.TotalMilliseconds)));
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerVadTurnDetection IJsonModel<RealtimeServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
@@ -114,19 +102,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerVadTurnDetection(document.RootElement, null, options);
+            return DeserializeRealtimeServerVadTurnDetection(document.RootElement, options);
         }
 
-        internal static RealtimeServerVadTurnDetection DeserializeRealtimeServerVadTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerVadTurnDetection DeserializeRealtimeServerVadTurnDetection(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalRealtimeTurnDetectionBaseTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             float? detectionThreshold = default;
             TimeSpan? prefixPadding = default;
             TimeSpan? silenceDuration = default;
@@ -195,11 +181,12 @@ namespace OpenAI.Realtime
                     idleTimeout = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeServerVadTurnDetection(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 detectionThreshold,
                 prefixPadding,
                 silenceDuration,

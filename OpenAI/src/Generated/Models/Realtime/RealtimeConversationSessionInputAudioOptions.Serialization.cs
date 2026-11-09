@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeConversationSessionInputAudioOptions(document.RootElement, data, options);
+                        return DeserializeRealtimeConversationSessionInputAudioOptions(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeConversationSessionInputAudioOptions)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeConversationSessionInputAudioOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,23 +59,22 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeConversationSessionInputAudioOptions)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(AudioFormat) && !Patch.Contains("$.format"u8))
+            if (Optional.IsDefined(AudioFormat) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(AudioFormat, options);
             }
-            if (Optional.IsDefined(AudioTranscriptionOptions) && !Patch.Contains("$.transcription"u8))
+            if (Optional.IsDefined(AudioTranscriptionOptions) && _additionalBinaryDataProperties?.ContainsKey("transcription") != true)
             {
                 writer.WritePropertyName("transcription"u8);
                 writer.WriteObjectValue(AudioTranscriptionOptions, options);
             }
-            if (Optional.IsDefined(NoiseReduction) && !Patch.Contains("$.noise_reduction"u8))
+            if (Optional.IsDefined(NoiseReduction) && _additionalBinaryDataProperties?.ContainsKey("noise_reduction") != true)
             {
                 writer.WritePropertyName("noise_reduction"u8);
                 writer.WriteObjectValue(NoiseReduction, options);
             }
-            if (Optional.IsDefined(TurnDetection, _turnDetectionIsDefined) && !Patch.Contains("$.turn_detection"u8))
+            if (Optional.IsDefined(TurnDetection, _turnDetectionIsDefined) && _additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
             {
                 if (TurnDetection != null)
                 {
@@ -95,9 +86,26 @@ namespace OpenAI.Realtime
                     writer.WriteNull("turn_detection"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeConversationSessionInputAudioOptions IJsonModel<RealtimeConversationSessionInputAudioOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -110,10 +118,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeConversationSessionInputAudioOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeConversationSessionInputAudioOptions(document.RootElement, null, options);
+            return DeserializeRealtimeConversationSessionInputAudioOptions(document.RootElement, options);
         }
 
-        internal static RealtimeConversationSessionInputAudioOptions DeserializeRealtimeConversationSessionInputAudioOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeConversationSessionInputAudioOptions DeserializeRealtimeConversationSessionInputAudioOptions(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -124,9 +132,7 @@ namespace OpenAI.Realtime
             RealtimeNoiseReduction noiseReduction = default;
             bool turnDetectionIsDefined = false;
             RealtimeTurnDetection turnDetection = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("format"u8))
@@ -135,7 +141,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioFormat = RealtimeAudioFormat.DeserializeRealtimeAudioFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioFormat = RealtimeAudioFormat.DeserializeRealtimeAudioFormat(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("transcription"u8))
@@ -144,7 +150,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioTranscriptionOptions = RealtimeAudioTranscriptionOptions.DeserializeRealtimeAudioTranscriptionOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioTranscriptionOptions = RealtimeAudioTranscriptionOptions.DeserializeRealtimeAudioTranscriptionOptions(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("noise_reduction"u8))
@@ -153,7 +159,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    noiseReduction = RealtimeNoiseReduction.DeserializeRealtimeNoiseReduction(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    noiseReduction = RealtimeNoiseReduction.DeserializeRealtimeNoiseReduction(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("turn_detection"u8))
@@ -164,102 +170,16 @@ namespace OpenAI.Realtime
                         turnDetection = null;
                         continue;
                     }
-                    turnDetection = RealtimeTurnDetection.DeserializeRealtimeTurnDetection(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    turnDetection = RealtimeTurnDetection.DeserializeRealtimeTurnDetection(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, patch)
+            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, additionalBinaryDataProperties)
             {
                 _turnDetectionIsDefined = turnDetectionIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("format"u8))
-            {
-                if (AudioFormat == null)
-                {
-                    return false;
-                }
-                return AudioFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
-            }
-            if (local.StartsWith("transcription"u8))
-            {
-                if (AudioTranscriptionOptions == null)
-                {
-                    return false;
-                }
-                return AudioTranscriptionOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("transcription"u8.Length)], out value);
-            }
-            if (local.StartsWith("noise_reduction"u8))
-            {
-                if (NoiseReduction == null)
-                {
-                    return false;
-                }
-                return NoiseReduction.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("noise_reduction"u8.Length)], out value);
-            }
-            if (local.StartsWith("turn_detection"u8))
-            {
-                if (TurnDetection == null)
-                {
-                    return false;
-                }
-                return TurnDetection.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("turn_detection"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("format"u8))
-            {
-                if (AudioFormat == null)
-                {
-                    return false;
-                }
-                AudioFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("transcription"u8))
-            {
-                if (AudioTranscriptionOptions == null)
-                {
-                    return false;
-                }
-                AudioTranscriptionOptions.Patch.Set([.. "$"u8, .. local.Slice("transcription"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("noise_reduction"u8))
-            {
-                if (NoiseReduction == null)
-                {
-                    return false;
-                }
-                NoiseReduction.Patch.Set([.. "$"u8, .. local.Slice("noise_reduction"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("turn_detection"u8))
-            {
-                if (TurnDetection == null)
-                {
-                    return false;
-                }
-                TurnDetection.Patch.Set([.. "$"u8, .. local.Slice("turn_detection"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

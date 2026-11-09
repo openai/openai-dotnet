@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -21,8 +21,7 @@ namespace OpenAI.Responses
             ImageResultBytes = imageResultBytes;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, ImageGenerationToolAction? action, ImageGenerationToolBackground? background, ImageGenerationToolOutputFileFormat? outputFileFormat, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, string revisedPrompt, BinaryData imageResultBytes) : base(kind, id, patch)
+        internal ImageGenerationCallResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ImageGenerationCallStatus? status, ImageGenerationToolAction? action, ImageGenerationToolBackground? background, ImageGenerationToolOutputFileFormat? outputFileFormat, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, string revisedPrompt, BinaryData imageResultBytes) : base(kind, id, additionalBinaryDataProperties)
         {
             Status = status;
             Action = action;
@@ -33,7 +32,6 @@ namespace OpenAI.Responses
             RevisedPrompt = revisedPrompt;
             ImageResultBytes = imageResultBytes;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ImageGenerationCallStatus? Status { get; set; }
 

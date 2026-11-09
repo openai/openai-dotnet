@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,17 +11,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeSemanticVadTurnDetection : RealtimeTurnDetection
     {
-        public RealtimeSemanticVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, default, default, default, default)
+        public RealtimeSemanticVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, null, default, default, default)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, RealtimeSemanticVadEagernessLevel? eagernessLevel, bool? createResponseEnabled, bool? interruptResponseEnabled) : base(kind, patch)
+        internal RealtimeSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, RealtimeSemanticVadEagernessLevel? eagernessLevel, bool? createResponseEnabled, bool? interruptResponseEnabled) : base(kind, additionalBinaryDataProperties)
         {
             EagernessLevel = eagernessLevel;
             CreateResponseEnabled = createResponseEnabled;
             InterruptResponseEnabled = interruptResponseEnabled;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

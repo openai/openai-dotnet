@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputTextDeltaUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string delta, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(StreamingResponseUpdateKind.ResponseOutputTextDelta, sequenceNumber)
         {
             ItemId = itemId;
@@ -21,12 +20,9 @@ namespace OpenAI.Responses
             ContentIndex = contentIndex;
             Delta = delta;
             TokenLogProbabilities = tokenLogProbabilities.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseOutputTextDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string delta, IList<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseOutputTextDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string delta, IList<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ItemId = itemId;
@@ -34,9 +30,7 @@ namespace OpenAI.Responses
             ContentIndex = contentIndex;
             Delta = delta;
             TokenLogProbabilities = tokenLogProbabilities ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ItemId { get; set; }
 

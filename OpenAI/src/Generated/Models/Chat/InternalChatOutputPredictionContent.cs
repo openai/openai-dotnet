@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
@@ -14,12 +15,10 @@ namespace OpenAI.Chat
             Content = content ?? new ChatMessageContent();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatOutputPredictionContent(InternalChatOutputPredictionKind kind, in JsonPatch patch, ChatMessageContent content) : base(kind, patch)
+        internal InternalChatOutputPredictionContent(InternalChatOutputPredictionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ChatMessageContent content) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

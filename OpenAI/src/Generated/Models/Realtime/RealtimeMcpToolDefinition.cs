@@ -3,10 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Realtime
@@ -14,8 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolDefinition
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private string _description;
         private bool _descriptionIsDefined;
         private BinaryData _annotations;
@@ -30,21 +27,14 @@ namespace OpenAI.Realtime
             InputSchema = inputSchema;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolDefinition(string name, string description, BinaryData inputSchema, BinaryData annotations, in JsonPatch patch)
+        internal RealtimeMcpToolDefinition(string name, string description, BinaryData inputSchema, BinaryData annotations, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             _description = description;
             InputSchema = inputSchema;
             _annotations = annotations;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Name { get; set; }
 
@@ -74,6 +64,12 @@ namespace OpenAI.Realtime
                 _annotations = value;
                 _annotationsIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, data, options);
+                        return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,42 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, null, options);
+            return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, options);
+        }
+
+        internal static RealtimeMaxOutputTokenCount DeserializeRealtimeMaxOutputTokenCount(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default;
+            int? customMaxOutputTokenCount = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("default_max_output_token_count"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    defaultMaxOutputTokenCount = new RealtimeDefaultMaxOutputTokenCount(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("custom_max_output_token_count"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    customMaxOutputTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, additionalBinaryDataProperties);
         }
     }
 }

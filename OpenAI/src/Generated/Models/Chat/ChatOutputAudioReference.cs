@@ -2,10 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
@@ -13,8 +12,7 @@ namespace OpenAI.Chat
     [Experimental("OPENAI001")]
     public partial class ChatOutputAudioReference
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public ChatOutputAudioReference(string id)
         {
@@ -23,19 +21,18 @@ namespace OpenAI.Chat
             Id = id;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatOutputAudioReference(string id, in JsonPatch patch)
+        internal ChatOutputAudioReference(string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

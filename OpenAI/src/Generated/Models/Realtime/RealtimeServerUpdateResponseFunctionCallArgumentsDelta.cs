@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -21,8 +21,7 @@ namespace OpenAI.Realtime
             Delta = delta;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseFunctionCallArgumentsDelta(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData delta) : base(kind, patch)
+        internal RealtimeServerUpdateResponseFunctionCallArgumentsDelta(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData delta) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -31,7 +30,6 @@ namespace OpenAI.Realtime
             CallId = callId;
             Delta = delta;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

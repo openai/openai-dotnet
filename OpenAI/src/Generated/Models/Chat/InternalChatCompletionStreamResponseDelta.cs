@@ -2,31 +2,26 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionStreamResponseDelta
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private string _refusal;
         private bool _refusalIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, default)
+        internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, in JsonPatch patch)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Audio = audio;
@@ -35,22 +30,21 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>();
             Role = role;
             _refusal = refusal;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public StreamingChatOutputAudioUpdate Audio { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         public StreamingChatFunctionCallUpdate FunctionCall { get; }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCalls { get; }
 
@@ -60,6 +54,12 @@ namespace OpenAI.Chat
             {
                 return _refusal;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

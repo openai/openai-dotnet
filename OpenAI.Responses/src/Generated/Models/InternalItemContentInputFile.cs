@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -14,19 +14,17 @@ namespace OpenAI.Responses
         private Uri _fileUrl;
         private bool _fileUrlIsDefined;
 
-        public InternalItemContentInputFile() : this(InternalItemContentType.InputFile, default, null, null, null, null)
+        public InternalItemContentInputFile() : this(InternalItemContentType.InputFile, null, null, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputFile(InternalItemContentType internalType, in JsonPatch patch, string fileId, Uri fileUrl, string filename, string internalFileData) : base(internalType, patch)
+        internal InternalItemContentInputFile(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, Uri fileUrl, string filename, string internalFileData) : base(internalType, additionalBinaryDataProperties)
         {
             _fileId = fileId;
             _fileUrl = fileUrl;
             Filename = filename;
             InternalFileData = internalFileData;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FileId
         {

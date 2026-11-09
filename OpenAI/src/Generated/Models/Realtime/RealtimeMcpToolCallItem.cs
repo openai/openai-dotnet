@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -15,7 +15,6 @@ namespace OpenAI.Realtime
         private string _approvalRequestId;
         private bool _approvalRequestIdIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(RealtimeItemKind.McpCall)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -25,12 +24,9 @@ namespace OpenAI.Realtime
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolCallItem(RealtimeItemKind kind, in JsonPatch patch, string id, string serverLabel, string toolName, BinaryData toolArguments, string approvalRequestId, string toolOutput, RealtimeError error) : base(kind, patch)
+        internal RealtimeMcpToolCallItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, string serverLabel, string toolName, BinaryData toolArguments, string approvalRequestId, string toolOutput, RealtimeError error) : base(kind, additionalBinaryDataProperties)
         {
             Id = id;
             ServerLabel = serverLabel;
@@ -39,9 +35,7 @@ namespace OpenAI.Realtime
             _approvalRequestId = approvalRequestId;
             ToolOutput = toolOutput;
             Error = error;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

@@ -4,8 +4,8 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -22,7 +22,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatOutputTokenUsageDetails(document.RootElement, data, options);
+                        return DeserializeChatOutputTokenUsageDetails(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI.Chat
 
         void IJsonModel<ChatOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,30 +63,50 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.accepted_prediction_tokens"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("accepted_prediction_tokens") != true)
             {
                 writer.WritePropertyName("accepted_prediction_tokens"u8);
                 writer.WriteNumberValue(AcceptedPredictionTokenCount);
             }
-            if (!Patch.Contains("$.audio_tokens"u8))
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
             {
                 writer.WritePropertyName("audio_tokens"u8);
                 writer.WriteNumberValue(AudioTokenCount);
             }
-            if (!Patch.Contains("$.reasoning_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("reasoning_tokens") != true)
             {
                 writer.WritePropertyName("reasoning_tokens"u8);
                 writer.WriteNumberValue(ReasoningTokenCount);
             }
-            if (!Patch.Contains("$.rejected_prediction_tokens"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("rejected_prediction_tokens") != true)
             {
                 writer.WritePropertyName("rejected_prediction_tokens"u8);
                 writer.WriteNumberValue(RejectedPredictionTokenCount);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ChatOutputTokenUsageDetails IJsonModel<ChatOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -108,10 +120,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatOutputTokenUsageDetails(document.RootElement, null, options);
+            return DeserializeChatOutputTokenUsageDetails(document.RootElement, options);
         }
 
-        internal static ChatOutputTokenUsageDetails DeserializeChatOutputTokenUsageDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatOutputTokenUsageDetails DeserializeChatOutputTokenUsageDetails(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -121,9 +133,7 @@ namespace OpenAI.Chat
             int audioTokenCount = default;
             int reasoningTokenCount = default;
             int rejectedPredictionTokenCount = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("accepted_prediction_tokens"u8))
@@ -162,9 +172,10 @@ namespace OpenAI.Chat
                     rejectedPredictionTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new ChatOutputTokenUsageDetails(acceptedPredictionTokenCount, audioTokenCount, reasoningTokenCount, rejectedPredictionTokenCount, patch);
+            return new ChatOutputTokenUsageDetails(acceptedPredictionTokenCount, audioTokenCount, reasoningTokenCount, rejectedPredictionTokenCount, additionalBinaryDataProperties);
         }
     }
 }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateOutputAudioBufferStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferStarted>
     {
-        public RealtimeServerUpdateOutputAudioBufferStarted() : this(RealtimeServerUpdateKind.OutputAudioBufferStarted, default, null, null)
+        public RealtimeServerUpdateOutputAudioBufferStarted() : this(RealtimeServerUpdateKind.OutputAudioBufferStarted, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdateOutputAudioBufferStarted(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdateOutputAudioBufferStarted(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdateOutputAudioBufferStarted)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdateOutputAudioBufferStarted>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,20 +64,16 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateOutputAudioBufferStarted)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.event_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (!Patch.Contains("$.response_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("response_id") != true)
             {
                 writer.WritePropertyName("response_id"u8);
                 writer.WriteStringValue(ResponseId);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerUpdateOutputAudioBufferStarted IJsonModel<RealtimeServerUpdateOutputAudioBufferStarted>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerUpdateOutputAudioBufferStarted)JsonModelCreateCore(ref reader, options);
@@ -98,19 +86,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateOutputAudioBufferStarted)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdateOutputAudioBufferStarted(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdateOutputAudioBufferStarted(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdateOutputAudioBufferStarted DeserializeRealtimeServerUpdateOutputAudioBufferStarted(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdateOutputAudioBufferStarted DeserializeRealtimeServerUpdateOutputAudioBufferStarted(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeServerUpdateKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             string responseId = default;
             foreach (var prop in element.EnumerateObject())
@@ -130,9 +116,10 @@ namespace OpenAI.Realtime
                     responseId = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateOutputAudioBufferStarted(kind, patch, eventId, responseId);
+            return new RealtimeServerUpdateOutputAudioBufferStarted(kind, additionalBinaryDataProperties, eventId, responseId);
         }
     }
 }

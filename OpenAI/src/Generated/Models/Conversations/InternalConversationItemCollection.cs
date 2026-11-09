@@ -2,12 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using OpenAI;
 using OpenAI.Responses;
 
@@ -15,10 +12,8 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalConversationItemCollection
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalConversationItemCollection(IEnumerable<ResponseItem> data, string firstId, string lastId, bool hasMore)
         {
@@ -26,14 +21,11 @@ namespace OpenAI.Conversations
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
+        internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -41,16 +33,9 @@ namespace OpenAI.Conversations
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         internal string Object { get; set; } = "list";
 
@@ -63,5 +48,11 @@ namespace OpenAI.Conversations
         public string LastId { get; set; }
 
         public bool HasMore { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

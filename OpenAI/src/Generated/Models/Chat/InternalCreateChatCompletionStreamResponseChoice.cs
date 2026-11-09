@@ -2,46 +2,32 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionStreamResponseChoice
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private InternalCreateChatCompletionStreamResponseChoiceLogprobs _logprobs;
         private bool _logprobsIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, ChatFinishReason? finishReason, int index)
         {
             Delta = delta;
             FinishReason = finishReason;
             Index = index;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs, ChatFinishReason? finishReason, int index, in JsonPatch patch)
+        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs, ChatFinishReason? finishReason, int index, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Delta = delta;
             _logprobs = logprobs;
             FinishReason = finishReason;
             Index = index;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         internal InternalChatCompletionStreamResponseDelta Delta { get; }
 
@@ -54,5 +40,11 @@ namespace OpenAI.Chat
         }
 
         public int Index { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -2,18 +2,17 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeToolBaseGA : RealtimeTool
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
-        internal InternalUnknownRealtimeToolBaseGA(RealtimeToolKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeToolBaseGA(RealtimeToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
     }
 }

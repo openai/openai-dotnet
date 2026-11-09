@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeTranscriptionSessionOptions(document.RootElement, data, options);
+                        return DeserializeRealtimeTranscriptionSessionOptions(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeTranscriptionSessionOptions)} does not support reading '{options.Format}' format.");
@@ -48,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeTranscriptionSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -69,39 +60,21 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTranscriptionSessionOptions)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
+            if (Optional.IsDefined(AudioOptions) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(AudioOptions, options);
             }
-            if (Patch.Contains("$.include"u8))
-            {
-                if (!Patch.IsRemoved("$.include"u8))
-                {
-                    writer.WritePropertyName("include"u8);
-                    Patch.WriteTo(writer, "$.include"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(IncludedProperties))
+            if (Optional.IsCollectionDefined(IncludedProperties) && _additionalBinaryDataProperties?.ContainsKey("include") != true)
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "include"u8);
-                for (int i = 0; i < IncludedProperties.Count; i++)
+                foreach (RealtimeIncludedProperty item in IncludedProperties)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
-                    {
-                        continue;
-                    }
-                    writer.WriteStringValue(IncludedProperties[i].ToString());
+                    writer.WriteStringValue(item.ToString());
                 }
-                Patch.WriteTo(writer, "$.include"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeTranscriptionSessionOptions IJsonModel<RealtimeTranscriptionSessionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeTranscriptionSessionOptions)JsonModelCreateCore(ref reader, options);
@@ -114,19 +87,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTranscriptionSessionOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeTranscriptionSessionOptions(document.RootElement, null, options);
+            return DeserializeRealtimeTranscriptionSessionOptions(document.RootElement, options);
         }
 
-        internal static RealtimeTranscriptionSessionOptions DeserializeRealtimeTranscriptionSessionOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeTranscriptionSessionOptions DeserializeRealtimeTranscriptionSessionOptions(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalRealtimeSessionCreateRequestGABaseTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             RealtimeTranscriptionSessionAudioOptions audioOptions = default;
             IList<RealtimeIncludedProperty> includedProperties = default;
             foreach (var prop in element.EnumerateObject())
@@ -142,7 +113,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioOptions = RealtimeTranscriptionSessionAudioOptions.DeserializeRealtimeTranscriptionSessionAudioOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioOptions = RealtimeTranscriptionSessionAudioOptions.DeserializeRealtimeTranscriptionSessionAudioOptions(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("include"u8))
@@ -159,45 +130,10 @@ namespace OpenAI.Realtime
                     includedProperties = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeTranscriptionSessionOptions(kind, patch, audioOptions, includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>());
+            return new RealtimeTranscriptionSessionOptions(kind, additionalBinaryDataProperties, audioOptions, includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("audio"u8))
-            {
-                if (AudioOptions == null)
-                {
-                    return false;
-                }
-                return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("audio"u8))
-            {
-                if (AudioOptions == null)
-                {
-                    return false;
-                }
-                AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

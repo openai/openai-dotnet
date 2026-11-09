@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeResponse(document.RootElement, data, options);
+                        return DeserializeRealtimeResponse(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeResponse)} does not support reading '{options.Format}' format.");
@@ -48,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,111 +59,58 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeResponse)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (Optional.IsDefined(Object) && !Patch.Contains("$.object"u8))
+            if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.Value.ToString());
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
             }
-            if (Optional.IsDefined(StatusDetails) && !Patch.Contains("$.status_details"u8))
+            if (Optional.IsDefined(StatusDetails) && _additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
                 writer.WritePropertyName("status_details"u8);
                 writer.WriteObjectValue(StatusDetails, options);
             }
-            if (Patch.Contains("$.output"u8))
-            {
-                if (!Patch.IsRemoved("$.output"u8))
-                {
-                    writer.WritePropertyName("output"u8);
-                    Patch.WriteTo(writer, "$.output"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(OutputItems))
+            if (Optional.IsCollectionDefined(OutputItems) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "output"u8);
-                for (int i = 0; i < OutputItems.Count; i++)
+                foreach (RealtimeItem item in OutputItems)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || OutputItems[i] != null && OutputItems[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(OutputItems[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 if (Metadata != null)
                 {
                     writer.WritePropertyName("metadata"u8);
                     writer.WriteStartObject();
-                    bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
-                    if (hasPatch)
+                    foreach (var item in Metadata)
                     {
-#if NET8_0_OR_GREATER
-                        global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                        foreach (var item in Metadata)
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
                         {
-#if NET8_0_OR_GREATER
-                            int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                            bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                            bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
-#endif
-                            if (!patchContains)
-                            {
-                                writer.WritePropertyName(item.Key);
-                                if (item.Value == null)
-                                {
-                                    writer.WriteNullValue();
-                                    continue;
-                                }
-#if NET6_0_OR_GREATER
-                                writer.WriteRawValue(item.Value);
-#else
-                                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                                {
-                                    JsonSerializer.Serialize(writer, document.RootElement);
-                                }
-#endif
-                            }
+                            writer.WriteNullValue();
+                            continue;
                         }
-
-                        Patch.WriteTo(writer, "$.metadata"u8);
-                    }
-                    else
-                    {
-                        foreach (var item in Metadata)
+#if NET6_0_OR_GREATER
+                        writer.WriteRawValue(item.Value);
+#else
+                        using (JsonDocument document = JsonDocument.Parse(item.Value))
                         {
-                            writer.WritePropertyName(item.Key);
-                            if (item.Value == null)
-                            {
-                                writer.WriteNullValue();
-                                continue;
-                            }
-#if NET6_0_OR_GREATER
-                            writer.WriteRawValue(item.Value);
-#else
-                            using (JsonDocument document = JsonDocument.Parse(item.Value))
-                            {
-                                JsonSerializer.Serialize(writer, document.RootElement);
-                            }
-#endif
+                            JsonSerializer.Serialize(writer, document.RootElement);
                         }
+#endif
                     }
                     writer.WriteEndObject();
                 }
@@ -181,53 +119,56 @@ namespace OpenAI.Realtime
                     writer.WriteNull("metadata"u8);
                 }
             }
-            if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
+            if (Optional.IsDefined(AudioOptions) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(AudioOptions, options);
             }
-            if (Optional.IsDefined(Usage) && !Patch.Contains("$.usage"u8))
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
-            if (Optional.IsDefined(ConversationId) && !Patch.Contains("$.conversation_id"u8))
+            if (Optional.IsDefined(ConversationId) && _additionalBinaryDataProperties?.ContainsKey("conversation_id") != true)
             {
                 writer.WritePropertyName("conversation_id"u8);
                 writer.WriteStringValue(ConversationId);
             }
-            if (Patch.Contains("$.output_modalities"u8))
-            {
-                if (!Patch.IsRemoved("$.output_modalities"u8))
-                {
-                    writer.WritePropertyName("output_modalities"u8);
-                    Patch.WriteTo(writer, "$.output_modalities"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(OutputModalities))
+            if (Optional.IsCollectionDefined(OutputModalities) && _additionalBinaryDataProperties?.ContainsKey("output_modalities") != true)
             {
                 writer.WritePropertyName("output_modalities"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "output_modalities"u8);
-                for (int i = 0; i < OutputModalities.Count; i++)
+                foreach (RealtimeOutputModality item in OutputModalities)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output_modalities[{i}]")))
-                    {
-                        continue;
-                    }
-                    writer.WriteStringValue(OutputModalities[i].ToString());
+                    writer.WriteStringValue(item.ToString());
                 }
-                Patch.WriteTo(writer, "$.output_modalities"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
+            if (Optional.IsDefined(MaxOutputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
             {
                 writer.WritePropertyName("max_output_tokens"u8);
                 writer.WriteObjectValue(MaxOutputTokenCount, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeResponse IJsonModel<RealtimeResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -240,10 +181,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeResponse)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeResponse(document.RootElement, null, options);
+            return DeserializeRealtimeResponse(document.RootElement, options);
         }
 
-        internal static RealtimeResponse DeserializeRealtimeResponse(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeResponse DeserializeRealtimeResponse(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -260,9 +201,7 @@ namespace OpenAI.Realtime
             string conversationId = default;
             IList<RealtimeOutputModality> outputModalities = default;
             RealtimeMaxOutputTokenCount maxOutputTokenCount = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -294,7 +233,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    statusDetails = RealtimeResponseStatusDetails.DeserializeRealtimeResponseStatusDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    statusDetails = RealtimeResponseStatusDetails.DeserializeRealtimeResponseStatusDetails(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("output"u8))
@@ -306,7 +245,7 @@ namespace OpenAI.Realtime
                     List<RealtimeItem> array = new List<RealtimeItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(RealtimeItem.DeserializeRealtimeItem(item, item.GetUtf8Bytes(), options));
+                        array.Add(RealtimeItem.DeserializeRealtimeItem(item, options));
                     }
                     outputItems = array;
                     continue;
@@ -339,7 +278,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioOptions = RealtimeResponseAudioOptions.DeserializeRealtimeResponseAudioOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioOptions = RealtimeResponseAudioOptions.DeserializeRealtimeResponseAudioOptions(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -348,7 +287,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    usage = RealtimeResponseUsage.DeserializeRealtimeResponseUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    usage = RealtimeResponseUsage.DeserializeRealtimeResponseUsage(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("conversation_id"u8))
@@ -376,10 +315,11 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    maxOutputTokenCount = RealtimeMaxOutputTokenCount.DeserializeRealtimeMaxOutputTokenCount(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    maxOutputTokenCount = RealtimeMaxOutputTokenCount.DeserializeRealtimeMaxOutputTokenCount(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeResponse(
                 id,
@@ -393,164 +333,7 @@ namespace OpenAI.Realtime
                 conversationId,
                 outputModalities ?? new ChangeTrackingList<RealtimeOutputModality>(),
                 maxOutputTokenCount,
-                patch);
+                additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("status_details"u8))
-            {
-                if (StatusDetails == null)
-                {
-                    return false;
-                }
-                return StatusDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("status_details"u8.Length)], out value);
-            }
-            if (local.StartsWith("audio"u8))
-            {
-                if (AudioOptions == null)
-                {
-                    return false;
-                }
-                return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
-            }
-            if (local.StartsWith("usage"u8))
-            {
-                if (Usage == null)
-                {
-                    return false;
-                }
-                return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
-            }
-            if (local.StartsWith("max_output_tokens"u8))
-            {
-                if (MaxOutputTokenCount == null)
-                {
-                    return false;
-                }
-                return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
-            }
-            if (local.StartsWith("output"u8))
-            {
-                int propertyLength = "output"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (OutputItems == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveOutputItemsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
-                {
-                    return false;
-                }
-                if (OutputItems[index] == null)
-                {
-                    return false;
-                }
-                return OutputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("status_details"u8))
-            {
-                if (StatusDetails == null)
-                {
-                    return false;
-                }
-                StatusDetails.Patch.Set([.. "$"u8, .. local.Slice("status_details"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("audio"u8))
-            {
-                if (AudioOptions == null)
-                {
-                    return false;
-                }
-                AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("usage"u8))
-            {
-                if (Usage == null)
-                {
-                    return false;
-                }
-                Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("max_output_tokens"u8))
-            {
-                if (MaxOutputTokenCount == null)
-                {
-                    return false;
-                }
-                MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("output"u8))
-            {
-                int propertyLength = "output"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (OutputItems == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
-                {
-                    return false;
-                }
-                if (OutputItems[index] == null)
-                {
-                    return false;
-                }
-                OutputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveOutputItemsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveOutputItems(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<RealtimeItem> ActiveOutputItems()
-        {
-            if (!Optional.IsCollectionDefined(OutputItems))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "output"u8);
-            for (int i = 0; i < OutputItems.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]"))) && (OutputItems[i] == null || !OutputItems[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return OutputItems[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

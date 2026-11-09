@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -20,14 +21,12 @@ namespace OpenAI.Responses
             FunctionOutput = functionOutput;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FunctionCallOutputResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, patch)
+        internal FunctionCallOutputResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, additionalBinaryDataProperties)
         {
             Status = status;
             CallId = callId;
             FunctionOutput = functionOutput;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public FunctionCallOutputStatus? Status { get; set; }
 

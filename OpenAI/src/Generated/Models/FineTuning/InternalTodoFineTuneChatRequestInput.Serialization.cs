@@ -60,28 +60,35 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(Messages) && _additionalBinaryDataProperties?.ContainsKey("messages") != true)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("messages") != true)
             {
-                writer.WritePropertyName("messages"u8);
-                writer.WriteStartArray();
-                foreach (BinaryData item in Messages)
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+                if (Optional.IsCollectionDefined(Messages))
                 {
-                    if (item == null)
+                    writer.WritePropertyName("messages"u8);
+                    writer.WriteStartArray();
+                    foreach (BinaryData item in Messages)
                     {
-                        writer.WriteNullValue();
-                        continue;
-                    }
+                        if (item == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item);
+                        writer.WriteRawValue(item);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                        using (JsonDocument document = JsonDocument.Parse(item))
+                        {
+                            JsonSerializer.Serialize(writer, document.RootElement);
+                        }
 #endif
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
@@ -97,16 +104,23 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);
             }
-            if (Optional.IsCollectionDefined(Functions) && _additionalBinaryDataProperties?.ContainsKey("functions") != true)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("functions") != true)
             {
-                writer.WritePropertyName("functions"u8);
-                writer.WriteStartArray();
-                foreach (ChatFunction item in Functions)
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+                if (Optional.IsCollectionDefined(Functions))
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("functions"u8);
+                    writer.WriteStartArray();
+                    foreach (ChatFunction item in Functions)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -142,6 +156,8 @@ namespace OpenAI.FineTuning
             return DeserializeInternalTodoFineTuneChatRequestInput(document.RootElement, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static InternalTodoFineTuneChatRequestInput DeserializeInternalTodoFineTuneChatRequestInput(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -185,7 +201,7 @@ namespace OpenAI.FineTuning
                     List<ChatTool> array = new List<ChatTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTool.DeserializeChatTool(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatTool.DeserializeChatTool(item, options));
                     }
                     tools = array;
                     continue;
@@ -208,7 +224,7 @@ namespace OpenAI.FineTuning
                     List<ChatFunction> array = new List<ChatFunction>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatFunction.DeserializeChatFunction(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatFunction.DeserializeChatFunction(item, options));
                     }
                     functions = array;
                     continue;
@@ -218,5 +234,7 @@ namespace OpenAI.FineTuning
             }
             return new InternalTodoFineTuneChatRequestInput(messages ?? new ChangeTrackingList<BinaryData>(), tools ?? new ChangeTrackingList<ChatTool>(), parallelToolCalls, functions ?? new ChangeTrackingList<ChatFunction>(), additionalBinaryDataProperties);
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallOutputItemResource : ResponseItem, IJsonModel<InternalLocalShellToolCallOutputItemResource>
     {
-        public InternalLocalShellToolCallOutputItemResource() : this(ResponseItemKind.LocalShellCallOutput, null, default, default, null)
+        public InternalLocalShellToolCallOutputItemResource() : this(ResponseItemKind.LocalShellCallOutput, null, null, default, null)
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalLocalShellToolCallOutputItemResource(document.RootElement, data, options);
+                        return DeserializeInternalLocalShellToolCallOutputItemResource(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalLocalShellToolCallOutputItemResource)} does not support reading '{options.Format}' format.");
@@ -53,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalLocalShellToolCallOutputItemResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -74,20 +66,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalLocalShellToolCallOutputItemResource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
             }
-            if (!Patch.Contains("$.output"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(Output);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalLocalShellToolCallOutputItemResource IJsonModel<InternalLocalShellToolCallOutputItemResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalLocalShellToolCallOutputItemResource)JsonModelCreateCore(ref reader, options);
@@ -101,11 +89,11 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalLocalShellToolCallOutputItemResource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalLocalShellToolCallOutputItemResource(document.RootElement, null, options);
+            return DeserializeInternalLocalShellToolCallOutputItemResource(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal static InternalLocalShellToolCallOutputItemResource DeserializeInternalLocalShellToolCallOutputItemResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalLocalShellToolCallOutputItemResource DeserializeInternalLocalShellToolCallOutputItemResource(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -113,9 +101,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalLocalShellToolCallOutputItemResourceStatus? status = default;
             string output = default;
             foreach (var prop in element.EnumerateObject())
@@ -144,9 +130,10 @@ namespace OpenAI.Responses
                     output = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalLocalShellToolCallOutputItemResource(kind, id, patch, status, output);
+            return new InternalLocalShellToolCallOutputItemResource(kind, id, additionalBinaryDataProperties, status, output);
         }
     }
 }

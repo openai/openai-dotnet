@@ -2,16 +2,15 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeAudioFormatGA : RealtimeAudioFormat
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownRealtimeAudioFormatGA(InternalRealtimeAudioFormatType kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeAudioFormatGA(InternalRealtimeAudioFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

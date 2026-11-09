@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,20 +12,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeTranscriptionSessionOptions : RealtimeSessionOptions
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public RealtimeTranscriptionSessionOptions() : this(InternalRealtimeSessionCreateRequestGABaseTypeGA.Transcription, default, null, null)
+        public RealtimeTranscriptionSessionOptions() : this(InternalRealtimeSessionCreateRequestGABaseTypeGA.Transcription, null, null, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA kind, in JsonPatch patch, RealtimeTranscriptionSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties) : base(kind, patch)
+        internal RealtimeTranscriptionSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, RealtimeTranscriptionSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             AudioOptions = audioOptions;
             IncludedProperties = includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

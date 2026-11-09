@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using OpenAI;
 
@@ -10,26 +10,20 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCodeInterpreterToolCallItemParam : InternalItemParam
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalCodeInterpreterToolCallItemParam(string code) : base(ResponseItemKind.CodeInterpreterCall)
         {
             Code = code;
             Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalCodeInterpreterToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, patch)
+        internal InternalCodeInterpreterToolCallItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ContainerId = containerId;
             Code = code;
             Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ContainerId { get; set; }

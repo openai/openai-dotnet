@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -12,12 +13,10 @@ namespace OpenAI.Responses
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal StreamingResponseAudioTranscriptDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseAudioTranscriptDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

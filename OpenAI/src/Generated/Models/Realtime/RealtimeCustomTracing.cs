@@ -3,11 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Realtime
@@ -15,33 +12,31 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeCustomTracing
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public RealtimeCustomTracing() : this(null, null, null, default)
+        public RealtimeCustomTracing() : this(null, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeCustomTracing(string workflowName, string groupId, IDictionary<string, BinaryData> metadata, in JsonPatch patch)
+        internal RealtimeCustomTracing(string workflowName, string groupId, IDictionary<string, BinaryData> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             WorkflowName = workflowName;
             GroupId = groupId;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, BinaryData>();
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string WorkflowName { get; set; }
 
         public string GroupId { get; set; }
 
         public IDictionary<string, BinaryData> Metadata { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

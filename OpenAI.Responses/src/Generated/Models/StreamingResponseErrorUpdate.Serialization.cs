@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>
     {
-        public StreamingResponseErrorUpdate() : this(StreamingResponseUpdateKind.Error, default, default, null, null, null)
+        public StreamingResponseErrorUpdate() : this(StreamingResponseUpdateKind.Error, default, null, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseErrorUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseErrorUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseErrorUpdate)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<StreamingResponseErrorUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,33 +64,35 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseErrorUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Code) && !Patch.Contains("$.code"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("code"u8);
-                writer.WriteStringValue(Code);
+                if (Optional.IsDefined(Code))
+                {
+                    writer.WritePropertyName("code"u8);
+                    writer.WriteStringValue(Code);
+                }
+                else
+                {
+                    writer.WriteNull("code"u8);
+                }
             }
-            else if (!Patch.Contains("$.code"u8))
-            {
-                writer.WriteNull("code"u8);
-            }
-            if (!Patch.Contains("$.message"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (Optional.IsDefined(Param) && !Patch.Contains("$.param"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                if (Optional.IsDefined(Param))
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
             }
-            else if (!Patch.Contains("$.param"u8))
-            {
-                writer.WriteNull("param"u8);
-            }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseErrorUpdate IJsonModel<StreamingResponseErrorUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseErrorUpdate)JsonModelCreateCore(ref reader, options);
@@ -111,10 +105,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseErrorUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseErrorUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseErrorUpdate(document.RootElement, options);
         }
 
-        internal static StreamingResponseErrorUpdate DeserializeStreamingResponseErrorUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseErrorUpdate DeserializeStreamingResponseErrorUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -122,9 +116,7 @@ namespace OpenAI.Responses
             }
             StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string code = default;
             string message = default;
             string @param = default;
@@ -165,12 +157,13 @@ namespace OpenAI.Responses
                     @param = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseErrorUpdate(
                 kind,
                 sequenceNumber,
-                patch,
+                additionalBinaryDataProperties,
                 code,
                 message,
                 @param);

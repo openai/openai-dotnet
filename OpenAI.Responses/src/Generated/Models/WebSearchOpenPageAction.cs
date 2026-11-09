@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,15 +11,13 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchOpenPageAction : WebSearchAction
     {
-        public WebSearchOpenPageAction() : this(WebSearchActionKind.OpenPage, default, null)
+        public WebSearchOpenPageAction() : this(WebSearchActionKind.OpenPage, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchOpenPageAction(WebSearchActionKind kind, in JsonPatch patch, Uri uri) : base(kind, patch)
+        internal WebSearchOpenPageAction(WebSearchActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri uri) : base(kind, additionalBinaryDataProperties)
         {
             Uri = uri;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

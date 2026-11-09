@@ -2,35 +2,32 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class ResponseContentPart
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         private protected ResponseContentPart(InternalItemContentType internalType)
         {
             InternalType = internalType;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseContentPart(InternalItemContentType internalType, in JsonPatch patch)
+        internal ResponseContentPart(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InternalType = internalType;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

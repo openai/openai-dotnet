@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -16,26 +16,20 @@ namespace OpenAI.Responses
         private string _encryptedContent;
         private bool _encryptedContentIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(ResponseItemKind.Reasoning)
         {
             Argument.AssertNotNull(summaryParts, nameof(summaryParts));
 
             SummaryParts = summaryParts.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ReasoningResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
+        internal ReasoningResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             _encryptedContent = encryptedContent;
             SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ReasoningStatus? Status { get; set; }
 

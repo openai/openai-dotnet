@@ -3,37 +3,33 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerExpirationPolicy
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public ContainerExpirationPolicy()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor, TimeSpan? duration, in JsonPatch patch)
+        internal ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor, TimeSpan? duration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Anchor = anchor;
             Duration = duration;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public ContainerExpirationPolicyAnchor? Anchor { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

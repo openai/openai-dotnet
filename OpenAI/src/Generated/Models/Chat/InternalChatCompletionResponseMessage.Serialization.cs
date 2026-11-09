@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
     {
-        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, default)
+        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, data, options);
+                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Chat
 
         void IJsonModel<InternalChatCompletionResponseMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,84 +63,70 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
-                writer.WritePropertyName("content"u8);
-                SerializeContentValue(writer, options);
-            }
-            else if (!Patch.Contains("$.content"u8))
-            {
-                writer.WriteNull("content"u8);
-            }
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
-            {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
-            }
-            else if (!Patch.Contains("$.refusal"u8))
-            {
-                writer.WriteNull("refusal"u8);
-            }
-            if (Patch.Contains("$.tool_calls"u8))
-            {
-                if (!Patch.IsRemoved("$.tool_calls"u8))
+                if (Optional.IsDefined(Content))
                 {
-                    writer.WritePropertyName("tool_calls"u8);
-                    Patch.WriteTo(writer, "$.tool_calls"u8);
+                    writer.WritePropertyName("content"u8);
+                    SerializeContentValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("content"u8);
                 }
             }
-            else if (options.Format != "W" && Optional.IsCollectionDefined(ToolCalls))
+            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            {
+                if (Optional.IsDefined(Refusal))
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
-                for (int i = 0; i < ToolCalls.Count; i++)
+                foreach (ChatToolCall item in ToolCalls)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(ToolCalls[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            if (Patch.Contains("$.annotations"u8))
-            {
-                if (!Patch.IsRemoved("$.annotations"u8))
-                {
-                    writer.WritePropertyName("annotations"u8);
-                    Patch.WriteTo(writer, "$.annotations"u8);
-                }
-            }
-            else if (options.Format != "W" && Optional.IsCollectionDefined(Annotations))
+            // Plugin customization: remove options.Format != "W" check
+            if (Optional.IsCollectionDefined(Annotations) && _additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
-                for (int i = 0; i < Annotations.Count; i++)
+                foreach (ChatMessageAnnotation item in Annotations)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Annotations[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.annotations"u8);
                 writer.WriteEndArray();
             }
-            if (!Patch.Contains("$.role"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
-                writer.WritePropertyName("function_call"u8);
-                writer.WriteObjectValue(FunctionCall, options);
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+                if (Optional.IsDefined(FunctionCall))
+                {
+                    writer.WritePropertyName("function_call"u8);
+                    writer.WriteObjectValue(FunctionCall, options);
+                }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
-            if (Optional.IsDefined(Audio, _audioIsDefined) && !Patch.Contains("$.audio"u8))
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+            if (Optional.IsDefined(Audio, _audioIsDefined) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 if (Audio != null)
                 {
@@ -161,9 +138,26 @@ namespace OpenAI.Chat
                     writer.WriteNull("audio"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         InternalChatCompletionResponseMessage IJsonModel<InternalChatCompletionResponseMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -176,10 +170,12 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionResponseMessage(document.RootElement, null, options);
+            return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
         }
 
-        internal static InternalChatCompletionResponseMessage DeserializeInternalChatCompletionResponseMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        internal static InternalChatCompletionResponseMessage DeserializeInternalChatCompletionResponseMessage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -193,9 +189,7 @@ namespace OpenAI.Chat
             ChatFunctionCall functionCall = default;
             bool audioIsDefined = false;
             ChatOutputAudio audio = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("content"u8))
@@ -222,7 +216,7 @@ namespace OpenAI.Chat
                     List<ChatToolCall> array = new List<ChatToolCall>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatToolCall.DeserializeChatToolCall(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatToolCall.DeserializeChatToolCall(item, options));
                     }
                     toolCalls = array;
                     continue;
@@ -236,7 +230,7 @@ namespace OpenAI.Chat
                     List<ChatMessageAnnotation> array = new List<ChatMessageAnnotation>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatMessageAnnotation.DeserializeChatMessageAnnotation(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatMessageAnnotation.DeserializeChatMessageAnnotation(item, options));
                     }
                     annotations = array;
                     continue;
@@ -252,7 +246,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("audio"u8))
@@ -263,10 +257,11 @@ namespace OpenAI.Chat
                         audio = null;
                         continue;
                     }
-                    audio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalChatCompletionResponseMessage(
                 content,
@@ -276,205 +271,12 @@ namespace OpenAI.Chat
                 role,
                 functionCall,
                 audio,
-                patch)
+                additionalBinaryDataProperties)
             {
                 _audioIsDefined = audioIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("function_call"u8))
-            {
-                if (FunctionCall == null)
-                {
-                    return false;
-                }
-                return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
-            }
-            if (local.StartsWith("audio"u8))
-            {
-                if (Audio == null)
-                {
-                    return false;
-                }
-                return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
-            }
-            if (local.StartsWith("tool_calls"u8))
-            {
-                int propertyLength = "tool_calls"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (ToolCalls == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveToolCallsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
-                {
-                    return false;
-                }
-                if (ToolCalls[index] == null)
-                {
-                    return false;
-                }
-                return ToolCalls[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            if (local.StartsWith("annotations"u8))
-            {
-                int propertyLength = "annotations"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Annotations == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveAnnotationsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
-                {
-                    return false;
-                }
-                if (Annotations[index] == null)
-                {
-                    return false;
-                }
-                return Annotations[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("function_call"u8))
-            {
-                if (FunctionCall == null)
-                {
-                    return false;
-                }
-                FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("audio"u8))
-            {
-                if (Audio == null)
-                {
-                    return false;
-                }
-                Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("tool_calls"u8))
-            {
-                int propertyLength = "tool_calls"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (ToolCalls == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
-                {
-                    return false;
-                }
-                if (ToolCalls[index] == null)
-                {
-                    return false;
-                }
-                ToolCalls[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            if (local.StartsWith("annotations"u8))
-            {
-                int propertyLength = "annotations"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Annotations == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
-                {
-                    return false;
-                }
-                if (Annotations[index] == null)
-                {
-                    return false;
-                }
-                Annotations[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveToolCallsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveToolCalls(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<ChatToolCall> ActiveToolCalls()
-        {
-            if (!Optional.IsCollectionDefined(ToolCalls))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
-            for (int i = 0; i < ToolCalls.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]"))) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return ToolCalls[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveAnnotationsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveAnnotations(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        private IEnumerable<ChatMessageAnnotation> ActiveAnnotations()
-        {
-            if (!Optional.IsCollectionDefined(Annotations))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
-            for (int i = 0; i < Annotations.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Annotations[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

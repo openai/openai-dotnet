@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionDoubleClick : ComputerCallAction, IJsonModel<InternalComputerActionDoubleClick>
     {
-        public InternalComputerActionDoubleClick() : this(ComputerCallActionKind.DoubleClick, default, default, default)
+        public InternalComputerActionDoubleClick() : this(ComputerCallActionKind.DoubleClick, null, default, default)
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalComputerActionDoubleClick(document.RootElement, data, options);
+                        return DeserializeInternalComputerActionDoubleClick(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support reading '{options.Format}' format.");
@@ -53,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalComputerActionDoubleClick>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -74,20 +66,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.x"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("x") != true)
             {
                 writer.WritePropertyName("x"u8);
                 writer.WriteNumberValue(X);
             }
-            if (!Patch.Contains("$.y"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("y") != true)
             {
                 writer.WritePropertyName("y"u8);
                 writer.WriteNumberValue(Y);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerActionDoubleClick IJsonModel<InternalComputerActionDoubleClick>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionDoubleClick)JsonModelCreateCore(ref reader, options);
@@ -101,21 +89,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerActionDoubleClick(document.RootElement, null, options);
+            return DeserializeInternalComputerActionDoubleClick(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal static InternalComputerActionDoubleClick DeserializeInternalComputerActionDoubleClick(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalComputerActionDoubleClick DeserializeInternalComputerActionDoubleClick(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ComputerCallActionKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int x = default;
             int y = default;
             foreach (var prop in element.EnumerateObject())
@@ -135,9 +121,10 @@ namespace OpenAI.Responses
                     y = prop.Value.GetInt32();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionDoubleClick(kind, patch, x, y);
+            return new InternalComputerActionDoubleClick(kind, additionalBinaryDataProperties, x, y);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }

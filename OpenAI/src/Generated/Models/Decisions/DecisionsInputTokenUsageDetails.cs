@@ -2,18 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsInputTokenUsageDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal DecisionsInputTokenUsageDetails(long cacheWriteTokenCount, long cachedTokenCount)
         {
@@ -21,22 +19,21 @@ namespace OpenAI.Decisions
             CachedTokenCount = cachedTokenCount;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputTokenUsageDetails(long cacheWriteTokenCount, long cachedTokenCount, in JsonPatch patch)
+        internal DecisionsInputTokenUsageDetails(long cacheWriteTokenCount, long cachedTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             CacheWriteTokenCount = cacheWriteTokenCount;
             CachedTokenCount = cachedTokenCount;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public long CacheWriteTokenCount { get; set; }
 
         public long CachedTokenCount { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

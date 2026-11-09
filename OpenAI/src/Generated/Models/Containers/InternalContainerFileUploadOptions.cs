@@ -2,42 +2,39 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     internal partial class InternalContainerFileUploadOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public InternalContainerFileUploadOptions()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalContainerFileUploadOptions(string fileId, FileBinaryContent @file, in JsonPatch patch)
+        internal InternalContainerFileUploadOptions(string fileId, FileBinaryContent @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
             File = @file;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string FileId { get; set; }
 
         [Experimental("SCME0004")]
         public FileBinaryContent File { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

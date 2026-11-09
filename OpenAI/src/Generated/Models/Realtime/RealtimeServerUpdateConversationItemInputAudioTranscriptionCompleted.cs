@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,7 +12,6 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId, string itemId, int contentIndex, string transcript, RealtimeTranscriptionUsage usage) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionCompleted)
         {
             EventId = eventId;
@@ -21,12 +20,9 @@ namespace OpenAI.Realtime
             Transcript = transcript;
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             Usage = usage;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string transcript, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, RealtimeTranscriptionUsage usage) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string itemId, int contentIndex, string transcript, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, RealtimeTranscriptionUsage usage) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
@@ -35,9 +31,7 @@ namespace OpenAI.Realtime
             Transcript = transcript;
             TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             Usage = usage;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

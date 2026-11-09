@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -28,8 +28,7 @@ namespace OpenAI.Responses
             ToolArguments = toolArguments;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string serverLabel, string toolName, BinaryData toolArguments, string toolOutput, BinaryData error) : base(kind, id, patch)
+        internal McpToolCallItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, string toolName, BinaryData toolArguments, string toolOutput, BinaryData error) : base(kind, id, additionalBinaryDataProperties)
         {
             ServerLabel = serverLabel;
             ToolName = toolName;
@@ -37,7 +36,6 @@ namespace OpenAI.Responses
             _toolOutput = toolOutput;
             _error = error;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

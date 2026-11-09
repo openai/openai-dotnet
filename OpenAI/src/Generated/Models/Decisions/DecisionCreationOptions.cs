@@ -2,12 +2,10 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Decisions
@@ -15,8 +13,7 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionCreationOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private string _promptCacheKey;
         private bool _promptCacheKeyIsDefined;
         private DecisionsPromptCacheOptions _promptCacheOptions;
@@ -24,7 +21,6 @@ namespace OpenAI.Decisions
         private string _safetyIdentifier;
         private bool _safetyIdentifierIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionCreationOptions(IEnumerable<DecisionsItem> inputItems, string model, IEnumerable<DecisionsQuestion> questions)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
@@ -34,12 +30,9 @@ namespace OpenAI.Decisions
             InputItems = inputItems.ToList();
             Model = model;
             Questions = questions.ToList();
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string promptCacheKey, DecisionsPromptCacheOptions promptCacheOptions, string safetyIdentifier, in JsonPatch patch)
+        internal DecisionCreationOptions(IList<DecisionsItem> inputItems, string model, IList<DecisionsQuestion> questions, string promptCacheKey, DecisionsPromptCacheOptions promptCacheOptions, string safetyIdentifier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             InputItems = inputItems ?? new ChangeTrackingList<DecisionsItem>();
@@ -48,15 +41,8 @@ namespace OpenAI.Decisions
             _promptCacheKey = promptCacheKey;
             _promptCacheOptions = promptCacheOptions;
             _safetyIdentifier = safetyIdentifier;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IList<DecisionsItem> InputItems { get; }
 
@@ -101,6 +87,12 @@ namespace OpenAI.Decisions
                 _safetyIdentifier = value;
                 _safetyIdentifierIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

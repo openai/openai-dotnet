@@ -2,18 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsPromptCacheOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private DecisionsPromptCacheMode? _mode;
         private bool _modeIsDefined;
 
@@ -21,19 +19,12 @@ namespace OpenAI.Decisions
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsPromptCacheOptions(DecisionsPromptCacheMode? mode, DecisionsPromptCacheTimeToLive? timeToLive, in JsonPatch patch)
+        internal DecisionsPromptCacheOptions(DecisionsPromptCacheMode? mode, DecisionsPromptCacheTimeToLive? timeToLive, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             _mode = mode;
             TimeToLive = timeToLive;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public DecisionsPromptCacheMode? Mode
         {
@@ -49,5 +40,11 @@ namespace OpenAI.Decisions
         }
 
         public DecisionsPromptCacheTimeToLive? TimeToLive { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

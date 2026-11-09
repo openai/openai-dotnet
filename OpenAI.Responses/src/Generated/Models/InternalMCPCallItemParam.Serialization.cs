@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPCallItemParam : InternalItemParam, IJsonModel<InternalMCPCallItemParam>
     {
-        public InternalMCPCallItemParam() : this(ResponseItemKind.McpCall, default, null, null, null, null, null)
+        public InternalMCPCallItemParam() : this(ResponseItemKind.McpCall, null, null, null, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalMCPCallItemParam(document.RootElement, data, options);
+                        return DeserializeInternalMCPCallItemParam(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalMCPCallItemParam)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalMCPCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,23 +64,22 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalMCPCallItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.server_label"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
             {
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (!Patch.Contains("$.arguments"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
-            if (Optional.IsDefined(Output, _outputIsDefined) && !Patch.Contains("$.output"u8))
+            if (Optional.IsDefined(Output, _outputIsDefined) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 if (Output != null)
                 {
@@ -100,7 +91,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("output"u8);
                 }
             }
-            if (Optional.IsDefined(Error, _errorIsDefined) && !Patch.Contains("$.error"u8))
+            if (Optional.IsDefined(Error, _errorIsDefined) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
                 if (Error != null)
                 {
@@ -112,9 +103,6 @@ namespace OpenAI.Responses
                     writer.WriteNull("error"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalMCPCallItemParam IJsonModel<InternalMCPCallItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMCPCallItemParam)JsonModelCreateCore(ref reader, options);
@@ -127,19 +115,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalMCPCallItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalMCPCallItemParam(document.RootElement, null, options);
+            return DeserializeInternalMCPCallItemParam(document.RootElement, options);
         }
 
-        internal static InternalMCPCallItemParam DeserializeInternalMCPCallItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalMCPCallItemParam DeserializeInternalMCPCallItemParam(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
             string name = default;
             string arguments = default;
@@ -191,11 +177,12 @@ namespace OpenAI.Responses
                     error = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalMCPCallItemParam(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 serverLabel,
                 name,
                 arguments,

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace OpenAI.Decisions
         private DecisionsCustomToolCallOutputStatus? _status;
         private bool _statusIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsCustomToolCallOutputItem(string callId, IEnumerable<DecisionsInputContentPart> output) : base(DecisionsItemKind.CustomToolCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -26,21 +25,16 @@ namespace OpenAI.Decisions
 
             CallId = callId;
             Output = output.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsCustomToolCallOutputItem(DecisionsItemKind kind, in JsonPatch patch, string callId, IList<DecisionsInputContentPart> output, string id, DecisionsCustomToolCallOutputStatus? status) : base(kind, patch)
+        internal DecisionsCustomToolCallOutputItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<DecisionsInputContentPart> output, string id, DecisionsCustomToolCallOutputStatus? status) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Output = output ?? new ChangeTrackingList<DecisionsInputContentPart>();
             _id = id;
             _status = status;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 

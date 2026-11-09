@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>
     {
-        public StreamingResponseFunctionCallArgumentsDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseFunctionCallArgumentsDelta, default, default, null, default, null)
+        public StreamingResponseFunctionCallArgumentsDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseFunctionCallArgumentsDelta, default, null, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,25 +64,21 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.item_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.output_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.delta"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("delta") != true)
             {
                 writer.WritePropertyName("delta"u8);
                 SerializeDeltaValue(writer, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseFunctionCallArgumentsDeltaUpdate IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseFunctionCallArgumentsDeltaUpdate)JsonModelCreateCore(ref reader, options);
@@ -103,10 +91,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, options);
         }
 
-        internal static StreamingResponseFunctionCallArgumentsDeltaUpdate DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseFunctionCallArgumentsDeltaUpdate DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -114,9 +102,7 @@ namespace OpenAI.Responses
             }
             StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string itemId = default;
             int outputIndex = default;
             BinaryData delta = default;
@@ -147,12 +133,13 @@ namespace OpenAI.Responses
                     DeserializeDeltaValue(prop, ref delta, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseFunctionCallArgumentsDeltaUpdate(
                 kind,
                 sequenceNumber,
-                patch,
+                additionalBinaryDataProperties,
                 itemId,
                 outputIndex,
                 delta);

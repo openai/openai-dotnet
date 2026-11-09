@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -11,25 +11,19 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesDeveloperMessageItemParam : InternalResponsesMessageItemParam
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalResponsesDeveloperMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalResponsesMessageRole.Developer)
         {
             Content = content.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalResponsesDeveloperMessageItemParam(ResponseItemKind kind, in JsonPatch patch, InternalResponsesMessageRole role, IList<ResponseContentPart> content) : base(kind, patch, role)
+        internal InternalResponsesDeveloperMessageItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponsesMessageRole role, IList<ResponseContentPart> content) : base(kind, additionalBinaryDataProperties, role)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<ResponseContentPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.

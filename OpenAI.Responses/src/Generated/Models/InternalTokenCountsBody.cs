@@ -3,19 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalTokenCountsBody
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private string _model;
         private bool _modelIsDefined;
         private BinaryData _input;
@@ -37,15 +32,12 @@ namespace OpenAI.Responses
         private bool? _parallelToolCalls;
         private bool _parallelToolCallsIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public InternalTokenCountsBody() : this(null, null, null, null, null, null, default, null, null, null, default, default)
+        public InternalTokenCountsBody() : this(null, null, null, null, null, null, default, null, null, null, default, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, BinaryData toolChoice, bool? parallelToolCalls, in JsonPatch patch)
+        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, BinaryData toolChoice, bool? parallelToolCalls, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             _model = model;
@@ -59,16 +51,9 @@ namespace OpenAI.Responses
             _conversation = conversation;
             _toolChoice = toolChoice;
             _parallelToolCalls = parallelToolCalls;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Model
         {
@@ -193,6 +178,12 @@ namespace OpenAI.Responses
                 _parallelToolCalls = value;
                 _parallelToolCallsIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

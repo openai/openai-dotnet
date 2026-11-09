@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,28 +13,22 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceAnswer : DecisionsAnswer
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionsChoiceAnswer(DecisionsChoiceValue choice, float confidence, string name, IEnumerable<DecisionsChoiceProbability> probabilities) : base(DecisionsAnswerKind.Choice)
         {
             Choice = choice;
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsChoiceAnswer(DecisionsAnswerKind kind, in JsonPatch patch, DecisionsChoiceValue choice, float confidence, string name, IList<DecisionsChoiceProbability> probabilities) : base(kind, patch)
+        internal DecisionsChoiceAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DecisionsChoiceValue choice, float confidence, string name, IList<DecisionsChoiceProbability> probabilities) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Choice = choice;
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities ?? new ChangeTrackingList<DecisionsChoiceProbability>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public DecisionsChoiceValue Choice { get; set; }
 

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, data, options);
+                        return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeClientCommandResponseCreate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,20 +60,16 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(EventId) && !Patch.Contains("$.event_id"u8))
+            if (Optional.IsDefined(EventId) && _additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (Optional.IsDefined(ResponseOptions) && !Patch.Contains("$.response"u8))
+            if (Optional.IsDefined(ResponseOptions) && _additionalBinaryDataProperties?.ContainsKey("response") != true)
             {
                 writer.WritePropertyName("response"u8);
                 writer.WriteObjectValue(ResponseOptions, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeClientCommandResponseCreate IJsonModel<RealtimeClientCommandResponseCreate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeClientCommandResponseCreate)JsonModelCreateCore(ref reader, options);
@@ -94,19 +82,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, null, options);
+            return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, options);
         }
 
-        internal static RealtimeClientCommandResponseCreate DeserializeRealtimeClientCommandResponseCreate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeClientCommandResponseCreate DeserializeRealtimeClientCommandResponseCreate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeClientCommandKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             RealtimeResponseOptions responseOptions = default;
             foreach (var prop in element.EnumerateObject())
@@ -127,48 +113,13 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    responseOptions = RealtimeResponseOptions.DeserializeRealtimeResponseOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    responseOptions = RealtimeResponseOptions.DeserializeRealtimeResponseOptions(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeClientCommandResponseCreate(kind, patch, eventId, responseOptions);
+            return new RealtimeClientCommandResponseCreate(kind, additionalBinaryDataProperties, eventId, responseOptions);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("response"u8))
-            {
-                if (ResponseOptions == null)
-                {
-                    return false;
-                }
-                return ResponseOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("response"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("response"u8))
-            {
-                if (ResponseOptions == null)
-                {
-                    return false;
-                }
-                ResponseOptions.Patch.Set([.. "$"u8, .. local.Slice("response"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

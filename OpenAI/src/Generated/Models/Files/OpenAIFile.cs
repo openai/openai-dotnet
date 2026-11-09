@@ -12,6 +12,8 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
         {
             Id = id;
@@ -23,7 +25,11 @@ namespace OpenAI.Files
             Purpose = purpose;
             Status = status;
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresOn, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
@@ -39,6 +45,8 @@ namespace OpenAI.Files
             StatusDetails = statusDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public string Id { get; }
 

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeTranscriptionTokenUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionTokenUsage>
     {
-        public RealtimeTranscriptionTokenUsage() : this(InternalTranscriptionTokenUsageBaseTypeGA.Tokens, default, default, null, default, default)
+        public RealtimeTranscriptionTokenUsage() : this(InternalTranscriptionTokenUsageBaseTypeGA.Tokens, null, default, null, default, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeTranscriptionTokenUsage(document.RootElement, data, options);
+                        return DeserializeRealtimeTranscriptionTokenUsage(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeTranscriptionTokenUsage)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeTranscriptionTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,30 +64,26 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTranscriptionTokenUsage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.input_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
                 writer.WritePropertyName("input_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
             }
-            if (Optional.IsDefined(InputTokenDetails) && !Patch.Contains("$.input_token_details"u8))
+            if (Optional.IsDefined(InputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("input_token_details") != true)
             {
                 writer.WritePropertyName("input_token_details"u8);
                 writer.WriteObjectValue(InputTokenDetails, options);
             }
-            if (!Patch.Contains("$.output_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
             {
                 writer.WritePropertyName("output_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
-            if (!Patch.Contains("$.total_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokenCount);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeTranscriptionTokenUsage IJsonModel<RealtimeTranscriptionTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeTranscriptionTokenUsage)JsonModelCreateCore(ref reader, options);
@@ -108,19 +96,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeTranscriptionTokenUsage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeTranscriptionTokenUsage(document.RootElement, null, options);
+            return DeserializeRealtimeTranscriptionTokenUsage(document.RootElement, options);
         }
 
-        internal static RealtimeTranscriptionTokenUsage DeserializeRealtimeTranscriptionTokenUsage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeTranscriptionTokenUsage DeserializeRealtimeTranscriptionTokenUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalTranscriptionTokenUsageBaseTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int inputTokenCount = default;
             RealtimeTranscriptionInputTokenUsageDetails inputTokenDetails = default;
             int outputTokenCount = default;
@@ -143,7 +129,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    inputTokenDetails = RealtimeTranscriptionInputTokenUsageDetails.DeserializeRealtimeTranscriptionInputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    inputTokenDetails = RealtimeTranscriptionInputTokenUsageDetails.DeserializeRealtimeTranscriptionInputTokenUsageDetails(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
@@ -156,51 +142,16 @@ namespace OpenAI.Realtime
                     totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeTranscriptionTokenUsage(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 inputTokenCount,
                 inputTokenDetails,
                 outputTokenCount,
                 totalTokenCount);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("input_token_details"u8))
-            {
-                if (InputTokenDetails == null)
-                {
-                    return false;
-                }
-                return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_token_details"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("input_token_details"u8))
-            {
-                if (InputTokenDetails == null)
-                {
-                    return false;
-                }
-                InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("input_token_details"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

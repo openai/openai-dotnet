@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionDrag : ComputerCallAction, IJsonModel<InternalComputerActionDrag>
     {
-        public InternalComputerActionDrag() : this(ComputerCallActionKind.Drag, default, null)
+        public InternalComputerActionDrag() : this(ComputerCallActionKind.Drag, null, null)
         {
         }
 
@@ -26,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalComputerActionDrag(document.RootElement, data, options);
+                        return DeserializeInternalComputerActionDrag(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{options.Format}' format.");
@@ -54,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalComputerActionDrag>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -75,34 +66,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.path"u8))
-            {
-                if (!Patch.IsRemoved("$.path"u8))
-                {
-                    writer.WritePropertyName("path"u8);
-                    Patch.WriteTo(writer, "$.path"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("path") != true)
             {
                 writer.WritePropertyName("path"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "path"u8);
-                for (int i = 0; i < Path.Count; i++)
+                foreach (InternalCoordinate item in Path)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]")) || Path[i] != null && Path[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Path[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.path"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerActionDrag IJsonModel<InternalComputerActionDrag>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionDrag)JsonModelCreateCore(ref reader, options);
@@ -116,21 +89,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerActionDrag(document.RootElement, null, options);
+            return DeserializeInternalComputerActionDrag(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ComputerCallActionKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<InternalCoordinate> path = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -144,104 +115,16 @@ namespace OpenAI.Responses
                     List<InternalCoordinate> array = new List<InternalCoordinate>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalCoordinate.DeserializeInternalCoordinate(item, item.GetUtf8Bytes(), options));
+                        array.Add(InternalCoordinate.DeserializeInternalCoordinate(item, options));
                     }
                     path = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionDrag(kind, patch, path ?? new ChangeTrackingList<InternalCoordinate>());
+            return new InternalComputerActionDrag(kind, additionalBinaryDataProperties, path ?? new ChangeTrackingList<InternalCoordinate>());
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("path"u8))
-            {
-                int propertyLength = "path"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Path == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolvePathArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
-                {
-                    return false;
-                }
-                if (Path[index] == null)
-                {
-                    return false;
-                }
-                return Path[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("path"u8))
-            {
-                int propertyLength = "path"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Path == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
-                {
-                    return false;
-                }
-                if (Path[index] == null)
-                {
-                    return false;
-                }
-                Path[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolvePathArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActivePath(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<InternalCoordinate> ActivePath()
-        {
-            if (!Optional.IsCollectionDefined(Path))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "path"u8);
-            for (int i = 0; i < Path.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]"))) && (Path[i] == null || !Path[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Path[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

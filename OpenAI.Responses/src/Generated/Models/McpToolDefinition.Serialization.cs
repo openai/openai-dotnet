@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolDefinition(document.RootElement, data, options);
+                        return DeserializeMcpToolDefinition(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolDefinition)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<McpToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,12 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(McpToolDefinition)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Description, _descriptionIsDefined) && !Patch.Contains("$.description"u8))
+            if (Optional.IsDefined(Description, _descriptionIsDefined) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
             {
                 if (Description != null)
                 {
@@ -89,7 +80,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("description"u8);
                 }
             }
-            if (!Patch.Contains("$.input_schema"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_schema") != true)
             {
                 writer.WritePropertyName("input_schema"u8);
 #if NET6_0_OR_GREATER
@@ -101,7 +92,7 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(Annotations, _annotationsIsDefined) && !Patch.Contains("$.annotations"u8))
+            if (Optional.IsDefined(Annotations, _annotationsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 if (Annotations != null)
                 {
@@ -120,9 +111,26 @@ namespace OpenAI.Responses
                     writer.WriteNull("annotations"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         McpToolDefinition IJsonModel<McpToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -135,10 +143,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolDefinition)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolDefinition(document.RootElement, null, options);
+            return DeserializeMcpToolDefinition(document.RootElement, options);
         }
 
-        internal static McpToolDefinition DeserializeMcpToolDefinition(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static McpToolDefinition DeserializeMcpToolDefinition(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -150,9 +158,7 @@ namespace OpenAI.Responses
             BinaryData inputSchema = default;
             bool annotationsIsDefined = false;
             BinaryData annotations = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("name"u8))
@@ -187,9 +193,10 @@ namespace OpenAI.Responses
                     annotations = prop.Value.GetUtf8Bytes();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new McpToolDefinition(name, description, inputSchema, annotations, patch)
+            return new McpToolDefinition(name, description, inputSchema, annotations, additionalBinaryDataProperties)
             {
                 _descriptionIsDefined = descriptionIsDefined,
                 _annotationsIsDefined = annotationsIsDefined

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsOutputTextContentPart : DecisionsOutputContentPart, IJsonModel<DecisionsOutputTextContentPart>
     {
-        public DecisionsOutputTextContentPart() : this(DecisionsOutputContentPartKind.OutputText, default, null)
+        public DecisionsOutputTextContentPart() : this(DecisionsOutputContentPartKind.OutputText, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsOutputTextContentPart(document.RootElement, data, options);
+                        return DeserializeDecisionsOutputTextContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsOutputTextContentPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsOutputTextContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,15 +64,11 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsOutputTextContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.text"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsOutputTextContentPart IJsonModel<DecisionsOutputTextContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsOutputTextContentPart)JsonModelCreateCore(ref reader, options);
@@ -93,19 +81,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsOutputTextContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsOutputTextContentPart(document.RootElement, null, options);
+            return DeserializeDecisionsOutputTextContentPart(document.RootElement, options);
         }
 
-        internal static DecisionsOutputTextContentPart DeserializeDecisionsOutputTextContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsOutputTextContentPart DeserializeDecisionsOutputTextContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsOutputContentPartKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -119,9 +105,10 @@ namespace OpenAI.Decisions
                     text = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsOutputTextContentPart(kind, patch, text);
+            return new DecisionsOutputTextContentPart(kind, additionalBinaryDataProperties, text);
         }
     }
 }

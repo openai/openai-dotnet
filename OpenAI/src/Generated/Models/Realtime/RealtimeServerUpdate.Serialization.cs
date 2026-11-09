@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdate(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdate)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeServerUpdate)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeServerUpdate IJsonModel<RealtimeServerUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdate(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdate(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdate DeserializeRealtimeServerUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdate DeserializeRealtimeServerUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,100 +114,100 @@ namespace OpenAI.Realtime
                 switch (discriminator.GetString())
                 {
                     case "conversation.created":
-                        return RealtimeServerUpdateConversationCreated.DeserializeRealtimeServerUpdateConversationCreated(element, data, options);
+                        return RealtimeServerUpdateConversationCreated.DeserializeRealtimeServerUpdateConversationCreated(element, options);
                     case "conversation.item.added":
-                        return RealtimeServerUpdateConversationItemAdded.DeserializeRealtimeServerUpdateConversationItemAdded(element, data, options);
+                        return RealtimeServerUpdateConversationItemAdded.DeserializeRealtimeServerUpdateConversationItemAdded(element, options);
                     case "conversation.item.created":
-                        return RealtimeServerUpdateConversationItemCreated.DeserializeRealtimeServerUpdateConversationItemCreated(element, data, options);
+                        return RealtimeServerUpdateConversationItemCreated.DeserializeRealtimeServerUpdateConversationItemCreated(element, options);
                     case "conversation.item.deleted":
-                        return RealtimeServerUpdateConversationItemDeleted.DeserializeRealtimeServerUpdateConversationItemDeleted(element, data, options);
+                        return RealtimeServerUpdateConversationItemDeleted.DeserializeRealtimeServerUpdateConversationItemDeleted(element, options);
                     case "conversation.item.done":
-                        return RealtimeServerUpdateConversationItemDone.DeserializeRealtimeServerUpdateConversationItemDone(element, data, options);
+                        return RealtimeServerUpdateConversationItemDone.DeserializeRealtimeServerUpdateConversationItemDone(element, options);
                     case "conversation.item.input_audio_transcription.completed":
-                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(element, data, options);
+                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(element, options);
                     case "conversation.item.input_audio_transcription.delta":
-                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(element, data, options);
+                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(element, options);
                     case "conversation.item.input_audio_transcription.failed":
-                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(element, data, options);
+                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(element, options);
                     case "conversation.item.input_audio_transcription.segment":
-                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(element, data, options);
+                        return RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment.DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(element, options);
                     case "conversation.item.retrieved":
-                        return RealtimeServerUpdateConversationItemRetrieved.DeserializeRealtimeServerUpdateConversationItemRetrieved(element, data, options);
+                        return RealtimeServerUpdateConversationItemRetrieved.DeserializeRealtimeServerUpdateConversationItemRetrieved(element, options);
                     case "conversation.item.truncated":
-                        return RealtimeServerUpdateConversationItemTruncated.DeserializeRealtimeServerUpdateConversationItemTruncated(element, data, options);
+                        return RealtimeServerUpdateConversationItemTruncated.DeserializeRealtimeServerUpdateConversationItemTruncated(element, options);
                     case "error":
-                        return RealtimeServerUpdateError.DeserializeRealtimeServerUpdateError(element, data, options);
+                        return RealtimeServerUpdateError.DeserializeRealtimeServerUpdateError(element, options);
                     case "input_audio_buffer.cleared":
-                        return RealtimeServerUpdateInputAudioBufferCleared.DeserializeRealtimeServerUpdateInputAudioBufferCleared(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferCleared.DeserializeRealtimeServerUpdateInputAudioBufferCleared(element, options);
                     case "input_audio_buffer.committed":
-                        return RealtimeServerUpdateInputAudioBufferCommitted.DeserializeRealtimeServerUpdateInputAudioBufferCommitted(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferCommitted.DeserializeRealtimeServerUpdateInputAudioBufferCommitted(element, options);
                     case "input_audio_buffer.dtmf_event_received":
-                        return RealtimeServerUpdateInputAudioBufferDtmfEventReceived.DeserializeRealtimeServerUpdateInputAudioBufferDtmfEventReceived(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferDtmfEventReceived.DeserializeRealtimeServerUpdateInputAudioBufferDtmfEventReceived(element, options);
                     case "input_audio_buffer.speech_started":
-                        return RealtimeServerUpdateInputAudioBufferSpeechStarted.DeserializeRealtimeServerUpdateInputAudioBufferSpeechStarted(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferSpeechStarted.DeserializeRealtimeServerUpdateInputAudioBufferSpeechStarted(element, options);
                     case "input_audio_buffer.speech_stopped":
-                        return RealtimeServerUpdateInputAudioBufferSpeechStopped.DeserializeRealtimeServerUpdateInputAudioBufferSpeechStopped(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferSpeechStopped.DeserializeRealtimeServerUpdateInputAudioBufferSpeechStopped(element, options);
                     case "input_audio_buffer.timeout_triggered":
-                        return RealtimeServerUpdateInputAudioBufferTimeoutTriggered.DeserializeRealtimeServerUpdateInputAudioBufferTimeoutTriggered(element, data, options);
+                        return RealtimeServerUpdateInputAudioBufferTimeoutTriggered.DeserializeRealtimeServerUpdateInputAudioBufferTimeoutTriggered(element, options);
                     case "mcp_list_tools.completed":
-                        return RealtimeServerUpdateMcpListToolsCompleted.DeserializeRealtimeServerUpdateMcpListToolsCompleted(element, data, options);
+                        return RealtimeServerUpdateMcpListToolsCompleted.DeserializeRealtimeServerUpdateMcpListToolsCompleted(element, options);
                     case "mcp_list_tools.failed":
-                        return RealtimeServerUpdateMcpListToolsFailed.DeserializeRealtimeServerUpdateMcpListToolsFailed(element, data, options);
+                        return RealtimeServerUpdateMcpListToolsFailed.DeserializeRealtimeServerUpdateMcpListToolsFailed(element, options);
                     case "mcp_list_tools.in_progress":
-                        return RealtimeServerUpdateMcpListToolsInProgress.DeserializeRealtimeServerUpdateMcpListToolsInProgress(element, data, options);
+                        return RealtimeServerUpdateMcpListToolsInProgress.DeserializeRealtimeServerUpdateMcpListToolsInProgress(element, options);
                     case "output_audio_buffer.cleared":
-                        return RealtimeServerUpdateOutputAudioBufferCleared.DeserializeRealtimeServerUpdateOutputAudioBufferCleared(element, data, options);
+                        return RealtimeServerUpdateOutputAudioBufferCleared.DeserializeRealtimeServerUpdateOutputAudioBufferCleared(element, options);
                     case "output_audio_buffer.started":
-                        return RealtimeServerUpdateOutputAudioBufferStarted.DeserializeRealtimeServerUpdateOutputAudioBufferStarted(element, data, options);
+                        return RealtimeServerUpdateOutputAudioBufferStarted.DeserializeRealtimeServerUpdateOutputAudioBufferStarted(element, options);
                     case "output_audio_buffer.stopped":
-                        return RealtimeServerUpdateOutputAudioBufferStopped.DeserializeRealtimeServerUpdateOutputAudioBufferStopped(element, data, options);
+                        return RealtimeServerUpdateOutputAudioBufferStopped.DeserializeRealtimeServerUpdateOutputAudioBufferStopped(element, options);
                     case "rate_limits.updated":
-                        return RealtimeServerUpdateRateLimitsUpdated.DeserializeRealtimeServerUpdateRateLimitsUpdated(element, data, options);
+                        return RealtimeServerUpdateRateLimitsUpdated.DeserializeRealtimeServerUpdateRateLimitsUpdated(element, options);
                     case "response.content_part.added":
-                        return RealtimeServerUpdateResponseContentPartAdded.DeserializeRealtimeServerUpdateResponseContentPartAdded(element, data, options);
+                        return RealtimeServerUpdateResponseContentPartAdded.DeserializeRealtimeServerUpdateResponseContentPartAdded(element, options);
                     case "response.content_part.done":
-                        return RealtimeServerUpdateResponseContentPartDone.DeserializeRealtimeServerUpdateResponseContentPartDone(element, data, options);
+                        return RealtimeServerUpdateResponseContentPartDone.DeserializeRealtimeServerUpdateResponseContentPartDone(element, options);
                     case "response.created":
-                        return RealtimeServerUpdateResponseCreated.DeserializeRealtimeServerUpdateResponseCreated(element, data, options);
+                        return RealtimeServerUpdateResponseCreated.DeserializeRealtimeServerUpdateResponseCreated(element, options);
                     case "response.done":
-                        return RealtimeServerUpdateResponseDone.DeserializeRealtimeServerUpdateResponseDone(element, data, options);
+                        return RealtimeServerUpdateResponseDone.DeserializeRealtimeServerUpdateResponseDone(element, options);
                     case "response.function_call_arguments.delta":
-                        return RealtimeServerUpdateResponseFunctionCallArgumentsDelta.DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDelta(element, data, options);
+                        return RealtimeServerUpdateResponseFunctionCallArgumentsDelta.DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDelta(element, options);
                     case "response.function_call_arguments.done":
-                        return RealtimeServerUpdateResponseFunctionCallArgumentsDone.DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDone(element, data, options);
+                        return RealtimeServerUpdateResponseFunctionCallArgumentsDone.DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDone(element, options);
                     case "response.mcp_call_arguments.delta":
-                        return RealtimeServerUpdateResponseMcpCallArgumentsDelta.DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDelta(element, data, options);
+                        return RealtimeServerUpdateResponseMcpCallArgumentsDelta.DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDelta(element, options);
                     case "response.mcp_call_arguments.done":
-                        return RealtimeServerUpdateResponseMcpCallArgumentsDone.DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDone(element, data, options);
+                        return RealtimeServerUpdateResponseMcpCallArgumentsDone.DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDone(element, options);
                     case "response.mcp_call.completed":
-                        return RealtimeServerUpdateResponseMcpCallCompleted.DeserializeRealtimeServerUpdateResponseMcpCallCompleted(element, data, options);
+                        return RealtimeServerUpdateResponseMcpCallCompleted.DeserializeRealtimeServerUpdateResponseMcpCallCompleted(element, options);
                     case "response.mcp_call.failed":
-                        return RealtimeServerUpdateResponseMcpCallFailed.DeserializeRealtimeServerUpdateResponseMcpCallFailed(element, data, options);
+                        return RealtimeServerUpdateResponseMcpCallFailed.DeserializeRealtimeServerUpdateResponseMcpCallFailed(element, options);
                     case "response.mcp_call.in_progress":
-                        return RealtimeServerUpdateResponseMcpCallInProgress.DeserializeRealtimeServerUpdateResponseMcpCallInProgress(element, data, options);
+                        return RealtimeServerUpdateResponseMcpCallInProgress.DeserializeRealtimeServerUpdateResponseMcpCallInProgress(element, options);
                     case "response.output_audio.delta":
-                        return RealtimeServerUpdateResponseOutputAudioDelta.DeserializeRealtimeServerUpdateResponseOutputAudioDelta(element, data, options);
+                        return RealtimeServerUpdateResponseOutputAudioDelta.DeserializeRealtimeServerUpdateResponseOutputAudioDelta(element, options);
                     case "response.output_audio.done":
-                        return RealtimeServerUpdateResponseOutputAudioDone.DeserializeRealtimeServerUpdateResponseOutputAudioDone(element, data, options);
+                        return RealtimeServerUpdateResponseOutputAudioDone.DeserializeRealtimeServerUpdateResponseOutputAudioDone(element, options);
                     case "response.output_audio_transcript.delta":
-                        return RealtimeServerUpdateResponseOutputAudioTranscriptDelta.DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDelta(element, data, options);
+                        return RealtimeServerUpdateResponseOutputAudioTranscriptDelta.DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDelta(element, options);
                     case "response.output_audio_transcript.done":
-                        return RealtimeServerUpdateResponseOutputAudioTranscriptDone.DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(element, data, options);
+                        return RealtimeServerUpdateResponseOutputAudioTranscriptDone.DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(element, options);
                     case "response.output_item.added":
-                        return RealtimeServerUpdateResponseOutputItemAdded.DeserializeRealtimeServerUpdateResponseOutputItemAdded(element, data, options);
+                        return RealtimeServerUpdateResponseOutputItemAdded.DeserializeRealtimeServerUpdateResponseOutputItemAdded(element, options);
                     case "response.output_item.done":
-                        return RealtimeServerUpdateResponseOutputItemDone.DeserializeRealtimeServerUpdateResponseOutputItemDone(element, data, options);
+                        return RealtimeServerUpdateResponseOutputItemDone.DeserializeRealtimeServerUpdateResponseOutputItemDone(element, options);
                     case "response.output_text.delta":
-                        return RealtimeServerUpdateResponseOutputTextDelta.DeserializeRealtimeServerUpdateResponseOutputTextDelta(element, data, options);
+                        return RealtimeServerUpdateResponseOutputTextDelta.DeserializeRealtimeServerUpdateResponseOutputTextDelta(element, options);
                     case "response.output_text.done":
-                        return RealtimeServerUpdateResponseOutputTextDone.DeserializeRealtimeServerUpdateResponseOutputTextDone(element, data, options);
+                        return RealtimeServerUpdateResponseOutputTextDone.DeserializeRealtimeServerUpdateResponseOutputTextDone(element, options);
                     case "session.created":
-                        return RealtimeServerUpdateSessionCreated.DeserializeRealtimeServerUpdateSessionCreated(element, data, options);
+                        return RealtimeServerUpdateSessionCreated.DeserializeRealtimeServerUpdateSessionCreated(element, options);
                     case "session.updated":
-                        return RealtimeServerUpdateSessionUpdated.DeserializeRealtimeServerUpdateSessionUpdated(element, data, options);
+                        return RealtimeServerUpdateSessionUpdated.DeserializeRealtimeServerUpdateSessionUpdated(element, options);
                 }
             }
-            return InternalUnknownRealtimeServerEventGA.DeserializeInternalUnknownRealtimeServerEventGA(element, data, options);
+            return InternalUnknownRealtimeServerEventGA.DeserializeInternalUnknownRealtimeServerEventGA(element, options);
         }
     }
 }

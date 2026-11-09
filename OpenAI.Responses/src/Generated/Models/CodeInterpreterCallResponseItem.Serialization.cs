@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>
     {
-        public CodeInterpreterCallResponseItem() : this(ResponseItemKind.CodeInterpreterCall, null, default, default, null, null, null)
+        public CodeInterpreterCallResponseItem() : this(ResponseItemKind.CodeInterpreterCall, null, null, default, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCodeInterpreterCallResponseItem(document.RootElement, data, options);
+                        return DeserializeCodeInterpreterCallResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<CodeInterpreterCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,49 +64,33 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (Optional.IsDefined(ContainerId) && !Patch.Contains("$.container_id"u8))
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(ContainerId) && _additionalBinaryDataProperties?.ContainsKey("container_id") != true)
             {
                 writer.WritePropertyName("container_id"u8);
                 writer.WriteStringValue(ContainerId);
             }
-            if (!Patch.Contains("$.code"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
                 writer.WritePropertyName("code"u8);
                 writer.WriteStringValue(Code);
             }
-            if (Patch.Contains("$.outputs"u8))
-            {
-                if (!Patch.IsRemoved("$.outputs"u8))
-                {
-                    writer.WritePropertyName("outputs"u8);
-                    Patch.WriteTo(writer, "$.outputs"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(Outputs))
+            if (Optional.IsCollectionDefined(Outputs) && _additionalBinaryDataProperties?.ContainsKey("outputs") != true)
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "outputs"u8);
-                for (int i = 0; i < Outputs.Count; i++)
+                foreach (CodeInterpreterCallOutput item in Outputs)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]")) || Outputs[i] != null && Outputs[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Outputs[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.outputs"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CodeInterpreterCallResponseItem IJsonModel<CodeInterpreterCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -128,10 +103,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterCallResponseItem(document.RootElement, null, options);
+            return DeserializeCodeInterpreterCallResponseItem(document.RootElement, options);
         }
 
-        internal static CodeInterpreterCallResponseItem DeserializeCodeInterpreterCallResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CodeInterpreterCallResponseItem DeserializeCodeInterpreterCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -139,9 +114,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             CodeInterpreterCallStatus? status = default;
             string containerId = default;
             string code = default;
@@ -186,110 +159,22 @@ namespace OpenAI.Responses
                     List<CodeInterpreterCallOutput> array = new List<CodeInterpreterCallOutput>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(CodeInterpreterCallOutput.DeserializeCodeInterpreterCallOutput(item, item.GetUtf8Bytes(), options));
+                        array.Add(CodeInterpreterCallOutput.DeserializeCodeInterpreterCallOutput(item, options));
                     }
                     outputs = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new CodeInterpreterCallResponseItem(
                 kind,
                 id,
-                patch,
+                additionalBinaryDataProperties,
                 status,
                 containerId,
                 code,
                 outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("outputs"u8))
-            {
-                int propertyLength = "outputs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Outputs == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveOutputsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Outputs.Count)
-                {
-                    return false;
-                }
-                if (Outputs[index] == null)
-                {
-                    return false;
-                }
-                return Outputs[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("outputs"u8))
-            {
-                int propertyLength = "outputs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Outputs == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Outputs.Count)
-                {
-                    return false;
-                }
-                if (Outputs[index] == null)
-                {
-                    return false;
-                }
-                Outputs[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveOutputsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveOutputs(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<CodeInterpreterCallOutput> ActiveOutputs()
-        {
-            if (!Optional.IsCollectionDefined(Outputs))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "outputs"u8);
-            for (int i = 0; i < Outputs.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]"))) && (Outputs[i] == null || !Outputs[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Outputs[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

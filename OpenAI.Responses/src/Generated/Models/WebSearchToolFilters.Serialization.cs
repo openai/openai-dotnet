@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchToolFilters(document.RootElement, data, options);
+                        return DeserializeWebSearchToolFilters(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support reading '{options.Format}' format.");
@@ -48,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<WebSearchToolFilters>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,36 +59,21 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.allowed_domains"u8))
-            {
-                if (!Patch.IsRemoved("$.allowed_domains"u8))
-                {
-                    writer.WritePropertyName("allowed_domains"u8);
-                    Patch.WriteTo(writer, "$.allowed_domains"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(AllowedDomains))
+            if (Optional.IsCollectionDefined(AllowedDomains) && _additionalBinaryDataProperties?.ContainsKey("allowed_domains") != true)
             {
                 if (AllowedDomains != null)
                 {
                     writer.WritePropertyName("allowed_domains"u8);
                     writer.WriteStartArray();
-                    bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
-                    for (int i = 0; i < AllowedDomains.Count; i++)
+                    foreach (string item in AllowedDomains)
                     {
-                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
-                        {
-                            continue;
-                        }
-                        if (AllowedDomains[i] == null)
+                        if (item == null)
                         {
                             writer.WriteNullValue();
                             continue;
                         }
-                        writer.WriteStringValue(AllowedDomains[i]);
+                        writer.WriteStringValue(item);
                     }
-                    Patch.WriteTo(writer, "$.allowed_domains"u8);
                     writer.WriteEndArray();
                 }
                 else
@@ -105,9 +81,26 @@ namespace OpenAI.Responses
                     writer.WriteNull("allowed_domains"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         WebSearchToolFilters IJsonModel<WebSearchToolFilters>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -120,19 +113,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchToolFilters(document.RootElement, null, options);
+            return DeserializeWebSearchToolFilters(document.RootElement, options);
         }
 
-        internal static WebSearchToolFilters DeserializeWebSearchToolFilters(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchToolFilters DeserializeWebSearchToolFilters(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             IList<string> allowedDomains = new ChangeTrackingList<string>();
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("allowed_domains"u8))
@@ -157,9 +148,10 @@ namespace OpenAI.Responses
                     allowedDomains = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchToolFilters(allowedDomains, patch);
+            return new WebSearchToolFilters(allowedDomains, additionalBinaryDataProperties);
         }
     }
 }

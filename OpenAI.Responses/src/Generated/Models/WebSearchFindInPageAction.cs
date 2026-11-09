@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -21,13 +21,11 @@ namespace OpenAI.Responses
             Pattern = pattern;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchFindInPageAction(WebSearchActionKind kind, in JsonPatch patch, Uri uri, string pattern) : base(kind, patch)
+        internal WebSearchFindInPageAction(WebSearchActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri uri, string pattern) : base(kind, additionalBinaryDataProperties)
         {
             Uri = uri;
             Pattern = pattern;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Pattern { get; set; }
     }

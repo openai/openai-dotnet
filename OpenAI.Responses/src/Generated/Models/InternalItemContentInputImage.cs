@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,19 +14,17 @@ namespace OpenAI.Responses
         private string _fileId;
         private bool _fileIdIsDefined;
 
-        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, default, null, null, default)
+        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, null, null, null, default)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
+        internal InternalItemContentInputImage(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(internalType, additionalBinaryDataProperties)
         {
             _imageUri = imageUri;
             _fileId = fileId;
             Detail = detail;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ImageUri

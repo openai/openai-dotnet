@@ -2,17 +2,14 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal abstract partial class InternalItemParam
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private protected InternalItemParam(ResponseItemKind kind)
@@ -21,23 +18,22 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalItemParam(ResponseItemKind kind, in JsonPatch patch)
+        internal InternalItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal ResponseItemKind Kind { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

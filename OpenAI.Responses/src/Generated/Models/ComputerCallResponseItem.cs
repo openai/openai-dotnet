@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ComputerCallResponseItem : ResponseItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(ResponseItemKind.ComputerCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -23,21 +22,16 @@ namespace OpenAI.Responses
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, patch)
+        internal ComputerCallResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ComputerCallStatus? Status { get; set; }
 

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -22,14 +23,12 @@ namespace OpenAI.Responses
             Approved = approved;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolCallApprovalResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, string approvalRequestId, bool approved, string reason) : base(kind, id, patch)
+        internal McpToolCallApprovalResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string approvalRequestId, bool approved, string reason) : base(kind, id, additionalBinaryDataProperties)
         {
             ApprovalRequestId = approvalRequestId;
             Approved = approved;
             _reason = reason;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ApprovalRequestId { get; set; }
 

@@ -2,19 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private float? _temperature;
         private bool _temperatureIsDefined;
         private float? _topP;
@@ -26,9 +23,10 @@ namespace OpenAI.Chat
         private long? _seed;
         private bool _seedIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, in JsonPatch patch)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -63,16 +61,11 @@ namespace OpenAI.Chat
             AllowParallelToolCalls = allowParallelToolCalls;
             FunctionChoice = functionChoice;
             Functions = functions ?? new ChangeTrackingList<ChatFunction>();
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public float? Temperature
         {
@@ -150,5 +143,11 @@ namespace OpenAI.Chat
         }
 
         public IList<ChatTool> Tools { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

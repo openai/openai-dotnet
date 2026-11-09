@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -14,26 +14,20 @@ namespace OpenAI.Responses
         private string _encryptedContent;
         private bool _encryptedContentIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalReasoningItemParam(IEnumerable<ReasoningSummaryPart> summary) : base(ResponseItemKind.Reasoning)
         {
             Summary = summary.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalReasoningItemParam(ResponseItemKind kind, in JsonPatch patch, string encryptedContent, IList<ReasoningSummaryPart> summary) : base(kind, patch)
+        internal InternalReasoningItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string encryptedContent, IList<ReasoningSummaryPart> summary) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             _encryptedContent = encryptedContent;
             Summary = summary ?? new ChangeTrackingList<ReasoningSummaryPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string EncryptedContent

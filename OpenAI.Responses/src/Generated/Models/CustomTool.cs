@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,19 +12,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomTool : ResponseTool
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CustomTool(string toolName) : base(ResponseToolKind.Custom)
         {
             Argument.AssertNotNull(toolName, nameof(toolName));
 
             ToolName = toolName;
             AllowedCallers = new ChangeTrackingList<InternalCallableToolAllowedCaller>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomTool(ResponseToolKind kind, in JsonPatch patch, string toolName, IList<InternalCallableToolAllowedCaller> allowedCallers, bool? deferLoading, string toolDescription, CustomToolFormat toolFormat) : base(kind, patch)
+        internal CustomTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string toolName, IList<InternalCallableToolAllowedCaller> allowedCallers, bool? deferLoading, string toolDescription, CustomToolFormat toolFormat) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ToolName = toolName;
@@ -32,9 +28,7 @@ namespace OpenAI.Responses
             DeferLoading = deferLoading;
             ToolDescription = toolDescription;
             ToolFormat = toolFormat;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ToolName { get; set; }
 

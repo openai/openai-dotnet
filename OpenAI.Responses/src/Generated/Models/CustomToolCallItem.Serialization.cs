@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomToolCallItem : ResponseItem, IJsonModel<CustomToolCallItem>
     {
-        public CustomToolCallItem() : this(ResponseItemKind.CustomToolCall, null, default, null, null, null, null, null, null, null, default)
+        public CustomToolCallItem() : this(ResponseItemKind.CustomToolCall, null, null, null, null, null, null, null, null, null, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCustomToolCallItem(document.RootElement, data, options);
+                        return DeserializeCustomToolCallItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CustomToolCallItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<CustomToolCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,23 +64,22 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CustomToolCallItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.call_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.input"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
                 writer.WritePropertyName("input"u8);
                 writer.WriteStringValue(Input);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (Optional.IsDefined(Agent, _agentIsDefined) && !Patch.Contains("$.agent"u8))
+            if (Optional.IsDefined(Agent, _agentIsDefined) && _additionalBinaryDataProperties?.ContainsKey("agent") != true)
             {
                 if (Agent != null)
                 {
@@ -100,7 +91,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("agent"u8);
                 }
             }
-            if (Optional.IsDefined(Caller, _callerIsDefined) && !Patch.Contains("$.caller"u8))
+            if (Optional.IsDefined(Caller, _callerIsDefined) && _additionalBinaryDataProperties?.ContainsKey("caller") != true)
             {
                 if (Caller != null)
                 {
@@ -112,24 +103,21 @@ namespace OpenAI.Responses
                     writer.WriteNull("caller"u8);
                 }
             }
-            if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
+            if (Optional.IsDefined(CreatedBy) && _additionalBinaryDataProperties?.ContainsKey("created_by") != true)
             {
                 writer.WritePropertyName("created_by"u8);
                 writer.WriteStringValue(CreatedBy);
             }
-            if (Optional.IsDefined(Namespace) && !Patch.Contains("$.namespace"u8))
+            if (Optional.IsDefined(Namespace) && _additionalBinaryDataProperties?.ContainsKey("namespace") != true)
             {
                 writer.WritePropertyName("namespace"u8);
                 writer.WriteStringValue(Namespace);
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CustomToolCallItem IJsonModel<CustomToolCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CustomToolCallItem)JsonModelCreateCore(ref reader, options);
@@ -142,10 +130,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CustomToolCallItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCustomToolCallItem(document.RootElement, null, options);
+            return DeserializeCustomToolCallItem(document.RootElement, options);
         }
 
-        internal static CustomToolCallItem DeserializeCustomToolCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CustomToolCallItem DeserializeCustomToolCallItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -153,9 +141,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string callId = default;
             string input = default;
             string toolName = default;
@@ -201,7 +187,7 @@ namespace OpenAI.Responses
                         agent = null;
                         continue;
                     }
-                    agent = InternalBetaAgentTag.DeserializeInternalBetaAgentTag(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    agent = InternalBetaAgentTag.DeserializeInternalBetaAgentTag(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("caller"u8))
@@ -212,7 +198,7 @@ namespace OpenAI.Responses
                         caller = null;
                         continue;
                     }
-                    caller = InternalToolCallCaller.DeserializeInternalToolCallCaller(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    caller = InternalToolCallCaller.DeserializeInternalToolCallCaller(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("created_by"u8))
@@ -234,12 +220,13 @@ namespace OpenAI.Responses
                     status = new CustomToolCallStatus(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new CustomToolCallItem(
                 kind,
                 id,
-                patch,
+                additionalBinaryDataProperties,
                 callId,
                 input,
                 toolName,
@@ -253,58 +240,5 @@ namespace OpenAI.Responses
                 _callerIsDefined = callerIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("agent"u8))
-            {
-                if (Agent == null)
-                {
-                    return false;
-                }
-                return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
-            }
-            if (local.StartsWith("caller"u8))
-            {
-                if (Caller == null)
-                {
-                    return false;
-                }
-                return Caller.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("caller"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("agent"u8))
-            {
-                if (Agent == null)
-                {
-                    return false;
-                }
-                Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("caller"u8))
-            {
-                if (Caller == null)
-                {
-                    return false;
-                }
-                Caller.Patch.Set([.. "$"u8, .. local.Slice("caller"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

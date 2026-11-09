@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,14 +11,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchTool : ResponseTool
     {
-        public ApplyPatchTool() : this(ResponseToolKind.ApplyPatch, default)
+        public ApplyPatchTool() : this(ResponseToolKind.ApplyPatch, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchTool(ResponseToolKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ApplyPatchTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -29,8 +30,7 @@ namespace OpenAI.Decisions
             ToolName = toolName;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, in JsonPatch patch, string callId, string input, string toolName, string id, string @namespace, DecisionsCustomToolCallStatus? status) : base(kind, patch)
+        internal DecisionsCustomToolCallItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string input, string toolName, string id, string @namespace, DecisionsCustomToolCallStatus? status) : base(kind, additionalBinaryDataProperties)
         {
             CallId = callId;
             Input = input;
@@ -39,7 +39,6 @@ namespace OpenAI.Decisions
             _namespace = @namespace;
             _status = status;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 

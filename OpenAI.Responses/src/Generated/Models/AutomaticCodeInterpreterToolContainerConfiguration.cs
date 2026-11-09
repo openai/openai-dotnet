@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,17 +12,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration
     {
-        public AutomaticCodeInterpreterToolContainerConfiguration() : this(CodeInterpreterToolContainerConfigurationKind.Auto, default, null)
+        public AutomaticCodeInterpreterToolContainerConfiguration() : this(CodeInterpreterToolContainerConfigurationKind.Auto, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal AutomaticCodeInterpreterToolContainerConfiguration(CodeInterpreterToolContainerConfigurationKind kind, in JsonPatch patch, IList<string> fileIds) : base(kind, patch)
+        internal AutomaticCodeInterpreterToolContainerConfiguration(CodeInterpreterToolContainerConfigurationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> fileIds) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileIds = fileIds ?? new ChangeTrackingList<string>();
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> FileIds { get; }
     }

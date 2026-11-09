@@ -2,44 +2,31 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
     public partial class RealtimeTranscriptionSessionInputAudioOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private RealtimeTurnDetection _turnDetection;
         private bool _turnDetectionIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeTranscriptionSessionInputAudioOptions()
         {
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat, RealtimeAudioTranscriptionOptions audioTranscriptionOptions, RealtimeNoiseReduction noiseReduction, RealtimeTurnDetection turnDetection, in JsonPatch patch)
+        internal RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat, RealtimeAudioTranscriptionOptions audioTranscriptionOptions, RealtimeNoiseReduction noiseReduction, RealtimeTurnDetection turnDetection, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             AudioFormat = audioFormat;
             AudioTranscriptionOptions = audioTranscriptionOptions;
             NoiseReduction = noiseReduction;
             _turnDetection = turnDetection;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public RealtimeNoiseReduction NoiseReduction { get; set; }
 
@@ -54,6 +41,12 @@ namespace OpenAI.Realtime
                 _turnDetection = value;
                 _turnDetectionIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

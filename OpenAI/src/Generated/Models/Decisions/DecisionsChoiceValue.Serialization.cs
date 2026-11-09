@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsChoiceValue(document.RootElement, data, options);
+                        return DeserializeDecisionsChoiceValue(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsChoiceValue)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,38 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsChoiceValue)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsChoiceValue(document.RootElement, null, options);
+            return DeserializeDecisionsChoiceValue(document.RootElement, options);
+        }
+
+        internal static DecisionsChoiceValue DeserializeDecisionsChoiceValue(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            string stringValue = default;
+            bool? booleanValue = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("string_value"u8))
+                {
+                    stringValue = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("boolean_value"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    booleanValue = prop.Value.GetBoolean();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new DecisionsChoiceValue(stringValue, booleanValue, additionalBinaryDataProperties);
         }
     }
 }

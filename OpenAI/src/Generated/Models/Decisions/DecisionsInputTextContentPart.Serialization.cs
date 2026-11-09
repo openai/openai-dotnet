@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsInputTextContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputTextContentPart>
     {
-        public DecisionsInputTextContentPart() : this(DecisionsInputContentPartKind.InputText, default, null, null)
+        public DecisionsInputTextContentPart() : this(DecisionsInputContentPartKind.InputText, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsInputTextContentPart(document.RootElement, data, options);
+                        return DeserializeDecisionsInputTextContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsInputTextContentPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsInputTextContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,13 +64,12 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputTextContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.text"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && _additionalBinaryDataProperties?.ContainsKey("prompt_cache_breakpoint") != true)
             {
                 if (PromptCacheBreakpoint != null)
                 {
@@ -90,9 +81,6 @@ namespace OpenAI.Decisions
                     writer.WriteNull("prompt_cache_breakpoint"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsInputTextContentPart IJsonModel<DecisionsInputTextContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsInputTextContentPart)JsonModelCreateCore(ref reader, options);
@@ -105,19 +93,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputTextContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsInputTextContentPart(document.RootElement, null, options);
+            return DeserializeDecisionsInputTextContentPart(document.RootElement, options);
         }
 
-        internal static DecisionsInputTextContentPart DeserializeDecisionsInputTextContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsInputTextContentPart DeserializeDecisionsInputTextContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsInputContentPartKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             bool promptCacheBreakpointIsDefined = false;
             DecisionsPromptCacheBreakpoint promptCacheBreakpoint = default;
@@ -141,51 +127,16 @@ namespace OpenAI.Decisions
                         promptCacheBreakpoint = null;
                         continue;
                     }
-                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputTextContentPart(kind, patch, text, promptCacheBreakpoint)
+            return new DecisionsInputTextContentPart(kind, additionalBinaryDataProperties, text, promptCacheBreakpoint)
             {
                 _promptCacheBreakpointIsDefined = promptCacheBreakpointIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("prompt_cache_breakpoint"u8))
-            {
-                if (PromptCacheBreakpoint == null)
-                {
-                    return false;
-                }
-                return PromptCacheBreakpoint.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("prompt_cache_breakpoint"u8))
-            {
-                if (PromptCacheBreakpoint == null)
-                {
-                    return false;
-                }
-                PromptCacheBreakpoint.Patch.Set([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

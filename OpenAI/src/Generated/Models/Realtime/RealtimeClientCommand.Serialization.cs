@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeClientCommand(document.RootElement, data, options);
+                        return DeserializeRealtimeClientCommand(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeClientCommand)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeClientCommand>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeClientCommand)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeClientCommand IJsonModel<RealtimeClientCommand>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeClientCommand)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeClientCommand(document.RootElement, null, options);
+            return DeserializeRealtimeClientCommand(document.RootElement, options);
         }
 
-        internal static RealtimeClientCommand DeserializeRealtimeClientCommand(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeClientCommand DeserializeRealtimeClientCommand(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,30 +114,30 @@ namespace OpenAI.Realtime
                 switch (discriminator.GetString())
                 {
                     case "conversation.item.create":
-                        return RealtimeClientCommandConversationItemCreate.DeserializeRealtimeClientCommandConversationItemCreate(element, data, options);
+                        return RealtimeClientCommandConversationItemCreate.DeserializeRealtimeClientCommandConversationItemCreate(element, options);
                     case "conversation.item.delete":
-                        return RealtimeClientCommandConversationItemDelete.DeserializeRealtimeClientCommandConversationItemDelete(element, data, options);
+                        return RealtimeClientCommandConversationItemDelete.DeserializeRealtimeClientCommandConversationItemDelete(element, options);
                     case "conversation.item.retrieve":
-                        return RealtimeClientCommandConversationItemRetrieve.DeserializeRealtimeClientCommandConversationItemRetrieve(element, data, options);
+                        return RealtimeClientCommandConversationItemRetrieve.DeserializeRealtimeClientCommandConversationItemRetrieve(element, options);
                     case "conversation.item.truncate":
-                        return RealtimeClientCommandConversationItemTruncate.DeserializeRealtimeClientCommandConversationItemTruncate(element, data, options);
+                        return RealtimeClientCommandConversationItemTruncate.DeserializeRealtimeClientCommandConversationItemTruncate(element, options);
                     case "input_audio_buffer.append":
-                        return RealtimeClientCommandInputAudioBufferAppend.DeserializeRealtimeClientCommandInputAudioBufferAppend(element, data, options);
+                        return RealtimeClientCommandInputAudioBufferAppend.DeserializeRealtimeClientCommandInputAudioBufferAppend(element, options);
                     case "input_audio_buffer.clear":
-                        return RealtimeClientCommandInputAudioBufferClear.DeserializeRealtimeClientCommandInputAudioBufferClear(element, data, options);
+                        return RealtimeClientCommandInputAudioBufferClear.DeserializeRealtimeClientCommandInputAudioBufferClear(element, options);
                     case "input_audio_buffer.commit":
-                        return RealtimeClientCommandInputAudioBufferCommit.DeserializeRealtimeClientCommandInputAudioBufferCommit(element, data, options);
+                        return RealtimeClientCommandInputAudioBufferCommit.DeserializeRealtimeClientCommandInputAudioBufferCommit(element, options);
                     case "output_audio_buffer.clear":
-                        return RealtimeClientCommandOutputAudioBufferClear.DeserializeRealtimeClientCommandOutputAudioBufferClear(element, data, options);
+                        return RealtimeClientCommandOutputAudioBufferClear.DeserializeRealtimeClientCommandOutputAudioBufferClear(element, options);
                     case "response.cancel":
-                        return RealtimeClientCommandResponseCancel.DeserializeRealtimeClientCommandResponseCancel(element, data, options);
+                        return RealtimeClientCommandResponseCancel.DeserializeRealtimeClientCommandResponseCancel(element, options);
                     case "response.create":
-                        return RealtimeClientCommandResponseCreate.DeserializeRealtimeClientCommandResponseCreate(element, data, options);
+                        return RealtimeClientCommandResponseCreate.DeserializeRealtimeClientCommandResponseCreate(element, options);
                     case "session.update":
-                        return RealtimeClientCommandSessionUpdate.DeserializeRealtimeClientCommandSessionUpdate(element, data, options);
+                        return RealtimeClientCommandSessionUpdate.DeserializeRealtimeClientCommandSessionUpdate(element, options);
                 }
             }
-            return InternalUnknownRealtimeClientEventGA.DeserializeInternalUnknownRealtimeClientEventGA(element, data, options);
+            return InternalUnknownRealtimeClientEventGA.DeserializeInternalUnknownRealtimeClientEventGA(element, options);
         }
     }
 }

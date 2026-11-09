@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsInputImageInstructionsPart : DecisionsInstructionsPart, IJsonModel<DecisionsInputImageInstructionsPart>
     {
-        public DecisionsInputImageInstructionsPart() : this(DecisionsInstructionsPartKind.InputImage, default, null, default)
+        public DecisionsInputImageInstructionsPart() : this(DecisionsInstructionsPartKind.InputImage, null, null, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsInputImageInstructionsPart(document.RootElement, data, options);
+                        return DeserializeDecisionsInputImageInstructionsPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsInputImageInstructionsPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsInputImageInstructionsPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,13 +64,12 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputImageInstructionsPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.image_url"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("image_url") != true)
             {
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteStringValue(ImageUri);
             }
-            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && !Patch.Contains("$.detail"u8))
+            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && _additionalBinaryDataProperties?.ContainsKey("detail") != true)
             {
                 if (ImageDetailLevel != null)
                 {
@@ -90,9 +81,6 @@ namespace OpenAI.Decisions
                     writer.WriteNull("detail"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsInputImageInstructionsPart IJsonModel<DecisionsInputImageInstructionsPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsInputImageInstructionsPart)JsonModelCreateCore(ref reader, options);
@@ -105,19 +93,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputImageInstructionsPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsInputImageInstructionsPart(document.RootElement, null, options);
+            return DeserializeDecisionsInputImageInstructionsPart(document.RootElement, options);
         }
 
-        internal static DecisionsInputImageInstructionsPart DeserializeDecisionsInputImageInstructionsPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsInputImageInstructionsPart DeserializeDecisionsInputImageInstructionsPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsInstructionsPartKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string imageUri = default;
             bool imageDetailLevelIsDefined = false;
             DecisionsImageDetailLevel? imageDetailLevel = default;
@@ -144,9 +130,10 @@ namespace OpenAI.Decisions
                     imageDetailLevel = new DecisionsImageDetailLevel(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageInstructionsPart(kind, patch, imageUri, imageDetailLevel)
+            return new DecisionsInputImageInstructionsPart(kind, additionalBinaryDataProperties, imageUri, imageDetailLevel)
             {
                 _imageDetailLevelIsDefined = imageDetailLevelIsDefined
             };

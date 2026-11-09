@@ -199,7 +199,7 @@ namespace OpenAI.Evals
                     List<ChatTool> array = new List<ChatTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTool.DeserializeChatTool(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatTool.DeserializeChatTool(item, options));
                     }
                     tools = array;
                     continue;

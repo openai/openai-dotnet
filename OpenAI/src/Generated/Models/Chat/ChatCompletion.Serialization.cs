@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -15,7 +14,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, default)
+        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, null)
         {
         }
 
@@ -28,7 +27,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatCompletion(document.RootElement, data, options);
+                        return DeserializeChatCompletion(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletion)} does not support reading '{options.Format}' format.");
@@ -58,21 +57,12 @@ namespace OpenAI.Chat
         public static explicit operator ChatCompletion(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeChatCompletion(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeChatCompletion(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<ChatCompletion>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -86,69 +76,71 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatCompletion)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (Patch.Contains("$.choices"u8))
-            {
-                if (!Patch.IsRemoved("$.choices"u8))
-                {
-                    writer.WritePropertyName("choices"u8);
-                    Patch.WriteTo(writer, "$.choices"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
             {
                 writer.WritePropertyName("choices"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "choices"u8);
-                for (int i = 0; i < Choices.Count; i++)
+                foreach (InternalCreateChatCompletionResponseChoice item in Choices)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) || Choices[i] != null && Choices[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Choices[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.choices"u8);
                 writer.WriteEndArray();
             }
-            if (!Patch.Contains("$.created"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
             {
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (!Patch.Contains("$.model"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(ServiceTier) && !Patch.Contains("$.service_tier"u8))
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
             {
                 writer.WritePropertyName("service_tier"u8);
                 writer.WriteStringValue(ServiceTier.Value.ToString());
             }
-            if (Optional.IsDefined(SystemFingerprint) && !Patch.Contains("$.system_fingerprint"u8))
+            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
             {
                 writer.WritePropertyName("system_fingerprint"u8);
                 writer.WriteStringValue(SystemFingerprint);
             }
-            if (!Patch.Contains("$.object"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(Usage) && !Patch.Contains("$.usage"u8))
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ChatCompletion IJsonModel<ChatCompletion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -162,10 +154,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatCompletion)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatCompletion(document.RootElement, null, options);
+            return DeserializeChatCompletion(document.RootElement, options);
         }
 
-        internal static ChatCompletion DeserializeChatCompletion(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatCompletion DeserializeChatCompletion(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -179,9 +171,7 @@ namespace OpenAI.Chat
             string systemFingerprint = default;
             string @object = default;
             ChatTokenUsage usage = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -194,7 +184,7 @@ namespace OpenAI.Chat
                     List<InternalCreateChatCompletionResponseChoice> array = new List<InternalCreateChatCompletionResponseChoice>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, item.GetUtf8Bytes(), options));
+                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, options));
                     }
                     choices = array;
                     continue;
@@ -234,10 +224,11 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ChatCompletion(
                 id,
@@ -248,113 +239,7 @@ namespace OpenAI.Chat
                 systemFingerprint,
                 @object,
                 usage,
-                patch);
+                additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("usage"u8))
-            {
-                if (Usage == null)
-                {
-                    return false;
-                }
-                return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
-            }
-            if (local.StartsWith("choices"u8))
-            {
-                int propertyLength = "choices"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Choices == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveChoicesArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
-                {
-                    return false;
-                }
-                if (Choices[index] == null)
-                {
-                    return false;
-                }
-                return Choices[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("usage"u8))
-            {
-                if (Usage == null)
-                {
-                    return false;
-                }
-                Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("choices"u8))
-            {
-                int propertyLength = "choices"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Choices == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
-                {
-                    return false;
-                }
-                if (Choices[index] == null)
-                {
-                    return false;
-                }
-                Choices[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveChoicesArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveChoices(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<InternalCreateChatCompletionResponseChoice> ActiveChoices()
-        {
-            if (!Optional.IsCollectionDefined(Choices))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "choices"u8);
-            for (int i = 0; i < Choices.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]"))) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Choices[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -19,19 +20,17 @@ namespace OpenAI.Responses
         private string _timezone;
         private bool _timezoneIsDefined;
 
-        public WebSearchToolApproximateLocation() : this(WebSearchToolLocationKind.Approximate, default, null, null, null, null)
+        public WebSearchToolApproximateLocation() : this(WebSearchToolLocationKind.Approximate, null, null, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchToolApproximateLocation(WebSearchToolLocationKind kind, in JsonPatch patch, string country, string region, string city, string timezone) : base(kind, patch)
+        internal WebSearchToolApproximateLocation(WebSearchToolLocationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string country, string region, string city, string timezone) : base(kind, additionalBinaryDataProperties)
         {
             _country = country;
             _region = region;
             _city = city;
             _timezone = timezone;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Country
         {

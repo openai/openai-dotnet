@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,13 +14,11 @@ namespace OpenAI.Responses
             Delta = delta;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal StreamingResponseAudioDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string delta) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseAudioDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Delta = delta;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Delta { get; set; }

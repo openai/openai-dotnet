@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolDefinitionListItem : RealtimeItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions) : base(RealtimeItemKind.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -21,20 +20,15 @@ namespace OpenAI.Realtime
 
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolDefinitionListItem(RealtimeItemKind kind, in JsonPatch patch, string id, string serverLabel, IList<RealtimeMcpToolDefinition> toolDefinitions) : base(kind, patch)
+        internal RealtimeMcpToolDefinitionListItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, string serverLabel, IList<RealtimeMcpToolDefinition> toolDefinitions) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<RealtimeMcpToolDefinition>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

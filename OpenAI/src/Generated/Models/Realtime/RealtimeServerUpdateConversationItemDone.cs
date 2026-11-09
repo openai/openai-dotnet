@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -13,24 +14,18 @@ namespace OpenAI.Realtime
         private string _previousItemId;
         private bool _previousItemIdIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemDone(string eventId, RealtimeItem item) : base(RealtimeServerUpdateKind.ConversationItemDone)
         {
             EventId = eventId;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemDone(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string previousItemId, RealtimeItem item) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             _previousItemId = previousItemId;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

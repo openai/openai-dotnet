@@ -3,41 +3,37 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
     public partial class RealtimeRateLimitDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public RealtimeRateLimitDetails()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeRateLimitDetails(RealtimeRateLimitName? name, int? limit, int? remainingCount, TimeSpan? timeUntilReset, in JsonPatch patch)
+        internal RealtimeRateLimitDetails(RealtimeRateLimitName? name, int? limit, int? remainingCount, TimeSpan? timeUntilReset, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             Limit = limit;
             RemainingCount = remainingCount;
             TimeUntilReset = timeUntilReset;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public RealtimeRateLimitName? Name { get; set; }
 
         public int? Limit { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

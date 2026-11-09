@@ -3,11 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Realtime
@@ -15,17 +12,13 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeResponse
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public RealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, default)
+        public RealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, null)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeResponse(string id, InternalRealtimeResponseGAObject? @object, RealtimeResponseStatus? status, RealtimeResponseStatusDetails statusDetails, IList<RealtimeItem> outputItems, IDictionary<string, BinaryData> metadata, RealtimeResponseAudioOptions audioOptions, RealtimeResponseUsage usage, string conversationId, IList<RealtimeOutputModality> outputModalities, RealtimeMaxOutputTokenCount maxOutputTokenCount, in JsonPatch patch)
+        internal RealtimeResponse(string id, InternalRealtimeResponseGAObject? @object, RealtimeResponseStatus? status, RealtimeResponseStatusDetails statusDetails, IList<RealtimeItem> outputItems, IDictionary<string, BinaryData> metadata, RealtimeResponseAudioOptions audioOptions, RealtimeResponseUsage usage, string conversationId, IList<RealtimeOutputModality> outputModalities, RealtimeMaxOutputTokenCount maxOutputTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -39,15 +32,8 @@ namespace OpenAI.Realtime
             ConversationId = conversationId;
             OutputModalities = outputModalities ?? new ChangeTrackingList<RealtimeOutputModality>();
             MaxOutputTokenCount = maxOutputTokenCount;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; set; }
 
@@ -64,5 +50,11 @@ namespace OpenAI.Realtime
         public string ConversationId { get; set; }
 
         public IList<RealtimeOutputModality> OutputModalities { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

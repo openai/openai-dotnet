@@ -2,43 +2,29 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalResponseTextParam
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private InternalTokenCountsBodyTextVerbosity? _verbosity;
         private bool _verbosityIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalResponseTextParam()
         {
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, in JsonPatch patch)
+        internal InternalResponseTextParam(ResponseTextFormat format, InternalTokenCountsBodyTextVerbosity? verbosity, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Format = format;
             _verbosity = verbosity;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseTextFormat Format { get; set; }
@@ -55,6 +41,12 @@ namespace OpenAI.Responses
                 _verbosity = value;
                 _verbosityIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

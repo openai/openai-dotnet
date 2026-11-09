@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchSearchAction(document.RootElement, data, options);
+                        return DeserializeWebSearchSearchAction(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchSearchAction)} does not support reading '{options.Format}' format.");
@@ -48,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<WebSearchSearchAction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -69,68 +60,43 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchSearchAction)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Query) && !Patch.Contains("$.query"u8))
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("query") != true)
             {
-                writer.WritePropertyName("query"u8);
-                writer.WriteStringValue(Query);
-            }
-            if (Patch.Contains("$.queries"u8))
-            {
-                if (!Patch.IsRemoved("$.queries"u8))
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+                if (Optional.IsDefined(Query))
                 {
-                    writer.WritePropertyName("queries"u8);
-                    Patch.WriteTo(writer, "$.queries"u8);
+                    writer.WritePropertyName("query"u8);
+                    writer.WriteStringValue(Query);
                 }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
-            else if (Optional.IsCollectionDefined(Queries))
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+            if (Optional.IsCollectionDefined(Queries) && _additionalBinaryDataProperties?.ContainsKey("queries") != true)
             {
                 writer.WritePropertyName("queries"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "queries"u8);
-                for (int i = 0; i < Queries.Count; i++)
+                foreach (string item in Queries)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
-                    {
-                        continue;
-                    }
-                    if (Queries[i] == null)
+                    if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(Queries[i]);
+                    writer.WriteStringValue(item);
                 }
-                Patch.WriteTo(writer, "$.queries"u8);
                 writer.WriteEndArray();
             }
-            if (Patch.Contains("$.sources"u8))
-            {
-                if (!Patch.IsRemoved("$.sources"u8))
-                {
-                    writer.WritePropertyName("sources"u8);
-                    Patch.WriteTo(writer, "$.sources"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(Sources))
+            if (Optional.IsCollectionDefined(Sources) && _additionalBinaryDataProperties?.ContainsKey("sources") != true)
             {
                 writer.WritePropertyName("sources"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "sources"u8);
-                for (int i = 0; i < Sources.Count; i++)
+                foreach (WebSearchActionSource item in Sources)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]")) || Sources[i] != null && Sources[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Sources[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.sources"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchSearchAction IJsonModel<WebSearchSearchAction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchSearchAction)JsonModelCreateCore(ref reader, options);
@@ -143,19 +109,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchSearchAction)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchSearchAction(document.RootElement, null, options);
+            return DeserializeWebSearchSearchAction(document.RootElement, options);
         }
 
-        internal static WebSearchSearchAction DeserializeWebSearchSearchAction(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchSearchAction DeserializeWebSearchSearchAction(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             WebSearchActionKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string query = default;
             IList<string> queries = default;
             IList<WebSearchActionSource> sources = default;
@@ -201,103 +165,15 @@ namespace OpenAI.Responses
                     List<WebSearchActionSource> array = new List<WebSearchActionSource>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(WebSearchActionSource.DeserializeWebSearchActionSource(item, item.GetUtf8Bytes(), options));
+                        array.Add(WebSearchActionSource.DeserializeWebSearchActionSource(item, options));
                     }
                     sources = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchSearchAction(kind, patch, query, queries ?? new ChangeTrackingList<string>(), sources ?? new ChangeTrackingList<WebSearchActionSource>());
+            return new WebSearchSearchAction(kind, additionalBinaryDataProperties, query, queries ?? new ChangeTrackingList<string>(), sources ?? new ChangeTrackingList<WebSearchActionSource>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("sources"u8))
-            {
-                int propertyLength = "sources"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Sources == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveSourcesArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
-                {
-                    return false;
-                }
-                if (Sources[index] == null)
-                {
-                    return false;
-                }
-                return Sources[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("sources"u8))
-            {
-                int propertyLength = "sources"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Sources == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
-                {
-                    return false;
-                }
-                if (Sources[index] == null)
-                {
-                    return false;
-                }
-                Sources[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveSourcesArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveSources(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<WebSearchActionSource> ActiveSources()
-        {
-            if (!Optional.IsCollectionDefined(Sources))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "sources"u8);
-            for (int i = 0; i < Sources.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]"))) && (Sources[i] == null || !Sources[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Sources[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

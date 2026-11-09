@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeResponseStatusDetails(document.RootElement, data, options);
+                        return DeserializeRealtimeResponseStatusDetails(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeResponseStatusDetails)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeResponseStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,25 +59,41 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeResponseStatusDetails)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Kind) && !Patch.Contains("$.type"u8))
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.Value.ToString());
             }
-            if (Optional.IsDefined(Reason) && !Patch.Contains("$.reason"u8))
+            if (Optional.IsDefined(Reason) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
             {
                 writer.WritePropertyName("reason"u8);
                 writer.WriteStringValue(Reason.Value.ToString());
             }
-            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
+            if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
                 writer.WriteObjectValue(Error, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeResponseStatusDetails IJsonModel<RealtimeResponseStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -98,10 +106,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeResponseStatusDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeResponseStatusDetails(document.RootElement, null, options);
+            return DeserializeRealtimeResponseStatusDetails(document.RootElement, options);
         }
 
-        internal static RealtimeResponseStatusDetails DeserializeRealtimeResponseStatusDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeResponseStatusDetails DeserializeRealtimeResponseStatusDetails(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -110,9 +118,7 @@ namespace OpenAI.Realtime
             RealtimeResponseStatusErrorKind? kind = default;
             RealtimeResponseStatusReason? reason = default;
             RealtimeError error = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -139,48 +145,13 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    error = RealtimeError.DeserializeRealtimeError(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    error = RealtimeError.DeserializeRealtimeError(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeResponseStatusDetails(kind, reason, error, patch);
+            return new RealtimeResponseStatusDetails(kind, reason, error, additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("error"u8))
-            {
-                if (Error == null)
-                {
-                    return false;
-                }
-                return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("error"u8))
-            {
-                if (Error == null)
-                {
-                    return false;
-                }
-                Error.Patch.Set([.. "$"u8, .. local.Slice("error"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

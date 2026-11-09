@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -20,8 +21,7 @@ namespace OpenAI.Realtime
             FunctionOutput = functionOutput;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeFunctionCallOutputItem(RealtimeItemKind kind, in JsonPatch patch, string id, InternalRealtimeConversationItemFunctionCallOutputGAObject? @object, RealtimeFunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, patch)
+        internal RealtimeFunctionCallOutputItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, InternalRealtimeConversationItemFunctionCallOutputGAObject? @object, RealtimeFunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, additionalBinaryDataProperties)
         {
             Id = id;
             Object = @object;
@@ -29,7 +29,6 @@ namespace OpenAI.Realtime
             CallId = callId;
             FunctionOutput = functionOutput;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

@@ -2,20 +2,19 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectComputer : InternalToolChoiceObject
     {
-        public InternalToolChoiceObjectComputer() : this(InternalToolChoiceObjectType.Computer, default)
+        public InternalToolChoiceObjectComputer() : this(InternalToolChoiceObjectType.Computer, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectComputer(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalToolChoiceObjectComputer(InternalToolChoiceObjectType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

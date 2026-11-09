@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsUsage(document.RootElement, data, options);
+                        return DeserializeDecisionsUsage(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsUsage)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,35 +63,51 @@ namespace OpenAI.Decisions
             {
                 throw new FormatException($"The model {nameof(DecisionsUsage)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.input_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
                 writer.WritePropertyName("input_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
             }
-            if (!Patch.Contains("$.input_tokens_details"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens_details") != true)
             {
                 writer.WritePropertyName("input_tokens_details"u8);
                 writer.WriteObjectValue(InputTokenDetails, options);
             }
-            if (!Patch.Contains("$.output_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
             {
                 writer.WritePropertyName("output_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
-            if (!Patch.Contains("$.output_tokens_details"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens_details") != true)
             {
                 writer.WritePropertyName("output_tokens_details"u8);
                 writer.WriteObjectValue(OutputTokenDetails, options);
             }
-            if (!Patch.Contains("$.total_tokens"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokenCount);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         DecisionsUsage IJsonModel<DecisionsUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -112,10 +120,10 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsUsage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsUsage(document.RootElement, null, options);
+            return DeserializeDecisionsUsage(document.RootElement, options);
         }
 
-        internal static DecisionsUsage DeserializeDecisionsUsage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsUsage DeserializeDecisionsUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -126,9 +134,7 @@ namespace OpenAI.Decisions
             long outputTokenCount = default;
             DecisionsOutputTokenUsageDetails outputTokenDetails = default;
             long totalTokenCount = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("input_tokens"u8))
@@ -138,7 +144,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("input_tokens_details"u8))
                 {
-                    inputTokenDetails = DecisionsInputTokenUsageDetails.DeserializeDecisionsInputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    inputTokenDetails = DecisionsInputTokenUsageDetails.DeserializeDecisionsInputTokenUsageDetails(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
@@ -148,7 +154,7 @@ namespace OpenAI.Decisions
                 }
                 if (prop.NameEquals("output_tokens_details"u8))
                 {
-                    outputTokenDetails = DecisionsOutputTokenUsageDetails.DeserializeDecisionsOutputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    outputTokenDetails = DecisionsOutputTokenUsageDetails.DeserializeDecisionsOutputTokenUsageDetails(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("total_tokens"u8))
@@ -156,7 +162,8 @@ namespace OpenAI.Decisions
                     totalTokenCount = prop.Value.GetInt64();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new DecisionsUsage(
                 inputTokenCount,
@@ -164,60 +171,7 @@ namespace OpenAI.Decisions
                 outputTokenCount,
                 outputTokenDetails,
                 totalTokenCount,
-                patch);
+                additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("input_tokens_details"u8))
-            {
-                if (InputTokenDetails == null)
-                {
-                    return false;
-                }
-                return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], out value);
-            }
-            if (local.StartsWith("output_tokens_details"u8))
-            {
-                if (OutputTokenDetails == null)
-                {
-                    return false;
-                }
-                return OutputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("input_tokens_details"u8))
-            {
-                if (InputTokenDetails == null)
-                {
-                    return false;
-                }
-                InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("input_tokens_details"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("output_tokens_details"u8))
-            {
-                if (OutputTokenDetails == null)
-                {
-                    return false;
-                }
-                OutputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("output_tokens_details"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

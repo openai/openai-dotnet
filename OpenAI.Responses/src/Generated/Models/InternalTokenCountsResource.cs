@@ -2,39 +2,35 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalTokenCountsResource
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal InternalTokenCountsResource(int inputTokens)
         {
             InputTokens = inputTokens;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalTokenCountsResource(string @object, int inputTokens, in JsonPatch patch)
+        internal InternalTokenCountsResource(string @object, int inputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             InputTokens = inputTokens;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         internal string Object { get; set; } = "response.input_tokens";
 
         public int InputTokens { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

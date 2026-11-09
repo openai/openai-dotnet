@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalToolChoiceObject(document.RootElement, data, options);
+                        return DeserializeInternalToolChoiceObject(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalToolChoiceObject)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalToolChoiceObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalToolChoiceObject)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         InternalToolChoiceObject IJsonModel<InternalToolChoiceObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalToolChoiceObject)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalToolChoiceObject(document.RootElement, null, options);
+            return DeserializeInternalToolChoiceObject(document.RootElement, options);
         }
 
-        internal static InternalToolChoiceObject DeserializeInternalToolChoiceObject(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalToolChoiceObject DeserializeInternalToolChoiceObject(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,22 +114,22 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "code_interpreter":
-                        return InternalToolChoiceObjectCodeInterpreter.DeserializeInternalToolChoiceObjectCodeInterpreter(element, data, options);
+                        return InternalToolChoiceObjectCodeInterpreter.DeserializeInternalToolChoiceObjectCodeInterpreter(element, options);
                     case "computer_use_preview":
-                        return InternalToolChoiceObjectComputer.DeserializeInternalToolChoiceObjectComputer(element, data, options);
+                        return InternalToolChoiceObjectComputer.DeserializeInternalToolChoiceObjectComputer(element, options);
                     case "file_search":
-                        return InternalToolChoiceObjectFileSearch.DeserializeInternalToolChoiceObjectFileSearch(element, data, options);
+                        return InternalToolChoiceObjectFileSearch.DeserializeInternalToolChoiceObjectFileSearch(element, options);
                     case "function":
-                        return InternalToolChoiceObjectFunction.DeserializeInternalToolChoiceObjectFunction(element, data, options);
+                        return InternalToolChoiceObjectFunction.DeserializeInternalToolChoiceObjectFunction(element, options);
                     case "image_generation":
-                        return InternalToolChoiceObjectImageGen.DeserializeInternalToolChoiceObjectImageGen(element, data, options);
+                        return InternalToolChoiceObjectImageGen.DeserializeInternalToolChoiceObjectImageGen(element, options);
                     case "mcp":
-                        return InternalToolChoiceObjectMCP.DeserializeInternalToolChoiceObjectMCP(element, data, options);
+                        return InternalToolChoiceObjectMCP.DeserializeInternalToolChoiceObjectMCP(element, options);
                     case "web_search_preview":
-                        return InternalToolChoiceObjectWebSearch.DeserializeInternalToolChoiceObjectWebSearch(element, data, options);
+                        return InternalToolChoiceObjectWebSearch.DeserializeInternalToolChoiceObjectWebSearch(element, options);
                 }
             }
-            return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, data, options);
+            return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, options);
         }
     }
 }

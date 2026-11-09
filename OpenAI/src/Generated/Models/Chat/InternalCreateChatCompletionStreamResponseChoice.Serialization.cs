@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -23,7 +24,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, data, options);
+                        return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateChatCompletionStreamResponseChoice)} does not support reading '{options.Format}' format.");
@@ -55,13 +56,12 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionStreamResponseChoice)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.delta"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("delta") != true)
             {
                 writer.WritePropertyName("delta"u8);
                 writer.WriteObjectValue(Delta, options);
             }
-            if (Optional.IsDefined(Logprobs, _logprobsIsDefined) && !Patch.Contains("$.logprobs"u8))
+            if (Optional.IsDefined(Logprobs, _logprobsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 if (Logprobs != null)
                 {
@@ -73,23 +73,43 @@ namespace OpenAI.Chat
                     writer.WriteNull("logprobs"u8);
                 }
             }
-            if (Optional.IsDefined(FinishReason) && !Patch.Contains("$.finish_reason"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
             {
-                writer.WritePropertyName("finish_reason"u8);
-                writer.WriteStringValue(FinishReason.Value.ToSerialString());
+                if (Optional.IsDefined(FinishReason))
+                {
+                    writer.WritePropertyName("finish_reason"u8);
+                    writer.WriteStringValue(FinishReason.Value.ToSerialString());
+                }
+                else
+                {
+                    writer.WriteNull("finish_reason"u8);
+                }
             }
-            else if (!Patch.Contains("$.finish_reason"u8))
-            {
-                writer.WriteNull("finish_reason"u8);
-            }
-            if (!Patch.Contains("$.index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         InternalCreateChatCompletionStreamResponseChoice IJsonModel<InternalCreateChatCompletionStreamResponseChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -102,60 +122,61 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionStreamResponseChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, null, options);
+            return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        internal static InternalCreateChatCompletionStreamResponseChoice DeserializeInternalCreateChatCompletionStreamResponseChoice(JsonElement element, ModelReaderWriterOptions options)
         {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("delta"u8))
+            if (element.ValueKind == JsonValueKind.Null)
             {
-                if (Delta == null)
-                {
-                    return false;
-                }
-                return Delta.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("delta"u8.Length)], out value);
+                return null;
             }
-            if (local.StartsWith("logprobs"u8))
+            InternalChatCompletionStreamResponseDelta delta = default;
+            bool logprobsIsDefined = false;
+            InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = default;
+            ChatFinishReason? finishReason = default;
+            int index = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (Logprobs == null)
+                if (prop.NameEquals("delta"u8))
                 {
-                    return false;
+                    delta = InternalChatCompletionStreamResponseDelta.DeserializeInternalChatCompletionStreamResponseDelta(prop.Value, options);
+                    continue;
                 }
-                return Logprobs.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("logprobs"u8.Length)], out value);
+                if (prop.NameEquals("logprobs"u8))
+                {
+                    logprobsIsDefined = true;
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        logprobs = null;
+                        continue;
+                    }
+                    logprobs = InternalCreateChatCompletionStreamResponseChoiceLogprobs.DeserializeInternalCreateChatCompletionStreamResponseChoiceLogprobs(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("finish_reason"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        finishReason = null;
+                        continue;
+                    }
+                    finishReason = prop.Value.GetString().ToChatFinishReason();
+                    continue;
+                }
+                if (prop.NameEquals("index"u8))
+                {
+                    index = prop.Value.GetInt32();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return false;
+            return new InternalCreateChatCompletionStreamResponseChoice(delta, logprobs, finishReason, index, additionalBinaryDataProperties)
+            {
+                _logprobsIsDefined = logprobsIsDefined
+            };
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("delta"u8))
-            {
-                if (Delta == null)
-                {
-                    return false;
-                }
-                Delta.Patch.Set([.. "$"u8, .. local.Slice("delta"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("logprobs"u8))
-            {
-                if (Logprobs == null)
-                {
-                    return false;
-                }
-                Logprobs.Patch.Set([.. "$"u8, .. local.Slice("logprobs"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

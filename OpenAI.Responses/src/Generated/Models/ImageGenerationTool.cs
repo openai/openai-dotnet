@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,14 +11,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public ImageGenerationTool() : this(ResponseToolKind.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default, default)
+        public ImageGenerationTool() : this(ResponseToolKind.ImageGeneration, null, null, default, default, default, default, default, default, default, null, default, default)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationTool(ResponseToolKind kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, patch)
+        internal ImageGenerationTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, additionalBinaryDataProperties)
         {
             Model = model;
             Quality = quality;
@@ -30,9 +28,7 @@ namespace OpenAI.Responses
             InputImageMask = inputImageMask;
             PartialImageCount = partialImageCount;
             Action = action;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ImageGenerationToolQuality? Quality { get; set; }
 

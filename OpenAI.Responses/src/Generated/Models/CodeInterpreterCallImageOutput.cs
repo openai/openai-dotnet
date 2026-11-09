@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,12 +19,10 @@ namespace OpenAI.Responses
             ImageUri = imageUri;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterCallImageOutput(CodeInterpreterCallOutputKind kind, in JsonPatch patch, Uri imageUri) : base(kind, patch)
+        internal CodeInterpreterCallImageOutput(CodeInterpreterCallOutputKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri imageUri) : base(kind, additionalBinaryDataProperties)
         {
             ImageUri = imageUri;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public Uri ImageUri { get; set; }
     }

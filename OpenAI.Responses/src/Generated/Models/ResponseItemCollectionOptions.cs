@@ -2,10 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -13,8 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseItemCollectionOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public ResponseItemCollectionOptions(string responseId)
         {
@@ -23,22 +21,15 @@ namespace OpenAI.Responses
             ResponseId = responseId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseItemCollectionOptions(string responseId, int? pageSizeLimit, ResponseItemCollectionOrder? order, string afterId, string beforeId, in JsonPatch patch)
+        internal ResponseItemCollectionOptions(string responseId, int? pageSizeLimit, ResponseItemCollectionOrder? order, string afterId, string beforeId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ResponseId = responseId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
             AfterId = afterId;
             BeforeId = beforeId;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string ResponseId { get; set; }
 
@@ -49,5 +40,11 @@ namespace OpenAI.Responses
         public string AfterId { get; set; }
 
         public string BeforeId { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

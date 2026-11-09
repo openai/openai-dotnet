@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,27 +11,21 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputItemAdded : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateResponseOutputItemAdded(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(RealtimeServerUpdateKind.ResponseOutputItemAdded)
         {
             EventId = eventId;
             ResponseId = responseId;
             OutputIndex = outputIndex;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputItemAdded(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputItemAdded(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
             OutputIndex = outputIndex;
             Item = item;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

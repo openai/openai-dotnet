@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Decisions
@@ -16,13 +17,11 @@ namespace OpenAI.Decisions
             Probability = probability;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsPredicateAnswer(DecisionsAnswerKind kind, in JsonPatch patch, string name, float probability) : base(kind, patch)
+        internal DecisionsPredicateAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, float probability) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Probability = probability;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Name { get; set; }
 

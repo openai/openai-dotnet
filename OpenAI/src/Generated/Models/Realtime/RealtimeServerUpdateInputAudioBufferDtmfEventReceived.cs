@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -17,13 +17,11 @@ namespace OpenAI.Realtime
             ReceivedOn = receivedOn;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(RealtimeServerUpdateKind kind, in JsonPatch patch, string @event, DateTimeOffset receivedOn) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferDtmfEventReceived(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @event, DateTimeOffset receivedOn) : base(kind, additionalBinaryDataProperties)
         {
             Event = @event;
             ReceivedOn = receivedOn;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Event { get; set; }
 

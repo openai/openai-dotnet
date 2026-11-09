@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsFunctionToolCallOutputItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallOutputItem>
     {
-        public DecisionsFunctionToolCallOutputItem() : this(DecisionsItemKind.FunctionToolCallOutput, default, null, null, null, default)
+        public DecisionsFunctionToolCallOutputItem() : this(DecisionsItemKind.FunctionToolCallOutput, null, null, null, null, default)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsFunctionToolCallOutputItem(document.RootElement, data, options);
+                        return DeserializeDecisionsFunctionToolCallOutputItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsFunctionToolCallOutputItem)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsFunctionToolCallOutputItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,37 +64,22 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsFunctionToolCallOutputItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.call_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (Patch.Contains("$.output"u8))
-            {
-                if (!Patch.IsRemoved("$.output"u8))
-                {
-                    writer.WritePropertyName("output"u8);
-                    Patch.WriteTo(writer, "$.output"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "output"u8);
-                for (int i = 0; i < Output.Count; i++)
+                foreach (DecisionsInputContentPart item in Output)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || Output[i] != null && Output[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Output[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Id, _idIsDefined) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id, _idIsDefined) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 if (Id != null)
                 {
@@ -115,7 +91,7 @@ namespace OpenAI.Decisions
                     writer.WriteNull("id"u8);
                 }
             }
-            if (Optional.IsDefined(Status, _statusIsDefined) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status, _statusIsDefined) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 if (Status != null)
                 {
@@ -127,9 +103,6 @@ namespace OpenAI.Decisions
                     writer.WriteNull("status"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsFunctionToolCallOutputItem IJsonModel<DecisionsFunctionToolCallOutputItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsFunctionToolCallOutputItem)JsonModelCreateCore(ref reader, options);
@@ -142,19 +115,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsFunctionToolCallOutputItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsFunctionToolCallOutputItem(document.RootElement, null, options);
+            return DeserializeDecisionsFunctionToolCallOutputItem(document.RootElement, options);
         }
 
-        internal static DecisionsFunctionToolCallOutputItem DeserializeDecisionsFunctionToolCallOutputItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsFunctionToolCallOutputItem DeserializeDecisionsFunctionToolCallOutputItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string callId = default;
             IList<DecisionsInputContentPart> output = default;
             bool idIsDefined = false;
@@ -200,11 +171,12 @@ namespace OpenAI.Decisions
                     status = new DecisionsFunctionToolCallOutputStatus(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new DecisionsFunctionToolCallOutputItem(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 callId,
                 output ?? new ChangeTrackingList<DecisionsInputContentPart>(),
                 id,
@@ -214,94 +186,5 @@ namespace OpenAI.Decisions
                 _statusIsDefined = statusIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("output"u8))
-            {
-                int propertyLength = "output"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Output == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveOutputArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
-                {
-                    return false;
-                }
-                if (Output[index] == null)
-                {
-                    return false;
-                }
-                return Output[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("output"u8))
-            {
-                int propertyLength = "output"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Output == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
-                {
-                    return false;
-                }
-                if (Output[index] == null)
-                {
-                    return false;
-                }
-                Output[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveOutputArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveOutput(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsInputContentPart> ActiveOutput()
-        {
-            if (!Optional.IsCollectionDefined(Output))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "output"u8);
-            for (int i = 0; i < Output.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]"))) && (Output[i] == null || !Output[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Output[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

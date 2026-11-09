@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceQuestion : DecisionsQuestion
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsChoiceQuestion(IEnumerable<DecisionsChoice> choices, IEnumerable<DecisionsInstructionsPart> instructions) : base(DecisionsQuestionKind.Choice)
         {
             Argument.AssertNotNull(choices, nameof(choices));
@@ -21,20 +20,15 @@ namespace OpenAI.Decisions
 
             Choices = choices.ToList();
             Instructions = instructions.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, in JsonPatch patch, IList<DecisionsChoice> choices, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, patch)
+        internal DecisionsChoiceQuestion(DecisionsQuestionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<DecisionsChoice> choices, IList<DecisionsInstructionsPart> instructions, string name) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Choices = choices ?? new ChangeTrackingList<DecisionsChoice>();
             Instructions = instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>();
             Name = name;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsChoice> Choices { get; }
 

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -16,25 +17,19 @@ namespace OpenAI.Decisions
         private DecisionsPromptCacheBreakpoint _promptCacheBreakpoint;
         private bool _promptCacheBreakpointIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputImageContentPart(string imageUri) : base(DecisionsInputContentPartKind.InputImage)
         {
             Argument.AssertNotNull(imageUri, nameof(imageUri));
 
             ImageUri = imageUri;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputImageContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
+        internal DecisionsInputImageContentPart(DecisionsInputContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUri, DecisionsImageDetailLevel? imageDetailLevel, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, additionalBinaryDataProperties)
         {
             ImageUri = imageUri;
             _imageDetailLevel = imageDetailLevel;
             _promptCacheBreakpoint = promptCacheBreakpoint;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUri { get; set; }
 

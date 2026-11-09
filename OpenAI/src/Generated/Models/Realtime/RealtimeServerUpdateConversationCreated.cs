@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,23 +11,17 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationCreated : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationCreated(string eventId, RealtimeConversation conversation) : base(RealtimeServerUpdateKind.ConversationCreated)
         {
             EventId = eventId;
             Conversation = conversation;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationCreated(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeConversation conversation) : base(kind, patch)
+        internal RealtimeServerUpdateConversationCreated(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, RealtimeConversation conversation) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             Conversation = conversation;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

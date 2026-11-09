@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -15,21 +16,16 @@ namespace OpenAI.Responses
         private WebSearchToolLocation _userLocation;
         private bool _userLocationIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public WebSearchTool() : this(ResponseToolKind.WebSearch, default, null, null, default)
+        public WebSearchTool() : this(ResponseToolKind.WebSearch, null, null, null, default)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchTool(ResponseToolKind kind, in JsonPatch patch, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)
+        internal WebSearchTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, additionalBinaryDataProperties)
         {
             _filters = filters;
             _userLocation = userLocation;
             SearchContextSize = searchContextSize;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public WebSearchToolFilters Filters
         {

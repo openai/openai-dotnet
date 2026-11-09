@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -11,25 +11,19 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesUserMessage : MessageResponseItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalResponsesUserMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.User)
         {
             InternalContent = internalContent.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalResponsesUserMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
+        internal InternalResponsesUserMessage(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, additionalBinaryDataProperties, status, internalRole)
         {
             // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

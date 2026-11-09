@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalItemContentInputFile(document.RootElement, data, options);
+                        return DeserializeInternalItemContentInputFile(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support reading '{options.Format}' format.");
@@ -49,14 +49,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalItemContentInputFile>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -70,8 +62,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(FileId, _fileIdIsDefined) && !Patch.Contains("$.file_id"u8))
+            if (Optional.IsDefined(FileId, _fileIdIsDefined) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
             {
                 if (FileId != null)
                 {
@@ -83,7 +74,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("file_id"u8);
                 }
             }
-            if (Optional.IsDefined(FileUrl, _fileUrlIsDefined) && !Patch.Contains("$.file_url"u8))
+            if (Optional.IsDefined(FileUrl, _fileUrlIsDefined) && _additionalBinaryDataProperties?.ContainsKey("file_url") != true)
             {
                 if (FileUrl != null)
                 {
@@ -95,19 +86,16 @@ namespace OpenAI.Responses
                     writer.WriteNull("file_url"u8);
                 }
             }
-            if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
+            if (Optional.IsDefined(Filename) && _additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
             }
-            if (Optional.IsDefined(InternalFileData) && !Patch.Contains("$.file_data"u8))
+            if (Optional.IsDefined(InternalFileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
             {
                 writer.WritePropertyName("file_data"u8);
                 writer.WriteStringValue(InternalFileData);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemContentInputFile IJsonModel<InternalItemContentInputFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentInputFile)JsonModelCreateCore(ref reader, options);
@@ -121,20 +109,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemContentInputFile(document.RootElement, null, options);
+            return DeserializeInternalItemContentInputFile(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal static InternalItemContentInputFile DeserializeInternalItemContentInputFile(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalItemContentInputFile DeserializeInternalItemContentInputFile(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemContentType internalType = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             bool fileIdIsDefined = false;
             string fileId = default;
             bool fileUrlIsDefined = false;
@@ -180,11 +166,12 @@ namespace OpenAI.Responses
                     internalFileData = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalItemContentInputFile(
                 internalType,
-                patch,
+                additionalBinaryDataProperties,
                 fileId,
                 fileUrl,
                 filename,

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeError(document.RootElement, data, options);
+                        return DeserializeRealtimeError(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeError)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,13 +59,12 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeError)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Kind) && !Patch.Contains("$.type"u8))
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind);
             }
-            if (Optional.IsDefined(Code, _codeIsDefined) && !Patch.Contains("$.code"u8))
+            if (Optional.IsDefined(Code, _codeIsDefined) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
                 if (Code != null)
                 {
@@ -85,17 +76,17 @@ namespace OpenAI.Realtime
                     writer.WriteNull("code"u8);
                 }
             }
-            if (Optional.IsDefined(Message) && !Patch.Contains("$.message"u8))
+            if (Optional.IsDefined(Message) && _additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (Optional.IsDefined(ParameterName) && !Patch.Contains("$.param"u8))
+            if (Optional.IsDefined(ParameterName) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(ParameterName);
             }
-            if (Optional.IsDefined(EventId, _eventIdIsDefined) && !Patch.Contains("$.event_id"u8))
+            if (Optional.IsDefined(EventId, _eventIdIsDefined) && _additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 if (EventId != null)
                 {
@@ -107,9 +98,26 @@ namespace OpenAI.Realtime
                     writer.WriteNull("event_id"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeError IJsonModel<RealtimeError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -122,10 +130,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeError)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeError(document.RootElement, null, options);
+            return DeserializeRealtimeError(document.RootElement, options);
         }
 
-        internal static RealtimeError DeserializeRealtimeError(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeError DeserializeRealtimeError(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -138,9 +146,7 @@ namespace OpenAI.Realtime
             string parameterName = default;
             bool eventIdIsDefined = false;
             string eventId = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -185,7 +191,8 @@ namespace OpenAI.Realtime
                     eventId = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeError(
                 kind,
@@ -193,7 +200,7 @@ namespace OpenAI.Realtime
                 message,
                 parameterName,
                 eventId,
-                patch)
+                additionalBinaryDataProperties)
             {
                 _codeIsDefined = codeIsDefined,
                 _eventIdIsDefined = eventIdIsDefined

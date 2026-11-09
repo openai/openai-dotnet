@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -14,24 +15,18 @@ namespace OpenAI.Decisions
         private DecisionsPromptCacheBreakpoint _promptCacheBreakpoint;
         private bool _promptCacheBreakpointIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsInputTextContentPart(string text) : base(DecisionsInputContentPartKind.InputText)
         {
             Argument.AssertNotNull(text, nameof(text));
 
             Text = text;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputTextContentPart(DecisionsInputContentPartKind kind, in JsonPatch patch, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, patch)
+        internal DecisionsInputTextContentPart(DecisionsInputContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, DecisionsPromptCacheBreakpoint promptCacheBreakpoint) : base(kind, additionalBinaryDataProperties)
         {
             Text = text;
             _promptCacheBreakpoint = promptCacheBreakpoint;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Text { get; set; }
 

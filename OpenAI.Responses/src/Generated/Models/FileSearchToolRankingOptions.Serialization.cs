@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeFileSearchToolRankingOptions(document.RootElement, data, options);
+                        return DeserializeFileSearchToolRankingOptions(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(FileSearchToolRankingOptions)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<FileSearchToolRankingOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,20 +59,36 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(FileSearchToolRankingOptions)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Ranker) && !Patch.Contains("$.ranker"u8))
+            if (Optional.IsDefined(Ranker) && _additionalBinaryDataProperties?.ContainsKey("ranker") != true)
             {
                 writer.WritePropertyName("ranker"u8);
                 writer.WriteStringValue(Ranker.Value.ToString());
             }
-            if (Optional.IsDefined(ScoreThreshold) && !Patch.Contains("$.score_threshold"u8))
+            if (Optional.IsDefined(ScoreThreshold) && _additionalBinaryDataProperties?.ContainsKey("score_threshold") != true)
             {
                 writer.WritePropertyName("score_threshold"u8);
                 writer.WriteNumberValue(ScoreThreshold.Value);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         FileSearchToolRankingOptions IJsonModel<FileSearchToolRankingOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -93,10 +101,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FileSearchToolRankingOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFileSearchToolRankingOptions(document.RootElement, null, options);
+            return DeserializeFileSearchToolRankingOptions(document.RootElement, options);
         }
 
-        internal static FileSearchToolRankingOptions DeserializeFileSearchToolRankingOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static FileSearchToolRankingOptions DeserializeFileSearchToolRankingOptions(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,9 +112,7 @@ namespace OpenAI.Responses
             }
             FileSearchToolRanker? ranker = default;
             float? scoreThreshold = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("ranker"u8))
@@ -127,9 +133,10 @@ namespace OpenAI.Responses
                     scoreThreshold = prop.Value.GetSingle();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new FileSearchToolRankingOptions(ranker, scoreThreshold, patch);
+            return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -14,28 +14,22 @@ namespace OpenAI.Responses
         private string _error;
         private bool _errorIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(ResponseItemKind.McpListTools)
         {
             ServerLabel = serverLabel;
             Tools = tools.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalMCPListToolsItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)
+        internal InternalMCPListToolsItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             Tools = tools ?? new ChangeTrackingList<McpToolDefinition>();
             _error = error;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ServerLabel { get; set; }

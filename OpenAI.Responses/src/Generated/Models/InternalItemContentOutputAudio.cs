@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -14,13 +15,11 @@ namespace OpenAI.Responses
             Transcript = transcript;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentOutputAudio(InternalItemContentType internalType, in JsonPatch patch, string data, string transcript) : base(internalType, patch)
+        internal InternalItemContentOutputAudio(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string data, string transcript) : base(internalType, additionalBinaryDataProperties)
         {
             Data = data;
             Transcript = transcript;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Data { get; set; }
 

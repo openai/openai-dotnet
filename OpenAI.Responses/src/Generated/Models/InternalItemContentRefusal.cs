@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,11 +14,9 @@ namespace OpenAI.Responses
             InternalRefusal = internalRefusal;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentRefusal(InternalItemContentType internalType, in JsonPatch patch, string internalRefusal) : base(internalType, patch)
+        internal InternalItemContentRefusal(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalRefusal) : base(internalType, additionalBinaryDataProperties)
         {
             InternalRefusal = internalRefusal;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

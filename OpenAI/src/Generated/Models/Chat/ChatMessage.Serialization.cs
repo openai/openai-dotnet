@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatMessage : IJsonModel<ChatMessage>
     {
-        internal ChatMessage() : this(default, null, default)
+        internal ChatMessage() : this(default, null, null)
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatMessage(document.RootElement, data, options);
+                        return DeserializeChatMessage(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{options.Format}' format.");
@@ -59,19 +59,37 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.role"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
             // Plugin customization: add Content.IsInnerCollectionDefined() check
-            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && !Patch.Contains("$.content"u8))
+            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -85,10 +103,12 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatMessage(document.RootElement, null, options);
+            return DeserializeChatMessage(document.RootElement, options);
         }
 
-        internal static ChatMessage DeserializeChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -99,20 +119,22 @@ namespace OpenAI.Chat
                 switch (discriminator.GetString())
                 {
                     case "assistant":
-                        return AssistantChatMessage.DeserializeAssistantChatMessage(element, data, options);
+                        return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
                     case "developer":
-                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
+                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, options);
                     case "function":
-                        return FunctionChatMessage.DeserializeFunctionChatMessage(element, data, options);
+                        return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
                     case "system":
-                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
+                        return SystemChatMessage.DeserializeSystemChatMessage(element, options);
                     case "tool":
-                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
+                        return ToolChatMessage.DeserializeToolChatMessage(element, options);
                     case "user":
-                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
+                        return UserChatMessage.DeserializeUserChatMessage(element, options);
                 }
             }
-            return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, data, options);
+            return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, options);
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

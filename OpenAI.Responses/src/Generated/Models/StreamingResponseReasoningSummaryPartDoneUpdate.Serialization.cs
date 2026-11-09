@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseReasoningSummaryPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryPartDoneUpdate>
     {
-        public StreamingResponseReasoningSummaryPartDoneUpdate() : this(StreamingResponseUpdateKind.ResponseReasoningSummaryPartDone, default, default, null, default, default, null)
+        public StreamingResponseReasoningSummaryPartDoneUpdate() : this(StreamingResponseUpdateKind.ResponseReasoningSummaryPartDone, default, null, null, default, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseReasoningSummaryPartDoneUpdate)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<StreamingResponseReasoningSummaryPartDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,30 +64,26 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseReasoningSummaryPartDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.item_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.output_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.summary_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("summary_index") != true)
             {
                 writer.WritePropertyName("summary_index"u8);
                 writer.WriteNumberValue(SummaryIndex);
             }
-            if (!Patch.Contains("$.part"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("part") != true)
             {
                 writer.WritePropertyName("part"u8);
                 writer.WriteObjectValue(Part, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseReasoningSummaryPartDoneUpdate IJsonModel<StreamingResponseReasoningSummaryPartDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseReasoningSummaryPartDoneUpdate)JsonModelCreateCore(ref reader, options);
@@ -108,10 +96,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseReasoningSummaryPartDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(document.RootElement, options);
         }
 
-        internal static StreamingResponseReasoningSummaryPartDoneUpdate DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseReasoningSummaryPartDoneUpdate DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -119,9 +107,7 @@ namespace OpenAI.Responses
             }
             StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string itemId = default;
             int outputIndex = default;
             int summaryIndex = default;
@@ -155,55 +141,20 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("part"u8))
                 {
-                    part = ReasoningSummaryPart.DeserializeReasoningSummaryPart(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    part = ReasoningSummaryPart.DeserializeReasoningSummaryPart(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseReasoningSummaryPartDoneUpdate(
                 kind,
                 sequenceNumber,
-                patch,
+                additionalBinaryDataProperties,
                 itemId,
                 outputIndex,
                 summaryIndex,
                 part);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("part"u8))
-            {
-                if (Part == null)
-                {
-                    return false;
-                }
-                return Part.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("part"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("part"u8))
-            {
-                if (Part == null)
-                {
-                    return false;
-                }
-                Part.Patch.Set([.. "$"u8, .. local.Slice("part"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

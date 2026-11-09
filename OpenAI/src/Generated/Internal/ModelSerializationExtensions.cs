@@ -7,12 +7,12 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
 
 #pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -304,7 +304,7 @@ namespace OpenAI
                     }
                     writer.WriteEndObject();
                     break;
-                case IEnumerable<object> objectEnumerable:
+                case IEnumerable objectEnumerable:
                     writer.WriteStartArray();
                     foreach (var item in objectEnumerable)
                     {
@@ -335,86 +335,6 @@ namespace OpenAI
 #else
             return BinaryData.FromString(element.GetRawText());
 #endif
-        }
-
-        public static ReadOnlySpan<byte> SliceToStartOfPropertyName(this ReadOnlySpan<byte> jsonPath)
-        {
-            ReadOnlySpan<byte> local = jsonPath;
-            if (local.Length < 3)
-            {
-                return ReadOnlySpan<byte>.Empty;
-            }
-            if (local[0] != '$')
-            {
-                return ReadOnlySpan<byte>.Empty;
-            }
-            if (local[1] == '.')
-            {
-                return local.Slice(2);
-            }
-            return local.Length >= 4 && local[1] == '[' && (local[2] == '\'' || local[2] == '"') ? local.Slice(3) : ReadOnlySpan<byte>.Empty;
-        }
-
-        public static string GetFirstPropertyName(this ReadOnlySpan<byte> jsonPath, out int bytesConsumed)
-        {
-            ReadOnlySpan<byte> local = jsonPath;
-            for (bytesConsumed = 0; bytesConsumed < local.Length; bytesConsumed++)
-            {
-                byte current = local[bytesConsumed];
-                if (current == '.')
-                {
-                    break;
-                }
-                else
-                {
-                    if (current == '\'' || current == '"')
-                    {
-                        if (bytesConsumed + 1 < local.Length && local[bytesConsumed + 1] == ']')
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            string key;
-#if NET6_0_OR_GREATER
-            key = global::System.Text.Encoding.UTF8.GetString(local.Slice(0, bytesConsumed));
-#else
-            key = Encoding.UTF8.GetString(local.Slice(0, bytesConsumed).ToArray());
-#endif
-            bytesConsumed += jsonPath.Length - local.Length;
-            return key;
-        }
-
-        public static bool TryGetIndex(this ReadOnlySpan<byte> indexSlice, out int index, out int bytesConsumed)
-        {
-            index = -1;
-            bytesConsumed = 0;
-
-            if (indexSlice.IsEmpty || indexSlice[0] != '[')
-            {
-                return false;
-            }
-
-            indexSlice = indexSlice.Slice(1);
-            if (indexSlice.IsEmpty || indexSlice[0] == '-')
-            {
-                return false;
-            }
-
-            int indexEnd = indexSlice.Slice(1).IndexOf((byte)']');
-            if (indexEnd < 0)
-            {
-                return false;
-            }
-
-            return Utf8Parser.TryParse(indexSlice.Slice(0, indexEnd + 1), out index, out bytesConsumed);
-        }
-
-        public static ReadOnlySpan<byte> GetRemainder(this ReadOnlySpan<byte> jsonPath, int index)
-        {
-            return index >= jsonPath.Length ? ReadOnlySpan<byte>.Empty : jsonPath[index] == '.' ? jsonPath.Slice(index) : jsonPath.Slice(index + 2);
         }
 
         public static void WriteFileBinaryContent(this Utf8JsonWriter writer, FileBinaryContent value)

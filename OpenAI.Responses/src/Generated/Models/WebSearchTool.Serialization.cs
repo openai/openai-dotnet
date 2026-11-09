@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchTool(document.RootElement, data, options);
+                        return DeserializeWebSearchTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchTool)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<WebSearchTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,8 +60,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Filters, _filtersIsDefined) && !Patch.Contains("$.filters"u8))
+            if (Optional.IsDefined(Filters, _filtersIsDefined) && _additionalBinaryDataProperties?.ContainsKey("filters") != true)
             {
                 if (Filters != null)
                 {
@@ -81,7 +72,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("filters"u8);
                 }
             }
-            if (Optional.IsDefined(UserLocation, _userLocationIsDefined) && !Patch.Contains("$.user_location"u8))
+            if (Optional.IsDefined(UserLocation, _userLocationIsDefined) && _additionalBinaryDataProperties?.ContainsKey("user_location") != true)
             {
                 if (UserLocation != null)
                 {
@@ -93,14 +84,11 @@ namespace OpenAI.Responses
                     writer.WriteNull("user_location"u8);
                 }
             }
-            if (Optional.IsDefined(SearchContextSize) && !Patch.Contains("$.search_context_size"u8))
+            if (Optional.IsDefined(SearchContextSize) && _additionalBinaryDataProperties?.ContainsKey("search_context_size") != true)
             {
                 writer.WritePropertyName("search_context_size"u8);
                 writer.WriteStringValue(SearchContextSize.Value.ToString());
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchTool IJsonModel<WebSearchTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchTool)JsonModelCreateCore(ref reader, options);
@@ -113,19 +101,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchTool(document.RootElement, null, options);
+            return DeserializeWebSearchTool(document.RootElement, options);
         }
 
-        internal static WebSearchTool DeserializeWebSearchTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchTool DeserializeWebSearchTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseToolKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             bool filtersIsDefined = false;
             WebSearchToolFilters filters = default;
             bool userLocationIsDefined = false;
@@ -146,7 +132,7 @@ namespace OpenAI.Responses
                         filters = null;
                         continue;
                     }
-                    filters = WebSearchToolFilters.DeserializeWebSearchToolFilters(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    filters = WebSearchToolFilters.DeserializeWebSearchToolFilters(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("user_location"u8))
@@ -157,7 +143,7 @@ namespace OpenAI.Responses
                         userLocation = null;
                         continue;
                     }
-                    userLocation = WebSearchToolLocation.DeserializeWebSearchToolLocation(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    userLocation = WebSearchToolLocation.DeserializeWebSearchToolLocation(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("search_context_size"u8))
@@ -169,66 +155,14 @@ namespace OpenAI.Responses
                     searchContextSize = new WebSearchToolContextSize(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchTool(kind, patch, filters, userLocation, searchContextSize)
+            return new WebSearchTool(kind, additionalBinaryDataProperties, filters, userLocation, searchContextSize)
             {
                 _filtersIsDefined = filtersIsDefined,
                 _userLocationIsDefined = userLocationIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("filters"u8))
-            {
-                if (Filters == null)
-                {
-                    return false;
-                }
-                return Filters.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("filters"u8.Length)], out value);
-            }
-            if (local.StartsWith("user_location"u8))
-            {
-                if (UserLocation == null)
-                {
-                    return false;
-                }
-                return UserLocation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("user_location"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("filters"u8))
-            {
-                if (Filters == null)
-                {
-                    return false;
-                }
-                Filters.Patch.Set([.. "$"u8, .. local.Slice("filters"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("user_location"u8))
-            {
-                if (UserLocation == null)
-                {
-                    return false;
-                }
-                UserLocation.Patch.Set([.. "$"u8, .. local.Slice("user_location"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

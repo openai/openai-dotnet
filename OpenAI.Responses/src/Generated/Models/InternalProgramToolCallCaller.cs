@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,12 +14,10 @@ namespace OpenAI.Responses
             CallerId = callerId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalProgramToolCallCaller(InternalToolCallCallerType kind, in JsonPatch patch, string callerId) : base(kind, patch)
+        internal InternalProgramToolCallCaller(InternalToolCallCallerType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callerId) : base(kind, additionalBinaryDataProperties)
         {
             CallerId = callerId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallerId { get; set; }
     }

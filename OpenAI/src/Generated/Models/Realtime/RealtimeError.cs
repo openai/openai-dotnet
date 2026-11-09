@@ -2,18 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
     public partial class RealtimeError
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private string _code;
         private bool _codeIsDefined;
         private string _eventId;
@@ -23,22 +21,15 @@ namespace OpenAI.Realtime
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeError(string kind, string code, string message, string parameterName, string eventId, in JsonPatch patch)
+        internal RealtimeError(string kind, string code, string message, string parameterName, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _code = code;
             Message = message;
             ParameterName = parameterName;
             _eventId = eventId;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Kind { get; set; }
 
@@ -68,6 +59,12 @@ namespace OpenAI.Realtime
                 _eventId = value;
                 _eventIdIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

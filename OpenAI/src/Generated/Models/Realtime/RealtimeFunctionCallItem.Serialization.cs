@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeFunctionCallItem : RealtimeItem, IJsonModel<RealtimeFunctionCallItem>
     {
-        public RealtimeFunctionCallItem() : this(RealtimeItemKind.FunctionCall, default, null, default, default, null, null, null)
+        public RealtimeFunctionCallItem() : this(RealtimeItemKind.FunctionCall, null, null, default, default, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeFunctionCallItem(document.RootElement, data, options);
+                        return DeserializeRealtimeFunctionCallItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeFunctionCallItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeFunctionCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,40 +64,36 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeFunctionCallItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (Optional.IsDefined(Object) && !Patch.Contains("$.object"u8))
+            if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.Value.ToString());
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
             }
-            if (!Patch.Contains("$.call_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (!Patch.Contains("$.arguments"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
                 SerializeFunctionArgumentsValue(writer, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeFunctionCallItem IJsonModel<RealtimeFunctionCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeFunctionCallItem)JsonModelCreateCore(ref reader, options);
@@ -118,19 +106,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeFunctionCallItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeFunctionCallItem(document.RootElement, null, options);
+            return DeserializeRealtimeFunctionCallItem(document.RootElement, options);
         }
 
-        internal static RealtimeFunctionCallItem DeserializeRealtimeFunctionCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeFunctionCallItem DeserializeRealtimeFunctionCallItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string id = default;
             InternalRealtimeConversationItemFunctionCallGAObject? @object = default;
             RealtimeFunctionCallStatus? status = default;
@@ -182,11 +168,12 @@ namespace OpenAI.Realtime
                     DeserializeFunctionArgumentsValue(prop, ref functionArguments, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeFunctionCallItem(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 id,
                 @object,
                 status,

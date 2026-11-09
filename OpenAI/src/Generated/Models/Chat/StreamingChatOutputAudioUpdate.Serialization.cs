@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingChatOutputAudioUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingChatOutputAudioUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingChatOutputAudioUpdate)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Chat
 
         void IJsonModel<StreamingChatOutputAudioUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,30 +59,46 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(StreamingChatOutputAudioUpdate)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (Optional.IsDefined(TranscriptUpdate) && !Patch.Contains("$.transcript"u8))
+            if (Optional.IsDefined(TranscriptUpdate) && _additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
                 writer.WriteStringValue(TranscriptUpdate);
             }
-            if (Optional.IsDefined(AudioBytesUpdate) && !Patch.Contains("$.data"u8))
+            if (Optional.IsDefined(AudioBytesUpdate) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytesUpdate, "D");
             }
-            if (Optional.IsDefined(ExpiresOn) && !Patch.Contains("$.expires_at"u8))
+            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
                 writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         StreamingChatOutputAudioUpdate IJsonModel<StreamingChatOutputAudioUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -103,10 +111,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(StreamingChatOutputAudioUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingChatOutputAudioUpdate(document.RootElement, null, options);
+            return DeserializeStreamingChatOutputAudioUpdate(document.RootElement, options);
         }
 
-        internal static StreamingChatOutputAudioUpdate DeserializeStreamingChatOutputAudioUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingChatOutputAudioUpdate DeserializeStreamingChatOutputAudioUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -116,9 +124,7 @@ namespace OpenAI.Chat
             string transcriptUpdate = default;
             BinaryData audioBytesUpdate = default;
             DateTimeOffset? expiresOn = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -149,9 +155,10 @@ namespace OpenAI.Chat
                     expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresOn, patch);
+            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresOn, additionalBinaryDataProperties);
         }
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -17,14 +18,12 @@ namespace OpenAI.Responses
             Delta = delta;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
             Delta = delta;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int OutputIndex { get; set; }
 

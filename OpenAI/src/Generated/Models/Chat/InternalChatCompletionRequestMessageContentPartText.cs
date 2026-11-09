@@ -2,20 +2,19 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartText : ChatMessageContentPart
     {
-        public InternalChatCompletionRequestMessageContentPartText() : this(default, default)
+        public InternalChatCompletionRequestMessageContentPartText() : this(default, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionRequestMessageContentPartText(ChatMessageContentPartKind kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalChatCompletionRequestMessageContentPartText(ChatMessageContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,27 +11,21 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseContentPartDoneUpdate : StreamingResponseUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseContentPartDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(StreamingResponseUpdateKind.ResponseContentPartDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Part = part;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseContentPartDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseContentPartDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Part = part;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ItemId { get; set; }
 

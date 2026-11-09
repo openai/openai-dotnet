@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -11,23 +12,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterTool : ResponseTool
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CodeInterpreterTool(CodeInterpreterToolContainer container) : base(ResponseToolKind.CodeInterpreter)
         {
             Argument.AssertNotNull(container, nameof(container));
 
             Container = container;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterTool(ResponseToolKind kind, in JsonPatch patch, CodeInterpreterToolContainer container) : base(kind, patch)
+        internal CodeInterpreterTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterToolContainer container) : base(kind, additionalBinaryDataProperties)
         {
             Container = container;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public CodeInterpreterToolContainer Container { get; set; }
     }

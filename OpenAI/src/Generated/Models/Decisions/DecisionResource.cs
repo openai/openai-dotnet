@@ -2,12 +2,10 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Decisions
@@ -15,40 +13,34 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionResource
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionResource(IEnumerable<DecisionsAnswer> answers, string model, DecisionsUsage usage)
         {
             Answers = answers.ToList();
             Model = model;
             Usage = usage;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionResource(IList<DecisionsAnswer> answers, string model, DecisionsUsage usage, in JsonPatch patch)
+        internal DecisionResource(IList<DecisionsAnswer> answers, string model, DecisionsUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Answers = answers ?? new ChangeTrackingList<DecisionsAnswer>();
             Model = model;
             Usage = usage;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IList<DecisionsAnswer> Answers { get; }
 
         public string Model { get; set; }
 
         public DecisionsUsage Usage { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

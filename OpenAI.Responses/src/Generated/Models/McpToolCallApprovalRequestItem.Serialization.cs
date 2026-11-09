@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>
     {
-        public McpToolCallApprovalRequestItem() : this(ResponseItemKind.McpApprovalRequest, null, default, null, null, null)
+        public McpToolCallApprovalRequestItem() : this(ResponseItemKind.McpApprovalRequest, null, null, null, null, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolCallApprovalRequestItem(document.RootElement, data, options);
+                        return DeserializeMcpToolCallApprovalRequestItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallApprovalRequestItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<McpToolCallApprovalRequestItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,25 +64,21 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalRequestItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.server_label"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
             {
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (!Patch.Contains("$.arguments"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         McpToolCallApprovalRequestItem IJsonModel<McpToolCallApprovalRequestItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (McpToolCallApprovalRequestItem)JsonModelCreateCore(ref reader, options);
@@ -103,10 +91,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalRequestItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalRequestItem(document.RootElement, null, options);
+            return DeserializeMcpToolCallApprovalRequestItem(document.RootElement, options);
         }
 
-        internal static McpToolCallApprovalRequestItem DeserializeMcpToolCallApprovalRequestItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static McpToolCallApprovalRequestItem DeserializeMcpToolCallApprovalRequestItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -114,9 +102,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
             string toolName = default;
             BinaryData toolArguments = default;
@@ -147,12 +133,13 @@ namespace OpenAI.Responses
                     DeserializeToolArgumentsValue(prop, ref toolArguments, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new McpToolCallApprovalRequestItem(
                 kind,
                 id,
-                patch,
+                additionalBinaryDataProperties,
                 serverLabel,
                 toolName,
                 toolArguments);

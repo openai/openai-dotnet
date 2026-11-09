@@ -25,7 +25,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatResponseFormat(document.RootElement, data, options);
+                        return DeserializeChatResponseFormat(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support reading '{options.Format}' format.");
@@ -53,14 +53,6 @@ namespace OpenAI.Chat
 
         void IJsonModel<ChatResponseFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -74,13 +66,31 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ChatResponseFormat IJsonModel<ChatResponseFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -94,10 +104,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatResponseFormat(document.RootElement, null, options);
+            return DeserializeChatResponseFormat(document.RootElement, options);
         }
 
-        internal static ChatResponseFormat DeserializeChatResponseFormat(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatResponseFormat DeserializeChatResponseFormat(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -108,14 +118,14 @@ namespace OpenAI.Chat
                 switch (discriminator.GetString())
                 {
                     case "json_object":
-                        return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, data, options);
+                        return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, options);
                     case "json_schema":
-                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, data, options);
+                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, options);
                     case "text":
-                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, data, options);
+                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, options);
                 }
             }
-            return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, data, options);
+            return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, options);
         }
     }
 }

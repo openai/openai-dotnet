@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -19,15 +19,13 @@ namespace OpenAI.Responses
             FunctionArguments = functionArguments;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseFunctionCallArgumentsDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, string functionName, int outputIndex, BinaryData functionArguments) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseFunctionCallArgumentsDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, string functionName, int outputIndex, BinaryData functionArguments) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             FunctionName = functionName;
             OutputIndex = outputIndex;
             FunctionArguments = functionArguments;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ItemId { get; set; }
 

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -11,29 +11,23 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
         {
             InternalText = internalText;
             Annotations = annotations.ToList();
             Logprobs = new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(internalType, patch)
+        internal InternalItemContentOutputText(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(internalType, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             InternalText = internalText;
             Annotations = annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>();
             Logprobs = logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.

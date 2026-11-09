@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,11 +14,9 @@ namespace OpenAI.Responses
             InternalText = internalText;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputText(InternalItemContentType internalType, in JsonPatch patch, string internalText) : base(internalType, patch)
+        internal InternalItemContentInputText(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(internalType, additionalBinaryDataProperties)
         {
             InternalText = internalText;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

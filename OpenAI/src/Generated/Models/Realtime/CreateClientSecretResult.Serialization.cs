@@ -5,7 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -25,7 +25,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCreateClientSecretResult(document.RootElement, data, options);
+                        return DeserializeCreateClientSecretResult(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CreateClientSecretResult)} does not support reading '{options.Format}' format.");
@@ -53,21 +53,12 @@ namespace OpenAI.Realtime
         public static explicit operator CreateClientSecretResult(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeCreateClientSecretResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeCreateClientSecretResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<CreateClientSecretResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -80,25 +71,41 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(CreateClientSecretResult)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.value"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("value") != true)
             {
                 writer.WritePropertyName("value"u8);
                 writer.WriteStringValue(Value);
             }
-            if (!Patch.Contains("$.expires_at"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
                 writer.WriteNumberValue(ExpiresOn, "U");
             }
-            if (!Patch.Contains("$.session"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("session") != true)
             {
                 writer.WritePropertyName("session"u8);
                 writer.WriteObjectValue(Session, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         CreateClientSecretResult IJsonModel<CreateClientSecretResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -111,10 +118,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(CreateClientSecretResult)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCreateClientSecretResult(document.RootElement, null, options);
+            return DeserializeCreateClientSecretResult(document.RootElement, options);
         }
 
-        internal static CreateClientSecretResult DeserializeCreateClientSecretResult(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CreateClientSecretResult DeserializeCreateClientSecretResult(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -123,9 +130,7 @@ namespace OpenAI.Realtime
             string value = default;
             DateTimeOffset expiresOn = default;
             RealtimeSession session = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("value"u8))
@@ -140,48 +145,13 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("session"u8))
                 {
-                    session = RealtimeSession.DeserializeRealtimeSession(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    session = RealtimeSession.DeserializeRealtimeSession(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new CreateClientSecretResult(value, expiresOn, session, patch);
+            return new CreateClientSecretResult(value, expiresOn, session, additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("session"u8))
-            {
-                if (Session == null)
-                {
-                    return false;
-                }
-                return Session.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("session"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("session"u8))
-            {
-                if (Session == null)
-                {
-                    return false;
-                }
-                Session.Patch.Set([.. "$"u8, .. local.Slice("session"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

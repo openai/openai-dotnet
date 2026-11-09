@@ -3,18 +3,15 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerFileResource
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ContainerFileResource(string id, string containerId, DateTimeOffset createdOn, long? sizeInBytes, string path, string source)
         {
@@ -26,8 +23,7 @@ namespace OpenAI.Containers
             Source = source;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdOn, long? sizeInBytes, string path, string source, in JsonPatch patch)
+        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdOn, long? sizeInBytes, string path, string source, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Object = @object;
@@ -36,14 +32,8 @@ namespace OpenAI.Containers
             SizeInBytes = sizeInBytes;
             Path = path;
             Source = source;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; set; }
 
@@ -58,5 +48,11 @@ namespace OpenAI.Containers
         public string Path { get; set; }
 
         public string Source { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

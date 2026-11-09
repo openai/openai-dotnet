@@ -2,20 +2,19 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalDirectToolCallCaller : InternalToolCallCaller
     {
-        public InternalDirectToolCallCaller() : this(InternalToolCallCallerType.Direct, default)
+        public InternalDirectToolCallCaller() : this(InternalToolCallCallerType.Direct, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalDirectToolCallCaller(InternalToolCallCallerType kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalDirectToolCallCaller(InternalToolCallCallerType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

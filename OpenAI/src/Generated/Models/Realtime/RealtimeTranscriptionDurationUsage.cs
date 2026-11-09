@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -16,11 +16,9 @@ namespace OpenAI.Realtime
             Duration = duration;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionDurationUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, in JsonPatch patch, TimeSpan duration) : base(kind, patch)
+        internal RealtimeTranscriptionDurationUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, TimeSpan duration) : base(kind, additionalBinaryDataProperties)
         {
             Duration = duration;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

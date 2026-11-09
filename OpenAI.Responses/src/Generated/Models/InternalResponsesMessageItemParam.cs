@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,13 +14,11 @@ namespace OpenAI.Responses
             Role = role;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalResponsesMessageItemParam(ResponseItemKind kind, in JsonPatch patch, InternalResponsesMessageRole role) : base(kind, patch)
+        internal InternalResponsesMessageItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponsesMessageRole role) : base(kind, additionalBinaryDataProperties)
         {
             Role = role;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalResponsesMessageRole Role { get; set; }

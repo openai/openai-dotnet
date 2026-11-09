@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     public partial class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>
     {
-        internal MessageResponseItem() : this(ResponseItemKind.Message, null, default, default, default)
+        internal MessageResponseItem() : this(ResponseItemKind.Message, null, null, default, default)
         {
         }
 
@@ -23,7 +23,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMessageResponseItem(document.RootElement, data, options);
+                        return DeserializeMessageResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(MessageResponseItem)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<MessageResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,18 +63,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(MessageResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (!Patch.Contains("$.role"u8))
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(InternalRole.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         MessageResponseItem IJsonModel<MessageResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (MessageResponseItem)JsonModelCreateCore(ref reader, options);
@@ -95,10 +87,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(MessageResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMessageResponseItem(document.RootElement, null, options);
+            return DeserializeMessageResponseItem(document.RootElement, options);
         }
 
-        internal static MessageResponseItem DeserializeMessageResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static MessageResponseItem DeserializeMessageResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -109,16 +101,16 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "assistant":
-                        return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, data, options);
+                        return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, options);
                     case "developer":
-                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
+                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, options);
                     case "system":
-                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
+                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, options);
                     case "user":
-                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
+                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, options);
                 }
             }
-            return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, data, options);
+            return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, options);
         }
     }
 }

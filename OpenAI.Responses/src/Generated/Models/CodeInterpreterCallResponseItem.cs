@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,28 +12,22 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallResponseItem : ResponseItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CodeInterpreterCallResponseItem(string code) : base(ResponseItemKind.CodeInterpreterCall)
         {
             Argument.AssertNotNull(code, nameof(code));
 
             Code = code;
             Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, CodeInterpreterCallStatus? status, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, id, patch)
+        internal CodeInterpreterCallResponseItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus? status, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             ContainerId = containerId;
             Code = code;
             Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public CodeInterpreterCallStatus? Status { get; set; }
 

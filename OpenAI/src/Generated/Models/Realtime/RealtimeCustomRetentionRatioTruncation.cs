@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,22 +11,16 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeCustomRetentionRatioTruncation : RealtimeCustomTruncation
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeCustomRetentionRatioTruncation(float retentionRatio) : base(InternalRealtimeTruncationBaseTypeGA.RetentionRatio)
         {
             RetentionRatio = retentionRatio;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA kind, in JsonPatch patch, float retentionRatio, RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails) : base(kind, patch)
+        internal RealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, float retentionRatio, RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails) : base(kind, additionalBinaryDataProperties)
         {
             RetentionRatio = retentionRatio;
             TokenLimitDetails = tokenLimitDetails;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public float RetentionRatio { get; set; }
     }

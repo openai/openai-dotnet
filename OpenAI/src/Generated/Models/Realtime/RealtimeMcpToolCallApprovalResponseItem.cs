@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -22,15 +23,13 @@ namespace OpenAI.Realtime
             Approved = approved;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolCallApprovalResponseItem(RealtimeItemKind kind, in JsonPatch patch, string id, string approvalRequestId, bool approved, string reason) : base(kind, patch)
+        internal RealtimeMcpToolCallApprovalResponseItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, string approvalRequestId, bool approved, string reason) : base(kind, additionalBinaryDataProperties)
         {
             Id = id;
             ApprovalRequestId = approvalRequestId;
             Approved = approved;
             _reason = reason;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

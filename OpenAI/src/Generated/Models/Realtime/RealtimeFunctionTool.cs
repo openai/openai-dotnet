@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +19,11 @@ namespace OpenAI.Realtime
             FunctionName = functionName;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeFunctionTool(RealtimeToolKind kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters) : base(kind, patch)
+        internal RealtimeFunctionTool(RealtimeToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string functionName, string functionDescription, BinaryData functionParameters) : base(kind, additionalBinaryDataProperties)
         {
             FunctionName = functionName;
             FunctionDescription = functionDescription;
             FunctionParameters = functionParameters;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

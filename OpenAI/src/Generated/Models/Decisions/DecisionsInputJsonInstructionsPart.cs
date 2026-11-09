@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -21,13 +20,11 @@ namespace OpenAI.Decisions
             Data = data.ToList();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputJsonInstructionsPart(DecisionsInstructionsPartKind kind, in JsonPatch patch, IList<BinaryData> data) : base(kind, patch)
+        internal DecisionsInputJsonInstructionsPart(DecisionsInstructionsPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<BinaryData> data) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Data = data ?? new ChangeTrackingList<BinaryData>();
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<BinaryData> Data { get; }
     }

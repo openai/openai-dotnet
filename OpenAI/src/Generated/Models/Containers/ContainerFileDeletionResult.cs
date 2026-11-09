@@ -2,39 +2,36 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerFileDeletionResult
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ContainerFileDeletionResult(string containerFileId)
         {
             ContainerFileId = containerFileId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerFileDeletionResult(string containerFileId, string @object, bool deleted, in JsonPatch patch)
+        internal ContainerFileDeletionResult(string containerFileId, string @object, bool deleted, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ContainerFileId = containerFileId;
             Object = @object;
             Deleted = deleted;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public bool Deleted { get; set; } = true;
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

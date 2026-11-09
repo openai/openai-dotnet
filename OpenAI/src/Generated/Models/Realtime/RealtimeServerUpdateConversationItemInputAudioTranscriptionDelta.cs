@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,18 +12,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId, string itemId) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionDelta)
         {
             EventId = eventId;
             ItemId = itemId;
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int? contentIndex, string delta, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string itemId, int? contentIndex, string delta, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
@@ -31,9 +27,7 @@ namespace OpenAI.Realtime
             ContentIndex = contentIndex;
             Delta = delta;
             TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

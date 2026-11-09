@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -24,8 +25,7 @@ namespace OpenAI.Responses
             Filename = filename;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerFileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string containerId, string fileId, int startIndex, int endIndex, string filename) : base(kind, patch)
+        internal ContainerFileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string containerId, string fileId, int startIndex, int endIndex, string filename) : base(kind, additionalBinaryDataProperties)
         {
             ContainerId = containerId;
             FileId = fileId;
@@ -33,7 +33,6 @@ namespace OpenAI.Responses
             EndIndex = endIndex;
             Filename = filename;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ContainerId { get; set; }
 

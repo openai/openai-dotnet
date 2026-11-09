@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputAudio : ResponseContentPart, IJsonModel<InternalItemContentOutputAudio>
     {
-        public InternalItemContentOutputAudio() : this(InternalItemContentType.OutputAudio, default, null, null)
+        public InternalItemContentOutputAudio() : this(InternalItemContentType.OutputAudio, null, null, null)
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalItemContentOutputAudio(document.RootElement, data, options);
+                        return DeserializeInternalItemContentOutputAudio(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemContentOutputAudio)} does not support reading '{options.Format}' format.");
@@ -53,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalItemContentOutputAudio>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -74,20 +66,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputAudio)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.data"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStringValue(Data);
             }
-            if (!Patch.Contains("$.transcript"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
                 writer.WriteStringValue(Transcript);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemContentOutputAudio IJsonModel<InternalItemContentOutputAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentOutputAudio)JsonModelCreateCore(ref reader, options);
@@ -101,21 +89,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputAudio)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemContentOutputAudio(document.RootElement, null, options);
+            return DeserializeInternalItemContentOutputAudio(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal static InternalItemContentOutputAudio DeserializeInternalItemContentOutputAudio(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalItemContentOutputAudio DeserializeInternalItemContentOutputAudio(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemContentType internalType = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string data0 = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string data = default;
             string transcript = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -126,7 +112,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("data"u8))
                 {
-                    data0 = prop.Value.GetString();
+                    data = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("transcript"u8))
@@ -134,9 +120,10 @@ namespace OpenAI.Responses
                     transcript = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputAudio(internalType, patch, data0, transcript);
+            return new InternalItemContentOutputAudio(internalType, additionalBinaryDataProperties, data, transcript);
         }
     }
 }

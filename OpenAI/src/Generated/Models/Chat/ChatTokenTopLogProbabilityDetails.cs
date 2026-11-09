@@ -3,17 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class ChatTokenTopLogProbabilityDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ChatTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes)
         {
@@ -22,21 +18,20 @@ namespace OpenAI.Chat
             Utf8Bytes = utf8Bytes;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, in JsonPatch patch)
+        internal ChatTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Token = token;
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Token { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

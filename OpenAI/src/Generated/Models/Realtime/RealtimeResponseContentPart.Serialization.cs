@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeResponseContentPart(document.RootElement, data, options);
+                        return DeserializeRealtimeResponseContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeResponseContentPart)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeResponseContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,30 +59,46 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeResponseContentPart)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Kind) && !Patch.Contains("$.type"u8))
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.Value.ToString());
             }
-            if (Optional.IsDefined(Text) && !Patch.Contains("$.text"u8))
+            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (Optional.IsDefined(Audio) && !Patch.Contains("$.audio"u8))
+            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteBase64StringValue(Audio, "D");
             }
-            if (Optional.IsDefined(Transcript) && !Patch.Contains("$.transcript"u8))
+            if (Optional.IsDefined(Transcript) && _additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
                 writer.WriteStringValue(Transcript);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeResponseContentPart IJsonModel<RealtimeResponseContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -103,10 +111,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeResponseContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeResponseContentPart(document.RootElement, null, options);
+            return DeserializeRealtimeResponseContentPart(document.RootElement, options);
         }
 
-        internal static RealtimeResponseContentPart DeserializeRealtimeResponseContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeResponseContentPart DeserializeRealtimeResponseContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -116,9 +124,7 @@ namespace OpenAI.Realtime
             string text = default;
             BinaryData audio = default;
             string transcript = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -149,9 +155,10 @@ namespace OpenAI.Realtime
                     transcript = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeResponseContentPart(kind, text, audio, transcript, patch);
+            return new RealtimeResponseContentPart(kind, text, audio, transcript, additionalBinaryDataProperties);
         }
     }
 }

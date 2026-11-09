@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>
     {
-        public RealtimeMcpToolCallApprovalResponseItem() : this(RealtimeItemKind.McpApprovalResponse, default, null, null, default, null)
+        public RealtimeMcpToolCallApprovalResponseItem() : this(RealtimeItemKind.McpApprovalResponse, null, null, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeMcpToolCallApprovalResponseItem(document.RootElement, data, options);
+                        return DeserializeRealtimeMcpToolCallApprovalResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeMcpToolCallApprovalResponseItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeMcpToolCallApprovalResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,23 +64,22 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeMcpToolCallApprovalResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (!Patch.Contains("$.approval_request_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("approval_request_id") != true)
             {
                 writer.WritePropertyName("approval_request_id"u8);
                 writer.WriteStringValue(ApprovalRequestId);
             }
-            if (!Patch.Contains("$.approve"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("approve") != true)
             {
                 writer.WritePropertyName("approve"u8);
                 writer.WriteBooleanValue(Approved);
             }
-            if (Optional.IsDefined(Reason, _reasonIsDefined) && !Patch.Contains("$.reason"u8))
+            if (Optional.IsDefined(Reason, _reasonIsDefined) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
             {
                 if (Reason != null)
                 {
@@ -100,9 +91,6 @@ namespace OpenAI.Realtime
                     writer.WriteNull("reason"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeMcpToolCallApprovalResponseItem IJsonModel<RealtimeMcpToolCallApprovalResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeMcpToolCallApprovalResponseItem)JsonModelCreateCore(ref reader, options);
@@ -115,19 +103,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeMcpToolCallApprovalResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeMcpToolCallApprovalResponseItem(document.RootElement, null, options);
+            return DeserializeRealtimeMcpToolCallApprovalResponseItem(document.RootElement, options);
         }
 
-        internal static RealtimeMcpToolCallApprovalResponseItem DeserializeRealtimeMcpToolCallApprovalResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeMcpToolCallApprovalResponseItem DeserializeRealtimeMcpToolCallApprovalResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string id = default;
             string approvalRequestId = default;
             bool approved = default;
@@ -166,11 +152,12 @@ namespace OpenAI.Realtime
                     reason = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeMcpToolCallApprovalResponseItem(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 id,
                 approvalRequestId,
                 approved,

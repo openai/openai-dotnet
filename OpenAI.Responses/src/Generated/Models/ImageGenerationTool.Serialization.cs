@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeImageGenerationTool(document.RootElement, data, options);
+                        return DeserializeImageGenerationTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<ImageGenerationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,65 +60,61 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(Quality) && !Patch.Contains("$.quality"u8))
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
                 writer.WriteStringValue(Quality.Value.ToString());
             }
-            if (Optional.IsDefined(Size) && !Patch.Contains("$.size"u8))
+            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
-            if (Optional.IsDefined(OutputFileFormat) && !Patch.Contains("$.output_format"u8))
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
                 writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
-            if (Optional.IsDefined(OutputCompressionFactor) && !Patch.Contains("$.output_compression"u8))
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
             {
                 writer.WritePropertyName("output_compression"u8);
                 writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
-            if (Optional.IsDefined(ModerationLevel) && !Patch.Contains("$.moderation"u8))
+            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
             {
                 writer.WritePropertyName("moderation"u8);
                 writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
-            if (Optional.IsDefined(Background) && !Patch.Contains("$.background"u8))
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
-            if (Optional.IsDefined(InputFidelity) && !Patch.Contains("$.input_fidelity"u8))
+            if (Optional.IsDefined(InputFidelity) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
             {
                 writer.WritePropertyName("input_fidelity"u8);
                 writer.WriteStringValue(InputFidelity.Value.ToString());
             }
-            if (Optional.IsDefined(InputImageMask) && !Patch.Contains("$.input_image_mask"u8))
+            if (Optional.IsDefined(InputImageMask) && _additionalBinaryDataProperties?.ContainsKey("input_image_mask") != true)
             {
                 writer.WritePropertyName("input_image_mask"u8);
                 writer.WriteObjectValue(InputImageMask, options);
             }
-            if (Optional.IsDefined(PartialImageCount) && !Patch.Contains("$.partial_images"u8))
+            if (Optional.IsDefined(PartialImageCount) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
             {
                 writer.WritePropertyName("partial_images"u8);
                 writer.WriteNumberValue(PartialImageCount.Value);
             }
-            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+            if (Optional.IsDefined(Action) && _additionalBinaryDataProperties?.ContainsKey("action") != true)
             {
                 writer.WritePropertyName("action"u8);
                 writer.WriteStringValue(Action.Value.ToString());
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ImageGenerationTool IJsonModel<ImageGenerationTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ImageGenerationTool)JsonModelCreateCore(ref reader, options);
@@ -139,19 +127,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeImageGenerationTool(document.RootElement, null, options);
+            return DeserializeImageGenerationTool(document.RootElement, options);
         }
 
-        internal static ImageGenerationTool DeserializeImageGenerationTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ImageGenerationTool DeserializeImageGenerationTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseToolKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string model = default;
             ImageGenerationToolQuality? quality = default;
             ImageGenerationToolSize? size = default;
@@ -244,7 +230,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    inputImageMask = ImageGenerationToolInputImageMask.DeserializeImageGenerationToolInputImageMask(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    inputImageMask = ImageGenerationToolInputImageMask.DeserializeImageGenerationToolInputImageMask(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("partial_images"u8))
@@ -265,11 +251,12 @@ namespace OpenAI.Responses
                     action = new ImageGenerationToolAction(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ImageGenerationTool(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 model,
                 quality,
                 size,
@@ -282,41 +269,5 @@ namespace OpenAI.Responses
                 partialImageCount,
                 action);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("input_image_mask"u8))
-            {
-                if (InputImageMask == null)
-                {
-                    return false;
-                }
-                return InputImageMask.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_image_mask"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("input_image_mask"u8))
-            {
-                if (InputImageMask == null)
-                {
-                    return false;
-                }
-                InputImageMask.Patch.Set([.. "$"u8, .. local.Slice("input_image_mask"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

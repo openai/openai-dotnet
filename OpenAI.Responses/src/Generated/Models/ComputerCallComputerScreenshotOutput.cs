@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -10,17 +11,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ComputerCallComputerScreenshotOutput : ComputerCallOutput
     {
-        public ComputerCallComputerScreenshotOutput() : this(ComputerCallOutputKind.ComputerScreenshot, default, null, null)
+        public ComputerCallComputerScreenshotOutput() : this(ComputerCallOutputKind.ComputerScreenshot, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerCallComputerScreenshotOutput(ComputerCallOutputKind kind, in JsonPatch patch, string imageUri, string fileId) : base(kind, patch)
+        internal ComputerCallComputerScreenshotOutput(ComputerCallOutputKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUri, string fileId) : base(kind, additionalBinaryDataProperties)
         {
             ImageUri = imageUri;
             FileId = fileId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FileId { get; set; }
     }

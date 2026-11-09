@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,27 +11,21 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionFailed)
         {
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Error = error;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Error = error;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

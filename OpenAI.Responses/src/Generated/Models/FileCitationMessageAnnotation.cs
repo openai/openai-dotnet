@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -21,14 +22,12 @@ namespace OpenAI.Responses
             Filename = filename;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string fileId, int index, string filename) : base(kind, patch)
+        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index, string filename) : base(kind, additionalBinaryDataProperties)
         {
             FileId = fileId;
             Index = index;
             Filename = filename;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FileId { get; set; }
 

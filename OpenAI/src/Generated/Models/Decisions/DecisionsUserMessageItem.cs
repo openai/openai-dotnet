@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,24 +13,18 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsUserMessageItem : DecisionsMessageItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsUserMessageItem(IEnumerable<DecisionsInputContentPart> content) : base(DecisionsMessageRole.User)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             Content = content.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUserMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsInputContentPart> content) : base(kind, patch, role)
+        internal DecisionsUserMessageItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DecisionsMessageRole role, IList<DecisionsInputContentPart> content) : base(kind, additionalBinaryDataProperties, role)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<DecisionsInputContentPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsInputContentPart> Content { get; }
     }

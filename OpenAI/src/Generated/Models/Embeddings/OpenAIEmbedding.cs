@@ -2,23 +2,29 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbedding
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal OpenAIEmbedding(int index, BinaryData embeddingProperty, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Index = index;
+            EmbeddingProperty = embeddingProperty;
+            Object = @object;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
 
         public int Index { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

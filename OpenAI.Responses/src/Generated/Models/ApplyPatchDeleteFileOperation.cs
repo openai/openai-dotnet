@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -18,11 +19,9 @@ namespace OpenAI.Responses
             FilePath = filePath;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchDeleteFileOperation(ApplyPatchOperationKind kind, in JsonPatch patch, string filePath) : base(kind, patch)
+        internal ApplyPatchDeleteFileOperation(ApplyPatchOperationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string filePath) : base(kind, additionalBinaryDataProperties)
         {
             FilePath = filePath;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

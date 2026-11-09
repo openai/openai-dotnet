@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateRateLimitsUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateRateLimitsUpdated>
     {
-        public RealtimeServerUpdateRateLimitsUpdated() : this(RealtimeServerUpdateKind.RateLimitsUpdated, default, null, null)
+        public RealtimeServerUpdateRateLimitsUpdated() : this(RealtimeServerUpdateKind.RateLimitsUpdated, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdateRateLimitsUpdated(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdateRateLimitsUpdated(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdateRateLimitsUpdated)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdateRateLimitsUpdated>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,39 +64,21 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateRateLimitsUpdated)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.event_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (Patch.Contains("$.rate_limits"u8))
-            {
-                if (!Patch.IsRemoved("$.rate_limits"u8))
-                {
-                    writer.WritePropertyName("rate_limits"u8);
-                    Patch.WriteTo(writer, "$.rate_limits"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("rate_limits") != true)
             {
                 writer.WritePropertyName("rate_limits"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
-                for (int i = 0; i < RateLimitDetails.Count; i++)
+                foreach (RealtimeRateLimitDetails item in RateLimitDetails)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) || RateLimitDetails[i] != null && RateLimitDetails[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(RateLimitDetails[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.rate_limits"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerUpdateRateLimitsUpdated IJsonModel<RealtimeServerUpdateRateLimitsUpdated>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerUpdateRateLimitsUpdated)JsonModelCreateCore(ref reader, options);
@@ -118,19 +91,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateRateLimitsUpdated)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdateRateLimitsUpdated(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdateRateLimitsUpdated(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdateRateLimitsUpdated DeserializeRealtimeServerUpdateRateLimitsUpdated(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdateRateLimitsUpdated DeserializeRealtimeServerUpdateRateLimitsUpdated(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeServerUpdateKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             IList<RealtimeRateLimitDetails> rateLimitDetails = default;
             foreach (var prop in element.EnumerateObject())
@@ -150,103 +121,15 @@ namespace OpenAI.Realtime
                     List<RealtimeRateLimitDetails> array = new List<RealtimeRateLimitDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(RealtimeRateLimitDetails.DeserializeRealtimeRateLimitDetails(item, item.GetUtf8Bytes(), options));
+                        array.Add(RealtimeRateLimitDetails.DeserializeRealtimeRateLimitDetails(item, options));
                     }
                     rateLimitDetails = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateRateLimitsUpdated(kind, patch, eventId, rateLimitDetails ?? new ChangeTrackingList<RealtimeRateLimitDetails>());
+            return new RealtimeServerUpdateRateLimitsUpdated(kind, additionalBinaryDataProperties, eventId, rateLimitDetails ?? new ChangeTrackingList<RealtimeRateLimitDetails>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("rate_limits"u8))
-            {
-                int propertyLength = "rate_limits"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (RateLimitDetails == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveRateLimitDetailsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
-                {
-                    return false;
-                }
-                if (RateLimitDetails[index] == null)
-                {
-                    return false;
-                }
-                return RateLimitDetails[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("rate_limits"u8))
-            {
-                int propertyLength = "rate_limits"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (RateLimitDetails == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
-                {
-                    return false;
-                }
-                if (RateLimitDetails[index] == null)
-                {
-                    return false;
-                }
-                RateLimitDetails[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveRateLimitDetailsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveRateLimitDetails(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<RealtimeRateLimitDetails> ActiveRateLimitDetails()
-        {
-            if (!Optional.IsCollectionDefined(RateLimitDetails))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
-            for (int i = 0; i < RateLimitDetails.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]"))) && (RateLimitDetails[i] == null || !RateLimitDetails[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return RateLimitDetails[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

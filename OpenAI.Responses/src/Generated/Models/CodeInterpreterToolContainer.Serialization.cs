@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCodeInterpreterToolContainer(document.RootElement, data, options);
+                        return DeserializeCodeInterpreterToolContainer(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{options.Format}' format.");
@@ -54,7 +55,38 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterToolContainer(document.RootElement, null, options);
+            return DeserializeCodeInterpreterToolContainer(document.RootElement, options);
+        }
+
+        internal static CodeInterpreterToolContainer DeserializeCodeInterpreterToolContainer(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            string containerId = default;
+            CodeInterpreterToolContainerConfiguration containerConfiguration = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("container_id"u8))
+                {
+                    containerId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("container"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    containerConfiguration = CodeInterpreterToolContainerConfiguration.DeserializeCodeInterpreterToolContainerConfiguration(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+            }
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, additionalBinaryDataProperties);
         }
     }
 }

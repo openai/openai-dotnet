@@ -5,7 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -25,7 +25,7 @@ namespace OpenAI.Containers
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeContainerResource(document.RootElement, data, options);
+                        return DeserializeContainerResource(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ContainerResource)} does not support reading '{options.Format}' format.");
@@ -53,21 +53,12 @@ namespace OpenAI.Containers
         public static explicit operator ContainerResource(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeContainerResource(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeContainerResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<ContainerResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -80,55 +71,71 @@ namespace OpenAI.Containers
             {
                 throw new FormatException($"The model {nameof(ContainerResource)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (!Patch.Contains("$.object"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (!Patch.Contains("$.created_at"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedOn, "U");
             }
-            if (!Patch.Contains("$.status"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status);
             }
-            if (Optional.IsDefined(LastActiveOn) && !Patch.Contains("$.last_active_at"u8))
+            if (Optional.IsDefined(LastActiveOn) && _additionalBinaryDataProperties?.ContainsKey("last_active_at") != true)
             {
                 writer.WritePropertyName("last_active_at"u8);
                 writer.WriteNumberValue(LastActiveOn.Value, "U");
             }
-            if (Optional.IsDefined(ExpirationPolicy) && !Patch.Contains("$.expires_after"u8))
+            if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
                 writer.WritePropertyName("expires_after"u8);
                 writer.WriteObjectValue(ExpirationPolicy, options);
             }
-            if (Optional.IsDefined(MemoryLimit) && !Patch.Contains("$.memory_limit"u8))
+            if (Optional.IsDefined(MemoryLimit) && _additionalBinaryDataProperties?.ContainsKey("memory_limit") != true)
             {
                 writer.WritePropertyName("memory_limit"u8);
                 writer.WriteStringValue(MemoryLimit.Value.ToString());
             }
-            if (Optional.IsDefined(NetworkPolicy) && !Patch.Contains("$.network_policy"u8))
+            if (Optional.IsDefined(NetworkPolicy) && _additionalBinaryDataProperties?.ContainsKey("network_policy") != true)
             {
                 writer.WritePropertyName("network_policy"u8);
                 writer.WriteObjectValue(NetworkPolicy, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ContainerResource IJsonModel<ContainerResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -141,10 +148,10 @@ namespace OpenAI.Containers
                 throw new FormatException($"The model {nameof(ContainerResource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeContainerResource(document.RootElement, null, options);
+            return DeserializeContainerResource(document.RootElement, options);
         }
 
-        internal static ContainerResource DeserializeContainerResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ContainerResource DeserializeContainerResource(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -159,9 +166,7 @@ namespace OpenAI.Containers
             ContainerExpirationPolicy expirationPolicy = default;
             ContainerMemoryLimit? memoryLimit = default;
             ContainerNetworkPolicy networkPolicy = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -204,7 +209,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    expirationPolicy = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    expirationPolicy = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("memory_limit"u8))
@@ -222,10 +227,11 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    networkPolicy = ContainerNetworkPolicy.DeserializeContainerNetworkPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    networkPolicy = ContainerNetworkPolicy.DeserializeContainerNetworkPolicy(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ContainerResource(
                 id,
@@ -237,60 +243,7 @@ namespace OpenAI.Containers
                 expirationPolicy,
                 memoryLimit,
                 networkPolicy,
-                patch);
+                additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("expires_after"u8))
-            {
-                if (ExpirationPolicy == null)
-                {
-                    return false;
-                }
-                return ExpirationPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
-            }
-            if (local.StartsWith("network_policy"u8))
-            {
-                if (NetworkPolicy == null)
-                {
-                    return false;
-                }
-                return NetworkPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("network_policy"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("expires_after"u8))
-            {
-                if (ExpirationPolicy == null)
-                {
-                    return false;
-                }
-                ExpirationPolicy.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("network_policy"u8))
-            {
-                if (NetworkPolicy == null)
-                {
-                    return false;
-                }
-                NetworkPolicy.Patch.Set([.. "$"u8, .. local.Slice("network_policy"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -2,43 +2,35 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionNamedToolChoice
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionNamedToolChoice(InternalCreateChatCompletionRequestToolChoiceFunction function)
         {
             Function = function;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionNamedToolChoice(string kind, InternalCreateChatCompletionRequestToolChoiceFunction function, in JsonPatch patch)
+        internal InternalChatCompletionNamedToolChoice(string kind, InternalCreateChatCompletionRequestToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Function = function;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         internal string Kind { get; } = "function";
 
         internal InternalCreateChatCompletionRequestToolChoiceFunction Function { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

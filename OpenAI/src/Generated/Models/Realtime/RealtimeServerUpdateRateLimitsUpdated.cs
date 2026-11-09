@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,24 +13,18 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateRateLimitsUpdated : RealtimeServerUpdate
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateRateLimitsUpdated(string eventId, IEnumerable<RealtimeRateLimitDetails> rateLimitDetails) : base(RealtimeServerUpdateKind.RateLimitsUpdated)
         {
             EventId = eventId;
             RateLimitDetails = rateLimitDetails.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateRateLimitsUpdated(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, IList<RealtimeRateLimitDetails> rateLimitDetails) : base(kind, patch)
+        internal RealtimeServerUpdateRateLimitsUpdated(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, IList<RealtimeRateLimitDetails> rateLimitDetails) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
             RateLimitDetails = rateLimitDetails ?? new ChangeTrackingList<RealtimeRateLimitDetails>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
     }

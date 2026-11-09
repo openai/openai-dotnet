@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -16,7 +17,6 @@ namespace OpenAI.Responses
         private InternalToolCallCaller _caller;
         private bool _callerIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CustomToolCallItem(string callId, string input, string toolName) : base(ResponseItemKind.CustomToolCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -26,12 +26,9 @@ namespace OpenAI.Responses
             CallId = callId;
             Input = input;
             ToolName = toolName;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, string @namespace, CustomToolCallStatus? status) : base(kind, id, patch)
+        internal CustomToolCallItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string input, string toolName, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, string @namespace, CustomToolCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
         {
             CallId = callId;
             Input = input;
@@ -41,9 +38,7 @@ namespace OpenAI.Responses
             CreatedBy = createdBy;
             Namespace = @namespace;
             Status = status;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 

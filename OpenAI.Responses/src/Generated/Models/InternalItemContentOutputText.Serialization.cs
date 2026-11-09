@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart, IJsonModel<InternalItemContentOutputText>
     {
-        public InternalItemContentOutputText() : this(InternalItemContentType.OutputText, default, null, null, null)
+        public InternalItemContentOutputText() : this(InternalItemContentType.OutputText, null, null, null, null)
         {
         }
 
@@ -26,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalItemContentOutputText(document.RootElement, data, options);
+                        return DeserializeInternalItemContentOutputText(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support reading '{options.Format}' format.");
@@ -54,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalItemContentOutputText>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -75,63 +66,31 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.text"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(InternalText);
             }
-            if (Patch.Contains("$.annotations"u8))
-            {
-                if (!Patch.IsRemoved("$.annotations"u8))
-                {
-                    writer.WritePropertyName("annotations"u8);
-                    Patch.WriteTo(writer, "$.annotations"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
-                for (int i = 0; i < Annotations.Count; i++)
+                foreach (ResponseMessageAnnotation item in Annotations)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Annotations[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.annotations"u8);
                 writer.WriteEndArray();
             }
-            if (Patch.Contains("$.logprobs"u8))
-            {
-                if (!Patch.IsRemoved("$.logprobs"u8))
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    Patch.WriteTo(writer, "$.logprobs"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(Logprobs))
+            if (Optional.IsCollectionDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
-                for (int i = 0; i < Logprobs.Count; i++)
+                foreach (ResponseTokenLogProbabilityDetails item in Logprobs)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || Logprobs[i] != null && Logprobs[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Logprobs[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.logprobs"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemContentOutputText IJsonModel<InternalItemContentOutputText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentOutputText)JsonModelCreateCore(ref reader, options);
@@ -145,20 +104,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemContentOutputText(document.RootElement, null, options);
+            return DeserializeInternalItemContentOutputText(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal static InternalItemContentOutputText DeserializeInternalItemContentOutputText(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalItemContentOutputText DeserializeInternalItemContentOutputText(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemContentType internalType = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string internalText = default;
             IList<ResponseMessageAnnotation> annotations = default;
             IList<ResponseTokenLogProbabilityDetails> logprobs = default;
@@ -179,7 +136,7 @@ namespace OpenAI.Responses
                     List<ResponseMessageAnnotation> array = new List<ResponseMessageAnnotation>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(item, item.GetUtf8Bytes(), options));
+                        array.Add(ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(item, options));
                     }
                     annotations = array;
                     continue;
@@ -193,177 +150,15 @@ namespace OpenAI.Responses
                     List<ResponseTokenLogProbabilityDetails> array = new List<ResponseTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseTokenLogProbabilityDetails.DeserializeResponseTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
+                        array.Add(ResponseTokenLogProbabilityDetails.DeserializeResponseTokenLogProbabilityDetails(item, options));
                     }
                     logprobs = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputText(internalType, patch, internalText, annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>(), logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
+            return new InternalItemContentOutputText(internalType, additionalBinaryDataProperties, internalText, annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>(), logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("annotations"u8))
-            {
-                int propertyLength = "annotations"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Annotations == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveAnnotationsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
-                {
-                    return false;
-                }
-                if (Annotations[index] == null)
-                {
-                    return false;
-                }
-                return Annotations[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            if (local.StartsWith("logprobs"u8))
-            {
-                int propertyLength = "logprobs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Logprobs == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveLogprobsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
-                {
-                    return false;
-                }
-                if (Logprobs[index] == null)
-                {
-                    return false;
-                }
-                return Logprobs[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("annotations"u8))
-            {
-                int propertyLength = "annotations"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Annotations == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
-                {
-                    return false;
-                }
-                if (Annotations[index] == null)
-                {
-                    return false;
-                }
-                Annotations[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            if (local.StartsWith("logprobs"u8))
-            {
-                int propertyLength = "logprobs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Logprobs == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
-                {
-                    return false;
-                }
-                if (Logprobs[index] == null)
-                {
-                    return false;
-                }
-                Logprobs[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveAnnotationsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveAnnotations(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        private IEnumerable<ResponseMessageAnnotation> ActiveAnnotations()
-        {
-            if (!Optional.IsCollectionDefined(Annotations))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
-            for (int i = 0; i < Annotations.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Annotations[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveLogprobsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveLogprobs(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        private IEnumerable<ResponseTokenLogProbabilityDetails> ActiveLogprobs()
-        {
-            if (!Optional.IsCollectionDefined(Logprobs))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
-            for (int i = 0; i < Logprobs.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (Logprobs[i] == null || !Logprobs[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Logprobs[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

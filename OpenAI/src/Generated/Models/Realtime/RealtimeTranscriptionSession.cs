@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -13,18 +12,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeTranscriptionSession : RealtimeSession
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeTranscriptionSession(string id, string @object) : base(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription)
         {
             Id = id;
             Object = @object;
             IncludedProperties = new ChangeTrackingList<RealtimeIncludedProperty>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, string id, string @object, DateTimeOffset? expiresOn, IList<RealtimeIncludedProperty> includedProperties, RealtimeTranscriptionSessionAudioOptions audioOptions) : base(kind, patch)
+        internal RealtimeTranscriptionSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, string @object, DateTimeOffset? expiresOn, IList<RealtimeIncludedProperty> includedProperties, RealtimeTranscriptionSessionAudioOptions audioOptions) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -32,9 +27,7 @@ namespace OpenAI.Realtime
             ExpiresOn = expiresOn;
             IncludedProperties = includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>();
             AudioOptions = audioOptions;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

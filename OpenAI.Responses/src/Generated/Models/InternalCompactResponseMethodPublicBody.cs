@@ -3,17 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalCompactResponseMethodPublicBody
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private BinaryData _input;
         private bool _inputIsDefined;
         private string _previousResponseId;
@@ -26,21 +22,14 @@ namespace OpenAI.Responses
             Model = model;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, in JsonPatch patch)
+        internal InternalCompactResponseMethodPublicBody(InternalModelIdsCompaction? model, BinaryData input, string previousResponseId, string instructions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Model = model;
             _input = input;
             _previousResponseId = previousResponseId;
             _instructions = instructions;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         internal InternalModelIdsCompaction? Model { get; set; }
 
@@ -81,6 +70,12 @@ namespace OpenAI.Responses
                 _instructions = value;
                 _instructionsIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

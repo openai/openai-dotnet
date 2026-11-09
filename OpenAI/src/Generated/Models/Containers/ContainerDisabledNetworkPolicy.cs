@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Containers
@@ -10,14 +11,12 @@ namespace OpenAI.Containers
     [Experimental("OPENAI001")]
     public partial class ContainerDisabledNetworkPolicy : ContainerNetworkPolicy
     {
-        public ContainerDisabledNetworkPolicy() : this(ContainerNetworkPolicyKind.Disabled, default)
+        public ContainerDisabledNetworkPolicy() : this(ContainerNetworkPolicyKind.Disabled, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerDisabledNetworkPolicy(ContainerNetworkPolicyKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ContainerDisabledNetworkPolicy(ContainerNetworkPolicyKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

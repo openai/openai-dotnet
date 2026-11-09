@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,12 +11,10 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimePcmAudioFormat : RealtimeAudioFormat
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimePcmAudioFormat(InternalRealtimeAudioFormatType kind, in JsonPatch patch, int rate) : base(kind, patch)
+        internal RealtimePcmAudioFormat(InternalRealtimeAudioFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int rate) : base(kind, additionalBinaryDataProperties)
         {
             Rate = rate;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int Rate { get; set; } = 24000;
     }

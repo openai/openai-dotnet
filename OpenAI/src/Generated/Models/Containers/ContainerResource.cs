@@ -3,32 +3,25 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerResource
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ContainerResource(string id, string name, DateTimeOffset createdOn, string status)
         {
             Id = id;
             Name = name;
             CreatedOn = createdOn;
             Status = status;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdOn, string status, DateTimeOffset? lastActiveOn, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
+        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdOn, string status, DateTimeOffset? lastActiveOn, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Object = @object;
@@ -39,15 +32,8 @@ namespace OpenAI.Containers
             ExpirationPolicy = expirationPolicy;
             MemoryLimit = memoryLimit;
             NetworkPolicy = networkPolicy;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; set; }
 
@@ -66,5 +52,11 @@ namespace OpenAI.Containers
         public ContainerMemoryLimit? MemoryLimit { get; set; }
 
         public ContainerNetworkPolicy NetworkPolicy { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

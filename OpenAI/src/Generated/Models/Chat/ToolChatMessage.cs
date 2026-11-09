@@ -2,18 +2,17 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class ToolChatMessage : ChatMessage
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ToolChatMessage(ChatMessageRole role, ChatMessageContent content, in JsonPatch patch, string toolCallId) : base(role, content, patch)
+        internal ToolChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string toolCallId) : base(role, content, additionalBinaryDataProperties)
         {
             ToolCallId = toolCallId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ToolCallId { get; }
     }

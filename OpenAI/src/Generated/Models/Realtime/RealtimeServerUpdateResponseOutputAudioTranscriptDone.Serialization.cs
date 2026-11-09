@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateResponseOutputAudioTranscriptDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone>
     {
-        public RealtimeServerUpdateResponseOutputAudioTranscriptDone() : this(RealtimeServerUpdateKind.ResponseOutputAudioTranscriptDone, default, null, null, null, default, default, null)
+        public RealtimeServerUpdateResponseOutputAudioTranscriptDone() : this(RealtimeServerUpdateKind.ResponseOutputAudioTranscriptDone, null, null, null, null, default, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputAudioTranscriptDone)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,40 +64,36 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputAudioTranscriptDone)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.event_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (!Patch.Contains("$.response_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("response_id") != true)
             {
                 writer.WritePropertyName("response_id"u8);
                 writer.WriteStringValue(ResponseId);
             }
-            if (!Patch.Contains("$.item_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.output_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.content_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("content_index") != true)
             {
                 writer.WritePropertyName("content_index"u8);
                 writer.WriteNumberValue(ContentIndex);
             }
-            if (!Patch.Contains("$.transcript"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
                 writer.WriteStringValue(Transcript);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerUpdateResponseOutputAudioTranscriptDone IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseOutputAudioTranscriptDone)JsonModelCreateCore(ref reader, options);
@@ -118,19 +106,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputAudioTranscriptDone)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdateResponseOutputAudioTranscriptDone DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdateResponseOutputAudioTranscriptDone DeserializeRealtimeServerUpdateResponseOutputAudioTranscriptDone(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeServerUpdateKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             string responseId = default;
             string itemId = default;
@@ -174,11 +160,12 @@ namespace OpenAI.Realtime
                     transcript = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeServerUpdateResponseOutputAudioTranscriptDone(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 eventId,
                 responseId,
                 itemId,

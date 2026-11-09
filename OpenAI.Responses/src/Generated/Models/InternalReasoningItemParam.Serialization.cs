@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalReasoningItemParam : InternalItemParam, IJsonModel<InternalReasoningItemParam>
     {
-        public InternalReasoningItemParam() : this(ResponseItemKind.Reasoning, default, null, null)
+        public InternalReasoningItemParam() : this(ResponseItemKind.Reasoning, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalReasoningItemParam(document.RootElement, data, options);
+                        return DeserializeInternalReasoningItemParam(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalReasoningItemParam)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalReasoningItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,8 +64,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalReasoningItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && !Patch.Contains("$.encrypted_content"u8))
+            if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && _additionalBinaryDataProperties?.ContainsKey("encrypted_content") != true)
             {
                 if (EncryptedContent != null)
                 {
@@ -86,33 +76,16 @@ namespace OpenAI.Responses
                     writer.WriteNull("encrypted_content"u8);
                 }
             }
-            if (Patch.Contains("$.summary"u8))
-            {
-                if (!Patch.IsRemoved("$.summary"u8))
-                {
-                    writer.WritePropertyName("summary"u8);
-                    Patch.WriteTo(writer, "$.summary"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("summary") != true)
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "summary"u8);
-                for (int i = 0; i < Summary.Count; i++)
+                foreach (ReasoningSummaryPart item in Summary)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]")) || Summary[i] != null && Summary[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Summary[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.summary"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalReasoningItemParam IJsonModel<InternalReasoningItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalReasoningItemParam)JsonModelCreateCore(ref reader, options);
@@ -125,19 +98,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalReasoningItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalReasoningItemParam(document.RootElement, null, options);
+            return DeserializeInternalReasoningItemParam(document.RootElement, options);
         }
 
-        internal static InternalReasoningItemParam DeserializeInternalReasoningItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalReasoningItemParam DeserializeInternalReasoningItemParam(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             bool encryptedContentIsDefined = false;
             string encryptedContent = default;
             IList<ReasoningSummaryPart> summary = default;
@@ -164,108 +135,18 @@ namespace OpenAI.Responses
                     List<ReasoningSummaryPart> array = new List<ReasoningSummaryPart>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ReasoningSummaryPart.DeserializeReasoningSummaryPart(item, item.GetUtf8Bytes(), options));
+                        array.Add(ReasoningSummaryPart.DeserializeReasoningSummaryPart(item, options));
                     }
                     summary = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalReasoningItemParam(kind, patch, encryptedContent, summary ?? new ChangeTrackingList<ReasoningSummaryPart>())
+            return new InternalReasoningItemParam(kind, additionalBinaryDataProperties, encryptedContent, summary ?? new ChangeTrackingList<ReasoningSummaryPart>())
             {
                 _encryptedContentIsDefined = encryptedContentIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("summary"u8))
-            {
-                int propertyLength = "summary"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Summary == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveSummaryArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Summary.Count)
-                {
-                    return false;
-                }
-                if (Summary[index] == null)
-                {
-                    return false;
-                }
-                return Summary[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("summary"u8))
-            {
-                int propertyLength = "summary"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Summary == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Summary.Count)
-                {
-                    return false;
-                }
-                if (Summary[index] == null)
-                {
-                    return false;
-                }
-                Summary[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveSummaryArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveSummary(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        private IEnumerable<ReasoningSummaryPart> ActiveSummary()
-        {
-            if (!Optional.IsCollectionDefined(Summary))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "summary"u8);
-            for (int i = 0; i < Summary.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]"))) && (Summary[i] == null || !Summary[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Summary[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,26 +11,20 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeTranscriptionTokenUsage : RealtimeTranscriptionUsage
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeTranscriptionTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount) : base(InternalTranscriptionTokenUsageBaseTypeGA.Tokens)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionTokenUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, in JsonPatch patch, int inputTokenCount, RealtimeTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokenCount, int totalTokenCount) : base(kind, patch)
+        internal RealtimeTranscriptionTokenUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int inputTokenCount, RealtimeTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokenCount, int totalTokenCount) : base(kind, additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public RealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; set; }
     }

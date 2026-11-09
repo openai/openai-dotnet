@@ -2,20 +2,17 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsUsage
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionsUsage(long inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, long outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, long totalTokenCount)
         {
             InputTokenCount = inputTokenCount;
@@ -23,27 +20,17 @@ namespace OpenAI.Decisions
             OutputTokenCount = outputTokenCount;
             OutputTokenDetails = outputTokenDetails;
             TotalTokenCount = totalTokenCount;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsUsage(long inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, long outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, long totalTokenCount, in JsonPatch patch)
+        internal DecisionsUsage(long inputTokenCount, DecisionsInputTokenUsageDetails inputTokenDetails, long outputTokenCount, DecisionsOutputTokenUsageDetails outputTokenDetails, long totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;
             OutputTokenCount = outputTokenCount;
             OutputTokenDetails = outputTokenDetails;
             TotalTokenCount = totalTokenCount;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public long InputTokenCount { get; set; }
 
@@ -54,5 +41,11 @@ namespace OpenAI.Decisions
         public DecisionsOutputTokenUsageDetails OutputTokenDetails { get; set; }
 
         public long TotalTokenCount { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

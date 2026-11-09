@@ -2,17 +2,14 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Embeddings
 {
     public partial class EmbeddingTokenUsage
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount)
         {
@@ -20,18 +17,17 @@ namespace OpenAI.Embeddings
             TotalTokenCount = totalTokenCount;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount, in JsonPatch patch)
+        internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

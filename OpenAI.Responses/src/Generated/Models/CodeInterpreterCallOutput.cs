@@ -2,37 +2,34 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallOutput
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         protected internal CodeInterpreterCallOutput(CodeInterpreterCallOutputKind kind)
         {
             Kind = kind;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterCallOutput(CodeInterpreterCallOutputKind kind, in JsonPatch patch)
+        internal CodeInterpreterCallOutput(CodeInterpreterCallOutputKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public CodeInterpreterCallOutputKind Kind { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

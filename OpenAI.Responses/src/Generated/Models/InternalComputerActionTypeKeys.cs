@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -13,13 +14,11 @@ namespace OpenAI.Responses
             Text = text;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerActionTypeKeys(ComputerCallActionKind kind, in JsonPatch patch, string text) : base(kind, patch)
+        internal InternalComputerActionTypeKeys(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text) : base(kind, additionalBinaryDataProperties)
         {
             Text = text;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Text { get; set; }

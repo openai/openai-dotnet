@@ -2,21 +2,20 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class SystemChatMessage : ChatMessage
     {
-        internal SystemChatMessage() : this(ChatMessageRole.System, null, default, null)
+        internal SystemChatMessage() : this(ChatMessageRole.System, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal SystemChatMessage(ChatMessageRole role, ChatMessageContent content, in JsonPatch patch, string participantName) : base(role, content, patch)
+        internal SystemChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string participantName) : base(role, content, additionalBinaryDataProperties)
         {
             ParticipantName = participantName;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

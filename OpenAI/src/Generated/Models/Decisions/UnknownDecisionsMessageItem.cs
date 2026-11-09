@@ -2,18 +2,17 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Decisions
 {
     internal partial class UnknownDecisionsMessageItem : DecisionsMessageItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal UnknownDecisionsMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role) : base(kind != default ? kind : "unknown", patch, role != default ? role : "unknown")
+        internal UnknownDecisionsMessageItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DecisionsMessageRole role) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties, role != default ? role : "unknown")
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

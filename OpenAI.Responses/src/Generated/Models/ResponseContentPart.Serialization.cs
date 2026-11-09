@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseContentPart(document.RootElement, data, options);
+                        return DeserializeResponseContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ResponseContentPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<ResponseContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ResponseContentPart)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(InternalType.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ResponseContentPart IJsonModel<ResponseContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ResponseContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseContentPart(document.RootElement, null, options);
+            return DeserializeResponseContentPart(document.RootElement, options);
         }
 
-        internal static ResponseContentPart DeserializeResponseContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseContentPart DeserializeResponseContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,22 +114,22 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "input_audio":
-                        return InternalItemContentInputAudio.DeserializeInternalItemContentInputAudio(element, data, options);
+                        return InternalItemContentInputAudio.DeserializeInternalItemContentInputAudio(element, options);
                     case "input_file":
-                        return InternalItemContentInputFile.DeserializeInternalItemContentInputFile(element, data, options);
+                        return InternalItemContentInputFile.DeserializeInternalItemContentInputFile(element, options);
                     case "input_image":
-                        return InternalItemContentInputImage.DeserializeInternalItemContentInputImage(element, data, options);
+                        return InternalItemContentInputImage.DeserializeInternalItemContentInputImage(element, options);
                     case "input_text":
-                        return InternalItemContentInputText.DeserializeInternalItemContentInputText(element, data, options);
+                        return InternalItemContentInputText.DeserializeInternalItemContentInputText(element, options);
                     case "output_audio":
-                        return InternalItemContentOutputAudio.DeserializeInternalItemContentOutputAudio(element, data, options);
+                        return InternalItemContentOutputAudio.DeserializeInternalItemContentOutputAudio(element, options);
                     case "output_text":
-                        return InternalItemContentOutputText.DeserializeInternalItemContentOutputText(element, data, options);
+                        return InternalItemContentOutputText.DeserializeInternalItemContentOutputText(element, options);
                     case "refusal":
-                        return InternalItemContentRefusal.DeserializeInternalItemContentRefusal(element, data, options);
+                        return InternalItemContentRefusal.DeserializeInternalItemContentRefusal(element, options);
                 }
             }
-            return InternalUnknownItemContent.DeserializeInternalUnknownItemContent(element, data, options);
+            return InternalUnknownItemContent.DeserializeInternalUnknownItemContent(element, options);
         }
     }
 }

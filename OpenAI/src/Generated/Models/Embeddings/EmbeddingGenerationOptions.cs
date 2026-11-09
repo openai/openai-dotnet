@@ -3,35 +3,30 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Embeddings
 {
     public partial class EmbeddingGenerationOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string endUserId, in JsonPatch patch)
+        internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Input = input;
             Model = model;
             EncodingFormat = encodingFormat;
             Dimensions = dimensions;
             EndUserId = endUserId;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public int? Dimensions { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

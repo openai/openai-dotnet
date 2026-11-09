@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeRateLimitDetails(document.RootElement, data, options);
+                        return DeserializeRealtimeRateLimitDetails(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeRateLimitDetails)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeRateLimitDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,30 +59,46 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeRateLimitDetails)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
+            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name.Value.ToString());
             }
-            if (Optional.IsDefined(Limit) && !Patch.Contains("$.limit"u8))
+            if (Optional.IsDefined(Limit) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
             {
                 writer.WritePropertyName("limit"u8);
                 writer.WriteNumberValue(Limit.Value);
             }
-            if (Optional.IsDefined(RemainingCount) && !Patch.Contains("$.remaining"u8))
+            if (Optional.IsDefined(RemainingCount) && _additionalBinaryDataProperties?.ContainsKey("remaining") != true)
             {
                 writer.WritePropertyName("remaining"u8);
                 writer.WriteNumberValue(RemainingCount.Value);
             }
-            if (Optional.IsDefined(TimeUntilReset) && !Patch.Contains("$.reset_seconds"u8))
+            if (Optional.IsDefined(TimeUntilReset) && _additionalBinaryDataProperties?.ContainsKey("reset_seconds") != true)
             {
                 writer.WritePropertyName("reset_seconds"u8);
                 writer.WriteNumberValue(TimeUntilReset.Value.TotalSeconds);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeRateLimitDetails IJsonModel<RealtimeRateLimitDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -103,10 +111,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeRateLimitDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeRateLimitDetails(document.RootElement, null, options);
+            return DeserializeRealtimeRateLimitDetails(document.RootElement, options);
         }
 
-        internal static RealtimeRateLimitDetails DeserializeRealtimeRateLimitDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeRateLimitDetails DeserializeRealtimeRateLimitDetails(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -116,9 +124,7 @@ namespace OpenAI.Realtime
             int? limit = default;
             int? remainingCount = default;
             TimeSpan? timeUntilReset = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("name"u8))
@@ -157,9 +163,10 @@ namespace OpenAI.Realtime
                     timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, patch);
+            return new RealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, additionalBinaryDataProperties);
         }
     }
 }

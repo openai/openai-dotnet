@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -13,26 +14,20 @@ namespace OpenAI.Responses
         private InternalBetaAgentTag _agent;
         private bool _agentIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseCustomToolCallInputDoneUpdate(int sequenceNumber, string input, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDone, sequenceNumber)
         {
             Input = input;
             ItemId = itemId;
             OutputIndex = outputIndex;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCustomToolCallInputDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string input, string itemId, int outputIndex, InternalBetaAgentTag agent) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCustomToolCallInputDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string input, string itemId, int outputIndex, InternalBetaAgentTag agent) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Input = input;
             ItemId = itemId;
             OutputIndex = outputIndex;
             _agent = agent;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Input { get; set; }
 

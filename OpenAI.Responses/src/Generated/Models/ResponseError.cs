@@ -2,18 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class ResponseError
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ResponseError(ResponseErrorCode code, string message, string @param, string kind)
         {
@@ -23,21 +21,14 @@ namespace OpenAI.Responses
             Kind = kind;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseError(ResponseErrorCode code, string message, string @param, string kind, in JsonPatch patch)
+        internal ResponseError(ResponseErrorCode code, string message, string @param, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
             Param = @param;
             Kind = kind;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public ResponseErrorCode Code { get; set; }
 
@@ -46,5 +37,11 @@ namespace OpenAI.Responses
         public string Param { get; set; }
 
         public string Kind { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

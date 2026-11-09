@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpTool : ResponseTool, IJsonModel<McpTool>
     {
-        public McpTool() : this(ResponseToolKind.Mcp, default, null, null, default, null, null, null, null, null)
+        public McpTool() : this(ResponseToolKind.Mcp, null, null, null, default, null, null, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpTool(document.RootElement, data, options);
+                        return DeserializeMcpTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpTool)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<McpTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,78 +64,46 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.server_label"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
             {
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (Optional.IsDefined(ServerUri) && !Patch.Contains("$.server_url"u8))
+            if (Optional.IsDefined(ServerUri) && _additionalBinaryDataProperties?.ContainsKey("server_url") != true)
             {
                 writer.WritePropertyName("server_url"u8);
                 writer.WriteStringValue(ServerUri.AbsoluteUri);
             }
-            if (Optional.IsDefined(ConnectorId) && !Patch.Contains("$.connector_id"u8))
+            if (Optional.IsDefined(ConnectorId) && _additionalBinaryDataProperties?.ContainsKey("connector_id") != true)
             {
                 writer.WritePropertyName("connector_id"u8);
                 writer.WriteStringValue(ConnectorId.Value.ToString());
             }
-            if (Optional.IsDefined(AuthorizationToken) && !Patch.Contains("$.authorization"u8))
+            if (Optional.IsDefined(AuthorizationToken) && _additionalBinaryDataProperties?.ContainsKey("authorization") != true)
             {
                 writer.WritePropertyName("authorization"u8);
                 writer.WriteStringValue(AuthorizationToken);
             }
-            if (Optional.IsDefined(ServerDescription) && !Patch.Contains("$.server_description"u8))
+            if (Optional.IsDefined(ServerDescription) && _additionalBinaryDataProperties?.ContainsKey("server_description") != true)
             {
                 writer.WritePropertyName("server_description"u8);
                 writer.WriteStringValue(ServerDescription);
             }
-            if (Optional.IsCollectionDefined(Headers) && !Patch.Contains("$.headers"u8))
+            if (Optional.IsCollectionDefined(Headers) && _additionalBinaryDataProperties?.ContainsKey("headers") != true)
             {
                 if (Headers != null)
                 {
                     writer.WritePropertyName("headers"u8);
                     writer.WriteStartObject();
-                    bool hasPatch = Patch.Contains("$"u8, "headers"u8);
-                    if (hasPatch)
+                    foreach (var item in Headers)
                     {
-#if NET8_0_OR_GREATER
-                        global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                        foreach (var item in Headers)
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
                         {
-#if NET8_0_OR_GREATER
-                            int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                            bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.headers"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.headers"u8, buffer.Slice(0, bytesWritten));
-#else
-                            bool patchContains = Patch.Contains("$.headers"u8, Encoding.UTF8.GetBytes(item.Key));
-#endif
-                            if (!patchContains)
-                            {
-                                writer.WritePropertyName(item.Key);
-                                if (item.Value == null)
-                                {
-                                    writer.WriteNullValue();
-                                    continue;
-                                }
-                                writer.WriteStringValue(item.Value);
-                            }
+                            writer.WriteNullValue();
+                            continue;
                         }
-
-                        Patch.WriteTo(writer, "$.headers"u8);
-                    }
-                    else
-                    {
-                        foreach (var item in Headers)
-                        {
-                            writer.WritePropertyName(item.Key);
-                            if (item.Value == null)
-                            {
-                                writer.WriteNullValue();
-                                continue;
-                            }
-                            writer.WriteStringValue(item.Value);
-                        }
+                        writer.WriteStringValue(item.Value);
                     }
                     writer.WriteEndObject();
                 }
@@ -153,7 +112,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("headers"u8);
                 }
             }
-            if (Optional.IsDefined(AllowedTools, _allowedToolsIsDefined) && !Patch.Contains("$.allowed_tools"u8))
+            if (Optional.IsDefined(AllowedTools, _allowedToolsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("allowed_tools") != true)
             {
                 if (AllowedTools != null)
                 {
@@ -165,14 +124,11 @@ namespace OpenAI.Responses
                     writer.WriteNull("allowed_tools"u8);
                 }
             }
-            if (Optional.IsDefined(ToolCallApprovalPolicy) && !Patch.Contains("$.require_approval"u8))
+            if (Optional.IsDefined(ToolCallApprovalPolicy) && _additionalBinaryDataProperties?.ContainsKey("require_approval") != true)
             {
                 writer.WritePropertyName("require_approval"u8);
                 writer.WriteObjectValue(ToolCallApprovalPolicy, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         McpTool IJsonModel<McpTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (McpTool)JsonModelCreateCore(ref reader, options);
@@ -185,19 +141,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpTool(document.RootElement, null, options);
+            return DeserializeMcpTool(document.RootElement, options);
         }
 
-        internal static McpTool DeserializeMcpTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static McpTool DeserializeMcpTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseToolKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
             Uri serverUri = default;
             McpToolConnectorId? connectorId = default;
@@ -282,14 +236,15 @@ namespace OpenAI.Responses
                         toolCallApprovalPolicy = null;
                         continue;
                     }
-                    toolCallApprovalPolicy = McpToolCallApprovalPolicy.DeserializeMcpToolCallApprovalPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    toolCallApprovalPolicy = McpToolCallApprovalPolicy.DeserializeMcpToolCallApprovalPolicy(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new McpTool(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 serverLabel,
                 serverUri,
                 connectorId,
@@ -302,58 +257,5 @@ namespace OpenAI.Responses
                 _allowedToolsIsDefined = allowedToolsIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("allowed_tools"u8))
-            {
-                if (AllowedTools == null)
-                {
-                    return false;
-                }
-                return AllowedTools.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], out value);
-            }
-            if (local.StartsWith("require_approval"u8))
-            {
-                if (ToolCallApprovalPolicy == null)
-                {
-                    return false;
-                }
-                return ToolCallApprovalPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("require_approval"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("allowed_tools"u8))
-            {
-                if (AllowedTools == null)
-                {
-                    return false;
-                }
-                AllowedTools.Patch.Set([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("require_approval"u8))
-            {
-                if (ToolCallApprovalPolicy == null)
-                {
-                    return false;
-                }
-                ToolCallApprovalPolicy.Patch.Set([.. "$"u8, .. local.Slice("require_approval"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

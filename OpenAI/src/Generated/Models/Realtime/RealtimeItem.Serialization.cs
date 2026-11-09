@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeItem(document.RootElement, data, options);
+                        return DeserializeRealtimeItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeItem)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         RealtimeItem IJsonModel<RealtimeItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeItem(document.RootElement, null, options);
+            return DeserializeRealtimeItem(document.RootElement, options);
         }
 
-        internal static RealtimeItem DeserializeRealtimeItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeItem DeserializeRealtimeItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,22 +114,22 @@ namespace OpenAI.Realtime
                 switch (discriminator.GetString())
                 {
                     case "function_call":
-                        return RealtimeFunctionCallItem.DeserializeRealtimeFunctionCallItem(element, data, options);
+                        return RealtimeFunctionCallItem.DeserializeRealtimeFunctionCallItem(element, options);
                     case "function_call_output":
-                        return RealtimeFunctionCallOutputItem.DeserializeRealtimeFunctionCallOutputItem(element, data, options);
+                        return RealtimeFunctionCallOutputItem.DeserializeRealtimeFunctionCallOutputItem(element, options);
                     case "mcp_approval_request":
-                        return RealtimeMcpToolCallApprovalRequestItem.DeserializeRealtimeMcpToolCallApprovalRequestItem(element, data, options);
+                        return RealtimeMcpToolCallApprovalRequestItem.DeserializeRealtimeMcpToolCallApprovalRequestItem(element, options);
                     case "mcp_approval_response":
-                        return RealtimeMcpToolCallApprovalResponseItem.DeserializeRealtimeMcpToolCallApprovalResponseItem(element, data, options);
+                        return RealtimeMcpToolCallApprovalResponseItem.DeserializeRealtimeMcpToolCallApprovalResponseItem(element, options);
                     case "mcp_call":
-                        return RealtimeMcpToolCallItem.DeserializeRealtimeMcpToolCallItem(element, data, options);
+                        return RealtimeMcpToolCallItem.DeserializeRealtimeMcpToolCallItem(element, options);
                     case "mcp_list_tools":
-                        return RealtimeMcpToolDefinitionListItem.DeserializeRealtimeMcpToolDefinitionListItem(element, data, options);
+                        return RealtimeMcpToolDefinitionListItem.DeserializeRealtimeMcpToolDefinitionListItem(element, options);
                     case "message":
-                        return RealtimeMessageItem.DeserializeRealtimeMessageItem(element, data, options);
+                        return RealtimeMessageItem.DeserializeRealtimeMessageItem(element, options);
                 }
             }
-            return InternalUnknownRealtimeConversationItemGA.DeserializeInternalUnknownRealtimeConversationItemGA(element, data, options);
+            return InternalUnknownRealtimeConversationItemGA.DeserializeInternalUnknownRealtimeConversationItemGA(element, options);
         }
     }
 }

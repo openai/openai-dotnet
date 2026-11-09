@@ -2,11 +2,9 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -14,8 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class GetResponseOptions
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public GetResponseOptions(string responseId)
         {
@@ -25,8 +22,7 @@ namespace OpenAI.Responses
             IncludedProperties = new ChangeTrackingList<IncludedResponseProperty>();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GetResponseOptions(string responseId, int? startingAfter, bool? includeObfuscation, IList<IncludedResponseProperty> includedProperties, bool? streamingEnabled, in JsonPatch patch)
+        internal GetResponseOptions(string responseId, int? startingAfter, bool? includeObfuscation, IList<IncludedResponseProperty> includedProperties, bool? streamingEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ResponseId = responseId;
@@ -34,14 +30,8 @@ namespace OpenAI.Responses
             IncludeObfuscation = includeObfuscation;
             IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
             StreamingEnabled = streamingEnabled;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string ResponseId { get; set; }
 
@@ -52,5 +42,11 @@ namespace OpenAI.Responses
         public IList<IncludedResponseProperty> IncludedProperties { get; set; }
 
         public bool? StreamingEnabled { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

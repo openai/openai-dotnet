@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellExecAction : IJsonModel<InternalLocalShellExecAction>
     {
-        public InternalLocalShellExecAction() : this(null, null, default, null, null, null, default)
+        public InternalLocalShellExecAction() : this(null, null, default, null, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalLocalShellExecAction(document.RootElement, data, options);
+                        return DeserializeInternalLocalShellExecAction(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalLocalShellExecAction)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalLocalShellExecAction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,42 +63,27 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalLocalShellExecAction)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind);
             }
-            if (Patch.Contains("$.command"u8))
-            {
-                if (!Patch.IsRemoved("$.command"u8))
-                {
-                    writer.WritePropertyName("command"u8);
-                    Patch.WriteTo(writer, "$.command"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("command") != true)
             {
                 writer.WritePropertyName("command"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "command"u8);
-                for (int i = 0; i < Command.Count; i++)
+                foreach (string item in Command)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.command[{i}]")))
-                    {
-                        continue;
-                    }
-                    if (Command[i] == null)
+                    if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(Command[i]);
+                    writer.WriteStringValue(item);
                 }
-                Patch.WriteTo(writer, "$.command"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(TimeoutMs, _timeoutMsIsDefined) && !Patch.Contains("$.timeout_ms"u8))
+            if (Optional.IsDefined(TimeoutMs, _timeoutMsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("timeout_ms") != true)
             {
                 if (TimeoutMs != null)
                 {
@@ -119,7 +95,7 @@ namespace OpenAI.Responses
                     writer.WriteNull("timeout_ms"u8);
                 }
             }
-            if (Optional.IsDefined(WorkingDirectory, _workingDirectoryIsDefined) && !Patch.Contains("$.working_directory"u8))
+            if (Optional.IsDefined(WorkingDirectory, _workingDirectoryIsDefined) && _additionalBinaryDataProperties?.ContainsKey("working_directory") != true)
             {
                 if (WorkingDirectory != null)
                 {
@@ -131,54 +107,23 @@ namespace OpenAI.Responses
                     writer.WriteNull("working_directory"u8);
                 }
             }
-            if (!Patch.Contains("$.env"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("env") != true)
             {
                 writer.WritePropertyName("env"u8);
                 writer.WriteStartObject();
-                bool hasPatch = Patch.Contains("$"u8, "env"u8);
-                if (hasPatch)
+                foreach (var item in Env)
                 {
-#if NET8_0_OR_GREATER
-                    global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                    foreach (var item in Env)
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
                     {
-#if NET8_0_OR_GREATER
-                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.env"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.env"u8, buffer.Slice(0, bytesWritten));
-#else
-                        bool patchContains = Patch.Contains("$.env"u8, Encoding.UTF8.GetBytes(item.Key));
-#endif
-                        if (!patchContains)
-                        {
-                            writer.WritePropertyName(item.Key);
-                            if (item.Value == null)
-                            {
-                                writer.WriteNullValue();
-                                continue;
-                            }
-                            writer.WriteStringValue(item.Value);
-                        }
+                        writer.WriteNullValue();
+                        continue;
                     }
-
-                    Patch.WriteTo(writer, "$.env"u8);
-                }
-                else
-                {
-                    foreach (var item in Env)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-                        writer.WriteStringValue(item.Value);
-                    }
+                    writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(User, _userIsDefined) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(User, _userIsDefined) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 if (User != null)
                 {
@@ -190,9 +135,26 @@ namespace OpenAI.Responses
                     writer.WriteNull("user"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         InternalLocalShellExecAction IJsonModel<InternalLocalShellExecAction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -205,10 +167,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalLocalShellExecAction)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalLocalShellExecAction(document.RootElement, null, options);
+            return DeserializeInternalLocalShellExecAction(document.RootElement, options);
         }
 
-        internal static InternalLocalShellExecAction DeserializeInternalLocalShellExecAction(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalLocalShellExecAction DeserializeInternalLocalShellExecAction(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -223,9 +185,7 @@ namespace OpenAI.Responses
             IDictionary<string, string> env = default;
             bool userIsDefined = false;
             string user = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -300,7 +260,8 @@ namespace OpenAI.Responses
                     user = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalLocalShellExecAction(
                 kind,
@@ -309,7 +270,7 @@ namespace OpenAI.Responses
                 workingDirectory,
                 env ?? new ChangeTrackingDictionary<string, string>(),
                 user,
-                patch)
+                additionalBinaryDataProperties)
             {
                 _timeoutMsIsDefined = timeoutMsIsDefined,
                 _workingDirectoryIsDefined = workingDirectoryIsDefined,

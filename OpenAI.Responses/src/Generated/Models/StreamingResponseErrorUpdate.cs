@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -17,14 +18,12 @@ namespace OpenAI.Responses
             Param = @param;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseErrorUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string code, string message, string @param) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseErrorUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string code, string message, string @param) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
             Param = @param;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Code { get; set; }
 

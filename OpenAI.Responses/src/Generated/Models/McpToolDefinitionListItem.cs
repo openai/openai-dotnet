@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -17,7 +16,6 @@ namespace OpenAI.Responses
         private BinaryData _error;
         private bool _errorIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(ResponseItemKind.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -25,20 +23,15 @@ namespace OpenAI.Responses
 
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolDefinitionListItem(ResponseItemKind kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)
+        internal McpToolDefinitionListItem(ResponseItemKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>();
             _error = error;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

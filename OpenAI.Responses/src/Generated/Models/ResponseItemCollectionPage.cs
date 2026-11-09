@@ -2,12 +2,10 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -15,22 +13,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseItemCollectionPage
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseItemCollectionPage(IEnumerable<ResponseItem> data, bool hasMore, string firstId, string lastId)
         {
             Data = data.ToList();
             HasMore = hasMore;
             FirstId = firstId;
             LastId = lastId;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseItemCollectionPage(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, in JsonPatch patch)
+        internal ResponseItemCollectionPage(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -38,15 +31,8 @@ namespace OpenAI.Responses
             HasMore = hasMore;
             FirstId = firstId;
             LastId = lastId;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IList<ResponseItem> Data { get; }
 
@@ -55,5 +41,11 @@ namespace OpenAI.Responses
         public string FirstId { get; set; }
 
         public string LastId { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

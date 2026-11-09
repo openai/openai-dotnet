@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,19 +13,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMessageItem : RealtimeItem
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeMessageItem(RealtimeMessageRole role, IEnumerable<RealtimeMessageContentPart> content) : base(RealtimeItemKind.Message)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             Role = role;
             Content = content.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMessageItem(RealtimeItemKind kind, in JsonPatch patch, string id, InternalRealtimeConversationItemMessageGAObject? @object, RealtimeMessageStatus? status, RealtimeMessageRole role, IList<RealtimeMessageContentPart> content) : base(kind, patch)
+        internal RealtimeMessageItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, InternalRealtimeConversationItemMessageGAObject? @object, RealtimeMessageStatus? status, RealtimeMessageRole role, IList<RealtimeMessageContentPart> content) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -33,9 +29,7 @@ namespace OpenAI.Realtime
             Status = status;
             Role = role;
             Content = content ?? new ChangeTrackingList<RealtimeMessageContentPart>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

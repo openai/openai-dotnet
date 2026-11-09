@@ -2,37 +2,27 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Internal
 {
     internal partial class InternalWebSearchLocation
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public InternalWebSearchLocation()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalWebSearchLocation(string country, string region, string city, string timezone, in JsonPatch patch)
+        internal InternalWebSearchLocation(string country, string region, string city, string timezone, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Country = country;
             Region = region;
             City = city;
             Timezone = timezone;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Country { get; set; }
 
@@ -41,5 +31,11 @@ namespace OpenAI.Internal
         public string City { get; set; }
 
         public string Timezone { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

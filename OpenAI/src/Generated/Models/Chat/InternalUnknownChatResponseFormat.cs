@@ -2,16 +2,15 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalUnknownChatResponseFormat : ChatResponseFormat
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownChatResponseFormat(InternalDotNetChatResponseFormatType kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownChatResponseFormat(InternalDotNetChatResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeCustomRetentionRatioTruncation : RealtimeCustomTruncation, IJsonModel<RealtimeCustomRetentionRatioTruncation>
     {
-        public RealtimeCustomRetentionRatioTruncation() : this(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, default, default, null)
+        public RealtimeCustomRetentionRatioTruncation() : this(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeCustomRetentionRatioTruncation(document.RootElement, data, options);
+                        return DeserializeRealtimeCustomRetentionRatioTruncation(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeCustomRetentionRatioTruncation)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeCustomRetentionRatioTruncation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,20 +64,16 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeCustomRetentionRatioTruncation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.retention_ratio"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("retention_ratio") != true)
             {
                 writer.WritePropertyName("retention_ratio"u8);
                 writer.WriteNumberValue(RetentionRatio);
             }
-            if (Optional.IsDefined(TokenLimitDetails) && !Patch.Contains("$.token_limits"u8))
+            if (Optional.IsDefined(TokenLimitDetails) && _additionalBinaryDataProperties?.ContainsKey("token_limits") != true)
             {
                 writer.WritePropertyName("token_limits"u8);
                 writer.WriteObjectValue(TokenLimitDetails, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeCustomRetentionRatioTruncation IJsonModel<RealtimeCustomRetentionRatioTruncation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeCustomRetentionRatioTruncation)JsonModelCreateCore(ref reader, options);
@@ -98,19 +86,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeCustomRetentionRatioTruncation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeCustomRetentionRatioTruncation(document.RootElement, null, options);
+            return DeserializeRealtimeCustomRetentionRatioTruncation(document.RootElement, options);
         }
 
-        internal static RealtimeCustomRetentionRatioTruncation DeserializeRealtimeCustomRetentionRatioTruncation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeCustomRetentionRatioTruncation DeserializeRealtimeCustomRetentionRatioTruncation(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalRealtimeTruncationBaseTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             float retentionRatio = default;
             RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails = default;
             foreach (var prop in element.EnumerateObject())
@@ -131,48 +117,13 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    tokenLimitDetails = RealtimeRetentionRatioTokenLimitDetails.DeserializeRealtimeRetentionRatioTokenLimitDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    tokenLimitDetails = RealtimeRetentionRatioTokenLimitDetails.DeserializeRealtimeRetentionRatioTokenLimitDetails(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeCustomRetentionRatioTruncation(kind, patch, retentionRatio, tokenLimitDetails);
+            return new RealtimeCustomRetentionRatioTruncation(kind, additionalBinaryDataProperties, retentionRatio, tokenLimitDetails);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("token_limits"u8))
-            {
-                if (TokenLimitDetails == null)
-                {
-                    return false;
-                }
-                return TokenLimitDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("token_limits"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("token_limits"u8))
-            {
-                if (TokenLimitDetails == null)
-                {
-                    return false;
-                }
-                TokenLimitDetails.Patch.Set([.. "$"u8, .. local.Slice("token_limits"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

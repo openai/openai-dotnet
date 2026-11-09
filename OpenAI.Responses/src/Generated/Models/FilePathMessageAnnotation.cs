@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +20,11 @@ namespace OpenAI.Responses
             Index = index;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FilePathMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string fileId, int index) : base(kind, patch)
+        internal FilePathMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index) : base(kind, additionalBinaryDataProperties)
         {
             FileId = fileId;
             Index = index;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FileId { get; set; }
 

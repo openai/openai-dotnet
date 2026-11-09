@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Decisions
@@ -15,12 +16,10 @@ namespace OpenAI.Decisions
             Name = name;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsRefusalAnswer(DecisionsAnswerKind kind, in JsonPatch patch, string name) : base(kind, patch)
+        internal DecisionsRefusalAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Name { get; set; }
     }

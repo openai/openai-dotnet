@@ -2,22 +2,28 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Decisions
 {
     [Experimental("OPENAI001")]
     public partial class DecisionsChoiceValue
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        internal ref JsonPatch Patch => ref _patch;
+        internal DecisionsChoiceValue(string stringValue, bool? booleanValue, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            StringValue = stringValue;
+            BooleanValue = booleanValue;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

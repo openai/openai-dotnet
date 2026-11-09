@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +20,11 @@ namespace OpenAI.Responses
             Syntax = syntax;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolGrammarFormat(CustomToolFormatKind kind, in JsonPatch patch, string definition, CustomToolGrammarFormatSyntax syntax) : base(kind, patch)
+        internal CustomToolGrammarFormat(CustomToolFormatKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string definition, CustomToolGrammarFormatSyntax syntax) : base(kind, additionalBinaryDataProperties)
         {
             Definition = definition;
             Syntax = syntax;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Definition { get; set; }
 

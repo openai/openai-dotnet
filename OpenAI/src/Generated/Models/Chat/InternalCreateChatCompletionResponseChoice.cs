@@ -2,45 +2,31 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionResponseChoice
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalCreateChatCompletionResponseChoice(ChatFinishReason finishReason, int index, InternalChatCompletionResponseMessage message, InternalCreateChatCompletionResponseChoiceLogprobs logprobs)
         {
             FinishReason = finishReason;
             Index = index;
             Message = message;
             Logprobs = logprobs;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateChatCompletionResponseChoice(ChatFinishReason finishReason, int index, InternalChatCompletionResponseMessage message, InternalCreateChatCompletionResponseChoiceLogprobs logprobs, in JsonPatch patch)
+        internal InternalCreateChatCompletionResponseChoice(ChatFinishReason finishReason, int index, InternalChatCompletionResponseMessage message, InternalCreateChatCompletionResponseChoiceLogprobs logprobs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FinishReason = finishReason;
             Index = index;
             Message = message;
             Logprobs = logprobs;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public ChatFinishReason FinishReason { get; }
 
@@ -49,5 +35,11 @@ namespace OpenAI.Chat
         internal InternalChatCompletionResponseMessage Message { get; }
 
         internal InternalCreateChatCompletionResponseChoiceLogprobs Logprobs { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

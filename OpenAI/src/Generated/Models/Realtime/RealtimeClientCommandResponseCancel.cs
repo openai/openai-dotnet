@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,17 +11,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandResponseCancel : RealtimeClientCommand
     {
-        public RealtimeClientCommandResponseCancel() : this(RealtimeClientCommandKind.ResponseCancel, default, null, null)
+        public RealtimeClientCommandResponseCancel() : this(RealtimeClientCommandKind.ResponseCancel, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandResponseCancel(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId, string responseId) : base(kind, patch)
+        internal RealtimeClientCommandResponseCancel(RealtimeClientCommandKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

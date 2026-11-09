@@ -2,25 +2,20 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private ChatOutputAudio _audio;
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private bool _audioIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
         {
             // Plugin customization: ensure initialization of collections
@@ -28,13 +23,12 @@ namespace OpenAI.Chat
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, in JsonPatch patch)
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
@@ -44,16 +38,11 @@ namespace OpenAI.Chat
             Role = role;
             FunctionCall = functionCall;
             _audio = audio;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public string Refusal { get; }
 
@@ -72,5 +61,11 @@ namespace OpenAI.Chat
             }
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

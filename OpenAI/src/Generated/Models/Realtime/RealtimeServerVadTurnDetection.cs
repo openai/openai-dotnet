@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -11,12 +11,11 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerVadTurnDetection : RealtimeTurnDetection
     {
-        public RealtimeServerVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.ServerVad, default, default, default, default, default, default, default)
+        public RealtimeServerVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.ServerVad, null, default, default, default, default, default, default)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, float? detectionThreshold, TimeSpan? prefixPadding, TimeSpan? silenceDuration, bool? createResponseEnabled, bool? interruptResponseEnabled, TimeSpan? idleTimeout) : base(kind, patch)
+        internal RealtimeServerVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, float? detectionThreshold, TimeSpan? prefixPadding, TimeSpan? silenceDuration, bool? createResponseEnabled, bool? interruptResponseEnabled, TimeSpan? idleTimeout) : base(kind, additionalBinaryDataProperties)
         {
             DetectionThreshold = detectionThreshold;
             PrefixPadding = prefixPadding;
@@ -25,6 +24,5 @@ namespace OpenAI.Realtime
             InterruptResponseEnabled = interruptResponseEnabled;
             IdleTimeout = idleTimeout;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

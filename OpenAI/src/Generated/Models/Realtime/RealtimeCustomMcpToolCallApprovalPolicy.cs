@@ -2,39 +2,32 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
     public partial class RealtimeCustomMcpToolCallApprovalPolicy
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeCustomMcpToolCallApprovalPolicy()
         {
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval, RealtimeMcpToolFilter toolsNeverRequiringApproval, in JsonPatch patch)
+        internal RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval, RealtimeMcpToolFilter toolsNeverRequiringApproval, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ToolsAlwaysRequiringApproval = toolsAlwaysRequiringApproval;
             ToolsNeverRequiringApproval = toolsNeverRequiringApproval;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

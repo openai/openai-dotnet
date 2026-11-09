@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsItem(document.RootElement, data, options);
+                        return DeserializeDecisionsItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,31 @@ namespace OpenAI.Decisions
             {
                 throw new FormatException($"The model {nameof(DecisionsItem)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         DecisionsItem IJsonModel<DecisionsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +100,10 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsItem(document.RootElement, null, options);
+            return DeserializeDecisionsItem(document.RootElement, options);
         }
 
-        internal static DecisionsItem DeserializeDecisionsItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsItem DeserializeDecisionsItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,18 +114,18 @@ namespace OpenAI.Decisions
                 switch (discriminator.GetString())
                 {
                     case "custom_tool_call":
-                        return DecisionsCustomToolCallItem.DeserializeDecisionsCustomToolCallItem(element, data, options);
+                        return DecisionsCustomToolCallItem.DeserializeDecisionsCustomToolCallItem(element, options);
                     case "custom_tool_call_output":
-                        return DecisionsCustomToolCallOutputItem.DeserializeDecisionsCustomToolCallOutputItem(element, data, options);
+                        return DecisionsCustomToolCallOutputItem.DeserializeDecisionsCustomToolCallOutputItem(element, options);
                     case "function_call":
-                        return DecisionsFunctionToolCallItem.DeserializeDecisionsFunctionToolCallItem(element, data, options);
+                        return DecisionsFunctionToolCallItem.DeserializeDecisionsFunctionToolCallItem(element, options);
                     case "function_call_output":
-                        return DecisionsFunctionToolCallOutputItem.DeserializeDecisionsFunctionToolCallOutputItem(element, data, options);
+                        return DecisionsFunctionToolCallOutputItem.DeserializeDecisionsFunctionToolCallOutputItem(element, options);
                     case "message":
-                        return DecisionsMessageItem.DeserializeDecisionsMessageItem(element, data, options);
+                        return DecisionsMessageItem.DeserializeDecisionsMessageItem(element, options);
                 }
             }
-            return UnknownDecisionsItem.DeserializeUnknownDecisionsItem(element, data, options);
+            return UnknownDecisionsItem.DeserializeUnknownDecisionsItem(element, options);
         }
     }
 }

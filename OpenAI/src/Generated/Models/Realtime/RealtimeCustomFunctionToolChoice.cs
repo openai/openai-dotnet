@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -18,11 +19,9 @@ namespace OpenAI.Realtime
             FunctionName = functionName;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeCustomFunctionToolChoice(InternalToolChoiceBaseTypeGA kind, in JsonPatch patch, string functionName) : base(kind, patch)
+        internal RealtimeCustomFunctionToolChoice(InternalToolChoiceBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string functionName) : base(kind, additionalBinaryDataProperties)
         {
             FunctionName = functionName;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

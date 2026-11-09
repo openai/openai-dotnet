@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>
     {
-        public RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta() : this(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionDelta, default, null, null, default, null, null)
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta() : this(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionDelta, null, null, null, default, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,51 +64,36 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.event_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (!Patch.Contains("$.item_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (Optional.IsDefined(ContentIndex) && !Patch.Contains("$.content_index"u8))
+            if (Optional.IsDefined(ContentIndex) && _additionalBinaryDataProperties?.ContainsKey("content_index") != true)
             {
                 writer.WritePropertyName("content_index"u8);
                 writer.WriteNumberValue(ContentIndex.Value);
             }
-            if (Optional.IsDefined(Delta) && !Patch.Contains("$.delta"u8))
+            if (Optional.IsDefined(Delta) && _additionalBinaryDataProperties?.ContainsKey("delta") != true)
             {
                 writer.WritePropertyName("delta"u8);
                 writer.WriteStringValue(Delta);
             }
-            if (Patch.Contains("$.logprobs"u8))
-            {
-                if (!Patch.IsRemoved("$.logprobs"u8))
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    Patch.WriteTo(writer, "$.logprobs"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
+            if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 if (TranscriptionTokenLogProbabilities != null)
                 {
                     writer.WritePropertyName("logprobs"u8);
                     writer.WriteStartArray();
-                    bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
-                    for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
+                    foreach (RealtimeTokenLogProbabilityDetails item in TranscriptionTokenLogProbabilities)
                     {
-                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TranscriptionTokenLogProbabilities[i] != null && TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
-                        {
-                            continue;
-                        }
-                        writer.WriteObjectValue(TranscriptionTokenLogProbabilities[i], options);
+                        writer.WriteObjectValue(item, options);
                     }
-                    Patch.WriteTo(writer, "$.logprobs"u8);
                     writer.WriteEndArray();
                 }
                 else
@@ -125,9 +101,6 @@ namespace OpenAI.Realtime
                     writer.WriteNull("logprobs"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)JsonModelCreateCore(ref reader, options);
@@ -140,19 +113,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeServerUpdateKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             string itemId = default;
             int? contentIndex = default;
@@ -199,110 +170,22 @@ namespace OpenAI.Realtime
                     List<RealtimeTokenLogProbabilityDetails> array = new List<RealtimeTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(RealtimeTokenLogProbabilityDetails.DeserializeRealtimeTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
+                        array.Add(RealtimeTokenLogProbabilityDetails.DeserializeRealtimeTokenLogProbabilityDetails(item, options));
                     }
                     transcriptionTokenLogProbabilities = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 eventId,
                 itemId,
                 contentIndex,
                 delta,
                 transcriptionTokenLogProbabilities);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("logprobs"u8))
-            {
-                int propertyLength = "logprobs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (TranscriptionTokenLogProbabilities == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveTranscriptionTokenLogProbabilitiesArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TranscriptionTokenLogProbabilities.Count)
-                {
-                    return false;
-                }
-                if (TranscriptionTokenLogProbabilities[index] == null)
-                {
-                    return false;
-                }
-                return TranscriptionTokenLogProbabilities[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("logprobs"u8))
-            {
-                int propertyLength = "logprobs"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (TranscriptionTokenLogProbabilities == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TranscriptionTokenLogProbabilities.Count)
-                {
-                    return false;
-                }
-                if (TranscriptionTokenLogProbabilities[index] == null)
-                {
-                    return false;
-                }
-                TranscriptionTokenLogProbabilities[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveTranscriptionTokenLogProbabilitiesArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveTranscriptionTokenLogProbabilities(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<RealtimeTokenLogProbabilityDetails> ActiveTranscriptionTokenLogProbabilities()
-        {
-            if (!Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
-            for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (TranscriptionTokenLogProbabilities[i] == null || !TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return TranscriptionTokenLogProbabilities[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

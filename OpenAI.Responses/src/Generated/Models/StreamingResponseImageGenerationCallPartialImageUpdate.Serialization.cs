@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>
     {
-        public StreamingResponseImageGenerationCallPartialImageUpdate() : this(StreamingResponseUpdateKind.ResponseImageGenerationCallPartialImage, default, default, default, null, default, null)
+        public StreamingResponseImageGenerationCallPartialImageUpdate() : this(StreamingResponseUpdateKind.ResponseImageGenerationCallPartialImage, default, null, default, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallPartialImageUpdate)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,30 +64,26 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallPartialImageUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.output_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.item_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.partial_image_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("partial_image_index") != true)
             {
                 writer.WritePropertyName("partial_image_index"u8);
                 writer.WriteNumberValue(PartialImageIndex);
             }
-            if (!Patch.Contains("$.partial_image_b64"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("partial_image_b64") != true)
             {
                 writer.WritePropertyName("partial_image_b64"u8);
                 writer.WriteBase64StringValue(PartialImageBytes, "D");
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseImageGenerationCallPartialImageUpdate IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseImageGenerationCallPartialImageUpdate)JsonModelCreateCore(ref reader, options);
@@ -108,10 +96,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallPartialImageUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(document.RootElement, options);
         }
 
-        internal static StreamingResponseImageGenerationCallPartialImageUpdate DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseImageGenerationCallPartialImageUpdate DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -119,9 +107,7 @@ namespace OpenAI.Responses
             }
             StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int outputIndex = default;
             string itemId = default;
             int partialImageIndex = default;
@@ -158,12 +144,13 @@ namespace OpenAI.Responses
                     partialImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseImageGenerationCallPartialImageUpdate(
                 kind,
                 sequenceNumber,
-                patch,
+                additionalBinaryDataProperties,
                 outputIndex,
                 itemId,
                 partialImageIndex,

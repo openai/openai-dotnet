@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseItem(document.RootElement, data, options);
+                        return DeserializeResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ResponseItem)} does not support reading '{options.Format}' format.");
@@ -53,21 +53,12 @@ namespace OpenAI.Responses
         public static explicit operator ResponseItem(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeResponseItem(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<ResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -80,20 +71,38 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ResponseItem)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ResponseItem IJsonModel<ResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -106,10 +115,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseItem(document.RootElement, null, options);
+            return DeserializeResponseItem(document.RootElement, options);
         }
 
-        internal static ResponseItem DeserializeResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseItem DeserializeResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -120,50 +129,50 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "apply_patch_call":
-                        return ApplyPatchCallItem.DeserializeApplyPatchCallItem(element, data, options);
+                        return ApplyPatchCallItem.DeserializeApplyPatchCallItem(element, options);
                     case "apply_patch_call_output":
-                        return ApplyPatchCallOutputItem.DeserializeApplyPatchCallOutputItem(element, data, options);
+                        return ApplyPatchCallOutputItem.DeserializeApplyPatchCallOutputItem(element, options);
                     case "code_interpreter_call":
-                        return CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(element, data, options);
+                        return CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(element, options);
                     case "computer_call_output":
-                        return ComputerCallOutputResponseItem.DeserializeComputerCallOutputResponseItem(element, data, options);
+                        return ComputerCallOutputResponseItem.DeserializeComputerCallOutputResponseItem(element, options);
                     case "computer_call":
-                        return ComputerCallResponseItem.DeserializeComputerCallResponseItem(element, data, options);
+                        return ComputerCallResponseItem.DeserializeComputerCallResponseItem(element, options);
                     case "custom_tool_call":
-                        return CustomToolCallItem.DeserializeCustomToolCallItem(element, data, options);
+                        return CustomToolCallItem.DeserializeCustomToolCallItem(element, options);
                     case "custom_tool_call_output":
-                        return CustomToolCallOutputItem.DeserializeCustomToolCallOutputItem(element, data, options);
+                        return CustomToolCallOutputItem.DeserializeCustomToolCallOutputItem(element, options);
                     case "file_search_call":
-                        return FileSearchCallResponseItem.DeserializeFileSearchCallResponseItem(element, data, options);
+                        return FileSearchCallResponseItem.DeserializeFileSearchCallResponseItem(element, options);
                     case "function_call_output":
-                        return FunctionCallOutputResponseItem.DeserializeFunctionCallOutputResponseItem(element, data, options);
+                        return FunctionCallOutputResponseItem.DeserializeFunctionCallOutputResponseItem(element, options);
                     case "function_call":
-                        return FunctionCallResponseItem.DeserializeFunctionCallResponseItem(element, data, options);
+                        return FunctionCallResponseItem.DeserializeFunctionCallResponseItem(element, options);
                     case "image_generation_call":
-                        return ImageGenerationCallResponseItem.DeserializeImageGenerationCallResponseItem(element, data, options);
+                        return ImageGenerationCallResponseItem.DeserializeImageGenerationCallResponseItem(element, options);
                     case "local_shell_call":
-                        return InternalLocalShellToolCallItemResource.DeserializeInternalLocalShellToolCallItemResource(element, data, options);
+                        return InternalLocalShellToolCallItemResource.DeserializeInternalLocalShellToolCallItemResource(element, options);
                     case "local_shell_call_output":
-                        return InternalLocalShellToolCallOutputItemResource.DeserializeInternalLocalShellToolCallOutputItemResource(element, data, options);
+                        return InternalLocalShellToolCallOutputItemResource.DeserializeInternalLocalShellToolCallOutputItemResource(element, options);
                     case "mcp_approval_request":
-                        return McpToolCallApprovalRequestItem.DeserializeMcpToolCallApprovalRequestItem(element, data, options);
+                        return McpToolCallApprovalRequestItem.DeserializeMcpToolCallApprovalRequestItem(element, options);
                     case "mcp_approval_response":
-                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, data, options);
+                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, options);
                     case "mcp_call":
-                        return McpToolCallItem.DeserializeMcpToolCallItem(element, data, options);
+                        return McpToolCallItem.DeserializeMcpToolCallItem(element, options);
                     case "mcp_list_tools":
-                        return McpToolDefinitionListItem.DeserializeMcpToolDefinitionListItem(element, data, options);
+                        return McpToolDefinitionListItem.DeserializeMcpToolDefinitionListItem(element, options);
                     case "message":
-                        return MessageResponseItem.DeserializeMessageResponseItem(element, data, options);
+                        return MessageResponseItem.DeserializeMessageResponseItem(element, options);
                     case "reasoning":
-                        return ReasoningResponseItem.DeserializeReasoningResponseItem(element, data, options);
+                        return ReasoningResponseItem.DeserializeReasoningResponseItem(element, options);
                     case "item_reference":
-                        return ReferenceResponseItem.DeserializeReferenceResponseItem(element, data, options);
+                        return ReferenceResponseItem.DeserializeReferenceResponseItem(element, options);
                     case "web_search_call":
-                        return WebSearchCallResponseItem.DeserializeWebSearchCallResponseItem(element, data, options);
+                        return WebSearchCallResponseItem.DeserializeWebSearchCallResponseItem(element, options);
                 }
             }
-            return InternalUnknownItemResource.DeserializeInternalUnknownItemResource(element, data, options);
+            return InternalUnknownItemResource.DeserializeInternalUnknownItemResource(element, options);
         }
     }
 }

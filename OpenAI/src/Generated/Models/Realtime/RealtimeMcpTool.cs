@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -16,8 +15,7 @@ namespace OpenAI.Realtime
         private RealtimeMcpToolFilter _allowedTools;
         private bool _allowedToolsIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpTool(RealtimeToolKind kind, in JsonPatch patch, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
+        internal RealtimeMcpTool(RealtimeToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
@@ -28,9 +26,7 @@ namespace OpenAI.Realtime
             Headers = headers ?? new ChangeTrackingDictionary<string, string>();
             _allowedTools = allowedTools;
             ToolCallApprovalPolicy = toolCallApprovalPolicy;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

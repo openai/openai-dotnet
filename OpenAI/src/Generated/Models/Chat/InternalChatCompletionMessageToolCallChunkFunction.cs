@@ -3,36 +3,31 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionMessageToolCallChunkFunction
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal InternalChatCompletionMessageToolCallChunkFunction()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionMessageToolCallChunkFunction(string name, BinaryData arguments, in JsonPatch patch)
+        internal InternalChatCompletionMessageToolCallChunkFunction(string name, BinaryData arguments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             Arguments = arguments;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Name { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

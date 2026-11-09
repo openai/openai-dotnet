@@ -2,24 +2,20 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class ChatOutputTokenUsageDetails
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ChatOutputTokenUsageDetails()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount, int audioTokenCount, int reasoningTokenCount, int rejectedPredictionTokenCount, in JsonPatch patch)
+        internal ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount, int audioTokenCount, int reasoningTokenCount, int rejectedPredictionTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             AcceptedPredictionTokenCount = acceptedPredictionTokenCount;
@@ -29,13 +25,13 @@ namespace OpenAI.Chat
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             RejectedPredictionTokenCount = rejectedPredictionTokenCount;
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

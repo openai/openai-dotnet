@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalResponseTextParam(document.RootElement, data, options);
+                        return DeserializeInternalResponseTextParam(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseTextParam)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalResponseTextParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,13 +59,12 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalResponseTextParam)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Format) && !Patch.Contains("$.format"u8))
+            if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(Format, options);
             }
-            if (Optional.IsDefined(Verbosity, _verbosityIsDefined) && !Patch.Contains("$.verbosity"u8))
+            if (Optional.IsDefined(Verbosity, _verbosityIsDefined) && _additionalBinaryDataProperties?.ContainsKey("verbosity") != true)
             {
                 if (Verbosity != null)
                 {
@@ -85,9 +76,26 @@ namespace OpenAI.Responses
                     writer.WriteNull("verbosity"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         InternalResponseTextParam IJsonModel<InternalResponseTextParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -100,10 +108,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponseTextParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseTextParam(document.RootElement, null, options);
+            return DeserializeInternalResponseTextParam(document.RootElement, options);
         }
 
-        internal static InternalResponseTextParam DeserializeInternalResponseTextParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalResponseTextParam DeserializeInternalResponseTextParam(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -112,9 +120,7 @@ namespace OpenAI.Responses
             ResponseTextFormat format = default;
             bool verbosityIsDefined = false;
             InternalTokenCountsBodyTextVerbosity? verbosity = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("format"u8))
@@ -123,7 +129,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    format = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    format = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("verbosity"u8))
@@ -137,48 +143,13 @@ namespace OpenAI.Responses
                     verbosity = new InternalTokenCountsBodyTextVerbosity(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseTextParam(format, verbosity, patch)
+            return new InternalResponseTextParam(format, verbosity, additionalBinaryDataProperties)
             {
                 _verbosityIsDefined = verbosityIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("format"u8))
-            {
-                if (Format == null)
-                {
-                    return false;
-                }
-                return Format.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("format"u8))
-            {
-                if (Format == null)
-                {
-                    return false;
-                }
-                Format.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

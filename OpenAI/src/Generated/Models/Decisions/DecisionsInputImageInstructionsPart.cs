@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -21,13 +22,11 @@ namespace OpenAI.Decisions
             ImageUri = imageUri;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsInputImageInstructionsPart(DecisionsInstructionsPartKind kind, in JsonPatch patch, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, patch)
+        internal DecisionsInputImageInstructionsPart(DecisionsInstructionsPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUri, DecisionsImageDetailLevel? imageDetailLevel) : base(kind, additionalBinaryDataProperties)
         {
             ImageUri = imageUri;
             _imageDetailLevel = imageDetailLevel;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUri { get; set; }
 

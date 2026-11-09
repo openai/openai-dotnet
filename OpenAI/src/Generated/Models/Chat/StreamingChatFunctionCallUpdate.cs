@@ -3,34 +3,29 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     public partial class StreamingChatFunctionCallUpdate
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal StreamingChatFunctionCallUpdate()
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingChatFunctionCallUpdate(string functionName, BinaryData functionArgumentsUpdate, in JsonPatch patch)
+        internal StreamingChatFunctionCallUpdate(string functionName, BinaryData functionArgumentsUpdate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FunctionName = functionName;
             FunctionArgumentsUpdate = functionArgumentsUpdate;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

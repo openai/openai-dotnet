@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -10,16 +11,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandInputAudioBufferClear : RealtimeClientCommand
     {
-        public RealtimeClientCommandInputAudioBufferClear() : this(RealtimeClientCommandKind.InputAudioBufferClear, default, null)
+        public RealtimeClientCommandInputAudioBufferClear() : this(RealtimeClientCommandKind.InputAudioBufferClear, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandInputAudioBufferClear(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId) : base(kind, patch)
+        internal RealtimeClientCommandInputAudioBufferClear(RealtimeClientCommandKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
     }

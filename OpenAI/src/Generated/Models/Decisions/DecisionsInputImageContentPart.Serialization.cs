@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsInputImageContentPart : DecisionsInputContentPart, IJsonModel<DecisionsInputImageContentPart>
     {
-        public DecisionsInputImageContentPart() : this(DecisionsInputContentPartKind.InputImage, default, null, default, null)
+        public DecisionsInputImageContentPart() : this(DecisionsInputContentPartKind.InputImage, null, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsInputImageContentPart(document.RootElement, data, options);
+                        return DeserializeDecisionsInputImageContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsInputImageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,13 +64,12 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.image_url"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("image_url") != true)
             {
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteStringValue(ImageUri);
             }
-            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && !Patch.Contains("$.detail"u8))
+            if (Optional.IsDefined(ImageDetailLevel, _imageDetailLevelIsDefined) && _additionalBinaryDataProperties?.ContainsKey("detail") != true)
             {
                 if (ImageDetailLevel != null)
                 {
@@ -90,7 +81,7 @@ namespace OpenAI.Decisions
                     writer.WriteNull("detail"u8);
                 }
             }
-            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && !Patch.Contains("$.prompt_cache_breakpoint"u8))
+            if (Optional.IsDefined(PromptCacheBreakpoint, _promptCacheBreakpointIsDefined) && _additionalBinaryDataProperties?.ContainsKey("prompt_cache_breakpoint") != true)
             {
                 if (PromptCacheBreakpoint != null)
                 {
@@ -102,9 +93,6 @@ namespace OpenAI.Decisions
                     writer.WriteNull("prompt_cache_breakpoint"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsInputImageContentPart IJsonModel<DecisionsInputImageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsInputImageContentPart)JsonModelCreateCore(ref reader, options);
@@ -117,19 +105,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsInputImageContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsInputImageContentPart(document.RootElement, null, options);
+            return DeserializeDecisionsInputImageContentPart(document.RootElement, options);
         }
 
-        internal static DecisionsInputImageContentPart DeserializeDecisionsInputImageContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsInputImageContentPart DeserializeDecisionsInputImageContentPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsInputContentPartKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string imageUri = default;
             bool imageDetailLevelIsDefined = false;
             DecisionsImageDetailLevel? imageDetailLevel = default;
@@ -166,52 +152,17 @@ namespace OpenAI.Decisions
                         promptCacheBreakpoint = null;
                         continue;
                     }
-                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    promptCacheBreakpoint = DecisionsPromptCacheBreakpoint.DeserializeDecisionsPromptCacheBreakpoint(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsInputImageContentPart(kind, patch, imageUri, imageDetailLevel, promptCacheBreakpoint)
+            return new DecisionsInputImageContentPart(kind, additionalBinaryDataProperties, imageUri, imageDetailLevel, promptCacheBreakpoint)
             {
                 _imageDetailLevelIsDefined = imageDetailLevelIsDefined,
                 _promptCacheBreakpointIsDefined = promptCacheBreakpointIsDefined
             };
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("prompt_cache_breakpoint"u8))
-            {
-                if (PromptCacheBreakpoint == null)
-                {
-                    return false;
-                }
-                return PromptCacheBreakpoint.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("prompt_cache_breakpoint"u8))
-            {
-                if (PromptCacheBreakpoint == null)
-                {
-                    return false;
-                }
-                PromptCacheBreakpoint.Patch.Set([.. "$"u8, .. local.Slice("prompt_cache_breakpoint"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

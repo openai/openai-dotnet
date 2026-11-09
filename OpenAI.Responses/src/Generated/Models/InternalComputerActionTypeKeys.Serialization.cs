@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionTypeKeys : ComputerCallAction, IJsonModel<InternalComputerActionTypeKeys>
     {
-        public InternalComputerActionTypeKeys() : this(ComputerCallActionKind.Type, default, null)
+        public InternalComputerActionTypeKeys() : this(ComputerCallActionKind.Type, null, null)
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalComputerActionTypeKeys(document.RootElement, data, options);
+                        return DeserializeInternalComputerActionTypeKeys(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support reading '{options.Format}' format.");
@@ -53,14 +53,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalComputerActionTypeKeys>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -74,15 +66,11 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.text"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerActionTypeKeys IJsonModel<InternalComputerActionTypeKeys>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionTypeKeys)JsonModelCreateCore(ref reader, options);
@@ -96,21 +84,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerActionTypeKeys(document.RootElement, null, options);
+            return DeserializeInternalComputerActionTypeKeys(document.RootElement, options);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal static InternalComputerActionTypeKeys DeserializeInternalComputerActionTypeKeys(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalComputerActionTypeKeys DeserializeInternalComputerActionTypeKeys(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ComputerCallActionKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -124,9 +110,10 @@ namespace OpenAI.Responses
                     text = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionTypeKeys(kind, patch, text);
+            return new InternalComputerActionTypeKeys(kind, additionalBinaryDataProperties, text);
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }

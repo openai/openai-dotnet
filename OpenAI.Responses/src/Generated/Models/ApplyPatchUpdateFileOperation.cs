@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -20,13 +21,11 @@ namespace OpenAI.Responses
             Diff = diff;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchUpdateFileOperation(ApplyPatchOperationKind kind, in JsonPatch patch, string filePath, string diff) : base(kind, patch)
+        internal ApplyPatchUpdateFileOperation(ApplyPatchOperationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string filePath, string diff) : base(kind, additionalBinaryDataProperties)
         {
             FilePath = filePath;
             Diff = diff;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Diff { get; set; }
     }

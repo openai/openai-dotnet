@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>
     {
-        public ComputerCallOutputResponseItem() : this(ResponseItemKind.ComputerCallOutput, null, default, default, null, null, null)
+        public ComputerCallOutputResponseItem() : this(ResponseItemKind.ComputerCallOutput, null, null, default, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeComputerCallOutputResponseItem(document.RootElement, data, options);
+                        return DeserializeComputerCallOutputResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<ComputerCallOutputResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,49 +64,33 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (!Patch.Contains("$.call_id"u8))
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (Patch.Contains("$.acknowledged_safety_checks"u8))
-            {
-                if (!Patch.IsRemoved("$.acknowledged_safety_checks"u8))
-                {
-                    writer.WritePropertyName("acknowledged_safety_checks"u8);
-                    Patch.WriteTo(writer, "$.acknowledged_safety_checks"u8);
-                }
-            }
-            else if (Optional.IsCollectionDefined(AcknowledgedSafetyChecks))
+            if (Optional.IsCollectionDefined(AcknowledgedSafetyChecks) && _additionalBinaryDataProperties?.ContainsKey("acknowledged_safety_checks") != true)
             {
                 writer.WritePropertyName("acknowledged_safety_checks"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "acknowledged_safety_checks"u8);
-                for (int i = 0; i < AcknowledgedSafetyChecks.Count; i++)
+                foreach (ComputerCallSafetyCheck item in AcknowledgedSafetyChecks)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]")) || AcknowledgedSafetyChecks[i] != null && AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(AcknowledgedSafetyChecks[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.acknowledged_safety_checks"u8);
                 writer.WriteEndArray();
             }
-            if (!Patch.Contains("$.output"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteObjectValue(Output, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ComputerCallOutputResponseItem IJsonModel<ComputerCallOutputResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ComputerCallOutputResponseItem)JsonModelCreateCore(ref reader, options);
@@ -128,10 +103,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeComputerCallOutputResponseItem(document.RootElement, null, options);
+            return DeserializeComputerCallOutputResponseItem(document.RootElement, options);
         }
 
-        internal static ComputerCallOutputResponseItem DeserializeComputerCallOutputResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ComputerCallOutputResponseItem DeserializeComputerCallOutputResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -139,9 +114,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             ComputerCallOutputStatus? status = default;
             string callId = default;
             IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default;
@@ -181,132 +154,27 @@ namespace OpenAI.Responses
                     List<ComputerCallSafetyCheck> array = new List<ComputerCallSafetyCheck>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ComputerCallSafetyCheck.DeserializeComputerCallSafetyCheck(item, item.GetUtf8Bytes(), options));
+                        array.Add(ComputerCallSafetyCheck.DeserializeComputerCallSafetyCheck(item, options));
                     }
                     acknowledgedSafetyChecks = array;
                     continue;
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ComputerCallOutputResponseItem(
                 kind,
                 id,
-                patch,
+                additionalBinaryDataProperties,
                 status,
                 callId,
                 acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>(),
                 output);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("output"u8))
-            {
-                if (Output == null)
-                {
-                    return false;
-                }
-                return Output.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("output"u8.Length)], out value);
-            }
-            if (local.StartsWith("acknowledged_safety_checks"u8))
-            {
-                int propertyLength = "acknowledged_safety_checks"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (AcknowledgedSafetyChecks == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveAcknowledgedSafetyChecksArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= AcknowledgedSafetyChecks.Count)
-                {
-                    return false;
-                }
-                if (AcknowledgedSafetyChecks[index] == null)
-                {
-                    return false;
-                }
-                return AcknowledgedSafetyChecks[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("output"u8))
-            {
-                if (Output == null)
-                {
-                    return false;
-                }
-                Output.Patch.Set([.. "$"u8, .. local.Slice("output"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("acknowledged_safety_checks"u8))
-            {
-                int propertyLength = "acknowledged_safety_checks"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (AcknowledgedSafetyChecks == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= AcknowledgedSafetyChecks.Count)
-                {
-                    return false;
-                }
-                if (AcknowledgedSafetyChecks[index] == null)
-                {
-                    return false;
-                }
-                AcknowledgedSafetyChecks[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveAcknowledgedSafetyChecksArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveAcknowledgedSafetyChecks(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<ComputerCallSafetyCheck> ActiveAcknowledgedSafetyChecks()
-        {
-            if (!Optional.IsCollectionDefined(AcknowledgedSafetyChecks))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "acknowledged_safety_checks"u8);
-            for (int i = 0; i < AcknowledgedSafetyChecks.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.acknowledged_safety_checks[{i}]"))) && (AcknowledgedSafetyChecks[i] == null || !AcknowledgedSafetyChecks[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return AcknowledgedSafetyChecks[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

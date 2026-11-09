@@ -31,7 +31,6 @@ namespace OpenAI.Responses
             _options = options;
         }
 
-#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override IEnumerable<ClientResult> GetRawPages()
         {
             PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, _afterId, _beforeId, _options);
@@ -52,9 +51,7 @@ namespace OpenAI.Responses
                 message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
-#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ResponseItemCollectionPage)page).LastId;
@@ -67,21 +64,16 @@ namespace OpenAI.Responses
                 return null;
             }
         }
-#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         protected override IEnumerable<ResponseItem> GetValuesFromPage(ClientResult page)
         {
             return ((ResponseItemCollectionPage)page).Data;
         }
-#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private ClientResult GetNextResponse(PipelineMessage message)
         {
             return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
-#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

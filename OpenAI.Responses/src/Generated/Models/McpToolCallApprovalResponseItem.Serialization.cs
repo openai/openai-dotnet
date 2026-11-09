@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>
     {
-        public McpToolCallApprovalResponseItem() : this(ResponseItemKind.McpApprovalResponse, null, default, null, default, null)
+        public McpToolCallApprovalResponseItem() : this(ResponseItemKind.McpApprovalResponse, null, null, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, data, options);
+                        return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<McpToolCallApprovalResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,18 +64,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.approval_request_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("approval_request_id") != true)
             {
                 writer.WritePropertyName("approval_request_id"u8);
                 writer.WriteStringValue(ApprovalRequestId);
             }
-            if (!Patch.Contains("$.approve"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("approve") != true)
             {
                 writer.WritePropertyName("approve"u8);
                 writer.WriteBooleanValue(Approved);
             }
-            if (Optional.IsDefined(Reason, _reasonIsDefined) && !Patch.Contains("$.reason"u8))
+            if (Optional.IsDefined(Reason, _reasonIsDefined) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
             {
                 if (Reason != null)
                 {
@@ -95,9 +86,6 @@ namespace OpenAI.Responses
                     writer.WriteNull("reason"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         McpToolCallApprovalResponseItem IJsonModel<McpToolCallApprovalResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (McpToolCallApprovalResponseItem)JsonModelCreateCore(ref reader, options);
@@ -110,10 +98,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, null, options);
+            return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, options);
         }
 
-        internal static McpToolCallApprovalResponseItem DeserializeMcpToolCallApprovalResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static McpToolCallApprovalResponseItem DeserializeMcpToolCallApprovalResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -121,9 +109,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string approvalRequestId = default;
             bool approved = default;
             bool reasonIsDefined = false;
@@ -161,12 +147,13 @@ namespace OpenAI.Responses
                     reason = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new McpToolCallApprovalResponseItem(
                 kind,
                 id,
-                patch,
+                additionalBinaryDataProperties,
                 approvalRequestId,
                 approved,
                 reason)

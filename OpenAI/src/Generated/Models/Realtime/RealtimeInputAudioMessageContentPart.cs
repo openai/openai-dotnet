@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +19,11 @@ namespace OpenAI.Realtime
             AudioBytes = audioBytes;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeInputAudioMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind, in JsonPatch patch, BinaryData audioBytes, string transcript) : base(kind, patch)
+        internal RealtimeInputAudioMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData audioBytes, string transcript) : base(kind, additionalBinaryDataProperties)
         {
             AudioBytes = audioBytes;
             Transcript = transcript;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Transcript { get; set; }
     }

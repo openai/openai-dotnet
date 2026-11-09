@@ -3,17 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format)
@@ -23,26 +19,25 @@ namespace OpenAI.Chat
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format, in JsonPatch patch)
+        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Data = data;
             Format = format;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public BinaryData Data { get; set; }
 
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ChatInputAudioFormat Format { get; set; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchCallResponseItem(document.RootElement, data, options);
+                        return DeserializeWebSearchCallResponseItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support reading '{options.Format}' format.");
@@ -47,14 +47,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<WebSearchCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -68,20 +60,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (Optional.IsDefined(Action) && _additionalBinaryDataProperties?.ContainsKey("action") != true)
             {
                 writer.WritePropertyName("action"u8);
                 writer.WriteObjectValue(Action, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchCallResponseItem IJsonModel<WebSearchCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -94,10 +84,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchCallResponseItem(document.RootElement, null, options);
+            return DeserializeWebSearchCallResponseItem(document.RootElement, options);
         }
 
-        internal static WebSearchCallResponseItem DeserializeWebSearchCallResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchCallResponseItem DeserializeWebSearchCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -105,9 +95,7 @@ namespace OpenAI.Responses
             }
             ResponseItemKind kind = default;
             string id = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             WebSearchCallStatus? status = default;
             WebSearchAction action = default;
             foreach (var prop in element.EnumerateObject())
@@ -137,48 +125,13 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    action = WebSearchAction.DeserializeWebSearchAction(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    action = WebSearchAction.DeserializeWebSearchAction(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchCallResponseItem(kind, id, patch, status, action);
+            return new WebSearchCallResponseItem(kind, id, additionalBinaryDataProperties, status, action);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("action"u8))
-            {
-                if (Action == null)
-                {
-                    return false;
-                }
-                return Action.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("action"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("action"u8))
-            {
-                if (Action == null)
-                {
-                    return false;
-                }
-                Action.Patch.Set([.. "$"u8, .. local.Slice("action"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

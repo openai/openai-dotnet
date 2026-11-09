@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -25,15 +25,13 @@ namespace OpenAI.Realtime
             ToolArguments = toolArguments;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolCallApprovalRequestItem(RealtimeItemKind kind, in JsonPatch patch, string id, string serverLabel, string toolName, BinaryData toolArguments) : base(kind, patch)
+        internal RealtimeMcpToolCallApprovalRequestItem(RealtimeItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, string serverLabel, string toolName, BinaryData toolArguments) : base(kind, additionalBinaryDataProperties)
         {
             Id = id;
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Id { get; set; }
 

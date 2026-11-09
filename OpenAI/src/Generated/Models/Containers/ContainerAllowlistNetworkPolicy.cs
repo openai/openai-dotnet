@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,26 +13,20 @@ namespace OpenAI.Containers
     [Experimental("OPENAI001")]
     public partial class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ContainerAllowlistNetworkPolicy(IEnumerable<string> allowedDomains) : base(ContainerNetworkPolicyKind.Allowlist)
         {
             Argument.AssertNotNull(allowedDomains, nameof(allowedDomains));
 
             AllowedDomains = allowedDomains.ToList();
             DomainSecrets = new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerAllowlistNetworkPolicy(ContainerNetworkPolicyKind kind, in JsonPatch patch, IList<string> allowedDomains, IList<ContainerNetworkPolicyDomainSecret> domainSecrets) : base(kind, patch)
+        internal ContainerAllowlistNetworkPolicy(ContainerNetworkPolicyKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> allowedDomains, IList<ContainerNetworkPolicyDomainSecret> domainSecrets) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             AllowedDomains = allowedDomains ?? new ChangeTrackingList<string>();
             DomainSecrets = domainSecrets ?? new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> AllowedDomains { get; }
 

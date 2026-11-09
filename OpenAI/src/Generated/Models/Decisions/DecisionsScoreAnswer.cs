@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,28 +13,22 @@ namespace OpenAI.Decisions
     [Experimental("OPENAI001")]
     public partial class DecisionsScoreAnswer : DecisionsAnswer
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal DecisionsScoreAnswer(float confidence, string name, IEnumerable<DecisionsScoreProbability> probabilities, double score) : base(DecisionsAnswerKind.Score)
         {
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities.ToList();
             Score = score;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, in JsonPatch patch, float confidence, string name, IList<DecisionsScoreProbability> probabilities, double score) : base(kind, patch)
+        internal DecisionsScoreAnswer(DecisionsAnswerKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, float confidence, string name, IList<DecisionsScoreProbability> probabilities, double score) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Confidence = confidence;
             Name = name;
             Probabilities = probabilities ?? new ChangeTrackingList<DecisionsScoreProbability>();
             Score = score;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public float Confidence { get; set; }
 

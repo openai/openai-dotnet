@@ -4,8 +4,8 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -26,7 +26,7 @@ namespace OpenAI.Embeddings
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeEmbeddingGenerationOptions(document.RootElement, data, options);
+                        return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{options.Format}' format.");
@@ -54,14 +54,6 @@ namespace OpenAI.Embeddings
 
         void IJsonModel<EmbeddingGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -75,8 +67,7 @@ namespace OpenAI.Embeddings
             {
                 throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.input"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
                 writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
@@ -88,29 +79,46 @@ namespace OpenAI.Embeddings
                 }
 #endif
             }
-            if (!Patch.Contains("$.model"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.ToString());
             }
-            if (Optional.IsDefined(EncodingFormat) && !Patch.Contains("$.encoding_format"u8))
+            if (Optional.IsDefined(EncodingFormat) && _additionalBinaryDataProperties?.ContainsKey("encoding_format") != true)
             {
                 writer.WritePropertyName("encoding_format"u8);
                 writer.WriteStringValue(EncodingFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Dimensions) && !Patch.Contains("$.dimensions"u8))
+            if (Optional.IsDefined(Dimensions) && _additionalBinaryDataProperties?.ContainsKey("dimensions") != true)
             {
                 writer.WritePropertyName("dimensions"u8);
                 writer.WriteNumberValue(Dimensions.Value);
             }
-            if (Optional.IsDefined(EndUserId) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -124,10 +132,10 @@ namespace OpenAI.Embeddings
                 throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeEmbeddingGenerationOptions(document.RootElement, null, options);
+            return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
         }
 
-        internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -138,9 +146,7 @@ namespace OpenAI.Embeddings
             InternalCreateEmbeddingRequestEncodingFormat? encodingFormat = default;
             int? dimensions = default;
             string endUserId = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("input"u8))
@@ -176,7 +182,8 @@ namespace OpenAI.Embeddings
                     endUserId = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new EmbeddingGenerationOptions(
                 input,
@@ -184,7 +191,7 @@ namespace OpenAI.Embeddings
                 encodingFormat,
                 dimensions,
                 endUserId,
-                patch);
+                additionalBinaryDataProperties);
         }
     }
 }

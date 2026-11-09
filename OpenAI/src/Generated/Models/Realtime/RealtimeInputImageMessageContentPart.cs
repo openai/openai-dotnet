@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,13 +19,11 @@ namespace OpenAI.Realtime
             ImageUri = imageUri;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeInputImageMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind, in JsonPatch patch, Uri imageUri, RealtimeImageDetailLevel? detail) : base(kind, patch)
+        internal RealtimeInputImageMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri imageUri, RealtimeImageDetailLevel? detail) : base(kind, additionalBinaryDataProperties)
         {
             ImageUri = imageUri;
             Detail = detail;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public RealtimeImageDetailLevel? Detail { get; set; }
     }

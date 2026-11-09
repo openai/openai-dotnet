@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -16,25 +16,19 @@ namespace OpenAI.Decisions
         private DecisionsAssistantMessagePhase? _phase;
         private bool _phaseIsDefined;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public DecisionsAssistantMessageItem(IEnumerable<DecisionsOutputContentPart> content) : base(DecisionsMessageRole.Assistant)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             Content = content.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DecisionsAssistantMessageItem(DecisionsItemKind kind, in JsonPatch patch, DecisionsMessageRole role, IList<DecisionsOutputContentPart> content, DecisionsAssistantMessagePhase? phase) : base(kind, patch, role)
+        internal DecisionsAssistantMessageItem(DecisionsItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, DecisionsMessageRole role, IList<DecisionsOutputContentPart> content, DecisionsAssistantMessagePhase? phase) : base(kind, additionalBinaryDataProperties, role)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<DecisionsOutputContentPart>();
             _phase = phase;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<DecisionsOutputContentPart> Content { get; }
 

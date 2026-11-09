@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime
@@ -19,8 +20,7 @@ namespace OpenAI.Realtime
             ContentIndex = contentIndex;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputAudioDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputAudioDone(RealtimeServerUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(kind, additionalBinaryDataProperties)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -28,7 +28,6 @@ namespace OpenAI.Realtime
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; set; }
 

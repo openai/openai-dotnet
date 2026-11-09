@@ -2,18 +2,16 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI.Conversations
 {
     [Experimental("OPENAI001")]
     public partial class ConversationDeletionResult
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal ConversationDeletionResult(bool deleted, string conversationId)
         {
@@ -21,23 +19,22 @@ namespace OpenAI.Conversations
             ConversationId = conversationId;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ConversationDeletionResult(string @object, bool deleted, string conversationId, in JsonPatch patch)
+        internal ConversationDeletionResult(string @object, bool deleted, string conversationId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Deleted = deleted;
             ConversationId = conversationId;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public bool Deleted { get; set; }
 
         public string ConversationId { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

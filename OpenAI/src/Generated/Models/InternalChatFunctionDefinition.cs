@@ -3,17 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace OpenAI
 {
     internal partial class InternalChatFunctionDefinition
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
         private bool? _strict;
         private bool _strictIsDefined;
 
@@ -22,21 +18,14 @@ namespace OpenAI
             Name = name;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, in JsonPatch patch)
+        internal InternalChatFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Description = description;
             Name = name;
             Parameters = parameters;
             _strict = strict;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public string Description { get; set; }
 
@@ -53,6 +42,12 @@ namespace OpenAI
                 _strict = value;
                 _strictIsDefined = true;
             }
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

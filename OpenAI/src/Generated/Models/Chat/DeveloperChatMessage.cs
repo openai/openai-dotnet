@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat
@@ -10,15 +11,13 @@ namespace OpenAI.Chat
     [Experimental("OPENAI001")]
     public partial class DeveloperChatMessage : ChatMessage
     {
-        internal DeveloperChatMessage() : this(ChatMessageRole.Developer, null, default, null)
+        internal DeveloperChatMessage() : this(ChatMessageRole.Developer, null, null, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal DeveloperChatMessage(ChatMessageRole role, ChatMessageContent content, in JsonPatch patch, string participantName) : base(role, content, patch)
+        internal DeveloperChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string participantName) : base(role, content, additionalBinaryDataProperties)
         {
             ParticipantName = participantName;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

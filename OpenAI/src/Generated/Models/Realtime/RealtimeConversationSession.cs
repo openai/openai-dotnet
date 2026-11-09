@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,19 +12,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeConversationSession : RealtimeSession
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeConversationSession(RealtimeClientSecret clientSecret) : base(InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime)
         {
             ClientSecret = clientSecret;
             OutputModalities = new ChangeTrackingList<RealtimeOutputModality>();
             IncludedProperties = new ChangeTrackingList<RealtimeIncludedProperty>();
             Tools = new ChangeTrackingList<RealtimeTool>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeConversationSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, RealtimeClientSecret clientSecret, IList<RealtimeOutputModality> outputModalities, string model, string instructions, RealtimeConversationSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties, RealtimeTracing tracing, IList<RealtimeTool> tools, RealtimeToolChoice toolChoice, RealtimeMaxOutputTokenCount maxOutputTokenCount, RealtimeTruncation truncation) : base(kind, patch)
+        internal RealtimeConversationSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, RealtimeClientSecret clientSecret, IList<RealtimeOutputModality> outputModalities, string model, string instructions, RealtimeConversationSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties, RealtimeTracing tracing, IList<RealtimeTool> tools, RealtimeToolChoice toolChoice, RealtimeMaxOutputTokenCount maxOutputTokenCount, RealtimeTruncation truncation) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ClientSecret = clientSecret;
@@ -38,9 +34,7 @@ namespace OpenAI.Realtime
             ToolChoice = toolChoice;
             MaxOutputTokenCount = maxOutputTokenCount;
             Truncation = truncation;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public RealtimeClientSecret ClientSecret { get; set; }
 

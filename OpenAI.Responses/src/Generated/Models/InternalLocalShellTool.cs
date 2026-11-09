@@ -2,22 +2,21 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellTool : ResponseTool
     {
-        public InternalLocalShellTool() : this(ResponseToolKind.LocalShell, default)
+        public InternalLocalShellTool() : this(ResponseToolKind.LocalShell, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalLocalShellTool(ResponseToolKind kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalLocalShellTool(ResponseToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

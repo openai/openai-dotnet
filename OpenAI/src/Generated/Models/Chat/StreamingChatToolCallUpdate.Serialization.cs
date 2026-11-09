@@ -4,8 +4,8 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -26,7 +26,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingChatToolCallUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingChatToolCallUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingChatToolCallUpdate)} does not support reading '{options.Format}' format.");
@@ -54,14 +54,6 @@ namespace OpenAI.Chat
 
         void IJsonModel<StreamingChatToolCallUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -75,30 +67,46 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(StreamingChatToolCallUpdate)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (Optional.IsDefined(ToolCallId) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(ToolCallId) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(ToolCallId);
             }
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (Optional.IsDefined(Function) && !Patch.Contains("$.function"u8))
+            if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
                 writer.WritePropertyName("function"u8);
                 writer.WriteObjectValue(Function, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         StreamingChatToolCallUpdate IJsonModel<StreamingChatToolCallUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -112,10 +120,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(StreamingChatToolCallUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingChatToolCallUpdate(document.RootElement, null, options);
+            return DeserializeStreamingChatToolCallUpdate(document.RootElement, options);
         }
 
-        internal static StreamingChatToolCallUpdate DeserializeStreamingChatToolCallUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingChatToolCallUpdate DeserializeStreamingChatToolCallUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -125,9 +133,7 @@ namespace OpenAI.Chat
             string toolCallId = default;
             ChatToolCallKind kind = default;
             InternalChatCompletionMessageToolCallChunkFunction function = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("index"u8))
@@ -155,48 +161,13 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    function = InternalChatCompletionMessageToolCallChunkFunction.DeserializeInternalChatCompletionMessageToolCallChunkFunction(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    function = InternalChatCompletionMessageToolCallChunkFunction.DeserializeInternalChatCompletionMessageToolCallChunkFunction(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new StreamingChatToolCallUpdate(index, toolCallId, kind, function, patch);
+            return new StreamingChatToolCallUpdate(index, toolCallId, kind, function, additionalBinaryDataProperties);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("function"u8))
-            {
-                if (Function == null)
-                {
-                    return false;
-                }
-                return Function.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("function"u8))
-            {
-                if (Function == null)
-                {
-                    return false;
-                }
-                Function.Patch.Set([.. "$"u8, .. local.Slice("function"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

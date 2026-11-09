@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateResponseOutputItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputItemAdded>
     {
-        public RealtimeServerUpdateResponseOutputItemAdded() : this(RealtimeServerUpdateKind.ResponseOutputItemAdded, default, null, null, default, null)
+        public RealtimeServerUpdateResponseOutputItemAdded() : this(RealtimeServerUpdateKind.ResponseOutputItemAdded, null, null, null, default, null)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeServerUpdateResponseOutputItemAdded(document.RootElement, data, options);
+                        return DeserializeRealtimeServerUpdateResponseOutputItemAdded(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputItemAdded)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Realtime
 
         void IJsonModel<RealtimeServerUpdateResponseOutputItemAdded>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,30 +64,26 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputItemAdded)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.event_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (!Patch.Contains("$.response_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("response_id") != true)
             {
                 writer.WritePropertyName("response_id"u8);
                 writer.WriteStringValue(ResponseId);
             }
-            if (!Patch.Contains("$.output_index"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.item"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("item") != true)
             {
                 writer.WritePropertyName("item"u8);
                 writer.WriteObjectValue(Item, options);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         RealtimeServerUpdateResponseOutputItemAdded IJsonModel<RealtimeServerUpdateResponseOutputItemAdded>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseOutputItemAdded)JsonModelCreateCore(ref reader, options);
@@ -108,19 +96,17 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseOutputItemAdded)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeServerUpdateResponseOutputItemAdded(document.RootElement, null, options);
+            return DeserializeRealtimeServerUpdateResponseOutputItemAdded(document.RootElement, options);
         }
 
-        internal static RealtimeServerUpdateResponseOutputItemAdded DeserializeRealtimeServerUpdateResponseOutputItemAdded(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeServerUpdateResponseOutputItemAdded DeserializeRealtimeServerUpdateResponseOutputItemAdded(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             RealtimeServerUpdateKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
             string responseId = default;
             int outputIndex = default;
@@ -149,54 +135,19 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("item"u8))
                 {
-                    item = RealtimeItem.DeserializeRealtimeItem(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    item = RealtimeItem.DeserializeRealtimeItem(prop.Value, options);
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RealtimeServerUpdateResponseOutputItemAdded(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 eventId,
                 responseId,
                 outputIndex,
                 item);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("item"u8))
-            {
-                if (Item == null)
-                {
-                    return false;
-                }
-                return Item.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("item"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("item"u8))
-            {
-                if (Item == null)
-                {
-                    return false;
-                }
-                Item.Patch.Set([.. "$"u8, .. local.Slice("item"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

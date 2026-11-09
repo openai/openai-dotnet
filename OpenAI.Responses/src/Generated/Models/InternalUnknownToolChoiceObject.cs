@@ -2,16 +2,15 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalUnknownToolChoiceObject : InternalToolChoiceObject
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownToolChoiceObject(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownToolChoiceObject(InternalToolChoiceObjectType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

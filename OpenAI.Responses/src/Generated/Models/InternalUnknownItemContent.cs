@@ -2,16 +2,15 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalUnknownItemContent : ResponseContentPart
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownItemContent(InternalItemContentType internalType, in JsonPatch patch) : base(internalType != default ? internalType : "unknown", patch)
+        internal InternalUnknownItemContent(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(internalType != default ? internalType : "unknown", additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeComputerCallAction(document.RootElement, data, options);
+                        return DeserializeComputerCallAction(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ComputerCallAction)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Responses
 
         void IJsonModel<ComputerCallAction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,13 +63,33 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ComputerCallAction)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ComputerCallAction IJsonModel<ComputerCallAction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +102,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ComputerCallAction)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeComputerCallAction(document.RootElement, null, options);
+            return DeserializeComputerCallAction(document.RootElement, options);
         }
 
-        internal static ComputerCallAction DeserializeComputerCallAction(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ComputerCallAction DeserializeComputerCallAction(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,26 +116,26 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "click":
-                        return InternalComputerActionClick.DeserializeInternalComputerActionClick(element, data, options);
+                        return InternalComputerActionClick.DeserializeInternalComputerActionClick(element, options);
                     case "double_click":
-                        return InternalComputerActionDoubleClick.DeserializeInternalComputerActionDoubleClick(element, data, options);
+                        return InternalComputerActionDoubleClick.DeserializeInternalComputerActionDoubleClick(element, options);
                     case "drag":
-                        return InternalComputerActionDrag.DeserializeInternalComputerActionDrag(element, data, options);
+                        return InternalComputerActionDrag.DeserializeInternalComputerActionDrag(element, options);
                     case "keypress":
-                        return InternalComputerActionKeyPress.DeserializeInternalComputerActionKeyPress(element, data, options);
+                        return InternalComputerActionKeyPress.DeserializeInternalComputerActionKeyPress(element, options);
                     case "move":
-                        return InternalComputerActionMove.DeserializeInternalComputerActionMove(element, data, options);
+                        return InternalComputerActionMove.DeserializeInternalComputerActionMove(element, options);
                     case "screenshot":
-                        return InternalComputerActionScreenshot.DeserializeInternalComputerActionScreenshot(element, data, options);
+                        return InternalComputerActionScreenshot.DeserializeInternalComputerActionScreenshot(element, options);
                     case "scroll":
-                        return InternalComputerActionScroll.DeserializeInternalComputerActionScroll(element, data, options);
+                        return InternalComputerActionScroll.DeserializeInternalComputerActionScroll(element, options);
                     case "type":
-                        return InternalComputerActionTypeKeys.DeserializeInternalComputerActionTypeKeys(element, data, options);
+                        return InternalComputerActionTypeKeys.DeserializeInternalComputerActionTypeKeys(element, options);
                     case "wait":
-                        return InternalComputerActionWait.DeserializeInternalComputerActionWait(element, data, options);
+                        return InternalComputerActionWait.DeserializeInternalComputerActionWait(element, options);
                 }
             }
-            return InternalUnknownComputerAction.DeserializeInternalUnknownComputerAction(element, data, options);
+            return InternalUnknownComputerAction.DeserializeInternalUnknownComputerAction(element, options);
         }
     }
 }

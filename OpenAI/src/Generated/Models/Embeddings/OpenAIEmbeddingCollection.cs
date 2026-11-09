@@ -2,26 +2,35 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
+using OpenAI;
 
 namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal OpenAIEmbeddingCollection(IList<OpenAIEmbedding> items, string model, string @object, EmbeddingTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            // Plugin customization: ensure initialization of collections
+            Items = items ?? new ChangeTrackingList<OpenAIEmbedding>();
+            Model = model;
+            Object = @object;
+            Usage = usage;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
 
         public string Model { get; }
 
         public EmbeddingTokenUsage Usage { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

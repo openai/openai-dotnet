@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
@@ -15,15 +16,13 @@ namespace OpenAI.Responses
             Arguments = arguments;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalFunctionToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, string name, string arguments) : base(kind, patch)
+        internal InternalFunctionToolCallItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string name, string arguments) : base(kind, additionalBinaryDataProperties)
         {
             CallId = callId;
             Name = name;
             Arguments = arguments;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string CallId { get; set; }

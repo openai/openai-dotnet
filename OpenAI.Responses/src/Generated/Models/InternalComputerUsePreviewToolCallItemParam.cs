@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -11,29 +11,23 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerUsePreviewToolCallItemParam : InternalItemParam
     {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalComputerUsePreviewToolCallItemParam(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(ResponseItemKind.ComputerCall)
         {
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalComputerUsePreviewToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, patch)
+        internal InternalComputerUsePreviewToolCallItemParam(ResponseItemKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string CallId { get; set; }

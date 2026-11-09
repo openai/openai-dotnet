@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsFunctionToolCallItem : DecisionsItem, IJsonModel<DecisionsFunctionToolCallItem>
     {
-        public DecisionsFunctionToolCallItem() : this(DecisionsItemKind.FunctionToolCall, default, null, null, null, null, null, default)
+        public DecisionsFunctionToolCallItem() : this(DecisionsItemKind.FunctionToolCall, null, null, null, null, null, null, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsFunctionToolCallItem(document.RootElement, data, options);
+                        return DeserializeDecisionsFunctionToolCallItem(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsFunctionToolCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,23 +64,22 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.arguments"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
-            if (!Patch.Contains("$.call_id"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (Optional.IsDefined(Id, _idIsDefined) && !Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id, _idIsDefined) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 if (Id != null)
                 {
@@ -100,7 +91,7 @@ namespace OpenAI.Decisions
                     writer.WriteNull("id"u8);
                 }
             }
-            if (Optional.IsDefined(Namespace, _namespaceIsDefined) && !Patch.Contains("$.namespace"u8))
+            if (Optional.IsDefined(Namespace, _namespaceIsDefined) && _additionalBinaryDataProperties?.ContainsKey("namespace") != true)
             {
                 if (Namespace != null)
                 {
@@ -112,7 +103,7 @@ namespace OpenAI.Decisions
                     writer.WriteNull("namespace"u8);
                 }
             }
-            if (Optional.IsDefined(Status, _statusIsDefined) && !Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status, _statusIsDefined) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 if (Status != null)
                 {
@@ -124,9 +115,6 @@ namespace OpenAI.Decisions
                     writer.WriteNull("status"u8);
                 }
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsFunctionToolCallItem IJsonModel<DecisionsFunctionToolCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsFunctionToolCallItem)JsonModelCreateCore(ref reader, options);
@@ -139,19 +127,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsFunctionToolCallItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsFunctionToolCallItem(document.RootElement, null, options);
+            return DeserializeDecisionsFunctionToolCallItem(document.RootElement, options);
         }
 
-        internal static DecisionsFunctionToolCallItem DeserializeDecisionsFunctionToolCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsFunctionToolCallItem DeserializeDecisionsFunctionToolCallItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsItemKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string arguments = default;
             string callId = default;
             string functionName = default;
@@ -216,11 +202,12 @@ namespace OpenAI.Decisions
                     status = new DecisionsFunctionToolCallStatus(prop.Value.GetString());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new DecisionsFunctionToolCallItem(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 arguments,
                 callId,
                 functionName,

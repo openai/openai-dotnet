@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +12,7 @@ namespace OpenAI.Decisions
 {
     public partial class DecisionsScoreQuestion : DecisionsQuestion, IJsonModel<DecisionsScoreQuestion>
     {
-        public DecisionsScoreQuestion() : this(DecisionsQuestionKind.Score, default, null, null, null)
+        public DecisionsScoreQuestion() : this(DecisionsQuestionKind.Score, null, null, null, null)
         {
         }
 
@@ -25,7 +24,7 @@ namespace OpenAI.Decisions
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeDecisionsScoreQuestion(document.RootElement, data, options);
+                        return DeserializeDecisionsScoreQuestion(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(DecisionsScoreQuestion)} does not support reading '{options.Format}' format.");
@@ -52,14 +51,6 @@ namespace OpenAI.Decisions
 
         void IJsonModel<DecisionsScoreQuestion>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -73,63 +64,31 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsScoreQuestion)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.instructions"u8))
-            {
-                if (!Patch.IsRemoved("$.instructions"u8))
-                {
-                    writer.WritePropertyName("instructions"u8);
-                    Patch.WriteTo(writer, "$.instructions"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "instructions"u8);
-                for (int i = 0; i < Instructions.Count; i++)
+                foreach (DecisionsInstructionsPart item in Instructions)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.instructions[{i}]")) || Instructions[i] != null && Instructions[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Instructions[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.instructions"u8);
                 writer.WriteEndArray();
             }
-            if (Patch.Contains("$.levels"u8))
-            {
-                if (!Patch.IsRemoved("$.levels"u8))
-                {
-                    writer.WritePropertyName("levels"u8);
-                    Patch.WriteTo(writer, "$.levels"u8);
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("levels") != true)
             {
                 writer.WritePropertyName("levels"u8);
                 writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "levels"u8);
-                for (int i = 0; i < Levels.Count; i++)
+                foreach (DecisionsScoreLevel item in Levels)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.levels[{i}]")) || Levels[i] != null && Levels[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(Levels[i], options);
+                    writer.WriteObjectValue(item, options);
                 }
-                Patch.WriteTo(writer, "$.levels"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
+            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         DecisionsScoreQuestion IJsonModel<DecisionsScoreQuestion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DecisionsScoreQuestion)JsonModelCreateCore(ref reader, options);
@@ -142,19 +101,17 @@ namespace OpenAI.Decisions
                 throw new FormatException($"The model {nameof(DecisionsScoreQuestion)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeDecisionsScoreQuestion(document.RootElement, null, options);
+            return DeserializeDecisionsScoreQuestion(document.RootElement, options);
         }
 
-        internal static DecisionsScoreQuestion DeserializeDecisionsScoreQuestion(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static DecisionsScoreQuestion DeserializeDecisionsScoreQuestion(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             DecisionsQuestionKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<DecisionsInstructionsPart> instructions = default;
             IList<DecisionsScoreLevel> levels = default;
             string name = default;
@@ -175,7 +132,7 @@ namespace OpenAI.Decisions
                     List<DecisionsScoreLevel> array = new List<DecisionsScoreLevel>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(DecisionsScoreLevel.DeserializeDecisionsScoreLevel(item, item.GetUtf8Bytes(), options));
+                        array.Add(DecisionsScoreLevel.DeserializeDecisionsScoreLevel(item, options));
                     }
                     levels = array;
                     continue;
@@ -185,168 +142,10 @@ namespace OpenAI.Decisions
                     name = prop.Value.GetString();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new DecisionsScoreQuestion(kind, patch, instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>(), levels ?? new ChangeTrackingList<DecisionsScoreLevel>(), name);
+            return new DecisionsScoreQuestion(kind, additionalBinaryDataProperties, instructions ?? new ChangeTrackingList<DecisionsInstructionsPart>(), levels ?? new ChangeTrackingList<DecisionsScoreLevel>(), name);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("instructions"u8))
-            {
-                int propertyLength = "instructions"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Instructions == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveInstructionsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
-                {
-                    return false;
-                }
-                if (Instructions[index] == null)
-                {
-                    return false;
-                }
-                return Instructions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            if (local.StartsWith("levels"u8))
-            {
-                int propertyLength = "levels"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Levels == null)
-                {
-                    return false;
-                }
-                if (currentSlice.IsEmpty)
-                {
-                    return TryResolveLevelsArray(out value);
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Levels.Count)
-                {
-                    return false;
-                }
-                if (Levels[index] == null)
-                {
-                    return false;
-                }
-                return Levels[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("instructions"u8))
-            {
-                int propertyLength = "instructions"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Instructions == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
-                {
-                    return false;
-                }
-                if (Instructions[index] == null)
-                {
-                    return false;
-                }
-                Instructions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            if (local.StartsWith("levels"u8))
-            {
-                int propertyLength = "levels"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (Levels == null)
-                {
-                    return false;
-                }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Levels.Count)
-                {
-                    return false;
-                }
-                if (Levels[index] == null)
-                {
-                    return false;
-                }
-                Levels[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveInstructionsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveInstructions(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsInstructionsPart> ActiveInstructions()
-        {
-            if (!Optional.IsCollectionDefined(Instructions))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "instructions"u8);
-            for (int i = 0; i < Instructions.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.instructions[{i}]"))) && (Instructions[i] == null || !Instructions[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Instructions[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveLevelsArray(out JsonPatch.EncodedValue value)
-        {
-            value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveLevels(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            JsonPatch tempPatch = new JsonPatch();
-            tempPatch.Set("$"u8, data.ToMemory().Span);
-            return tempPatch.TryGetEncodedValue("$"u8, out value);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<DecisionsScoreLevel> ActiveLevels()
-        {
-            if (!Optional.IsCollectionDefined(Levels))
-            {
-                yield break;
-            }
-            bool hasPatch = Patch.Contains("$"u8, "levels"u8);
-            for (int i = 0; i < Levels.Count; i++)
-            {
-                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.levels[{i}]"))) && (Levels[i] == null || !Levels[i].Patch.IsRemoved("$"u8)))
-                {
-                    yield return Levels[i];
-                }
-            }
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }
