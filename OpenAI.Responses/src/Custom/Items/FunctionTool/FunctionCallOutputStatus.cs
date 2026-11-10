@@ -7,7 +7,7 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [Experimental("OPENAI001")]
-[CodeGenType("FunctionToolCallOutputItemResourceStatus")]
+[CodeGenType("FunctionToolCallOutputStatus")]
 public enum FunctionCallOutputStatus
 {
     InProgress,

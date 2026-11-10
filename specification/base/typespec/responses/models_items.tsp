@@ -395,19 +395,6 @@ alias FunctionToolCallOutputItemBase = {
   output: string;
 };
 
-@@doc(FunctionToolCallOutputItemResource,
-  """
-    The output of a function tool call.
-    
-    """
-);
-@@doc(FunctionToolCallOutputItemParam,
-  """
-    The output of a function tool call.
-    
-    """
-);
-
 // Tool customization: Rename to supply base for split input/output models
 /**
  * A tool call to a computer use tool. See the
@@ -738,10 +725,7 @@ alias ComputerToolCallOutputResource = ComputerToolCallOutputItemResource;
 alias FunctionToolCallResource = FunctionToolCallItemResource;
 
 // Tool customization: Stub/remove deeply customized type
-alias FunctionToolCallOutputResource = FunctionToolCallOutputItemResource;
-
-// Tool customization: Stub/remove deeply customized type
-alias FunctionCallOutputItemParam = FunctionToolCallOutputItemParam;
+alias FunctionToolCallOutputResource = FunctionToolCallOutputItem;
 
 /** A list of Response items. */
 model ResponseItemList {
@@ -917,23 +901,6 @@ model FunctionToolCallItemResource extends ItemResource {
   status?: "in_progress" | "completed" | "incomplete";
 
   ...FunctionToolCallItemBase;
-}
-
-model FunctionToolCallOutputItemParam extends ItemParam {
-  type: ItemType.function_call_output;
-  ...FunctionToolCallOutputItemBase;
-}
-
-model FunctionToolCallOutputItemResource extends ItemResource {
-  type: ItemType.function_call_output;
-
-  @doc("""
-    The status of the item. One of `in_progress`, `completed`, or
-    `incomplete`. Populated when items are returned via API.
-    """)
-  status?: "in_progress" | "completed" | "incomplete";
-
-  ...FunctionToolCallOutputItemBase;
 }
 
 model ReasoningItemParam extends ItemParam {
@@ -1386,4 +1353,18 @@ union CustomToolCallOutputStatus {
   completed: "completed",
   in_progress: "in_progress",
   incomplete: "incomplete",
+}
+
+model FunctionToolCallOutputItem extends ItemResource {
+  type: ItemType.function_call_output;
+  status?: FunctionToolCallOutputStatus;
+  call_id: string;
+  output: string | ItemContent[];
+}
+
+union FunctionToolCallOutputStatus {
+    string,
+    completed: "completed",
+    in_progress: "in_progress",
+    incomplete: "incomplete",
 }
