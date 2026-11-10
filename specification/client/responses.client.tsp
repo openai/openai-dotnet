@@ -52,8 +52,7 @@ namespace OpenAI.Responses;
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
 
-@@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
-@@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
+@@clientName(FunctionToolCallOutputItem.output, "FunctionOutput");
 
 @@visibility(ReasoningItemResource.status, Lifecycle.Read);
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
