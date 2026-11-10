@@ -1,14 +1,19 @@
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Input;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
+using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
 using NUnit.Framework;
 using OpenAILibraryPlugin.Tests.Common;
 using OpenAILibraryPlugin.Tests.TestHelpers;
 using OpenAILibraryPlugin.Visitors;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace OpenAILibraryPlugin.Tests.Visitors;
@@ -67,16 +72,19 @@ public class ExtensibleModelVisitorIntegrationTests
     }
 
     // Every supported override wins over extensibility for both the property and its initialization constructor.
-    [TestCase(CodeGenVisibility.Internal)]
-    [TestCase(CodeGenVisibility.Public)]
-    [TestCase(CodeGenVisibility.ProtectedInternal)]
-    public void ExplicitVisibilityOverridesTakePrecedence(CodeGenVisibility visibility)
+    [TestCase(CodeGenVisibility.Internal, false)]
+    [TestCase(CodeGenVisibility.Public, false)]
+    [TestCase(CodeGenVisibility.ProtectedInternal, false)]
+    [TestCase(CodeGenVisibility.Internal, true)]
+    [TestCase(CodeGenVisibility.Public, true)]
+    [TestCase(CodeGenVisibility.ProtectedInternal, true)]
+    public void ExplicitVisibilityOverridesTakePrecedence(CodeGenVisibility visibility, bool nested)
     {
-        var model = CreateModel();
+        var model = nested ? CreateNestedHierarchy().Message : CreateModel();
         var discriminatorProperty = model.Properties.Single(property => property.IsDiscriminator);
         model.Update(attributes:
         [
-            VisibilityAttribute("TestModel", visibility, new TypeOfExpression(discriminatorProperty.Type)),
+            VisibilityAttribute(model.Name, visibility, new TypeOfExpression(discriminatorProperty.Type)),
             VisibilityAttribute(discriminatorProperty.Name, visibility),
         ]);
 
@@ -133,6 +141,184 @@ public class ExtensibleModelVisitorIntegrationTests
 
         var source = new TypeProviderWriter(model).Write().Content;
         Assert.That(source, Does.Contain("protected internal Intermediate(global::Sample.Models.InheritedKind @type) : this(@type, null, null)"));
+    }
+
+    [TestCase(false, false)]
+    [TestCase(true, false)]
+    [TestCase(false, true)]
+    [TestCase(true, true)]
+    public void ExposesNestedDiscriminatorWhilePreservingFixedOuterKind(bool fixupConstructors, bool suppressProperty)
+    {
+        var (message, leaf, _) = CreateNestedHierarchy();
+        var root = message.BaseModelProvider!;
+        var role = message.Properties.Single(property => property.IsDiscriminator);
+        var fullConstructor = message.FullConstructor;
+        var originalFullParameters = fullConstructor.Signature.Parameters.Select(parameter => (parameter.Name, parameter.Type)).ToArray();
+        var originalFullModifiers = fullConstructor.Signature.Modifiers;
+        var originalFullBody = fullConstructor.BodyStatements;
+        var originalFullInitializer = fullConstructor.Signature.Initializer;
+        var originalLeafSource = new TypeProviderWriter(leaf).Write().Content;
+        _ = message.Constructors;
+        if (suppressProperty)
+        {
+            message.Update(properties: []);
+        }
+        if (fixupConstructors)
+        {
+            new TestConstructorFixupVisitor().Apply(message);
+        }
+
+        var visitor = new TestExtensibleModelVisitor();
+        visitor.Apply(root);
+        visitor.Apply(message);
+        visitor.Apply(leaf);
+
+        var source = new TypeProviderWriter(message).Write().Content;
+        Assert.That(message.DiscriminatorValue, Is.EqualTo("message"));
+        Assert.That(role.Modifiers, Is.EqualTo(MethodSignatureModifiers.Public));
+        Assert.That(((AutoPropertyBody)role.Body).HasSetter, Is.False);
+        Assert.That(role.Type.IsPublic, Is.True);
+        if (!suppressProperty)
+        {
+            Assert.That(source, Does.Contain("public global::OpenAI.Responses.MessageRole Role { get; }"), source);
+        }
+        Assert.That(source, Does.Contain("protected internal Message(global::OpenAI.Responses.MessageRole role)"), source);
+        Assert.That(source, Does.Contain(": base(global::OpenAI.Responses.ItemKind.Message)"), source);
+        Assert.That(source, Does.Contain("Role = role;"), source);
+        Assert.That(fullConstructor.Signature.Parameters.Select(parameter => (parameter.Name, parameter.Type)), Is.EqualTo(originalFullParameters));
+        Assert.That(fullConstructor.Signature.Modifiers, Is.EqualTo(originalFullModifiers));
+        Assert.That(fullConstructor.BodyStatements, Is.SameAs(originalFullBody));
+        Assert.That(fullConstructor.Signature.Initializer, Is.SameAs(originalFullInitializer));
+        Assert.That(new TypeProviderWriter(leaf).Write().Content, Is.EqualTo(originalLeafSource));
+        visitor.Apply(message);
+        Assert.That(new TypeProviderWriter(message).Write().Content, Is.EqualTo(source));
+    }
+
+    [Test]
+    public void OpenIntermediateInheritsNestedDiscriminator()
+    {
+        var (message, _, messageInput) = CreateNestedHierarchy();
+        var input = InputFactory.Model("OpenMessage", "OpenAI.Responses", properties: [], baseModel: messageInput);
+        var intermediate = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(input)!;
+        var visitor = new TestExtensibleModelVisitor();
+        visitor.Apply(message.BaseModelProvider!);
+        visitor.Apply(message);
+        visitor.Apply(intermediate);
+
+        var source = new TypeProviderWriter(intermediate).Write().Content;
+        Assert.That(source, Does.Contain("protected internal OpenMessage(global::OpenAI.Responses.MessageRole role)"), source);
+        Assert.That(source, Does.Contain(": base(role)"), source);
+    }
+
+    [Test]
+    public void ClosedNestedDiscriminatorRemainsUnchanged()
+    {
+        var (message, _, _) = CreateNestedHierarchy(isExtensible: false);
+        var source = new TypeProviderWriter(message).Write().Content;
+        new TestExtensibleModelVisitor().Apply(message);
+        Assert.That(new TypeProviderWriter(message).Write().Content, Is.EqualTo(source));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void AddsMissingNestedRoleWithoutReplacingOuterKind(bool delegatesToFullConstructor)
+    {
+        var (message, _, _) = CreateNestedHierarchy();
+        var constructor = message.Constructors.Single(candidate => candidate.Signature.Parameters.Count == 1);
+        constructor.Signature.Update(parameters: []);
+        constructor.Update(bodyStatements: new MethodBodyStatements([]));
+        if (delegatesToFullConstructor)
+        {
+            constructor.Signature.Update(initializer: new ConstructorInitializer(false,
+                [message.DiscriminatorValueExpression!, Snippet.Null, Snippet.Default]));
+        }
+
+        var visitor = new TestExtensibleModelVisitor();
+        visitor.Apply(message.BaseModelProvider!);
+        visitor.Apply(message);
+
+        var source = new TypeProviderWriter(message).Write().Content;
+        Assert.That(source, Does.Match(@"protected internal Message\(global::OpenAI\.Responses\.MessageRole role\d*\)"), source);
+        if (delegatesToFullConstructor)
+        {
+            Assert.That(source, Does.Match(@": this\(global::OpenAI\.Responses\.ItemKind\.Message, null, role\d*\)"), source);
+        }
+        else
+        {
+            Assert.That(source, Does.Contain(": base(global::OpenAI.Responses.ItemKind.Message)"), source);
+            Assert.That(source, Does.Match(@"Role = role\d*;"), source);
+        }
+        visitor.Apply(message);
+        Assert.That(new TypeProviderWriter(message).Write().Content, Is.EqualTo(source));
+    }
+
+    [Test]
+    public void ConsumerCanDeriveFromNestedBaseInAnotherAssembly()
+    {
+        MockHelpers.LoadMockGenerator(configurationJson: "{ \"package-name\": \"TestLibrary\" }", inputNamespace: "OpenAI");
+        var (message, leaf, messageInput) = CreateNestedHierarchy();
+        var intermediate = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(
+            InputFactory.Model("OpenMessage", "OpenAI.Responses", properties: [], baseModel: messageInput))!;
+        var root = message.BaseModelProvider!;
+        var visitor = new TestExtensibleModelVisitor();
+        visitor.Apply(root);
+        visitor.Apply(message);
+        visitor.Apply(leaf);
+        visitor.Apply(intermediate);
+        var kind = ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[root.Properties.Single(property => property.IsDiscriminator).Type]!;
+        var role = ScmCodeModelGenerator.Instance.TypeFactory.CSharpTypeMap[message.Properties.Single(property => property.IsDiscriminator).Type]!;
+        var references = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator)
+            .Append(typeof(BinaryData).Assembly.Location)
+            .Distinct()
+            .Select(path => MetadataReference.CreateFromFile(path))
+            .ToArray();
+        var compilation = CSharpCompilation.Create("NestedModels",
+            new[] { root, message, intermediate, leaf, kind, role }
+                .Select(type => CSharpSyntaxTree.ParseText(new TypeProviderWriter(type).Write().Content))
+                .Append(CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "Argument.cs")))),
+            references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        using var assembly = new MemoryStream();
+        var result = compilation.Emit(assembly);
+        Assert.That(result.Success, Is.True, string.Join(Environment.NewLine, result.Diagnostics));
+
+        var consumer = CSharpCompilation.Create("NestedModelsConsumer",
+            [CSharpSyntaxTree.ParseText("""
+                public sealed class CustomMessage : OpenAI.Responses.Message
+                {
+                    public CustomMessage() : base(new OpenAI.Responses.MessageRole("custom")) { }
+                    public OpenAI.Responses.MessageRole ReadRole() => Role;
+                    public OpenAI.Responses.ItemKind ReadKind() => Kind;
+                }
+                """)],
+            [.. references, MetadataReference.CreateFromImage(assembly.ToArray())],
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        using var consumerAssembly = new MemoryStream();
+        var consumerResult = consumer.Emit(consumerAssembly);
+        Assert.That(consumerResult.Success, Is.True, string.Join(Environment.NewLine, consumerResult.Diagnostics));
+    }
+
+    private static (ModelProvider Message, ModelProvider Leaf, InputModelType MessageInput) CreateNestedHierarchy(bool isExtensible = true)
+    {
+        var itemSubtypes = new Dictionary<string, InputModelType>();
+        var messageSubtypes = new Dictionary<string, InputModelType>();
+        var rootInput = InputFactory.Model("Item", "OpenAI.Responses",
+            properties: [InputFactory.Property("kind",
+                InputFactory.StringEnum("ItemKind", [("Message", "message")], isExtensible: true,
+                    clientNamespace: "OpenAI.Responses"), isRequired: true, isDiscriminator: true)],
+            discriminatedModels: itemSubtypes);
+        var messageInput = InputFactory.Model("Message", "OpenAI.Responses",
+            properties: [InputFactory.Property("role",
+                InputFactory.StringEnum("MessageRole", [("User", "user")], access: "internal", isExtensible: isExtensible,
+                    clientNamespace: "OpenAI.Responses"), isRequired: true, isDiscriminator: true)],
+            baseModel: rootInput, discriminatedKind: "message", discriminatedModels: messageSubtypes);
+        var leafInput = InputFactory.Model("UserMessage", "OpenAI.Responses",
+            properties: [InputFactory.Property("content", InputPrimitiveType.String, isRequired: true)],
+            baseModel: messageInput, discriminatedKind: "user");
+        itemSubtypes.Add("message", messageInput);
+        messageSubtypes.Add("user", leafInput);
+        var leaf = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(leafInput)!;
+        var message = leaf.BaseModelProvider!;
+        return (message, leaf, messageInput);
     }
 
     // A minimal discriminated base suffices for interaction tests; eligibility variations stay in the unit fixture.

@@ -33,5 +33,8 @@
     <None Include="**\TestData\**\*.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\OpenAI\src\Generated\Internal\Argument.cs"
+          Link="TestData\Argument.cs"
+          CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
