@@ -2,7 +2,7 @@ name: Update TypeSpec Generator Version
 
 on:
   schedule:
-    # Run at 9 AM UTC on weekdays
+    # Run at 9 AM UTC on weekdays; the update job only runs when a new version is published
     - cron: '0 9 * * 1-5'
   workflow_dispatch:
     # Allow manual triggering
@@ -11,64 +11,85 @@ on:
     types: [typespec-release]
 
 jobs:
-  update-generator:
+  check-updates:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-    
+      contents: read
+    outputs:
+      needs-update: ${{ steps.check-updates.outputs.needs-update }}
+      latest-version: ${{ steps.check-updates.outputs.latest-version }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: '22.x'
-          
-      - name: Setup .NET
-        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
-        with:
-          # Automatically read .NET SDK version from global.json to stay in sync
-          global-json-file: global.json
-          
+          sparse-checkout: codegen/package.json
+          sparse-checkout-cone-mode: false
+
       - name: Check for generator updates
         id: check-updates
         run: |
           # Get current version from the OpenAI package.json file
           CURRENT_VERSION=$(node -p "require('./codegen/package.json').dependencies['@typespec/http-client-csharp']" 2>/dev/null || echo "unknown")
-          
+
           echo "Current OpenAI version: $CURRENT_VERSION"
-          
+
           # Get latest version from npm registry
           LATEST_VERSION=$(npm view @typespec/http-client-csharp version 2>/dev/null || echo "unknown")
           echo "Latest version from npm: $LATEST_VERSION"
-          
+
           # Validate we got valid versions
           if [ "$CURRENT_VERSION" = "unknown" ] || [ "$LATEST_VERSION" = "unknown" ]; then
             echo "Error: Failed to get version information"
             echo "Current: $CURRENT_VERSION, Latest: $LATEST_VERSION"
             exit 1
           fi
-          
+
+          # Branch name must match the default in scripts/Submit-GeneratorUpdatePr.ps1
+          PR_BRANCH="typespec/update-http-client-csharp-$LATEST_VERSION"
+
           # Compare versions (simple string comparison for alpha versions)
-          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-            echo "Update needed: $CURRENT_VERSION -> $LATEST_VERSION"
-            echo "needs-update=true" >> $GITHUB_OUTPUT
-            echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-            echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
-          else
+          if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
             echo "No update needed - already at latest version: $CURRENT_VERSION"
             echo "needs-update=false" >> $GITHUB_OUTPUT
+          elif [ -n "$(git ls-remote --heads origin "$PR_BRANCH")" ]; then
+            echo "No update needed - branch $PR_BRANCH already exists for $LATEST_VERSION"
+            echo "needs-update=false" >> $GITHUB_OUTPUT
+          else
+            echo "Update needed: $CURRENT_VERSION -> $LATEST_VERSION"
+            echo "needs-update=true" >> $GITHUB_OUTPUT
+            echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
           fi
-          
+
+  update-generator:
+    needs: check-updates
+    if: needs.check-updates.outputs.needs-update == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.x'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          # Automatically read .NET SDK version from global.json to stay in sync
+          global-json-file: global.json
+
       - name: Update generator version and create PR
-        if: steps.check-updates.outputs.needs-update == 'true'
         run: |
-          LATEST_VERSION="${{ steps.check-updates.outputs.latest-version }}"
-          
+          LATEST_VERSION="${{ needs.check-updates.outputs.latest-version }}"
+
           # Use the PowerShell script to handle the entire update process (following TypeSpec pattern)
           pwsh ./scripts/Submit-GeneratorUpdatePr.ps1 \
             -PackageVersion "$LATEST_VERSION" \

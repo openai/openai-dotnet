@@ -1,7 +1,7 @@
 version: 2
 
 # Cooldowns apply only to version updates; security updates are not delayed.
-# Run after the existing Monday TypeSpec generator update workflow.
+# Run weekly
 updates:
   - package-ecosystem: nuget
     directories:
