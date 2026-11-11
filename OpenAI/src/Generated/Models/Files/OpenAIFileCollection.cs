@@ -5,12 +5,25 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files
 {
     public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        [Experimental("OPENAI001")]
+        internal IList<OpenAIFile> Data { get; }
+
+        [Experimental("OPENAI001")]
+        internal string FirstId { get; }
+
+        [Experimental("OPENAI001")]
+        internal string LastId { get; }
+
+        [Experimental("OPENAI001")]
+        internal bool HasMore { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

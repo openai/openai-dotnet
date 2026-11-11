@@ -155,6 +155,12 @@ public class PaginationVisitor : ScmLibraryVisitor
             return method;
         }
 
+        // Ensure continuation tokens agree with the service's HasMore signal.
+        if (TryHandleGetContinuationTokenMethod(method))
+        {
+            return method;
+        }
+
         // Try to handle GetRawPagesAsync methods for hasMore checks
         if (TryHandleGetRawPagesAsyncMethod(method))
         {
@@ -308,6 +314,105 @@ public class PaginationVisitor : ScmLibraryVisitor
 
         return false;
     }
+
+    /// <summary>
+    /// Adds the page's HasMore value to GetContinuationToken's non-empty token guard.
+    /// </summary>
+    private static bool TryHandleGetContinuationTokenMethod(MethodProvider method)
+    {
+        if (method.Signature.Name != "GetContinuationToken")
+        {
+            return false;
+        }
+
+        ValueExpression? pageCollection = null;
+        var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
+        VisitExplodedMethodBodyStatements(
+            statements!,
+            statement =>
+            {
+                if (statement is ExpressionStatement expressionStatement &&
+                    expressionStatement.Expression is AssignmentExpression assignmentExpression &&
+                    GetAssignedVariable(assignmentExpression.Variable) is VariableExpression variableExpression &&
+                    variableExpression.Declaration.RequestedName == "nextPage" &&
+                    assignmentExpression.Value is MemberExpression memberExpression &&
+                    memberExpression.MemberName == "LastId")
+                {
+                    pageCollection = memberExpression.Inner;
+                }
+
+                return statement;
+            });
+
+        if (pageCollection is null)
+        {
+            return false;
+        }
+
+        bool updated = false;
+        VisitExplodedMethodBodyStatements(
+            statements!,
+            statement =>
+            {
+                if (updated || statement is not IfStatement ifStatement ||
+                    !ContainsNextPageNullOrEmptyCheck(ifStatement.Condition))
+                {
+                    return statement;
+                }
+
+                ValueExpression condition = BoolSnippets.And(
+                    ifStatement.Condition.As<bool>(),
+                    new MemberExpression(pageCollection, "HasMore").As<bool>());
+                var updatedIfStatement = new IfStatement(
+                    condition,
+                    ifStatement.Inline,
+                    ifStatement.AddBraces)
+                {
+                    ifStatement.Body,
+                };
+
+                updated = true;
+                return updatedIfStatement;
+            });
+
+        if (updated)
+        {
+            method.Update(bodyStatements: statements);
+        }
+
+        return updated;
+    }
+
+    private static VariableExpression? GetAssignedVariable(ValueExpression expression) => expression switch
+    {
+        VariableExpression variableExpression => variableExpression,
+        DeclarationExpression declarationExpression => declarationExpression.Variable,
+        _ => null,
+    };
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private static bool ContainsNextPageNullOrEmptyCheck(ValueExpression expression)
+    {
+        ValueExpression candidate = expression is ScopedApi<bool> scoped
+            ? scoped.Original
+            : expression;
+
+        return candidate switch
+        {
+            InvokeMethodExpression invokeExpression =>
+                invokeExpression.MethodName == "IsNullOrEmpty" &&
+                invokeExpression.Arguments.Count == 1 &&
+                invokeExpression.Arguments[0] is VariableExpression variableExpression &&
+                variableExpression.Declaration.RequestedName == "nextPage",
+            UnaryOperatorExpression unaryExpression =>
+                ContainsNextPageNullOrEmptyCheck(unaryExpression.Operand),
+            BinaryOperatorExpression binaryExpression =>
+                ContainsNextPageNullOrEmptyCheck(binaryExpression.Left) ||
+                ContainsNextPageNullOrEmptyCheck(binaryExpression.Right),
+            _ => false,
+        };
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     /// <summary>
     /// Handles GetRawPagesAsync methods to add hasMore == false checks for pagination.

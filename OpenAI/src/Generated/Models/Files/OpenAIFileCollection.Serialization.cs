@@ -70,6 +70,16 @@ namespace OpenAI.Files
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
+            {
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (OpenAIFile item in Data)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
                 writer.WritePropertyName("first_id"u8);
