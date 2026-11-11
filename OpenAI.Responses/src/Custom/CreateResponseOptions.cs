@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -116,10 +117,13 @@ public partial class CreateResponseOptions
     [CodeGenMember("Truncation")]
     public ResponseTruncationMode? TruncationMode { get; set; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM:
+    // - Renamed.
+    // - Made obsolete.
     /// <summary>
     /// Gets or sets the end user identifier. This corresponds to the "user" property in the JSON representation.
     /// </summary>
+    [Obsolete("This property is obsolete. Use the SafetyIdentifier and PromptCacheKey properties instead.")]
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 

@@ -328,6 +328,7 @@ namespace OpenAI.Responses {
         public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems);
         public bool? BackgroundModeEnabled { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
+        [Obsolete("This property is obsolete. Use the SafetyIdentifier and PromptCacheKey properties instead.")]
         public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
         public IList<ResponseItem> InputItems { get; }
