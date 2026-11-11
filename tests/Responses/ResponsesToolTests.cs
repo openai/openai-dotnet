@@ -70,7 +70,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
         }, Throws.Nothing);
 
-        ResponseItem functionCallOutput = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 degrees Celsius and windy");
+        ResponseItem functionCallOutput = ResponseItem.CreateFunctionCallOutputItem(
+            functionCall.CallId,
+            [ResponseContentPart.CreateInputTextPart("22 degrees Celsius and windy")]);
 
         if (isStateless)
         {
