@@ -88,6 +88,8 @@ namespace OpenAI.Chat
             return DeserializeChatMessage(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static ChatMessage DeserializeChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -114,5 +116,7 @@ namespace OpenAI.Chat
             }
             return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, data, options);
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

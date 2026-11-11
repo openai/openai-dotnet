@@ -28,6 +28,8 @@ namespace OpenAI.Chat
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -68,6 +70,8 @@ namespace OpenAI.Chat
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

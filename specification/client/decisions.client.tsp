@@ -1,15 +1,13 @@
 import "../base/typespec/decisions/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 namespace OpenAI.Decisions;
 
 @@clientName(OpenAI.Decisions, "DecisionsClient", "csharp");
 @@clientNamespace(OpenAI.Decisions, "OpenAI.Decisions", "csharp");
-@@dynamicModel(OpenAI.Decisions);
+@@dynamicModel(OpenAI.Decisions, "csharp");
 
 // --------- Operation renames ------------
 @@clientName(createDecision::parameters.body, "creationOptions");
