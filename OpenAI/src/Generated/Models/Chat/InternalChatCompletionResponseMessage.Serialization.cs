@@ -144,11 +144,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (Optional.IsDefined(Audio, _audioIsDefined) && !Patch.Contains("$.audio"u8))
             {
                 if (Audio != null)
@@ -179,6 +183,8 @@ namespace OpenAI.Chat
             return DeserializeInternalChatCompletionResponseMessage(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static InternalChatCompletionResponseMessage DeserializeInternalChatCompletionResponseMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -281,6 +287,8 @@ namespace OpenAI.Chat
                 _audioIsDefined = audioIsDefined
             };
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -288,6 +296,8 @@ namespace OpenAI.Chat
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -296,6 +306,8 @@ namespace OpenAI.Chat
                 }
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (Audio == null)
@@ -357,6 +369,8 @@ namespace OpenAI.Chat
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -366,6 +380,8 @@ namespace OpenAI.Chat
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (Audio == null)

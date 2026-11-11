@@ -22,7 +22,11 @@ namespace OpenAI.Responses
         internal WebSearchSearchAction(WebSearchActionKind kind, in JsonPatch patch, string query, IList<string> queries, IList<WebSearchActionSource> sources) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             Query = query;
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             Queries = queries ?? new ChangeTrackingList<string>();
             Sources = sources ?? new ChangeTrackingList<WebSearchActionSource>();
             Patch.SetPropagators(PropagateSet, PropagateGet);

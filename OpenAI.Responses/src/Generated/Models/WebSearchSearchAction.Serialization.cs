@@ -70,11 +70,15 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(Query) && !Patch.Contains("$.query"u8))
             {
                 writer.WritePropertyName("query"u8);
                 writer.WriteStringValue(Query);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (Patch.Contains("$.queries"u8))
             {
                 if (!Patch.IsRemoved("$.queries"u8))

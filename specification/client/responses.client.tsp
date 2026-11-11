@@ -1,15 +1,13 @@
 import "../base/typespec/responses/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 namespace OpenAI.Responses;
 
 @@clientName(OpenAI.Responses, "ResponsesClient", "csharp");
 @@clientNamespace(OpenAI.Responses, "OpenAI.Responses", "csharp");
-@@dynamicModel(OpenAI.Responses);
+@@dynamicModel(OpenAI.Responses, "csharp");
 
 @@alternateType(TokenCountsResource.input_tokens, int32);
 @@alternateType(ResponseCustomToolCallInputDeltaEvent.output_index, int32);

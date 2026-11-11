@@ -1,10 +1,8 @@
 import "../base/typespec/videos/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(VideoResource.progress, int32);
 @@alternateType(VideoResource.created_at, int32);

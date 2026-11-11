@@ -34,6 +34,8 @@ namespace OpenAI.Chat
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -49,6 +51,8 @@ namespace OpenAI.Chat
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

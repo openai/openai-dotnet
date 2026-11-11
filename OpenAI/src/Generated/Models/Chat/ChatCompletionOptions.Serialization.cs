@@ -384,11 +384,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(AllowParallelToolCalls.Value);
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(FunctionChoice) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionChoice, options);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Patch.Contains("$.functions"u8))
             {
                 if (!Patch.IsRemoved("$.functions"u8))
@@ -413,6 +419,8 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.functions"u8);
                 writer.WriteEndArray();
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -432,6 +440,8 @@ namespace OpenAI.Chat
             return DeserializeChatCompletionOptions(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static ChatCompletionOptions DeserializeChatCompletionOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -842,6 +852,8 @@ namespace OpenAI.Chat
                 _seedIsDefined = seedIsDefined
             };
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -901,6 +913,8 @@ namespace OpenAI.Chat
                 }
                 return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionChoice == null)
@@ -909,6 +923,8 @@ namespace OpenAI.Chat
                 }
                 return FunctionChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("messages"u8))
             {
                 int propertyLength = "messages"u8.Length;
@@ -953,6 +969,8 @@ namespace OpenAI.Chat
                 }
                 return Tools[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("functions"u8))
             {
                 int propertyLength = "functions"u8.Length;
@@ -975,6 +993,8 @@ namespace OpenAI.Chat
                 }
                 return Functions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -1042,6 +1062,8 @@ namespace OpenAI.Chat
                 ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionChoice == null)
@@ -1051,6 +1073,8 @@ namespace OpenAI.Chat
                 FunctionChoice.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("messages"u8))
             {
                 int propertyLength = "messages"u8.Length;
@@ -1089,6 +1113,8 @@ namespace OpenAI.Chat
                 Tools[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("functions"u8))
             {
                 int propertyLength = "functions"u8.Length;
@@ -1108,6 +1134,8 @@ namespace OpenAI.Chat
                 Functions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -1171,6 +1199,8 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         private bool TryResolveFunctionsArray(out JsonPatch.EncodedValue value)
         {
             value = default;
@@ -1180,8 +1210,12 @@ namespace OpenAI.Chat
             return tempPatch.TryGetEncodedValue("$"u8, out value);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         private IEnumerable<ChatFunction> ActiveFunctions()
         {
             if (!Optional.IsCollectionDefined(Functions))
@@ -1198,5 +1232,7 @@ namespace OpenAI.Chat
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }
