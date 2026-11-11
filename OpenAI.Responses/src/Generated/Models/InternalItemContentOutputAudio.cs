@@ -15,12 +15,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalItemContentOutputAudio(ResponseContentPartKind kind, in JsonPatch patch, string data, string transcript) : base(kind, patch)
         {
             Data = data;
             Transcript = transcript;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Data { get; set; }
 

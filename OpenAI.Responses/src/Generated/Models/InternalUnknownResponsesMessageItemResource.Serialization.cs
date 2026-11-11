@@ -99,7 +99,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalUnknownResponsesMessageItemResource DeserializeInternalUnknownResponsesMessageItemResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -127,6 +126,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
@@ -139,6 +142,5 @@ namespace OpenAI.Responses
             }
             return new InternalUnknownResponsesMessageItemResource(kind, id, patch, status, role);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

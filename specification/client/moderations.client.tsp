@@ -1,10 +1,8 @@
 import "../base/typespec/moderations/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(CreateModerationResponseResultsCategoryScores.hate, float32);
 @@alternateType(CreateModerationResponseResultsCategoryScores.`hate/threatening`, float32);
@@ -24,4 +22,4 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientLocation(createModeration, "Moderations");
 
-@@dynamicModel(CreateModerationRequestInputType);
+@@dynamicModel(CreateModerationRequestInputType, "csharp");

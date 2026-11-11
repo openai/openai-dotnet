@@ -99,7 +99,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalUnknownComputerAction DeserializeInternalUnknownComputerAction(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -121,6 +120,5 @@ namespace OpenAI.Responses
             }
             return new InternalUnknownComputerAction(kind, patch);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

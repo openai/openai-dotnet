@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ResponseContentPart(ResponseContentPartKind kind)
+        private protected ResponseContentPart(ResponseContentPartKind kind)
         {
             Kind = kind;
         }

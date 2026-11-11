@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesSystemMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,6 +32,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalResponsesSystemMessage)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -105,6 +107,7 @@ namespace OpenAI.Responses
 
         InternalResponsesSystemMessage IJsonModel<InternalResponsesSystemMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesSystemMessage)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesSystemMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -115,6 +118,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponsesSystemMessage(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalResponsesSystemMessage DeserializeInternalResponsesSystemMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -144,6 +148,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
@@ -170,7 +178,7 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 role,
-                internalContent);
+                internalContent ?? new ChangeTrackingList<ResponseContentPart>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -245,6 +253,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseContentPart> ActiveInternalContent()
         {
             if (!Optional.IsCollectionDefined(InternalContent))
@@ -261,5 +270,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

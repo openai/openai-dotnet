@@ -1,10 +1,8 @@
 import "../base/typespec/vector-stores/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(StaticChunkingStrategy.max_chunk_size_tokens, int32);
 @@alternateType(StaticChunkingStrategy.chunk_overlap_tokens, int32);
@@ -77,5 +75,5 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
 
-@@dynamicModel(VectorStoreStatus);
-@@dynamicModel(VectorStoreFileStatus);
+@@dynamicModel(VectorStoreStatus, "csharp");
+@@dynamicModel(VectorStoreFileStatus, "csharp");

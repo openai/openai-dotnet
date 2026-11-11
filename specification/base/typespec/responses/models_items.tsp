@@ -775,7 +775,7 @@ model FileSearchToolCallItemResource extends ItemResource {
     The status of the file search tool call. One of `in_progress`,
     `searching`, `completed`, `incomplete`, or `failed`.
     """)
-  status: FileSearchCallStatus;
+  status?: FileSearchCallStatus;
 
   ...FileSearchToolCallItemBase;
 }
@@ -792,7 +792,7 @@ model ComputerToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: ComputerCallStatus;
+  status?: ComputerCallStatus;
 
   ...ComputerToolCallItemBase;
 }
@@ -809,7 +809,7 @@ model ComputerToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: ComputerCallOutputStatus;
+  status?: ComputerCallOutputStatus;
 
   ...ComputerToolCallOutputItemBase;
 }
@@ -822,7 +822,7 @@ model WebSearchToolCallItemResource extends ItemResource {
   type: ItemType.web_search_call;
 
   /** The status of the web search tool call. */
-  status: WebSearchCallStatus;
+  status?: WebSearchCallStatus;
 
   // CUSTOM: Based on service behavior, "action" is optional.
   /**An object describing the specific action taken in this web search call.
@@ -914,7 +914,7 @@ model FunctionToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: FunctionCallStatus;
+  status?: FunctionCallStatus;
 
   ...FunctionToolCallItemBase;
 }
@@ -931,7 +931,7 @@ model FunctionToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: FunctionCallOutputStatus;
+  status?: FunctionCallOutputStatus;
 
   ...FunctionToolCallOutputItemBase;
 }
@@ -948,7 +948,7 @@ model ReasoningItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: ReasoningStatus;
+  status?: ReasoningStatus;
 
   ...ReasoningItemBase;
 }
@@ -971,7 +971,7 @@ model ImageGenToolCallItemParam extends ItemParam {
 
 model ImageGenToolCallItemResource extends ItemResource {
   type: ItemType.image_generation_call;
-  status: ImageGenerationCallStatus;
+  status?: ImageGenerationCallStatus;
   action?: ImageGenerationToolAction;
   background?: ImageGenerationBackground;
   output_format?: ImageGenerationOutputFormat | null;
@@ -988,7 +988,7 @@ model CodeInterpreterToolCallItemParam extends ItemParam {
 
 model CodeInterpreterToolCallItemResource extends ItemResource {
   type: ItemType.code_interpreter_call;
-  status: CodeInterpreterCallStatus;
+  status?: CodeInterpreterCallStatus;
   ...CodeInterpreterToolCallItemBase;
 }
 
@@ -1226,7 +1226,7 @@ model ResponsesMessageItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: MessageStatus;
+  status?: MessageStatus;
 
   /** The role associated with the message. */
   role: ResponsesMessageRole;

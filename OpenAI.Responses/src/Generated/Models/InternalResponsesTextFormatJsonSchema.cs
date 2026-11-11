@@ -9,6 +9,9 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat
     {
+        private bool? _strict;
+        private bool _strictIsDefined;
+
         public InternalResponsesTextFormatJsonSchema(string name, BinaryData schema) : base(ResponseTextFormatKind.JsonSchema)
         {
             Name = name;
@@ -16,19 +19,32 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalResponsesTextFormatJsonSchema(ResponseTextFormatKind kind, in JsonPatch patch, string description, string name, BinaryData schema, bool? strict) : base(kind, patch)
         {
             Description = description;
             Name = name;
             Schema = schema;
-            Strict = strict;
+            _strict = strict;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Description { get; set; }
 
         public string Name { get; set; }
 
-        public bool? Strict { get; set; }
+        public bool? Strict
+        {
+            get
+            {
+                return _strict;
+            }
+            set
+            {
+                _strict = value;
+                _strictIsDefined = true;
+            }
+        }
     }
 }

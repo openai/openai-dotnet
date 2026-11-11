@@ -87,7 +87,6 @@ namespace OpenAI.Moderations
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalUnknownModerationInputPart DeserializeInternalUnknownModerationInputPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -108,6 +107,5 @@ namespace OpenAI.Moderations
             }
             return new InternalUnknownModerationInputPart(kind, additionalBinaryDataProperties);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

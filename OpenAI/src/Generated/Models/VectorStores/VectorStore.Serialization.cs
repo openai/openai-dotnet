@@ -101,13 +101,11 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("file_counts"u8);
                 writer.WriteObjectValue(FileCounts, options);
             }
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.ToString());
             }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
                 writer.WritePropertyName("expires_after"u8);
@@ -242,7 +240,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToVectorStoreStatus();
+                    status = new VectorStoreStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("expires_after"u8))
