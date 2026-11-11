@@ -84,6 +84,8 @@ namespace OpenAI.Responses;
 @@clientName(CustomToolCallItem.name, "ToolName");
 @@alternateType(CustomToolCallOutputItem.output, ItemContent[]);
 
+@@alternateType(FunctionToolCallOutputItem.output, ItemContent[]);
+
 @@clientName(ResponseCustomToolCallInputDeltaEvent.delta, "InputDelta");
 
 @@clientName(FunctionTool.name, "FunctionName");

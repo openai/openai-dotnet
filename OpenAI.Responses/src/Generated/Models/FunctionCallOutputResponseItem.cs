@@ -3,7 +3,9 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -11,21 +13,26 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FunctionCallOutputResponseItem : ResponseItem
     {
-        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(ResponseItemKind.FunctionCallOutput)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public FunctionCallOutputResponseItem(string callId, IEnumerable<ResponseContentPart> functionOutput) : base(ResponseItemKind.FunctionCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(functionOutput, nameof(functionOutput));
 
             CallId = callId;
-            FunctionOutput = functionOutput;
+            FunctionOutput = functionOutput.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FunctionCallOutputResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, patch)
+        internal FunctionCallOutputResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FunctionCallOutputStatus? status, string callId, IList<ResponseContentPart> functionOutput) : base(kind, id, patch)
         {
+            // Plugin customization: ensure initialization of collections
             Status = status;
             CallId = callId;
-            FunctionOutput = functionOutput;
+            FunctionOutput = functionOutput ?? new ChangeTrackingList<ResponseContentPart>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -33,6 +40,6 @@ namespace OpenAI.Responses
 
         public string CallId { get; set; }
 
-        public string FunctionOutput { get; set; }
+        public IList<ResponseContentPart> FunctionOutput { get; }
     }
 }

@@ -548,10 +548,11 @@ namespace OpenAI.Responses {
     }
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
         public FunctionCallOutputResponseItem() : base(default);
-        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(default);
+        public FunctionCallOutputResponseItem(string callId, IEnumerable<ResponseContentPart> functionOutput) : base(default);
         public string CallId { get; set; }
-        public string FunctionOutput { get; set; }
+        public IList<ResponseContentPart> FunctionOutput { get; }
         public FunctionCallOutputStatus? Status { get; set; }
+        public FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
     }
     public enum FunctionCallOutputStatus {
         InProgress = 0,
@@ -1075,7 +1076,7 @@ namespace OpenAI.Responses {
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
-        public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, IEnumerable<ResponseContentPart> functionOutput);
         public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments);
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);

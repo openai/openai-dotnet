@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "705",
+        "Content-Length": "720",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -62,15 +62,15 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total, X-OpenAI-Inference-Capacity-Reason",
           "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb6706f55680b-SEA",
+        "CF-Ray": "a59079708fe10fa7-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "2682",
+        "Content-Length": "2765",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -90,17 +90,21 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00911c4d36c46114016a9351bb055087d0a1dc358eca90dc6e",
+        "id": "resp_0dd7abcbbd0122b7016af4e193128c87d297492cc792d139ac",
         "object": "response",
-        "created_at": 1788039611,
+        "created_at": 1794433427,
         "status": "completed",
+        "access_programs": null,
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039611,
+        "completed_at": 1794433428,
         "error": null,
         "frequency_penalty": 0.0,
+        "image": {
+          "context_compression": "disabled"
+        },
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -109,11 +113,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_00911c4d36c46114016a9351bb50b887d08650aabc1f44a0e2",
+            "id": "fc_0dd7abcbbd0122b7016af4e1941ad887d2b629fc214843c997",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
+            "call_id": "call_fXWBGl2rcRt3iTi2vU2GakEC",
             "name": "get_weather_at_location"
           }
         ],
@@ -214,9 +218,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "1021",
+        "Content-Length": "1067",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -263,16 +267,21 @@
           },
           {
             "type": "function_call",
-            "id": "fc_00911c4d36c46114016a9351bb50b887d08650aabc1f44a0e2",
+            "id": "fc_0dd7abcbbd0122b7016af4e1941ad887d2b629fc214843c997",
             "status": "completed",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
+            "call_id": "call_fXWBGl2rcRt3iTi2vU2GakEC",
             "name": "get_weather_at_location",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}"
           },
           {
             "type": "function_call_output",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
-            "output": "22 degrees Celsius and windy"
+            "call_id": "call_fXWBGl2rcRt3iTi2vU2GakEC",
+            "output": [
+              {
+                "type": "input_text",
+                "text": "22 degrees Celsius and windy"
+              }
+            ]
           }
         ],
         "store": false
@@ -280,15 +289,15 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total, X-OpenAI-Inference-Capacity-Reason",
           "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb674493b680b-SEA",
+        "CF-Ray": "a590797fed750fa7-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "3338",
+        "Content-Length": "3379",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -307,17 +316,21 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00911c4d36c46114016a9351bc067887d0a93e0ce119b6154a",
+        "id": "resp_0dd7abcbbd0122b7016af4e194908087d2b7e9ce8991b4ff90",
         "object": "response",
-        "created_at": 1788039612,
+        "created_at": 1794433428,
         "status": "completed",
+        "access_programs": null,
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039613,
+        "completed_at": 1794433431,
         "error": null,
         "frequency_penalty": 0.0,
+        "image": {
+          "context_compression": "disabled"
+        },
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -326,7 +339,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_00911c4d36c46114016a9351bc6a9887d0b18105d33b1778db",
+            "id": "msg_0dd7abcbbd0122b7016af4e1954eac87d288f53a5c990e31b9",
             "type": "message",
             "status": "completed",
             "content": [
@@ -334,7 +347,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "The weather in San Francisco is currently 22°C and windy. Here are some recommendations for what to wear:\n\n1. **Light Layers**: A lightweight long-sleeve shirt or a light sweater is ideal, as it might get a bit cooler with the wind.\n2. **Windbreaker**: A windbreaker or light jacket will help protect you from the wind.\n3. **Comfortable Pants**: Opt for lightweight pants or jeans for comfort.\n4. **Closed-toe Shoes**: Comfortable shoes are recommended, especially if you'll be walking around.\n5. **Accessories**: A hat or sunglasses can help shield you from the sun, especially if you're out during peak hours.\n\nOverall, dressing in layers is key to stay comfortable throughout the day!"
+                "text": "The weather in San Francisco, CA, is currently 22°C (about 72°F) and windy. Here are some suggestions for what to wear:\n\n- **Layers**: A light sweater or long-sleeve shirt is recommended, as temperatures can fluctuate throughout the day.\n- **Windbreaker**: Given the windy conditions, a windbreaker or light jacket would be a good addition.\n- **Comfortable pants**: Consider wearing jeans or lightweight trousers.\n- **Footwear**: Sneakers or comfortable shoes are ideal for walking around the city.\n- **Accessories**: A light scarf can help with the wind, and sunglasses are a good idea if the sun is out.\n\nEnjoy your time in San Francisco!"
               }
             ],
             "role": "assistant"
@@ -418,11 +431,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 155,
+          "output_tokens": 146,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 265
+          "total_tokens": 256
         },
         "user": null,
         "metadata": {}

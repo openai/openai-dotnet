@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
@@ -83,10 +84,29 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.output"u8))
+            if (Patch.Contains("$.output"u8))
+            {
+                if (!Patch.IsRemoved("$.output"u8))
+                {
+                    writer.WritePropertyName("output"u8);
+                    Patch.WriteTo(writer, "$.output"u8);
+                }
+            }
+            else
             {
                 writer.WritePropertyName("output"u8);
-                writer.WriteStringValue(FunctionOutput);
+                writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "output"u8);
+                for (int i = 0; i < FunctionOutput.Count; i++)
+                {
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || FunctionOutput[i] != null && FunctionOutput[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(FunctionOutput[i], options);
+                }
+                Patch.WriteTo(writer, "$.output"u8);
+                writer.WriteEndArray();
             }
 
             Patch.WriteTo(writer);
@@ -119,7 +139,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             FunctionCallOutputStatus? status = default;
             string callId = default;
-            string functionOutput = default;
+            IList<ResponseContentPart> functionOutput = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -148,7 +168,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    functionOutput = prop.Value.GetString();
+                    DeserializeFunctionOutputValue(prop, ref functionOutput, options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -159,7 +179,96 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 callId,
-                functionOutput);
+                functionOutput ?? new ChangeTrackingList<ResponseContentPart>());
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (FunctionOutput == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveFunctionOutputArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= FunctionOutput.Count)
+                {
+                    return false;
+                }
+                if (FunctionOutput[index] == null)
+                {
+                    return false;
+                }
+                return FunctionOutput[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (FunctionOutput == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= FunctionOutput.Count)
+                {
+                    return false;
+                }
+                if (FunctionOutput[index] == null)
+                {
+                    return false;
+                }
+                FunctionOutput[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveFunctionOutputArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveFunctionOutput(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<ResponseContentPart> ActiveFunctionOutput()
+        {
+            if (!Optional.IsCollectionDefined(FunctionOutput))
+            {
+                yield break;
+            }
+            bool hasPatch = Patch.Contains("$"u8, "output"u8);
+            for (int i = 0; i < FunctionOutput.Count; i++)
+            {
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]"))) && (FunctionOutput[i] == null || !FunctionOutput[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return FunctionOutput[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

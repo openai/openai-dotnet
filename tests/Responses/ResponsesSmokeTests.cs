@@ -126,7 +126,7 @@ public partial class ResponsesSmokeTests
             ResponseItem.CreateComputerCallOutputItem("call_abcd", ComputerCallOutput.CreateComputerScreenshotOutput("file_abcd")),
             ResponseItem.CreateFileSearchCallItem(["query1"]),
             ResponseItem.CreateFunctionCallItem("call_abcd", "function_name", BinaryData.Empty),
-            ResponseItem.CreateFunctionCallOutputItem("call_abcd", "functionOutput"),
+            ResponseItem.CreateFunctionCallOutputItem("call_abcd", [ResponseContentPart.CreateInputTextPart("functionOutput")]),
             ResponseItem.CreateReasoningItem("summary goes here"),
             ResponseItem.CreateReferenceItem("msg_1234"),
             ResponseItem.CreateAssistantMessageItem("Goodbye!", []),
@@ -870,6 +870,64 @@ public partial class ResponsesSmokeTests
         Assert.That(item.Output[0].Text, Is.EqualTo("hello world"));
         using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(item));
         Assert.That(json.RootElement.GetProperty("output").ValueKind, Is.EqualTo(JsonValueKind.Array));
+    }
+
+    [Test]
+    public void DeserializeFunctionCallOutputPreservesMultimodalContent()
+    {
+        BinaryData data = BinaryData.FromString("""
+            {
+                "type": "function_call_output",
+                "call_id": "call_123",
+                "output": [
+                    {"type": "input_text", "text": "Here is the result"},
+                    {"type": "input_image", "file_id": "file_image", "detail": "high"},
+                    {"type": "input_file", "file_id": "file_document", "filename": "result.pdf"}
+                ]
+            }
+            """);
+
+        FunctionCallOutputResponseItem item = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(data);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(item.FunctionOutput, Has.Count.EqualTo(3));
+            Assert.That(item.FunctionOutput.Select(part => part.Kind), Is.EqualTo(new[]
+            {
+                ResponseContentPartKind.InputText,
+                ResponseContentPartKind.InputImage,
+                ResponseContentPartKind.InputFile,
+            }));
+            Assert.That(item.FunctionOutput[0].Text, Is.EqualTo("Here is the result"));
+            Assert.That(item.FunctionOutput[1].InputImageFileId, Is.EqualTo("file_image"));
+            Assert.That(item.FunctionOutput[1].InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
+            Assert.That(item.FunctionOutput[2].InputFileId, Is.EqualTo("file_document"));
+            Assert.That(item.FunctionOutput[2].InputFilename, Is.EqualTo("result.pdf"));
+        }
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(item));
+        JsonElement output = json.RootElement.GetProperty("output");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(output.ValueKind, Is.EqualTo(JsonValueKind.Array));
+            Assert.That(output.GetArrayLength(), Is.EqualTo(3));
+            Assert.That(output[0].GetProperty("text").GetString(), Is.EqualTo("Here is the result"));
+            Assert.That(output[1].GetProperty("file_id").GetString(), Is.EqualTo("file_image"));
+            Assert.That(output[1].GetProperty("detail").GetString(), Is.EqualTo("high"));
+            Assert.That(output[2].GetProperty("file_id").GetString(), Is.EqualTo("file_document"));
+            Assert.That(output[2].GetProperty("filename").GetString(), Is.EqualTo("result.pdf"));
+        }
+    }
+
+    [Test]
+    public void DeserializeFunctionCallOutputAcceptsStringShorthand()
+    {
+        FunctionCallOutputResponseItem item = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(BinaryData.FromString(
+            """{"type":"function_call_output","call_id":"call_123","output":"plain text output"}"""));
+
+        Assert.That(item.FunctionOutput, Has.Count.EqualTo(1));
+        Assert.That(item.FunctionOutput[0].Kind, Is.EqualTo(ResponseContentPartKind.InputText));
+        Assert.That(item.FunctionOutput[0].Text, Is.EqualTo("plain text output"));
     }
 
     [Test]
