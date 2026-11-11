@@ -10,6 +10,36 @@
 
 ### Other Changes
 
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Moderations:
+  - Converted the `ModerationInputPartKind` enum to an extensible enum.
+- OpenAI.Responses:
+  - Converted the following enums to extensible enums so that values the service adds later don't cause deserialization to fail:
+    - `CodeInterpreterCallStatus`
+    - `ComputerCallActionKind`
+    - `ComputerCallActionMouseButton`
+    - `ComputerCallOutputStatus`
+    - `ComputerCallStatus`
+    - `FileSearchCallStatus`
+    - `FunctionCallOutputStatus`
+    - `FunctionCallStatus`
+    - `ImageGenerationCallStatus`
+    - `MessageRole`
+    - `MessageStatus`
+    - `ReasoningStatus`
+    - `ResponseContentPartKind`
+    - `ResponseMessageAnnotationKind`
+    - `ResponseStatus`
+    - `ResponseTextFormatKind`
+    - `WebSearchCallStatus`
+  - Removed the `Unknown` value from `MessageRole`, `ResponseContentPartKind`, and `ResponseTextFormatKind`. Unrecognized values are now kept as-is.
+  - Added the `InputAudio` and `OutputAudio` values to `ResponseContentPartKind`.
+  - Added a public `MessageResponseItem(MessageRole)` constructor.
+- OpenAI.VectorStores:
+  - Converted the `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus` enums to extensible enums.
+  - Removed the `Unknown` value from `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus`. Unrecognized values are now kept as-is.
+
 ## 2.15.0 (2026-11-04)
 
 ### Acknowledgments
