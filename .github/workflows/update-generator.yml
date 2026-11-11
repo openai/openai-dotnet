@@ -2,8 +2,8 @@ name: Update TypeSpec Generator Version
 
 on:
   schedule:
-    # Run weekly on Mondays at 9 AM UTC
-    - cron: '0 9 * * 1'
+    # Run at 9 AM UTC on weekdays
+    - cron: '0 9 * * 1-5'
   workflow_dispatch:
     # Allow manual triggering
   repository_dispatch:
