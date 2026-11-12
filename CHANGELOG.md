@@ -8,6 +8,9 @@
 
 ### Bugs Fixed
 
+- OpenAI.Chat:
+  - Fixed `OpenAIChatModelFactory.ChatCompletionMessageListDatum` throwing an `ArgumentNullException` when the optional `toolCalls` or `annotations` parameters are omitted.
+
 ### Other Changes
 
 ## 2.15.0 (2026-11-04)
