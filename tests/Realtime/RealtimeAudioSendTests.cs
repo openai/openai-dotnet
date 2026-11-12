@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Realtime;
 
+/// <summary>Verifies audio and raw-command sending behavior in realtime sessions.</summary>
 [Category("Smoke")]
 public class RealtimeAudioSendTests
 {
@@ -23,6 +24,7 @@ public class RealtimeAudioSendTests
     private static readonly bool UsesMemoryOverload = !typeof(RealtimeSessionClient).Assembly
         .GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName.StartsWith(".NETStandard", StringComparison.Ordinal);
 
+    /// <summary>Checks that standalone audio sends encode only the caller-provided memory slice.</summary>
     [TestCase(0)]
     [TestCase(1)]
     [TestCase(16384)]
@@ -41,6 +43,7 @@ public class RealtimeAudioSendTests
         AssertAudioFrame(socket.Frames[0], backing.AsSpan(7, length), cancellation.Token);
     }
 
+    /// <summary>Checks that stream sends preserve each short read without stale bytes or extra commands.</summary>
     [Test]
     public async Task StreamAudioSendsEveryShortReadWithoutStaleBytesOrExtraCommands()
     {
@@ -65,6 +68,7 @@ public class RealtimeAudioSendTests
         Assert.That(stream.WasDisposed, Is.False, "The caller owns the audio stream.");
     }
 
+    /// <summary>Checks that an empty stream sends nothing and leaves the session ready for another send.</summary>
     [Test]
     public async Task EmptyStreamSendsNothingAndReleasesAudioStreamState()
     {
@@ -79,6 +83,7 @@ public class RealtimeAudioSendTests
         await AssertAudioCanBeSentAgain(session, socket);
     }
 
+    /// <summary>Checks that raw commands preserve their memory slice and notify observers with the original data.</summary>
     [Test]
     public async Task RawCommandPreservesArrayIdentityOffsetLengthAndNotification()
     {
@@ -119,6 +124,7 @@ public class RealtimeAudioSendTests
         }
     }
 
+    /// <summary>Checks that non-array-backed commands use original memory or an exact compatibility copy.</summary>
     [Test]
     public async Task NonArrayBackedCommandUsesOriginalMemoryOrExactFallbackCopy()
     {
@@ -151,6 +157,7 @@ public class RealtimeAudioSendTests
         }
     }
 
+    /// <summary>Checks that a blocked stream send retains its buffer and prevents concurrent audio sends.</summary>
     [Test]
     public async Task BlockedStreamRetainsBufferAndRejectsConcurrentAudioUntilSendCompletes()
     {
@@ -186,6 +193,7 @@ public class RealtimeAudioSendTests
         AssertAudioFrame(socket.Frames[^1], new byte[] { 9 }, default);
     }
 
+    /// <summary>Checks that canceling either audio-send form releases session state for later sends.</summary>
     [TestCase(false)]
     [TestCase(true)]
     public async Task CanceledSendReleasesProtocolSemaphoreAndAudioStreamState(bool streamAudio)
@@ -207,6 +215,7 @@ public class RealtimeAudioSendTests
         await AssertAudioCanBeSentAgain(session, socket);
     }
 
+    /// <summary>Checks that a failed audio send releases session state for later sends.</summary>
     [TestCase(false)]
     [TestCase(true)]
     public async Task FailedSendReleasesProtocolSemaphoreAndAudioStreamState(bool streamAudio)
@@ -231,6 +240,7 @@ public class RealtimeAudioSendTests
         await AssertAudioCanBeSentAgain(session, socket);
     }
 
+    /// <summary>Checks that canceling a queued send does not release another send's semaphore.</summary>
     [Test]
     public async Task CancellationWhileWaitingForSendSemaphoreDoesNotReleaseAnotherSend()
     {
@@ -260,6 +270,7 @@ public class RealtimeAudioSendTests
         }
     }
 
+    /// <summary>Measures whether audio sending avoids allocations proportional to serialized command size.</summary>
     [TestCase(true, 16384, TestName = "RepeatedStreamChunksAvoidFullCommandAllocation")]
     [TestCase(false, 98304, TestName = "RepeatedLargeStandaloneAudioSendsAvoidFullCommandAllocation")]
     public void AudioSendEliminatesAllocationProportionalToSerializedCommandSize(bool streamAudio, int audioSize)
@@ -351,9 +362,11 @@ public class RealtimeAudioSendTests
         }
     }
 
+    /// <summary>Creates the expected JSON for an audio-buffer append command.</summary>
     private static string AudioJson(ReadOnlySpan<byte> audio)
         => "{\"type\":\"input_audio_buffer.append\",\"audio\":\"" + Convert.ToBase64String(audio) + "\"}";
 
+    /// <summary>Creates deterministic audio bytes for send tests.</summary>
     private static byte[] CreateAudio(int count)
     {
         byte[] bytes = new byte[count];
@@ -364,6 +377,7 @@ public class RealtimeAudioSendTests
         return bytes;
     }
 
+    /// <summary>A realtime session test double that tracks sends and can restore the old copy path.</summary>
     private sealed class TestSession : RealtimeSessionClient
     {
         public bool CopyCommands { get; set; }
@@ -385,6 +399,7 @@ public class RealtimeAudioSendTests
         }
     }
 
+    /// <summary>Captures the memory and metadata passed to a WebSocket send.</summary>
     private sealed class Frame
     {
         public ReadOnlyMemory<byte> Memory { get; init; }
@@ -395,12 +410,14 @@ public class RealtimeAudioSendTests
         public bool UsedMemoryOverload { get; init; }
     }
 
+    /// <summary>Coordinates a test that pauses a WebSocket send until released.</summary>
     private sealed class SendGate
     {
         public TaskCompletionSource<bool> Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource<bool> Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
 
+    /// <summary>Records WebSocket sends and can block or fail the next send.</summary>
     private sealed class RecordingWebSocket : WebSocket
     {
         private SendGate _nextGate;
@@ -463,6 +480,7 @@ public class RealtimeAudioSendTests
             => throw new NotSupportedException();
     }
 
+    /// <summary>Exposes byte memory without an array-backed memory segment.</summary>
     private sealed class NonArrayMemoryManager : MemoryManager<byte>
     {
         private readonly byte[] _bytes;
@@ -473,6 +491,7 @@ public class RealtimeAudioSendTests
         protected override void Dispose(bool disposing) { }
     }
 
+    /// <summary>A non-seekable audio stream that returns configurable short reads.</summary>
     private sealed class ShortReadStream : Stream
     {
         private readonly byte[] _audio;
