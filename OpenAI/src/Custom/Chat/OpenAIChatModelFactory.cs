@@ -388,6 +388,9 @@ public static partial class OpenAIChatModelFactory
         string functionArguments = null,
         ChatOutputAudio outputAudio = null)
     {
+        toolCalls ??= new List<ChatToolCall>();
+        annotations ??= new List<ChatMessageAnnotation>();
+
         InternalChatCompletionResponseMessageFunctionCall functionCall = null;
         if (functionName != null && functionArguments != null)
         {
