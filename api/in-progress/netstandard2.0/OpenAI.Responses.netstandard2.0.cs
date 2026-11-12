@@ -1510,12 +1510,12 @@ namespace OpenAI.Responses {
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null);
     }
     public class ResponseToolChoice : IJsonModel<ResponseToolChoice>, IPersistableModel<ResponseToolChoice> {
-        public ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
         public ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
-        public ResponseCustomToolChoice CustomToolChoice { get; }
+        public ResponseToolChoice(ResponseToolChoiceObject customToolChoice);
+        public ResponseToolChoiceObject CustomToolChoice { get; }
         public ResponseToolChoiceEnum? DefaultToolChoice { get; }
-        public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
         public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice);
+        public static implicit operator ResponseToolChoice(ResponseToolChoiceObject customToolChoice);
     }
     public readonly partial struct ResponseToolChoiceEnum : IEquatable<ResponseToolChoiceEnum> {
         public ResponseToolChoiceEnum(string value);
