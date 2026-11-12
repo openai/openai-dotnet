@@ -620,7 +620,6 @@ namespace OpenAI.Responses {
         public string CallId { get; set; }
         public IList<ResponseContentPart> FunctionOutput { get; }
         public FunctionCallOutputStatus? Status { get; set; }
-        public FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
     }
     [Experimental("OPENAI001")]
     public enum FunctionCallOutputStatus {
