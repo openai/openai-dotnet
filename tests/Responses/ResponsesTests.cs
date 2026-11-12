@@ -610,7 +610,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                         functionParameters: BinaryData.FromString("{}"),
                         strictModeEnabled: false)
                 },
-                ToolChoice = ResponseDefaultToolChoice.Required,
+                ToolChoice = ResponseToolChoiceEnum.Required,
             });
         Assert.That(response.GetOutputText(), Is.Null);
     }
@@ -866,7 +866,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseToolChoice toolChoice
-            = new ResponseCustomFunctionToolChoice(s_GetWeatherAtLocationToolName);
+            = new ResponseFunctionToolChoice(s_GetWeatherAtLocationToolName);
 
         CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
@@ -878,7 +878,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.ToolChoice, Is.Not.Null);
-    ResponseCustomFunctionToolChoice responseToolChoice = response.ToolChoice.CustomToolChoice as ResponseCustomFunctionToolChoice;
+    ResponseFunctionToolChoice responseToolChoice = response.ToolChoice.CustomToolChoice as ResponseFunctionToolChoice;
     Assert.That(responseToolChoice, Is.Not.Null);
     Assert.That(responseToolChoice!.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
 

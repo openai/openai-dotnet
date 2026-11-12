@@ -47,7 +47,7 @@ public partial class ResponseToolChoice
         }
 
         ResponseToolChoiceEnum ? defaultToolChoice = default;
-        ResponseCustomToolChoice customToolChoice = default;
+        ResponseToolChoiceObject customToolChoice = default;
 #pragma warning disable SCME0001
         JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001
@@ -58,7 +58,7 @@ public partial class ResponseToolChoice
         }
         else
         {
-            customToolChoice = ResponseCustomToolChoice.DeserializeResponseCustomToolChoice(element, element.GetUtf8Bytes(), options);
+            customToolChoice = ResponseToolChoiceObject.DeserializeResponseToolChoiceObject (element, element.GetUtf8Bytes(), options);
         }
 
         return new ResponseToolChoice(defaultToolChoice, customToolChoice, patch);
