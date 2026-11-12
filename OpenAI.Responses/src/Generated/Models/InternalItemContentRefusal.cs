@@ -8,16 +8,18 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentRefusal : ResponseContentPart
     {
-        public InternalItemContentRefusal(string internalRefusal) : base(InternalItemContentType.Refusal)
+        public InternalItemContentRefusal(string internalRefusal) : base(ResponseContentPartKind.Refusal)
         {
             InternalRefusal = internalRefusal;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentRefusal(InternalItemContentType internalType, in JsonPatch patch, string internalRefusal) : base(internalType, patch)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalItemContentRefusal(ResponseContentPartKind kind, in JsonPatch patch, string internalRefusal) : base(kind, patch)
         {
             InternalRefusal = internalRefusal;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

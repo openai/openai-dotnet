@@ -74,3 +74,6 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVectorStoreFileAttributes, "VectorStores");
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
+
+@@dynamicModel(VectorStoreStatus, "csharp");
+@@dynamicModel(VectorStoreFileStatus, "csharp");

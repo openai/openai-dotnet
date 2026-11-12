@@ -1,19 +1,10 @@
 using Microsoft.TypeSpec.Generator.Customizations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-// - Recreated as CLR enum.
-[Experimental("OPENAI001")]
-[CodeGenType("CodeInterpreterToolCallItemResourceStatus")]
-public enum CodeInterpreterCallStatus
-{
-    InProgress,
-    Interpreting,
-    Completed,
-    Incomplete,
-    Failed
-}
+// - Converted to extensible enum.
+[CodeGenType("CodeInterpreterCallStatus")]
+public readonly partial struct CodeInterpreterCallStatus { }

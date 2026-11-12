@@ -100,7 +100,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionTypeKeys DeserializeInternalComputerActionTypeKeys(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -116,7 +115,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToComputerCallActionKind();
+                    kind = new ComputerCallActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -128,6 +127,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionTypeKeys(kind, patch, text);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

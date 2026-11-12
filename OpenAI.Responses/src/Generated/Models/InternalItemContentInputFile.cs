@@ -14,12 +14,13 @@ namespace OpenAI.Responses
         private Uri _fileUrl;
         private bool _fileUrlIsDefined;
 
-        public InternalItemContentInputFile() : this(InternalItemContentType.InputFile, default, null, null, null, null)
+        public InternalItemContentInputFile() : this(ResponseContentPartKind.InputFile, default, null, null, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputFile(InternalItemContentType internalType, in JsonPatch patch, string fileId, Uri fileUrl, string filename, string internalFileData) : base(internalType, patch)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalItemContentInputFile(ResponseContentPartKind kind, in JsonPatch patch, string fileId, Uri fileUrl, string filename, string internalFileData) : base(kind, patch)
         {
             _fileId = fileId;
             _fileUrl = fileUrl;
@@ -27,6 +28,7 @@ namespace OpenAI.Responses
             InternalFileData = internalFileData;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string FileId
         {

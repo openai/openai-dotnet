@@ -99,7 +99,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalUnknownResponsesMessageItemResource DeserializeInternalUnknownResponsesMessageItemResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -112,7 +111,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             MessageStatus? status = default;
-            InternalResponsesMessageRole internalRole = default;
+            MessageRole role = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -131,18 +130,17 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    status = prop.Value.GetString().ToMessageStatus();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
+                    role = new MessageRole(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownResponsesMessageItemResource(kind, id, patch, status, internalRole);
+            return new InternalUnknownResponsesMessageItemResource(kind, id, patch, status, role);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

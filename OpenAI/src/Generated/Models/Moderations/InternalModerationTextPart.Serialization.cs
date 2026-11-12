@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationTextPart : ModerationInputPart, IJsonModel<InternalModerationTextPart>
     {
-        internal InternalModerationTextPart() : this(default, null, null)
+        internal InternalModerationTextPart() : this(ModerationInputPartKind.Text, null, null)
         {
         }
 
@@ -88,7 +88,6 @@ namespace OpenAI.Moderations
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalModerationTextPart DeserializeInternalModerationTextPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -102,7 +101,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToModerationInputPartKind();
+                    kind = new ModerationInputPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -115,6 +114,5 @@ namespace OpenAI.Moderations
             }
             return new InternalModerationTextPart(kind, additionalBinaryDataProperties, internalText);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }
