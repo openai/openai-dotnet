@@ -172,36 +172,36 @@ public partial class ResponsesSmokeTests
         }
 
         AssertChoiceEqual(
-            ResponseDefaultToolChoice.Auto, @"""auto""");
+            ResponseToolChoiceEnum.Auto, @"""auto""");
         AssertChoiceEqual(
-            ResponseDefaultToolChoice.None, @"""none""");
+            ResponseToolChoiceEnum.None, @"""none""");
         AssertChoiceEqual(
-            ResponseDefaultToolChoice.Required, @"""required""");
+            ResponseToolChoiceEnum.Required, @"""required""");
         AssertChoiceEqual(
-            new ResponseCustomFunctionToolChoice("foo"),
+            new ResponseFunctionToolChoice("foo"),
             @"{""type"":""function"",""name"":""foo""}");
         AssertChoiceEqual(
-            new ResponseCustomFileSearchToolChoice(),
+            new ResponseFileSearchToolChoice(),
             @"{""type"":""file_search""}");
         AssertChoiceEqual(
-            new ResponseCustomComputerToolChoice(),
+            new ResponseComputerToolChoice(),
             @"{""type"":""computer""}");
         AssertChoiceEqual(
-            new ResponseCustomComputerUsePreviewToolChoice(),
+            new ResponseComputerUsePreviewToolChoice(),
             @"{""type"":""computer_use_preview""}");
         AssertChoiceEqual(
-            new ResponseCustomWebSearchToolChoice(),
+            new ResponseWebSearchToolChoice(),
             @"{""type"":""web_search""}");
         AssertChoiceEqual(
-            new ResponseCustomWebSearchPreviewToolChoice(),
+            new ResponseWebSearchPreviewToolChoice(),
             @"{""type"":""web_search_preview""}");
         AssertChoiceEqual(
-            new ResponseCustomImageGenerationToolChoice(),
+            new ResponseImageGenerationToolChoice(),
             @"{""type"":""image_generation""}");
         AssertChoiceEqual(
-            new ResponseCustomCodeInterpreterToolChoice(),
+            new ResponseCodeInterpreterToolChoice(),
             @"{""type"":""code_interpreter""}");
-        ResponseCustomMcpToolChoice mcpToolChoice = new("foo_server")
+        ResponseMcpToolChoice mcpToolChoice = new("foo_server")
         {
             ToolName = "bar_tool"
         };
@@ -210,25 +210,25 @@ public partial class ResponsesSmokeTests
             @"{""type"":""mcp"",""name"":""bar_tool"",""server_label"":""foo_server""}");
 
         AssertChoiceEqual(
-            new ResponseCustomProgrammaticToolCallingToolChoice(),
+            new ResponseProgrammaticToolCallingToolChoice(),
             @"{""type"":""programmatic_tool_calling""}");
 
         AssertChoiceEqual(
-            new ResponseCustomApplyPatchToolChoice(),
+            new ResponseApplyPatchToolChoice(),
             @"{""type"":""apply_patch""}");
 
         AssertChoiceEqual(
-            new ResponseCustomShellToolChoice(),
+            new ResponseShellToolChoice(),
             @"{""type"":""shell""}");
 
         AssertChoiceEqual(
-            new ResponseCustomAllowedToolsToolChoice(
-                ResponseToolChoiceAllowedMode.Required,
+            new ResponseAllowedToolsChoice(
+                ResponseAllowedToolsChoiceMode.Required,
                 [ResponseTool.CreateCustomTool("foo")]),
             @"{""type"":""allowed_tools"",""mode"":""required"",""tools"":[{""type"":""custom"",""name"":""foo""}]}");
 
         AssertChoiceEqual(
-            new ResponseCustomCustomToolChoice("foo"),
+            new ResponseCustomToolChoice("foo"),
             @"{""type"":""custom"",""name"":""foo""}");
 
         AssertSerializationRoundTrip<ResponseToolChoice>(

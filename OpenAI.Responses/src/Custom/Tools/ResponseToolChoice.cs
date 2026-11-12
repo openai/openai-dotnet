@@ -13,7 +13,7 @@ public partial class ResponseToolChoice
         DefaultToolChoice = defaultToolChoice;
     }
 
-    public ResponseToolChoice(ResponseCustomToolChoice customToolChoice)
+    public ResponseToolChoice(ResponseToolChoiceObject customToolChoice)
     {
         Argument.AssertNotNull(customToolChoice, nameof(customToolChoice));
 
@@ -24,9 +24,9 @@ public partial class ResponseToolChoice
     public ResponseToolChoiceEnum? DefaultToolChoice { get; }
 
     [CodeGenMember("CustomToolChoice")]
-    public ResponseCustomToolChoice CustomToolChoice { get; }
+    public ResponseToolChoiceObject CustomToolChoice { get; }
 
     public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum  defaultToolChoice) => new(defaultToolChoice);
 
-    public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
+    public static implicit operator ResponseToolChoice(ResponseToolChoiceObject customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
 }
