@@ -44,7 +44,7 @@ namespace OpenAI.Responses;
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
 
-@@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
+@@clientName(FunctionToolCallOutputItem.output, "FunctionOutput");
 
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
 
@@ -81,6 +81,8 @@ namespace OpenAI.Responses;
 
 @@clientName(CustomToolCallItem.name, "ToolName");
 @@alternateType(CustomToolCallOutputItem.output, ItemContent[]);
+
+@@alternateType(FunctionToolCallOutputItem.output, ItemContent[]);
 
 @@clientName(ResponseCustomToolCallInputDeltaEvent.delta, "InputDelta");
 

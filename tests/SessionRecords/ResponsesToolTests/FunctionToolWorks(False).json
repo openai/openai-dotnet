@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "704",
+        "Content-Length": "719",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -62,15 +62,15 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total, X-OpenAI-Inference-Capacity-Reason",
           "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb6812fe5680b-SEA",
+        "CF-Ray": "a590799419820fa7-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "2681",
+        "Content-Length": "2764",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -83,23 +83,27 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999700",
+        "x-ratelimit-remaining-tokens": "149999697",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
+        "id": "resp_055d019c487900f6006af4e197c0d087d295b559b347343e3b",
         "object": "response",
-        "created_at": 1788039613,
+        "created_at": 1794433431,
         "status": "completed",
+        "access_programs": null,
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039614,
+        "completed_at": 1794433432,
         "error": null,
         "frequency_penalty": 0.0,
+        "image": {
+          "context_compression": "disabled"
+        },
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -108,11 +112,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_0034e0c849e64df1006a9351be137487d09aebc4f88404a4e7",
+            "id": "fc_055d019c487900f6006af4e1982ce887d2b1a59011503f52fe",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}",
-            "call_id": "call_PH5gglyxFHdQ79KHLCdxiKOW",
+            "call_id": "call_Zy33kYsYz3RLWNFqY37SEJWn",
             "name": "get_weather_at_location"
           }
         ],
@@ -213,12 +217,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "720",
+        "Content-Length": "766",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
+        "previous_response_id": "resp_055d019c487900f6006af4e197c0d087d295b559b347343e3b",
         "model": "gpt-4o-mini",
         "tools": [
           {
@@ -253,8 +257,13 @@
         "input": [
           {
             "type": "function_call_output",
-            "call_id": "call_PH5gglyxFHdQ79KHLCdxiKOW",
-            "output": "22 degrees Celsius and windy"
+            "call_id": "call_Zy33kYsYz3RLWNFqY37SEJWn",
+            "output": [
+              {
+                "type": "input_text",
+                "text": "22 degrees Celsius and windy"
+              }
+            ]
           }
         ],
         "store": true
@@ -262,15 +271,15 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total, X-OpenAI-Inference-Capacity-Reason",
           "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb6862a27680b-SEA",
+        "CF-Ray": "a5907999393c0fa7-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "3180",
+        "Content-Length": "3274",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -283,23 +292,27 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999672",
+        "x-ratelimit-remaining-tokens": "149999675",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0034e0c849e64df1006a9351be938487d0b0f4d46bcb6ef1ca",
+        "id": "resp_055d019c487900f6006af4e198a80487d2b4fbf3b55fa465c7",
         "object": "response",
-        "created_at": 1788039614,
+        "created_at": 1794433432,
         "status": "completed",
+        "access_programs": null,
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039615,
+        "completed_at": 1794433434,
         "error": null,
         "frequency_penalty": 0.0,
+        "image": {
+          "context_compression": "disabled"
+        },
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -308,7 +321,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_0034e0c849e64df1006a9351bf235c87d0b0d34a96ca6b4956",
+            "id": "msg_055d019c487900f6006af4e1997e9887d28d82a83926848e2e",
             "type": "message",
             "status": "completed",
             "content": [
@@ -316,7 +329,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "The weather in San Francisco is currently 22°C and windy. Here are some suggestions for what to wear:\n\n- **Light layers**: A breathable shirt or blouse combined with a light jacket or cardigan for the wind.\n- **Pants or jeans**: Comfortable and suitable for slightly cool weather.\n- **Closed-toe shoes**: Sneakers or lightweight boots are ideal for walking.\n- **Accessories**: Consider a light scarf to keep warm and protect you from the wind.\n\nEnjoy your time in San Francisco!"
+                "text": "The weather in San Francisco is 22°C and windy. Here are some outfit recommendations:\n\n1. **Light Layering**: A thin long-sleeve shirt or a light sweater with a jacket. The wind can make it feel cooler.\n2. **Bottoms**: Comfortable pants or jeans are a good choice.\n3. **Footwear**: Closed-toe shoes or sneakers for comfort.\n4. **Accessories**: Consider a lightweight scarf and maybe sunglasses, especially if you're out during the sunny parts of the day.\n\nEnjoy your time in San Francisco!"
               }
             ],
             "role": "assistant"
@@ -324,7 +337,7 @@
         ],
         "parallel_tool_calls": true,
         "presence_penalty": 0.0,
-        "previous_response_id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
+        "previous_response_id": "resp_055d019c487900f6006af4e197c0d087d295b559b347343e3b",
         "prompt_cache_key": null,
         "prompt_cache_retention": "in_memory",
         "reasoning": {
@@ -400,11 +413,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 105,
+          "output_tokens": 116,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 215
+          "total_tokens": 226
         },
         "user": null,
         "metadata": {}

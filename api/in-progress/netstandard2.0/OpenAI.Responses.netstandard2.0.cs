@@ -548,15 +548,26 @@ namespace OpenAI.Responses {
     }
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
         public FunctionCallOutputResponseItem() : base(default);
-        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(default);
+        public FunctionCallOutputResponseItem(string callId, IEnumerable<ResponseContentPart> functionOutput) : base(default);
         public string CallId { get; set; }
-        public string FunctionOutput { get; set; }
+        public IList<ResponseContentPart> FunctionOutput { get; }
         public FunctionCallOutputStatus? Status { get; set; }
     }
-    public enum FunctionCallOutputStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct FunctionCallOutputStatus : IEquatable<FunctionCallOutputStatus> {
+        public FunctionCallOutputStatus(string value);
+        public static FunctionCallOutputStatus Completed { get; }
+        public static FunctionCallOutputStatus Incomplete { get; }
+        public static FunctionCallOutputStatus InProgress { get; }
+        public readonly bool Equals(FunctionCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public static implicit operator FunctionCallOutputStatus(string value);
+        public static implicit operator FunctionCallOutputStatus?(string value);
+        public static bool operator !=(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public override readonly string ToString();
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
         public FunctionCallResponseItem() : base(default);
@@ -1075,7 +1086,7 @@ namespace OpenAI.Responses {
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
-        public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, IEnumerable<ResponseContentPart> functionOutput);
         public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments);
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);

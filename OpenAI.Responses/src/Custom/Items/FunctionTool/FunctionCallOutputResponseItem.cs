@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("FunctionToolCallOutputItemResource")]
+[CodeGenType("FunctionToolCallOutputItem")]
 public partial class FunctionCallOutputResponseItem
 {
 }
