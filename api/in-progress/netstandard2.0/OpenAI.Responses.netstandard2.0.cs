@@ -920,8 +920,8 @@ namespace OpenAI.Responses {
         public ReferenceResponseItem(string id) : base(default);
     }
     public class ResponseAllowedToolsChoice : ResponseToolChoiceObject, IJsonModel<ResponseAllowedToolsChoice>, IPersistableModel<ResponseAllowedToolsChoice> {
-        public ResponseAllowedToolsChoice();
-        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools);
+        public ResponseAllowedToolsChoice() : base(default);
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools) : base(default);
         public ResponseAllowedToolsChoiceMode Mode { get; set; }
         public IList<ResponseTool> Tools { get; }
     }
@@ -941,16 +941,16 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseApplyPatchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseApplyPatchToolChoice>, IPersistableModel<ResponseApplyPatchToolChoice> {
-        public ResponseApplyPatchToolChoice();
+        public ResponseApplyPatchToolChoice() : base(default);
     }
     public class ResponseCodeInterpreterToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCodeInterpreterToolChoice>, IPersistableModel<ResponseCodeInterpreterToolChoice> {
-        public ResponseCodeInterpreterToolChoice();
+        public ResponseCodeInterpreterToolChoice() : base(default);
     }
     public class ResponseComputerToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerToolChoice>, IPersistableModel<ResponseComputerToolChoice> {
-        public ResponseComputerToolChoice();
+        public ResponseComputerToolChoice() : base(default);
     }
     public class ResponseComputerUsePreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseComputerUsePreviewToolChoice>, IPersistableModel<ResponseComputerUsePreviewToolChoice> {
-        public ResponseComputerUsePreviewToolChoice();
+        public ResponseComputerUsePreviewToolChoice() : base(default);
     }
     public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
         public BinaryData InputFileBytes { get; }
@@ -996,8 +996,8 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     public class ResponseCustomToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
-        public ResponseCustomToolChoice();
-        public ResponseCustomToolChoice(string toolName);
+        public ResponseCustomToolChoice() : base(default);
+        public ResponseCustomToolChoice(string toolName) : base(default);
         public string ToolName { get; set; }
     }
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
@@ -1051,11 +1051,11 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseFileSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFileSearchToolChoice>, IPersistableModel<ResponseFileSearchToolChoice> {
-        public ResponseFileSearchToolChoice();
+        public ResponseFileSearchToolChoice() : base(default);
     }
     public class ResponseFunctionToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseFunctionToolChoice>, IPersistableModel<ResponseFunctionToolChoice> {
-        public ResponseFunctionToolChoice();
-        public ResponseFunctionToolChoice(string functionName);
+        public ResponseFunctionToolChoice() : base(default);
+        public ResponseFunctionToolChoice(string functionName) : base(default);
         public string FunctionName { get; set; }
     }
     public readonly partial struct ResponseImageDetailLevel : IEquatable<ResponseImageDetailLevel> {
@@ -1075,7 +1075,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseImageGenerationToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseImageGenerationToolChoice>, IPersistableModel<ResponseImageGenerationToolChoice> {
-        public ResponseImageGenerationToolChoice();
+        public ResponseImageGenerationToolChoice() : base(default);
     }
     public class ResponseIncompleteStatusDetails : IJsonModel<ResponseIncompleteStatusDetails>, IPersistableModel<ResponseIncompleteStatusDetails> {
         [Serialization.JsonIgnore]
@@ -1209,8 +1209,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMcpToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseMcpToolChoice>, IPersistableModel<ResponseMcpToolChoice> {
-        public ResponseMcpToolChoice();
-        public ResponseMcpToolChoice(string serverLabel);
+        public ResponseMcpToolChoice() : base(default);
+        public ResponseMcpToolChoice(string serverLabel) : base(default);
         public string ServerLabel { get; set; }
         public string ToolName { get; set; }
     }
@@ -1234,7 +1234,7 @@ namespace OpenAI.Responses {
         public int ReasoningTokenCount { get; set; }
     }
     public class ResponseProgrammaticToolCallingToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseProgrammaticToolCallingToolChoice> {
-        public ResponseProgrammaticToolCallingToolChoice();
+        public ResponseProgrammaticToolCallingToolChoice() : base(default);
     }
     public readonly partial struct ResponsePromptCacheRetentionPolicy : IEquatable<ResponsePromptCacheRetentionPolicy> {
         public ResponsePromptCacheRetentionPolicy(string value);
@@ -1429,7 +1429,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseShellToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseShellToolChoice>, IPersistableModel<ResponseShellToolChoice> {
-        public ResponseShellToolChoice();
+        public ResponseShellToolChoice() : base(default);
     }
     public enum ResponseStatus {
         InProgress = 0,
@@ -1561,6 +1561,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseToolChoiceObject : IJsonModel<ResponseToolChoiceObject>, IPersistableModel<ResponseToolChoiceObject> {
+        protected internal ResponseToolChoiceObject(ResponseToolChoiceKind kind);
+        public ResponseToolChoiceKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -1603,10 +1605,10 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseWebSearchPreviewToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchPreviewToolChoice>, IPersistableModel<ResponseWebSearchPreviewToolChoice> {
-        public ResponseWebSearchPreviewToolChoice();
+        public ResponseWebSearchPreviewToolChoice() : base(default);
     }
     public class ResponseWebSearchToolChoice : ResponseToolChoiceObject, IJsonModel<ResponseWebSearchToolChoice>, IPersistableModel<ResponseWebSearchToolChoice> {
-        public ResponseWebSearchToolChoice();
+        public ResponseWebSearchToolChoice() : base(default);
     }
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
         public StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : base(default, default);
