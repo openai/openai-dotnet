@@ -6,11 +6,7 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("FunctionToolCallOutputStatus")]
-public enum FunctionCallOutputStatus
+public readonly partial struct FunctionCallOutputStatus
 {
-    InProgress,
-    Completed,
-    Incomplete
 }

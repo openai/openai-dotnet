@@ -553,10 +553,21 @@ namespace OpenAI.Responses {
         public IList<ResponseContentPart> FunctionOutput { get; }
         public FunctionCallOutputStatus? Status { get; set; }
     }
-    public enum FunctionCallOutputStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct FunctionCallOutputStatus : IEquatable<FunctionCallOutputStatus> {
+        public FunctionCallOutputStatus(string value);
+        public static FunctionCallOutputStatus Completed { get; }
+        public static FunctionCallOutputStatus Incomplete { get; }
+        public static FunctionCallOutputStatus InProgress { get; }
+        public readonly bool Equals(FunctionCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public static implicit operator FunctionCallOutputStatus(string value);
+        public static implicit operator FunctionCallOutputStatus?(string value);
+        public static bool operator !=(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public override readonly string ToString();
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
         public FunctionCallResponseItem() : base(default);
