@@ -52,7 +52,7 @@ public partial class ResponseExamples
                         case nameof(GetCurrentLocation):
                             {
                                 string functionOutput = GetCurrentLocation();
-                                inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
+                                inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, [ResponseContentPart.CreateInputTextPart(functionOutput)]));
                                 break;
                             }
 
@@ -74,7 +74,7 @@ public partial class ResponseExamples
                                 string functionOutput = hasUnit
                                     ? GetCurrentWeather(location.GetString(), unit.GetString())
                                     : GetCurrentWeather(location.GetString());
-                                inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
+                                inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, [ResponseContentPart.CreateInputTextPart(functionOutput)]));
                                 break;
                             }
 
