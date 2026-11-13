@@ -1,0 +1,45 @@
+# This workflow validates that the compiled agentic workflow lock files are in sync with the
+# Markdown sources they are generated from. GitHub Actions runs the lock file, not the Markdown,
+# so an un-recompiled edit would otherwise change nothing and warn about nothing.
+name: Agentic workflow lock file check
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/*.md'
+      - '.github/workflows/*.lock.yml'
+      - '.github/workflows/agentic-lockfile-check.yml'
+      - '.github/aw/**'
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Keep this in step with the version used to compile the lock files locally.
+  gh_aw_version: v0.81.6
+
+jobs:
+  validate-lock-files:
+    name: Validate lock files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install gh-aw extension
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh extension install github/gh-aw --pin ${{ env.gh_aw_version }}
+
+      - name: Recompile agentic workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh aw compile --strict
+
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Agentic workflow lock files are out of date. Please run 'gh aw compile' locally and commit the results."

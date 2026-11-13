@@ -1,0 +1,1640 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Fine Tuning
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Fine-tuning
+  description: Manage fine-tuning jobs to tailor a model to your specific training data.
+paths:
+  /fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions:
+    get:
+      operationId: listFineTuningCheckpointPermissions
+      tags:
+      - Fine-tuning
+      summary: >-
+        **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
+
+        Organization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.
+      parameters:
+      - in: path
+        name: fine_tuned_model_checkpoint
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuned model checkpoint to get permissions for.
+      - name: project_id
+        in: query
+        description: The ID of the project to get permissions for.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Identifier for the last permission ID from the previous pagination request.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of permissions to retrieve.
+        required: false
+        schema:
+          type: integer
+          default: 10
+      - name: order
+        in: query
+        description: The order in which to retrieve permissions.
+        required: false
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+          default: descending
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFineTuningCheckpointPermissionResponse"
+    post:
+      operationId: createFineTuningCheckpointPermission
+      tags:
+      - Fine-tuning
+      summary: >-
+        **NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).
+
+        This enables organization owners to share fine-tuned models with other projects in their organization.
+      parameters:
+      - in: path
+        name: fine_tuned_model_checkpoint
+        required: true
+        schema:
+          type: string
+          example: ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd
+        description: >-
+          The ID of the fine-tuned model checkpoint to create a permission for.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFineTuningCheckpointPermissionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFineTuningCheckpointPermissionResponse"
+  /fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}:
+    delete:
+      operationId: deleteFineTuningCheckpointPermission
+      tags:
+      - Fine-tuning
+      summary: >-
+        **NOTE:** This endpoint requires an [admin API key](../admin-api-keys).
+
+        Organization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.
+      parameters:
+      - in: path
+        name: fine_tuned_model_checkpoint
+        required: true
+        schema:
+          type: string
+          example: ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd
+        description: >-
+          The ID of the fine-tuned model checkpoint to delete a permission for.
+      - in: path
+        name: permission_id
+        required: true
+        schema:
+          type: string
+          example: cp_zc4Q7MP6XxulcVzj4MZdwsAB
+        description: |-
+          The ID of the fine-tuned model checkpoint permission to delete.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteFineTuningCheckpointPermissionResponse"
+  /fine_tuning/jobs:
+    post:
+      operationId: createFineTuningJob
+      tags:
+      - Fine-tuning
+      summary: >-
+        Creates a fine-tuning job which begins the process of creating a new model from a given dataset.
+
+        Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
+
+        [Learn more about fine-tuning](/docs/guides/model-optimization)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFineTuningJobRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FineTuningJob"
+    get:
+      operationId: listPaginatedFineTuningJobs
+      tags:
+      - Fine-tuning
+      summary: |-
+        List your organization's fine-tuning jobs
+      parameters:
+      - name: after
+        in: query
+        description: Identifier for the last job from the previous pagination request.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of fine-tuning jobs to retrieve.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - in: query
+        name: metadata
+        required: false
+        schema:
+          type: object
+          nullable: true
+          additionalProperties:
+            type: string
+        style: deepObject
+        explode: true
+        description: >-
+          Optional metadata filter. To filter, use the syntax `metadata[k]=v`. Alternatively, set `metadata=null` to indicate no metadata.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListPaginatedFineTuningJobsResponse"
+  /fine_tuning/jobs/{fine_tuning_job_id}:
+    get:
+      operationId: retrieveFineTuningJob
+      tags:
+      - Fine-tuning
+      summary: |-
+        Get info about a fine-tuning job.
+        [Learn more about fine-tuning](/docs/guides/model-optimization)
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FineTuningJob"
+  /fine_tuning/jobs/{fine_tuning_job_id}/cancel:
+    post:
+      operationId: cancelFineTuningJob
+      tags:
+      - Fine-tuning
+      summary: |-
+        Immediately cancel a fine-tune job.
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job to cancel.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FineTuningJob"
+  /fine_tuning/jobs/{fine_tuning_job_id}/checkpoints:
+    get:
+      operationId: listFineTuningJobCheckpoints
+      tags:
+      - Fine-tuning
+      summary: |-
+        List checkpoints for a fine-tuning job.
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job to get checkpoints for.
+      - name: after
+        in: query
+        description: Identifier for the last checkpoint ID from the previous pagination request.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of checkpoints to retrieve.
+        required: false
+        schema:
+          type: integer
+          default: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFineTuningJobCheckpointsResponse"
+  /fine_tuning/jobs/{fine_tuning_job_id}/events:
+    get:
+      operationId: listFineTuningEvents
+      tags:
+      - Fine-tuning
+      summary: |-
+        Get status updates for a fine-tuning job.
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job to get events for.
+      - name: after
+        in: query
+        description: Identifier for the last event from the previous pagination request.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of events to retrieve.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFineTuningJobEventsResponse"
+  /fine_tuning/jobs/{fine_tuning_job_id}/pause:
+    post:
+      operationId: pauseFineTuningJob
+      tags:
+      - Fine-tuning
+      summary: |-
+        Pause a fine-tune job.
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job to pause.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FineTuningJob"
+  /fine_tuning/jobs/{fine_tuning_job_id}/resume:
+    post:
+      operationId: resumeFineTuningJob
+      tags:
+      - Fine-tuning
+      summary: |-
+        Resume a fine-tune job.
+      parameters:
+      - in: path
+        name: fine_tuning_job_id
+        required: true
+        schema:
+          type: string
+          example: ft-AF1WoRqd3aJAHsqc9NY7iL8F
+        description: |-
+          The ID of the fine-tuning job to resume.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FineTuningJob"
+components:
+  schemas:
+    CreateFineTuningCheckpointPermissionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        project_ids:
+          type: array
+          description: The project identifiers to grant access to.
+          items:
+            type: string
+      required:
+      - project_ids
+    CreateFineTuningJobRequest:
+      type: object
+      properties:
+        model:
+          description: >-
+            The name of the model to fine-tune. You can select one of the [supported models](/docs/guides/fine-tuning#which-models-can-be-fine-tuned).
+          example: gpt-4o-mini
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - babbage-002
+            - davinci-002
+            - gpt-3.5-turbo
+            - gpt-4o-mini
+        training_file:
+          description: >-
+            The ID of an uploaded file that contains training data.
+
+            See [upload file](/docs/api-reference/files/create) for how to upload a file.
+
+            Your dataset must be formatted as a JSONL file. Additionally, you must upload your file with the purpose `fine-tune`.
+
+            The contents of the file should differ depending on if the model uses the [chat](/docs/api-reference/fine-tuning/chat-input), [completions](/docs/api-reference/fine-tuning/completions-input) format, or if the fine-tuning method uses the [preference](/docs/api-reference/fine-tuning/preference-input) format.
+
+            See the [fine-tuning guide](/docs/guides/model-optimization) for more details.
+          type: string
+          example: file-abc123
+        hyperparameters:
+          type: object
+          description: >-
+            The hyperparameters used for the fine-tuning job. This value is now deprecated in favor of `method`, and should be passed in under the `method` parameter.
+          properties:
+            batch_size:
+              description: >-
+                Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: integer
+                minimum: 1
+                maximum: 256
+              default: auto
+            learning_rate_multiplier:
+              description: >-
+                Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: number
+                minimum: 0
+                exclusiveMinimum: true
+              default: auto
+            n_epochs:
+              description: >-
+                The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: integer
+                minimum: 1
+                maximum: 50
+              default: auto
+          deprecated: true
+        suffix:
+          description: >-
+            A string of up to 64 characters that will be added to your fine-tuned model name.
+
+            For example, a `suffix` of "custom-model-name" would produce a model name like `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
+          type: string
+          minLength: 1
+          maxLength: 64
+          default: null
+          nullable: true
+        validation_file:
+          description: >-
+            The ID of an uploaded file that contains validation data.
+
+            If you provide this file, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in the fine-tuning results file. The same data should not be present in both train and validation files.
+
+            Your dataset must be formatted as a JSONL file. You must upload your file with the purpose `fine-tune`.
+
+            See the [fine-tuning guide](/docs/guides/model-optimization) for more details.
+          type: string
+          nullable: true
+          example: file-abc123
+        integrations:
+          type: array
+          description: A list of integrations to enable for your fine-tuning job.
+          nullable: true
+          items:
+            type: object
+            required:
+            - type
+            - wandb
+            properties:
+              type:
+                description: >-
+                  The type of integration to enable. Currently, only "wandb" (Weights and Biases) is supported.
+                oneOf:
+                - type: string
+                  enum:
+                  - wandb
+                  x-stainless-const: true
+              wandb:
+                type: object
+                description: >-
+                  The settings for your integration with Weights and Biases. This payload specifies the project that metrics will be sent to. Optionally, you can set an explicit display name for your run, add tags to your run, and set a default entity (team, username, etc) to be associated with your run.
+                required:
+                - project
+                properties:
+                  project:
+                    description: >-
+                      The name of the project that the new run will be created under.
+                    type: string
+                    example: my-wandb-project
+                  name:
+                    description: >-
+                      A display name to set for the run. If not set, we will use the Job ID as the name.
+                    nullable: true
+                    type: string
+                  entity:
+                    description: >-
+                      The entity to use for the run. This allows you to set the team or username of the WandB user that you would like associated with the run. If not set, the default entity for the registered WandB API key is used.
+                    nullable: true
+                    type: string
+                  tags:
+                    description: >-
+                      A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+                    type: array
+                    items:
+                      type: string
+                      example: custom-tag
+        seed:
+          description: >-
+            The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases. If a seed is not specified, one will be generated for you.
+          type: integer
+          nullable: true
+          minimum: 0
+          maximum: 2147483647
+          example: 42
+        method:
+          $ref: "#/components/schemas/FineTuneMethod"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+      required:
+      - model
+      - training_file
+    DeleteFineTuningCheckpointPermissionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the fine-tuned model checkpoint permission that was deleted.
+        object:
+          type: string
+          description: The object type, which is always "checkpoint.permission".
+          enum:
+          - checkpoint.permission
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the fine-tuned model checkpoint permission was successfully deleted.
+      required:
+      - id
+      - object
+      - deleted
+    EvalItem:
+      type: object
+      title: Eval message object
+      description: >-
+        A message input to the model with a role indicating instruction following hierarchy. Instructions given with the `developer` or `system` role take precedence over instructions given with the `user` role. Messages with the `assistant` role are presumed to have been generated by the model in previous interactions.
+      properties:
+        role:
+          type: string
+          description: >-
+            The role of the message input. One of `user`, `assistant`, `system`, or `developer`.
+          enum:
+          - user
+          - assistant
+          - system
+          - developer
+        content:
+          $ref: "#/components/schemas/EvalItemContent"
+        type:
+          type: string
+          description: |-
+            The type of the message input. Always `message`.
+          enum:
+          - message
+          x-stainless-const: true
+      required:
+      - role
+      - content
+    EvalItemContent:
+      title: Eval content
+      description: >-
+        Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
+      oneOf:
+      - $ref: "#/components/schemas/EvalItemContentItem"
+      - $ref: "#/components/schemas/EvalItemContentArray"
+    EvalItemContentArray:
+      type: array
+      title: An array of Input text, Output text, Input image, and Input audio
+      description: >-
+        A list of inputs, each of which may be either an input text, output text, input image, or input audio object.
+      items:
+        $ref: "#/components/schemas/EvalItemContentItem"
+    EvalItemContentItem:
+      title: Eval content item
+      description: >-
+        A single content item: input text, output text, input image, or input audio.
+      oneOf:
+      - $ref: "#/components/schemas/EvalItemContentText"
+      - $ref: "#/components/schemas/InputTextContent"
+      - $ref: "#/components/schemas/EvalItemContentOutputText"
+      - $ref: "#/components/schemas/EvalItemInputImage"
+      - $ref: "#/components/schemas/InputAudio"
+    EvalItemContentOutputText:
+      type: object
+      title: Output text
+      description: |-
+        A text output from the model.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the output text. Always `output_text`.
+          enum:
+          - output_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: |-
+            The text output from the model.
+      required:
+      - type
+      - text
+    EvalItemContentText:
+      type: string
+      title: Text input
+      description: |-
+        A text input to the model.
+    EvalItemInputImage:
+      title: Input image
+      description: An image input block used within EvalItem content arrays.
+      type: object
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the image input. Always `input_image`.
+          enum:
+          - input_image
+          x-stainless-const: true
+        image_url:
+          type: string
+          format: uri
+          description: |-
+            The URL of the image input.
+        detail:
+          type: string
+          description: >-
+            The detail level of the image to be sent to the model. One of `high`, `low`, or `auto`. Defaults to `auto`.
+      required:
+      - type
+      - image_url
+    FineTuneDPOHyperparameters:
+      type: object
+      description: The hyperparameters used for the DPO fine-tuning job.
+      properties:
+        beta:
+          description: >-
+            The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            maximum: 2
+            exclusiveMinimum: true
+          default: auto
+        batch_size:
+          description: >-
+            Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 256
+          default: auto
+        learning_rate_multiplier:
+          description: >-
+            Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            exclusiveMinimum: true
+          default: auto
+        n_epochs:
+          description: >-
+            The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 50
+          default: auto
+    FineTuneDPOMethod:
+      type: object
+      description: Configuration for the DPO fine-tuning method.
+      properties:
+        hyperparameters:
+          $ref: "#/components/schemas/FineTuneDPOHyperparameters"
+    FineTuneMethod:
+      type: object
+      description: The method used for fine-tuning.
+      properties:
+        type:
+          type: string
+          description: The type of method. Is either `supervised`, `dpo`, or `reinforcement`.
+          enum:
+          - supervised
+          - dpo
+          - reinforcement
+        supervised:
+          $ref: "#/components/schemas/FineTuneSupervisedMethod"
+        dpo:
+          $ref: "#/components/schemas/FineTuneDPOMethod"
+        reinforcement:
+          $ref: "#/components/schemas/FineTuneReinforcementMethod"
+      required:
+      - type
+    FineTuneReinforcementHyperparameters:
+      type: object
+      description: The hyperparameters used for the reinforcement fine-tuning job.
+      properties:
+        batch_size:
+          description: >-
+            Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 256
+          default: auto
+        learning_rate_multiplier:
+          description: >-
+            Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            exclusiveMinimum: true
+          default: auto
+        n_epochs:
+          description: >-
+            The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 50
+          default: auto
+        reasoning_effort:
+          description: |-
+            Level of reasoning effort.
+          type: string
+          enum:
+          - default
+          - low
+          - medium
+          - high
+          default: default
+        compute_multiplier:
+          description: >-
+            Multiplier on amount of compute used for exploring search space during training.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0.00001
+            maximum: 10
+            exclusiveMinimum: true
+          default: auto
+        eval_interval:
+          description: |-
+            The number of training steps between evaluation runs.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+          default: auto
+        eval_samples:
+          description: |-
+            Number of evaluation samples to generate per training step.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+          default: auto
+    FineTuneReinforcementMethod:
+      type: object
+      description: Configuration for the reinforcement fine-tuning method.
+      properties:
+        grader:
+          type: object
+          description: The grader used for the fine-tuning job.
+          oneOf:
+          - $ref: "#/components/schemas/GraderStringCheck"
+          - $ref: "#/components/schemas/GraderTextSimilarity"
+          - $ref: "#/components/schemas/GraderPython"
+          - $ref: "#/components/schemas/GraderScoreModel"
+          - $ref: "#/components/schemas/GraderMulti"
+        hyperparameters:
+          $ref: "#/components/schemas/FineTuneReinforcementHyperparameters"
+      required:
+      - grader
+    FineTuneSupervisedHyperparameters:
+      type: object
+      description: The hyperparameters used for the fine-tuning job.
+      properties:
+        batch_size:
+          description: >-
+            Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 256
+          default: auto
+        learning_rate_multiplier:
+          description: >-
+            Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            exclusiveMinimum: true
+          default: auto
+        n_epochs:
+          description: >-
+            The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 50
+          default: auto
+    FineTuneSupervisedMethod:
+      type: object
+      description: Configuration for the supervised fine-tuning method.
+      properties:
+        hyperparameters:
+          $ref: "#/components/schemas/FineTuneSupervisedHyperparameters"
+    FineTuningCheckpointPermission:
+      type: object
+      title: FineTuningCheckpointPermission
+      description: >-
+        The `checkpoint.permission` object represents a permission for a fine-tuned model checkpoint.
+      properties:
+        id:
+          type: string
+          description: The permission identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the permission was created.
+        project_id:
+          type: string
+          description: The project identifier that the permission is for.
+        object:
+          type: string
+          description: The object type, which is always "checkpoint.permission".
+          enum:
+          - checkpoint.permission
+          x-stainless-const: true
+      required:
+      - created_at
+      - id
+      - object
+      - project_id
+    FineTuningIntegration:
+      type: object
+      title: Fine-Tuning Job Integration
+      required:
+      - type
+      - wandb
+      properties:
+        type:
+          type: string
+          description: The type of the integration being enabled for the fine-tuning job
+          enum:
+          - wandb
+          x-stainless-const: true
+        wandb:
+          type: object
+          description: >-
+            The settings for your integration with Weights and Biases. This payload specifies the project that metrics will be sent to. Optionally, you can set an explicit display name for your run, add tags to your run, and set a default entity (team, username, etc) to be associated with your run.
+          required:
+          - project
+          properties:
+            project:
+              description: |-
+                The name of the project that the new run will be created under.
+              type: string
+              example: my-wandb-project
+            name:
+              anyOf:
+              - description: >-
+                  A display name to set for the run. If not set, we will use the Job ID as the name.
+                type: string
+              - type: "null"
+            entity:
+              anyOf:
+              - description: >-
+                  The entity to use for the run. This allows you to set the team or username of the WandB user that you would like associated with the run. If not set, the default entity for the registered WandB API key is used.
+                type: string
+              - type: "null"
+            tags:
+              description: >-
+                A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+              type: array
+              items:
+                type: string
+                example: custom-tag
+    FineTuningJob:
+      type: object
+      title: FineTuningJob
+      description: >-
+        The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
+      properties:
+        id:
+          type: string
+          description: The object identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+        error:
+          anyOf:
+          - type: object
+            description: For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
+            properties:
+              code:
+                type: string
+                description: A machine-readable error code.
+              message:
+                type: string
+                description: A human-readable error message.
+              param:
+                anyOf:
+                - type: string
+                  description: The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
+                - type: "null"
+            required:
+            - code
+            - message
+            - param
+          - type: "null"
+        fine_tuned_model:
+          anyOf:
+          - type: string
+            description: The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
+          - type: "null"
+        finished_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+          - type: "null"
+        hyperparameters:
+          type: object
+          description: The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
+          properties:
+            batch_size:
+              anyOf:
+              - description: >-
+                  Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+                oneOf:
+                - type: string
+                  enum:
+                  - auto
+                  x-stainless-const: true
+                - type: integer
+                  minimum: 1
+                  maximum: 256
+                default: auto
+              - type: "null"
+            learning_rate_multiplier:
+              description: >-
+                Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: number
+                minimum: 0
+                exclusiveMinimum: true
+              default: auto
+            n_epochs:
+              description: >-
+                The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: integer
+                minimum: 1
+                maximum: 50
+              default: auto
+        model:
+          type: string
+          description: The base model that is being fine-tuned.
+        object:
+          type: string
+          description: The object type, which is always "fine_tuning.job".
+          enum:
+          - fine_tuning.job
+          x-stainless-const: true
+        organization_id:
+          type: string
+          description: The organization that owns the fine-tuning job.
+        result_files:
+          type: array
+          description: The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
+          items:
+            type: string
+            example: file-abc123
+        status:
+          type: string
+          description: The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
+          enum:
+          - validating_files
+          - queued
+          - running
+          - succeeded
+          - failed
+          - cancelled
+        trained_tokens:
+          anyOf:
+          - type: integer
+            description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
+          - type: "null"
+        training_file:
+          type: string
+          description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
+        validation_file:
+          anyOf:
+          - type: string
+            description: The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
+          - type: "null"
+        integrations:
+          anyOf:
+          - type: array
+            description: A list of integrations to enable for this fine-tuning job.
+            maxItems: 5
+            items:
+              oneOf:
+              - $ref: "#/components/schemas/FineTuningIntegration"
+          - type: "null"
+        seed:
+          type: integer
+          description: The seed used for the fine-tuning job.
+        estimated_finish:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+          - type: "null"
+        method:
+          $ref: "#/components/schemas/FineTuneMethod"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+      required:
+      - created_at
+      - error
+      - finished_at
+      - fine_tuned_model
+      - hyperparameters
+      - id
+      - model
+      - object
+      - organization_id
+      - result_files
+      - status
+      - trained_tokens
+      - training_file
+      - validation_file
+      - seed
+    FineTuningJobCheckpoint:
+      type: object
+      title: FineTuningJobCheckpoint
+      description: >-
+        The `fine_tuning.job.checkpoint` object represents a model checkpoint for a fine-tuning job that is ready to use.
+      properties:
+        id:
+          type: string
+          description: The checkpoint identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the checkpoint was created.
+        fine_tuned_model_checkpoint:
+          type: string
+          description: The name of the fine-tuned checkpoint model that is created.
+        step_number:
+          type: integer
+          description: The step number that the checkpoint was created at.
+        metrics:
+          type: object
+          description: Metrics at the step number during the fine-tuning job.
+          properties:
+            step:
+              type: number
+            train_loss:
+              type: number
+            train_mean_token_accuracy:
+              type: number
+            valid_loss:
+              type: number
+            valid_mean_token_accuracy:
+              type: number
+            full_valid_loss:
+              type: number
+            full_valid_mean_token_accuracy:
+              type: number
+        fine_tuning_job_id:
+          type: string
+          description: The name of the fine-tuning job that this checkpoint was created from.
+        object:
+          type: string
+          description: The object type, which is always "fine_tuning.job.checkpoint".
+          enum:
+          - fine_tuning.job.checkpoint
+          x-stainless-const: true
+      required:
+      - created_at
+      - fine_tuning_job_id
+      - fine_tuned_model_checkpoint
+      - id
+      - metrics
+      - object
+      - step_number
+    FineTuningJobEvent:
+      type: object
+      description: Fine-tuning job event object
+      properties:
+        object:
+          type: string
+          description: The object type, which is always "fine_tuning.job.event".
+          enum:
+          - fine_tuning.job.event
+          x-stainless-const: true
+        id:
+          type: string
+          description: The object identifier.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+        level:
+          type: string
+          description: The log level of the event.
+          enum:
+          - info
+          - warn
+          - error
+        message:
+          type: string
+          description: The message of the event.
+        type:
+          type: string
+          description: The type of event.
+          enum:
+          - message
+          - metrics
+        data:
+          type: object
+          description: The data associated with the event.
+      required:
+      - id
+      - object
+      - created_at
+      - level
+      - message
+    GraderLabelModel:
+      type: object
+      title: LabelModelGrader
+      description: >-
+        A LabelModelGrader object which uses a model to assign labels to each item in the evaluation.
+      properties:
+        type:
+          description: The object type, which is always `label_model`.
+          type: string
+          enum:
+          - label_model
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        model:
+          type: string
+          description: The model to use for the evaluation. Must support structured outputs.
+        input:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvalItem"
+        labels:
+          type: array
+          items:
+            type: string
+          description: The labels to assign to each item in the evaluation.
+        passing_labels:
+          type: array
+          items:
+            type: string
+          description: The labels that indicate a passing result. Must be a subset of labels.
+      required:
+      - type
+      - model
+      - input
+      - passing_labels
+      - labels
+      - name
+    GraderMulti:
+      type: object
+      title: MultiGrader
+      description: A MultiGrader object combines the output of multiple graders to produce a single score.
+      properties:
+        type:
+          type: string
+          enum:
+          - multi
+          default: multi
+          description: The object type, which is always `multi`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        graders:
+          oneOf:
+          - $ref: "#/components/schemas/GraderStringCheck"
+          - $ref: "#/components/schemas/GraderTextSimilarity"
+          - $ref: "#/components/schemas/GraderPython"
+          - $ref: "#/components/schemas/GraderScoreModel"
+          - $ref: "#/components/schemas/GraderLabelModel"
+        calculate_output:
+          type: string
+          description: A formula to calculate the output based on grader results.
+      required:
+      - name
+      - type
+      - graders
+      - calculate_output
+    GraderPython:
+      type: object
+      title: PythonGrader
+      description: |-
+        A PythonGrader object that runs a python script on the input.
+      properties:
+        type:
+          type: string
+          enum:
+          - python
+          description: The object type, which is always `python`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        source:
+          type: string
+          description: The source code of the python script.
+        image_tag:
+          type: string
+          description: The image tag to use for the python script.
+      required:
+      - type
+      - name
+      - source
+    GraderScoreModel:
+      type: object
+      title: ScoreModelGrader
+      description: >-
+        A ScoreModelGrader object that uses a model to assign a score to the input.
+      properties:
+        type:
+          type: string
+          enum:
+          - score_model
+          description: The object type, which is always `score_model`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        model:
+          type: string
+          description: The model to use for the evaluation.
+        sampling_params:
+          type: object
+          description: The sampling parameters for the model.
+          properties:
+            seed:
+              anyOf:
+              - type: integer
+                description: |-
+                  A seed value to initialize the randomness, during sampling.
+              - type: "null"
+            top_p:
+              anyOf:
+              - type: number
+                default: 1
+                example: 1
+                description: >-
+                  An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
+              - type: "null"
+            temperature:
+              anyOf:
+              - type: number
+                description: |-
+                  A higher temperature increases randomness in the outputs.
+              - type: "null"
+            max_completions_tokens:
+              anyOf:
+              - type: integer
+                minimum: 1
+                description: >-
+                  The maximum number of tokens the grader model may generate in its response.
+              - type: "null"
+            reasoning_effort:
+              $ref: "#/components/schemas/ReasoningEffort"
+        input:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvalItem"
+          description: >-
+            The input messages evaluated by the grader. Supports text, output text, input image, and input audio content blocks, and may include template strings.
+        range:
+          type: array
+          items:
+            type: number
+            min_items: 2
+            max_items: 2
+          description: The range of the score. Defaults to `[0, 1]`.
+      required:
+      - type
+      - name
+      - input
+      - model
+    GraderStringCheck:
+      type: object
+      title: StringCheckGrader
+      description: >-
+        A StringCheckGrader object that performs a string comparison between input and reference using a specified operation.
+      properties:
+        type:
+          type: string
+          enum:
+          - string_check
+          description: The object type, which is always `string_check`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        input:
+          type: string
+          description: The input text. This may include template strings.
+        reference:
+          type: string
+          description: The reference text. This may include template strings.
+        operation:
+          type: string
+          enum:
+          - eq
+          - ne
+          - like
+          - ilike
+          description: The string check operation to perform. One of `eq`, `ne`, `like`, or `ilike`.
+      required:
+      - type
+      - name
+      - input
+      - reference
+      - operation
+    GraderTextSimilarity:
+      type: object
+      title: TextSimilarityGrader
+      description: >-
+        A TextSimilarityGrader object which grades text based on similarity metrics.
+      properties:
+        type:
+          type: string
+          enum:
+          - text_similarity
+          default: text_similarity
+          description: The type of grader.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        input:
+          type: string
+          description: The text being graded.
+        reference:
+          type: string
+          description: The text being graded against.
+        evaluation_metric:
+          type: string
+          enum:
+          - cosine
+          - fuzzy_match
+          - bleu
+          - gleu
+          - meteor
+          - rouge_1
+          - rouge_2
+          - rouge_3
+          - rouge_4
+          - rouge_5
+          - rouge_l
+          description: >-
+            The evaluation metric to use. One of `cosine`, `fuzzy_match`, `bleu`,  `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,  or `rouge_l`.
+      required:
+      - type
+      - name
+      - input
+      - reference
+      - evaluation_metric
+    InputAudio:
+      type: object
+      title: Input audio
+      description: |-
+        An audio input to the model.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the input item. Always `input_audio`.
+          enum:
+          - input_audio
+          x-stainless-const: true
+        input_audio:
+          type: object
+          properties:
+            data:
+              type: string
+              description: |-
+                Base64-encoded audio data.
+            format:
+              type: string
+              description: >-
+                The format of the audio data. Currently supported formats are `mp3` and `wav`.
+              enum:
+              - mp3
+              - wav
+          required:
+          - data
+          - format
+      required:
+      - type
+      - input_audio
+    InputTextContent:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_text
+          description: The type of the input item. Always `input_text`.
+          default: input_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: The text input to the model.
+        prompt_cache_breakpoint:
+          $ref: "#/components/schemas/PromptCacheBreakpointConfig"
+      type: object
+      required:
+      - type
+      - text
+      title: Input text
+      description: A text input to the model.
+    ListFineTuningCheckpointPermissionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FineTuningCheckpointPermission"
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        first_id:
+          anyOf:
+          - type: string
+          - type: "null"
+        last_id:
+          anyOf:
+          - type: string
+          - type: "null"
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ListFineTuningJobCheckpointsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FineTuningJobCheckpoint"
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        first_id:
+          anyOf:
+          - type: string
+          - type: "null"
+        last_id:
+          anyOf:
+          - type: string
+          - type: "null"
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ListFineTuningJobEventsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FineTuningJobEvent"
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ListPaginatedFineTuningJobsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FineTuningJob"
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+    Metadata:
+      anyOf:
+      - type: object
+        description: >-
+          Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format, and querying for objects via API or the dashboard.
+
+          Keys are strings with a maximum length of 64 characters. Values are strings with a maximum length of 512 characters.
+        additionalProperties:
+          type: string
+      - type: "null"
+    PromptCacheBreakpointConfig:
+      properties:
+        mode:
+          type: string
+          enum:
+          - explicit
+          description: The breakpoint mode. Always `explicit`.
+          default: explicit
+          x-stainless-const: true
+      type: object
+      required:
+      - mode
+      title: Prompt cache breakpoint
+      description: Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+    ReasoningEffort:
+      anyOf:
+      - type: string
+        enum:
+        - none
+        - minimal
+        - low
+        - medium
+        - high
+        - xhigh
+        - max
+        default: medium
+        description: >-
+          Constrains effort on reasoning for reasoning models. Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response. Not all reasoning models support every value. See the [reasoning guide](https://platform.openai.com/docs/guides/reasoning) for model-specific support.
+      - type: "null"
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...

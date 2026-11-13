@@ -1,0 +1,1065 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Images
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Images
+  description: Given a prompt and/or an input image, the model will generate a new image.
+paths:
+  /images/edits:
+    post:
+      operationId: createImageEdit
+      tags:
+      - Images
+      summary: Creates an edited or extended image given one or more source images and a prompt. This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`, `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
+      description: >-
+        You can call this endpoint with either:
+
+        - `multipart/form-data`: use binary uploads via `image` (and optional `mask`).
+
+        - `application/json`: use `images` (and optional `mask`) as references with either `image_url` or `file_id`.
+
+        Note that JSON requests use `images` (array) instead of the multipart `image` field.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateImageEditRequest"
+            examples:
+              multipart_edit:
+                summary: Multipart form upload (binary image + prompt)
+                value:
+                  model: gpt-image-1.5
+                  prompt: Add a watercolor effect to this image
+                  image: <binary image file>
+                  size: 1024x1024
+                  quality: high
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditImageBodyJsonParam"
+            examples:
+              json_with_url:
+                summary: JSON request with image URL
+                value:
+                  model: gpt-image-1.5
+                  prompt: Add a watercolor effect to this image
+                  images:
+                  - image_url: https://example.com/source-image.png
+                  size: 1024x1024
+                  quality: high
+              json_with_file_id:
+                summary: JSON request with uploaded file id
+                value:
+                  model: gpt-image-1.5
+                  prompt: Replace the background with a snowy mountain scene
+                  images:
+                  - file_id: file-abc123
+                  mask:
+                    file_id: file-mask123
+                  output_format: png
+                  output_compression: 100
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImagesResponse"
+            text/event-stream:
+              schema:
+                $ref: "#/components/schemas/ImageEditStreamEvent"
+  /images/generations:
+    post:
+      operationId: createImage
+      tags:
+      - Images
+      summary: |-
+        Creates an image given a prompt. [Learn more](/docs/guides/images).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateImageRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImagesResponse"
+            text/event-stream:
+              schema:
+                $ref: "#/components/schemas/ImageGenStreamEvent"
+  /images/variations:
+    post:
+      operationId: createImageVariation
+      tags:
+      - Images
+      summary: Creates a variation of a given image. This endpoint only supports `dall-e-2`.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateImageVariationRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImagesResponse"
+components:
+  schemas:
+    CreateImageEditRequest:
+      type: object
+      properties:
+        image:
+          anyOf:
+          - type: string
+            format: binary
+          - type: array
+            maxItems: 16
+            items:
+              type: string
+              format: binary
+          description: >-
+            The image(s) to edit. Must be a supported image file or an array of images.
+
+            For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than 50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same input constraints as GPT image models.
+
+            For `dall-e-2`, you can only provide one image, and it should be a square `png` file less than 4MB.
+        prompt:
+          description: A text description of the desired image(s). The maximum length is 1000 characters for `dall-e-2`, and 32000 characters for the GPT image models.
+          type: string
+          example: A cute baby sea otter wearing a beret
+        mask:
+          description: An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where `image` should be edited. If there are multiple images provided, the mask will be applied on the first image. Must be a valid PNG file, less than 4MB, and have the same dimensions as `image`.
+          type: string
+          format: binary
+        background:
+          type: string
+          enum:
+          - transparent
+          - opaque
+          - auto
+          default: auto
+          example: transparent
+          nullable: true
+          description: >-
+            Allows to set transparency for the background of the generated image(s). This parameter is only supported for the GPT image models. Must be one of `transparent`, `opaque` or `auto` (default value). When `auto` is used, the model will automatically determine the best background for the image.
+
+            If `transparent`, the output format needs to support transparency, so it should be set to either `png` (default value) or `webp`.
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - gpt-image-1.5
+            - dall-e-2
+            - gpt-image-1
+            - gpt-image-1-mini
+            - chatgpt-image-latest
+            x-stainless-const: true
+          default: gpt-image-1.5
+          example: gpt-image-1.5
+          nullable: true
+          description: The model to use for image generation. Defaults to `gpt-image-1.5`.
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          example: 1
+          nullable: true
+          description: The number of images to generate. Must be between 1 and 10.
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - 256x256
+            - 512x512
+            - 1024x1024
+            - 1536x1024
+            - 1024x1536
+            - auto
+          default: 1024x1024
+          example: 1024x1024
+          nullable: true
+          description: The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        response_format:
+          type: string
+          enum:
+          - url
+          - b64_json
+          example: url
+          nullable: true
+          description: The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated. This parameter is only supported for `dall-e-2` (default is `url` for `dall-e-2`), as GPT image models always return base64-encoded images.
+        output_format:
+          type: string
+          enum:
+          - png
+          - jpeg
+          - webp
+          default: png
+          example: png
+          nullable: true
+          description: >-
+            The format in which the generated images are returned. This parameter is only supported for the GPT image models. Must be one of `png`, `jpeg`, or `webp`. The default value is `png`.
+        output_compression:
+          type: integer
+          default: 100
+          example: 100
+          nullable: true
+          description: >-
+            The compression level (0-100%) for the generated images. This parameter is only supported for the GPT image models with the `webp` or `jpeg` output formats, and defaults to 100.
+        user:
+          type: string
+          example: user-1234
+          description: >-
+            A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+        input_fidelity:
+          anyOf:
+          - $ref: "#/components/schemas/InputFidelity"
+          - type: "null"
+        stream:
+          type: boolean
+          default: false
+          example: false
+          nullable: true
+          description: >-
+            Edit the image in streaming mode. Defaults to `false`. See the [Image generation guide](/docs/guides/image-generation) for more information.
+        partial_images:
+          $ref: "#/components/schemas/PartialImages"
+        quality:
+          type: string
+          enum:
+          - standard
+          - low
+          - medium
+          - high
+          - auto
+          default: auto
+          example: high
+          nullable: true
+          description: >-
+            The quality of the image that will be generated for GPT image models. Defaults to `auto`.
+      required:
+      - prompt
+      - image
+    CreateImageRequest:
+      type: object
+      properties:
+        prompt:
+          description: A text description of the desired image(s). The maximum length is 32000 characters for the GPT image models, 1000 characters for `dall-e-2` and 4000 characters for `dall-e-3`.
+          type: string
+          example: A cute baby sea otter
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - gpt-image-1.5
+            - dall-e-2
+            - dall-e-3
+            - gpt-image-1
+            - gpt-image-1-mini
+          default: dall-e-2
+          example: gpt-image-1.5
+          nullable: true
+          description: The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          example: 1
+          nullable: true
+          description: The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
+        quality:
+          type: string
+          enum:
+          - standard
+          - hd
+          - low
+          - medium
+          - high
+          - auto
+          default: auto
+          example: medium
+          nullable: true
+          description: >-
+            The quality of the image that will be generated.
+
+            - `auto` (default value) will automatically select the best quality for the given model.
+
+            - `high`, `medium` and `low` are supported for the GPT image models.
+
+            - `hd` and `standard` are supported for `dall-e-3`.
+
+            - `standard` is the only option for `dall-e-2`.
+        response_format:
+          type: string
+          enum:
+          - url
+          - b64_json
+          default: url
+          example: url
+          nullable: true
+          description: The format in which generated images with `dall-e-2` and `dall-e-3` are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated. This parameter isn't supported for the GPT image models, which always return base64-encoded images.
+        output_format:
+          type: string
+          enum:
+          - png
+          - jpeg
+          - webp
+          default: png
+          example: png
+          nullable: true
+          description: The format in which the generated images are returned. This parameter is only supported for the GPT image models. Must be one of `png`, `jpeg`, or `webp`.
+        output_compression:
+          type: integer
+          default: 100
+          example: 100
+          nullable: true
+          description: The compression level (0-100%) for the generated images. This parameter is only supported for the GPT image models with the `webp` or `jpeg` output formats, and defaults to 100.
+        stream:
+          type: boolean
+          default: false
+          example: false
+          nullable: true
+          description: >-
+            Generate the image in streaming mode. Defaults to `false`. See the [Image generation guide](/docs/guides/image-generation) for more information. This parameter is only supported for the GPT image models.
+        partial_images:
+          $ref: "#/components/schemas/PartialImages"
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - auto
+            - 1024x1024
+            - 1536x1024
+            - 1024x1536
+            - 256x256
+            - 512x512
+            - 1792x1024
+            - 1024x1792
+          default: auto
+          example: 1024x1024
+          nullable: true
+          description: The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        moderation:
+          type: string
+          enum:
+          - low
+          - auto
+          default: auto
+          example: low
+          nullable: true
+          description: Control the content-moderation level for images generated by the GPT image models. Must be either `low` for less restrictive filtering or `auto` (default value).
+        background:
+          type: string
+          enum:
+          - transparent
+          - opaque
+          - auto
+          default: auto
+          example: transparent
+          nullable: true
+          description: >-
+            Allows to set transparency for the background of the generated image(s). This parameter is only supported for the GPT image models. Must be one of `transparent`, `opaque` or `auto` (default value). When `auto` is used, the model will automatically determine the best background for the image.
+
+            If `transparent`, the output format needs to support transparency, so it should be set to either `png` (default value) or `webp`.
+        style:
+          type: string
+          enum:
+          - vivid
+          - natural
+          default: vivid
+          example: vivid
+          nullable: true
+          description: The style of the generated images. This parameter is only supported for `dall-e-3`. Must be one of `vivid` or `natural`. Vivid causes the model to lean towards generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real looking images.
+        user:
+          type: string
+          example: user-1234
+          description: >-
+            A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+      required:
+      - prompt
+    CreateImageVariationRequest:
+      type: object
+      properties:
+        image:
+          description: The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
+          type: string
+          format: binary
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - dall-e-2
+            x-stainless-const: true
+          default: dall-e-2
+          example: dall-e-2
+          nullable: true
+          description: The model to use for image generation. Only `dall-e-2` is supported at this time.
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          example: 1
+          nullable: true
+          description: The number of images to generate. Must be between 1 and 10.
+        response_format:
+          type: string
+          enum:
+          - url
+          - b64_json
+          default: url
+          example: url
+          nullable: true
+          description: The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
+        size:
+          type: string
+          enum:
+          - 256x256
+          - 512x512
+          - 1024x1024
+          default: 1024x1024
+          example: 1024x1024
+          nullable: true
+          description: The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`.
+        user:
+          type: string
+          example: user-1234
+          description: >-
+            A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids).
+      required:
+      - image
+    EditImageBodyJsonParam:
+      type: object
+      description: >-
+        JSON request body for image edits.
+
+        Use `images` (array of `ImageRefParam`) instead of multipart `image` uploads. You can reference images via external URLs, data URLs, or uploaded file IDs. JSON edits support GPT image models only; DALL-E edits require multipart (`dall-e-2` only).
+      properties:
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - gpt-image-1.5
+            - gpt-image-1
+            - gpt-image-1-mini
+            - chatgpt-image-latest
+          - type: "null"
+          default: gpt-image-1.5
+          example: gpt-image-1.5
+          description: The model to use for image editing.
+        images:
+          type: array
+          minItems: 1
+          maxItems: 16
+          description: |-
+            Input image references to edit. For GPT image models, you can provide up to 16 images.
+          items:
+            $ref: "#/components/schemas/ImageRefParam"
+        mask:
+          $ref: "#/components/schemas/ImageRefParam"
+        prompt:
+          type: string
+          minLength: 1
+          maxLength: 32000
+          example: Add a watercolor effect and keep the subject centered
+          description: A text description of the desired image edit.
+        n:
+          anyOf:
+          - type: integer
+            minimum: 1
+            maximum: 10
+          - type: "null"
+          default: 1
+          example: 1
+          description: The number of edited images to generate.
+        quality:
+          anyOf:
+          - type: string
+            enum:
+            - low
+            - medium
+            - high
+            - auto
+          - type: "null"
+          default: auto
+          example: high
+          description: |-
+            Output quality for GPT image models.
+        input_fidelity:
+          anyOf:
+          - type: string
+            enum:
+            - high
+            - low
+          - type: "null"
+          description: Controls fidelity to the original input image(s).
+        size:
+          anyOf:
+          - type: string
+            enum:
+            - auto
+            - 1024x1024
+            - 1536x1024
+            - 1024x1536
+          - type: "null"
+          default: auto
+          example: 1024x1024
+          description: Requested output image size.
+        user:
+          type: string
+          example: user-1234
+          description: >-
+            A unique identifier representing your end-user, which can help OpenAI monitor and detect abuse.
+        output_format:
+          anyOf:
+          - type: string
+            enum:
+            - png
+            - jpeg
+            - webp
+          - type: "null"
+          default: png
+          example: png
+          description: Output image format. Supported for GPT image models.
+        output_compression:
+          anyOf:
+          - type: integer
+            minimum: 0
+            maximum: 100
+          - type: "null"
+          example: 100
+          description: Compression level for `jpeg` or `webp` output.
+        moderation:
+          anyOf:
+          - type: string
+            enum:
+            - low
+            - auto
+          - type: "null"
+          default: auto
+          example: auto
+          description: Moderation level for GPT image models.
+        background:
+          anyOf:
+          - type: string
+            enum:
+            - transparent
+            - opaque
+            - auto
+          - type: "null"
+          default: auto
+          example: transparent
+          description: Background behavior for generated image output.
+        stream:
+          anyOf:
+          - type: boolean
+          - type: "null"
+          default: false
+          example: false
+          description: Stream partial image results as events.
+        partial_images:
+          $ref: "#/components/schemas/PartialImages"
+      required:
+      - images
+      - prompt
+    Image:
+      type: object
+      description: Represents the content or the URL of an image generated by the OpenAI API.
+      properties:
+        b64_json:
+          type: string
+          description: The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+        url:
+          type: string
+          format: uri
+          description: When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+        revised_prompt:
+          type: string
+          description: For `dall-e-3` only, the revised prompt that was used to generate the image.
+    ImageEditCompletedEvent:
+      type: object
+      description: >-
+        Emitted when image editing has completed and the final image is available.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the event. Always `image_edit.completed`.
+          enum:
+          - image_edit.completed
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: >-
+            Base64-encoded final edited image data, suitable for rendering as an image.
+        created_at:
+          type: integer
+          format: unixtime
+          description: |-
+            The Unix timestamp when the event was created.
+        size:
+          type: string
+          description: |-
+            The size of the edited image.
+          enum:
+          - 1024x1024
+          - 1024x1536
+          - 1536x1024
+          - auto
+        quality:
+          type: string
+          description: |-
+            The quality setting for the edited image.
+          enum:
+          - low
+          - medium
+          - high
+          - auto
+        background:
+          type: string
+          description: |-
+            The background setting for the edited image.
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: |-
+            The output format for the edited image.
+          enum:
+          - png
+          - webp
+          - jpeg
+        usage:
+          $ref: "#/components/schemas/ImagesUsage"
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - usage
+    ImageEditPartialImageEvent:
+      type: object
+      description: >-
+        Emitted when a partial image is available during image editing streaming.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the event. Always `image_edit.partial_image`.
+          enum:
+          - image_edit.partial_image
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: >-
+            Base64-encoded partial image data, suitable for rendering as an image.
+        created_at:
+          type: integer
+          format: unixtime
+          description: |-
+            The Unix timestamp when the event was created.
+        size:
+          type: string
+          description: |-
+            The size of the requested edited image.
+          enum:
+          - 1024x1024
+          - 1024x1536
+          - 1536x1024
+          - auto
+        quality:
+          type: string
+          description: |-
+            The quality setting for the requested edited image.
+          enum:
+          - low
+          - medium
+          - high
+          - auto
+        background:
+          type: string
+          description: |-
+            The background setting for the requested edited image.
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: |-
+            The output format for the requested edited image.
+          enum:
+          - png
+          - webp
+          - jpeg
+        partial_image_index:
+          type: integer
+          description: |-
+            0-based index for the partial image (streaming).
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - partial_image_index
+    ImageEditStreamEvent:
+      anyOf:
+      - $ref: "#/components/schemas/ImageEditPartialImageEvent"
+      - $ref: "#/components/schemas/ImageEditCompletedEvent"
+      discriminator:
+        propertyName: type
+    ImageGenCompletedEvent:
+      type: object
+      description: >-
+        Emitted when image generation has completed and the final image is available.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the event. Always `image_generation.completed`.
+          enum:
+          - image_generation.completed
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: |-
+            Base64-encoded image data, suitable for rendering as an image.
+        created_at:
+          type: integer
+          format: unixtime
+          description: |-
+            The Unix timestamp when the event was created.
+        size:
+          type: string
+          description: |-
+            The size of the generated image.
+          enum:
+          - 1024x1024
+          - 1024x1536
+          - 1536x1024
+          - auto
+        quality:
+          type: string
+          description: |-
+            The quality setting for the generated image.
+          enum:
+          - low
+          - medium
+          - high
+          - auto
+        background:
+          type: string
+          description: |-
+            The background setting for the generated image.
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: |-
+            The output format for the generated image.
+          enum:
+          - png
+          - webp
+          - jpeg
+        usage:
+          $ref: "#/components/schemas/ImagesUsage"
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - usage
+    ImageGenInputUsageDetails:
+      properties:
+        text_tokens:
+          type: integer
+          description: The number of text tokens in the input prompt.
+        image_tokens:
+          type: integer
+          description: The number of image tokens in the input prompt.
+      type: object
+      required:
+      - text_tokens
+      - image_tokens
+      title: Input usage details
+      description: The input tokens detailed information for the image generation.
+    ImageGenOutputTokensDetails:
+      properties:
+        image_tokens:
+          type: integer
+          description: The number of image output tokens generated by the model.
+        text_tokens:
+          type: integer
+          description: The number of text output tokens generated by the model.
+      type: object
+      required:
+      - image_tokens
+      - text_tokens
+      title: Image generation output token details
+      description: The output token details for the image generation.
+    ImageGenPartialImageEvent:
+      type: object
+      description: >-
+        Emitted when a partial image is available during image generation streaming.
+      properties:
+        type:
+          type: string
+          description: |-
+            The type of the event. Always `image_generation.partial_image`.
+          enum:
+          - image_generation.partial_image
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: >-
+            Base64-encoded partial image data, suitable for rendering as an image.
+        created_at:
+          type: integer
+          format: unixtime
+          description: |-
+            The Unix timestamp when the event was created.
+        size:
+          type: string
+          description: |-
+            The size of the requested image.
+          enum:
+          - 1024x1024
+          - 1024x1536
+          - 1536x1024
+          - auto
+        quality:
+          type: string
+          description: |-
+            The quality setting for the requested image.
+          enum:
+          - low
+          - medium
+          - high
+          - auto
+        background:
+          type: string
+          description: |-
+            The background setting for the requested image.
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: |-
+            The output format for the requested image.
+          enum:
+          - png
+          - webp
+          - jpeg
+        partial_image_index:
+          type: integer
+          description: |-
+            0-based index for the partial image (streaming).
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - partial_image_index
+    ImageGenStreamEvent:
+      anyOf:
+      - $ref: "#/components/schemas/ImageGenPartialImageEvent"
+      - $ref: "#/components/schemas/ImageGenCompletedEvent"
+      discriminator:
+        propertyName: type
+    ImageGenUsage:
+      properties:
+        input_tokens:
+          type: integer
+          description: The number of tokens (images and text) in the input prompt.
+        total_tokens:
+          type: integer
+          description: The total number of tokens (images and text) used for the image generation.
+        output_tokens:
+          type: integer
+          description: The number of output tokens generated by the model.
+        output_tokens_details:
+          $ref: "#/components/schemas/ImageGenOutputTokensDetails"
+        input_tokens_details:
+          $ref: "#/components/schemas/ImageGenInputUsageDetails"
+      type: object
+      required:
+      - input_tokens
+      - total_tokens
+      - output_tokens
+      - input_tokens_details
+      title: Image generation usage
+      description: For `gpt-image-1` only, the token usage information for the image generation.
+    ImageRefParam:
+      type: object
+      description: |-
+        Reference an input image by either URL or uploaded file ID. Provide exactly one of `image_url` or `file_id`.
+      properties:
+        image_url:
+          type: string
+          format: uri
+          maxLength: 20971520
+          description: A fully qualified URL or base64-encoded data URL.
+          example: https://example.com/source-image.png
+        file_id:
+          type: string
+          description: The File API ID of an uploaded image to use as input.
+          example: file-abc123
+      anyOf:
+      - required:
+        - image_url
+      - required:
+        - file_id
+      not:
+        required:
+        - image_url
+        - file_id
+      additionalProperties: false
+    ImagesResponse:
+      type: object
+      title: Image generation response
+      description: The response from the image generation endpoint.
+      properties:
+        created:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the image was created.
+        data:
+          type: array
+          description: The list of generated images.
+          items:
+            $ref: "#/components/schemas/Image"
+        background:
+          type: string
+          description: The background parameter used for the image generation. Either `transparent` or `opaque`.
+          enum:
+          - transparent
+          - opaque
+        output_format:
+          type: string
+          description: The output format of the image generation. Either `png`, `webp`, or `jpeg`.
+          enum:
+          - png
+          - webp
+          - jpeg
+        size:
+          type: string
+          description: The size of the image generated. Either `1024x1024`, `1024x1536`, or `1536x1024`.
+          enum:
+          - 1024x1024
+          - 1024x1536
+          - 1536x1024
+        quality:
+          type: string
+          description: The quality of the image generated. Either `low`, `medium`, or `high`.
+          enum:
+          - low
+          - medium
+          - high
+        usage:
+          $ref: "#/components/schemas/ImageGenUsage"
+      required:
+      - created
+    ImagesUsage:
+      type: object
+      description: >-
+        For the GPT image models only, the token usage information for the image generation.
+      required:
+      - total_tokens
+      - input_tokens
+      - output_tokens
+      - input_tokens_details
+      properties:
+        total_tokens:
+          type: integer
+          description: >-
+            The total number of tokens (images and text) used for the image generation.
+        input_tokens:
+          type: integer
+          description: The number of tokens (images and text) in the input prompt.
+        output_tokens:
+          type: integer
+          description: The number of image tokens in the output image.
+        input_tokens_details:
+          type: object
+          description: The input tokens detailed information for the image generation.
+          required:
+          - text_tokens
+          - image_tokens
+          properties:
+            text_tokens:
+              type: integer
+              description: The number of text tokens in the input prompt.
+            image_tokens:
+              type: integer
+              description: The number of image tokens in the input prompt.
+    InputFidelity:
+      type: string
+      enum:
+      - high
+      - low
+      description: Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+    PartialImages:
+      anyOf:
+      - type: integer
+        maximum: 3
+        minimum: 0
+        default: 0
+        example: 1
+        description: >-
+          The number of partial images to generate. This parameter is used for streaming responses that return partial images. Value must be between 0 and 3. When set to 0, the response will be a single image sent in one streaming event.
+
+          Note that the final image may be sent before the full number of partial images are generated if the full image is generated more quickly.
+      - type: "null"
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
