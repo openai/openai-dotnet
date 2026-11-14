@@ -59,10 +59,17 @@ namespace OpenAI.Chat
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
+            if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                if (Refusal != null)
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
             }
             if (Optional.IsDefined(ParticipantName) && !Patch.Contains("$.name"u8))
             {
@@ -98,11 +105,15 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -122,6 +133,8 @@ namespace OpenAI.Chat
             return DeserializeAssistantChatMessage(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static AssistantChatMessage DeserializeAssistantChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -133,6 +146,7 @@ namespace OpenAI.Chat
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool refusalIsDefined = false;
             string refusal = default;
             string participantName = default;
             ChatOutputAudioReference outputAudioReference = default;
@@ -152,6 +166,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("refusal"u8))
                 {
+                    refusalIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         refusal = null;
@@ -209,8 +224,13 @@ namespace OpenAI.Chat
                 participantName,
                 outputAudioReference,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall);
+                functionCall)
+            {
+                _refusalIsDefined = refusalIsDefined
+            };
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -228,6 +248,8 @@ namespace OpenAI.Chat
                 return OutputAudioReference.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -236,6 +258,8 @@ namespace OpenAI.Chat
                 }
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
@@ -278,6 +302,8 @@ namespace OpenAI.Chat
                 return true;
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -287,6 +313,8 @@ namespace OpenAI.Chat
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;

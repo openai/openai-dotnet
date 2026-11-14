@@ -6,7 +6,7 @@ import "./models_items.tsp";
 using Azure.ClientGenerator.Core;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Responses;
 
 union ResponseStreamEventType {
   string,

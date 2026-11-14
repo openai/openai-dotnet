@@ -1217,13 +1217,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
-                    model: "gpt-image-1",
+                    model: "gpt-image-2.6-flare",
                     quality: ImageGenerationToolQuality.High,
                     size: ImageGenerationToolSize.W1024xH1024,
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     moderationLevel: ImageGenerationToolModerationLevel.Auto,
-                    background: ImageGenerationToolBackground.Transparent,
-                    inputFidelity: ImageGenerationToolInputFidelity.High)
+                    background: ImageGenerationToolBackground.Transparent)
             }
         };
 
@@ -1250,7 +1249,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         ImageGenerationTool imageGenTool = ResponseTool.CreateImageGenerationTool(
-            model: "gpt-image-1",
+            model: "gpt-image-2.6-flare",
             quality: ImageGenerationToolQuality.High,
             size: ImageGenerationToolSize.W1024xH1024,
             outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
@@ -1299,7 +1298,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
-                    model: "gpt-image-1",
+                    model: "gpt-image-2.6-flare",
                     quality: ImageGenerationToolQuality.High,
                     size: ImageGenerationToolSize.W1024xH1024,
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,

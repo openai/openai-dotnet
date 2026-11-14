@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalCompactResponseMethodPublicBody(document.RootElement, options);
+                        return DeserializeInternalCompactResponseMethodPublicBody(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalCompactResponseMethodPublicBody)} does not support reading '{options.Format}' format.");
@@ -51,6 +51,14 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalCompactResponseMethodPublicBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -63,60 +71,62 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalCompactResponseMethodPublicBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
-                if (Optional.IsDefined(Model))
-                {
-                    writer.WritePropertyName("model"u8);
-                    writer.WriteStringValue(Model.Value.ToString());
-                }
-                else
-                {
-                    writer.WriteNull("model"u8);
-                }
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
             }
-            if (Optional.IsDefined(Input) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
+            else if (!Patch.Contains("$.model"u8))
             {
-                writer.WritePropertyName("input"u8);
+                writer.WriteNull("model"u8);
+            }
+            if (Optional.IsDefined(Input, _inputIsDefined) && !Patch.Contains("$.input"u8))
+            {
+                if (Input != null)
+                {
+                    writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
+                    writer.WriteRawValue(Input);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Input))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
-            {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
-            }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
-            {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    using (JsonDocument document = JsonDocument.Parse(Input))
                     {
                         JsonSerializer.Serialize(writer, document.RootElement);
                     }
 #endif
                 }
+                else
+                {
+                    writer.WriteNull("input"u8);
+                }
             }
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
+            {
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
+            }
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && !Patch.Contains("$.instructions"u8))
+            {
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalCompactResponseMethodPublicBody IJsonModel<InternalCompactResponseMethodPublicBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -129,20 +139,25 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalCompactResponseMethodPublicBody)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCompactResponseMethodPublicBody(document.RootElement, options);
+            return DeserializeInternalCompactResponseMethodPublicBody(document.RootElement, null, options);
         }
 
-        internal static InternalCompactResponseMethodPublicBody DeserializeInternalCompactResponseMethodPublicBody(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalCompactResponseMethodPublicBody DeserializeInternalCompactResponseMethodPublicBody(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalModelIdsCompaction? model = default;
+            bool inputIsDefined = false;
             BinaryData input = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("model"u8))
@@ -157,6 +172,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    inputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         input = null;
@@ -167,6 +183,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -177,6 +194,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -185,10 +203,14 @@ namespace OpenAI.Responses
                     instructions = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCompactResponseMethodPublicBody(model, input, previousResponseId, instructions, additionalBinaryDataProperties);
+            return new InternalCompactResponseMethodPublicBody(model, input, previousResponseId, instructions, patch)
+            {
+                _inputIsDefined = inputIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _instructionsIsDefined = instructionsIsDefined
+            };
         }
     }
 }

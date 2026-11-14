@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeServerEventGA))]
     public partial class RealtimeServerUpdate : IJsonModel<RealtimeServerUpdate>
     {
         internal RealtimeServerUpdate()

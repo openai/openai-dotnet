@@ -4,7 +4,7 @@ using Azure.ClientGenerator.Core;
 using Http;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Responses;
 
 @doc("""
   **Reasoning models only**

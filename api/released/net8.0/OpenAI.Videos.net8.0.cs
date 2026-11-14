@@ -11,11 +11,11 @@ namespace OpenAI.Videos {
         protected VideoClient();
         [Experimental("SCME0002")]
         public VideoClient(VideoClientSettings settings);
-        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential, VideoClientOptions options);
         public VideoClient(ApiKeyCredential credential);
-        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, VideoClientOptions options);
         public VideoClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VideoClient(ClientPipeline pipeline, VideoClientOptions options);
         public VideoClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -33,9 +33,16 @@ namespace OpenAI.Videos {
         public virtual CollectionResult GetVideos(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetVideosAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class VideoClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class VideoClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VideoClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }

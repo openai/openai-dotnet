@@ -6,23 +6,23 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "57",
+        "Content-Length": "65",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
-        "model": "gpt-image-1"
+        "model": "gpt-image-2.6-flare"
       },
       "StatusCode": 401,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
+          "X-Request-ID, Server-Timing-Total",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a347f502d833b9df-SEA",
+        "CF-RAY": "a5599eaf6b8652ab-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",

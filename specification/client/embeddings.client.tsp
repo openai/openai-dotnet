@@ -1,10 +1,8 @@
 import "../base/typespec/embeddings/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(CreateEmbeddingRequest.dimensions, int32);
 @@alternateType(Embedding.index, int32);
@@ -20,6 +18,6 @@ using TypeSpec.HttpClient.CSharp;
 // ------------ JsonPatch ------------
 
 // models.tsp models
-@@dynamicModel(CreateEmbeddingRequest);
-@@dynamicModel(CreateEmbeddingResponse);
-@@dynamicModel(Embedding);
+@@dynamicModel(CreateEmbeddingRequest, "csharp");
+@@dynamicModel(CreateEmbeddingResponse, "csharp");
+@@dynamicModel(Embedding, "csharp");

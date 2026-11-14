@@ -21,6 +21,8 @@ using Azure.ClientGenerator.Core;
 @@alternateType(VectorStoreSearchRequest.max_num_results, int32);
 @@alternateType(VectorStoreSearchRequestRankingOptions.score_threshold, float32);
 @@alternateType(VectorStoreSearchResultItem.score, float32);
+@@alternateType(VectorStoreCollectionOptions.limit, int32);
+@@alternateType(VectorStoreFileCollectionOptions.limit, int32);
 @@alternateType(listVectorStores::parameters.limit, int32);
 @@alternateType(listFilesInVectorStoreBatch::parameters.limit, int32);
 @@alternateType(listVectorStoreFiles::parameters.limit, int32);

@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,7 +21,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalTokenCountsBody(document.RootElement, options);
+                        return DeserializeInternalTokenCountsBody(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support reading '{options.Format}' format.");
@@ -47,6 +48,14 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalTokenCountsBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -59,107 +68,175 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Model, _modelIsDefined) && !Patch.Contains("$.model"u8))
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(Input) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+                if (Model != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("model"u8);
+                    writer.WriteStringValue(Model);
                 }
-#endif
-            }
-            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
-            {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
-            }
-            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
-            {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ResponseTool item in Tools)
+                else
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WriteNull("model"u8);
                 }
-                writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (Optional.IsDefined(Input, _inputIsDefined) && !Patch.Contains("$.input"u8))
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteObjectValue(Text, options);
-            }
-            if (Optional.IsDefined(Reasoning) && _additionalBinaryDataProperties?.ContainsKey("reasoning") != true)
-            {
-                writer.WritePropertyName("reasoning"u8);
-                writer.WriteObjectValue(Reasoning, options);
-            }
-            if (Optional.IsDefined(Truncation) && _additionalBinaryDataProperties?.ContainsKey("truncation") != true)
-            {
-                writer.WritePropertyName("truncation"u8);
-                writer.WriteStringValue(Truncation.Value.ToString());
-            }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
-            {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
-            if (Optional.IsDefined(Conversation) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
-            {
-                writer.WritePropertyName("conversation"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Conversation);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Conversation))
+                if (Input != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
-            {
-                writer.WritePropertyName("tool_choice"u8);
+                    writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
+                    writer.WriteRawValue(Input);
 #else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
-            {
-                writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(ParallelToolCalls.Value);
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    using (JsonDocument document = JsonDocument.Parse(Input))
                     {
                         JsonSerializer.Serialize(writer, document.RootElement);
                     }
 #endif
                 }
+                else
+                {
+                    writer.WriteNull("input"u8);
+                }
             }
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
+            {
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
+            }
+            if (Patch.Contains("$.tools"u8))
+            {
+                if (!Patch.IsRemoved("$.tools"u8))
+                {
+                    writer.WritePropertyName("tools"u8);
+                    Patch.WriteTo(writer, "$.tools"u8);
+                }
+            }
+            else if (Optional.IsCollectionDefined(Tools))
+            {
+                if (Tools != null)
+                {
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "tools"u8);
+                    for (int i = 0; i < Tools.Count; i++)
+                    {
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(Tools[i], options);
+                    }
+                    Patch.WriteTo(writer, "$.tools"u8);
+                    writer.WriteEndArray();
+                }
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
+            }
+            if (Optional.IsDefined(Text, _textIsDefined) && !Patch.Contains("$.text"u8))
+            {
+                if (Text != null)
+                {
+                    writer.WritePropertyName("text"u8);
+                    writer.WriteObjectValue(Text, options);
+                }
+                else
+                {
+                    writer.WriteNull("text"u8);
+                }
+            }
+            if (Optional.IsDefined(Reasoning, _reasoningIsDefined) && !Patch.Contains("$.reasoning"u8))
+            {
+                if (Reasoning != null)
+                {
+                    writer.WritePropertyName("reasoning"u8);
+                    writer.WriteObjectValue(Reasoning, options);
+                }
+                else
+                {
+                    writer.WriteNull("reasoning"u8);
+                }
+            }
+            if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
+            {
+                writer.WritePropertyName("truncation"u8);
+                writer.WriteStringValue(Truncation.Value.ToString());
+            }
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && !Patch.Contains("$.instructions"u8))
+            {
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
+            }
+            if (Optional.IsDefined(Conversation, _conversationIsDefined) && !Patch.Contains("$.conversation"u8))
+            {
+                if (Conversation != null)
+                {
+                    writer.WritePropertyName("conversation"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Conversation);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Conversation))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("conversation"u8);
+                }
+            }
+            if (Optional.IsDefined(ToolChoice, _toolChoiceIsDefined) && !Patch.Contains("$.tool_choice"u8))
+            {
+                if (ToolChoice != null)
+                {
+                    writer.WritePropertyName("tool_choice"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(ToolChoice);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                else
+                {
+                    writer.WriteNull("tool_choice"u8);
+                }
+            }
+            if (Optional.IsDefined(ParallelToolCalls, _parallelToolCallsIsDefined) && !Patch.Contains("$.parallel_tool_calls"u8))
+            {
+                if (ParallelToolCalls != null)
+                {
+                    writer.WritePropertyName("parallel_tool_calls"u8);
+                    writer.WriteBooleanValue(ParallelToolCalls.Value);
+                }
+                else
+                {
+                    writer.WriteNull("parallel_tool_calls"u8);
+                }
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalTokenCountsBody IJsonModel<InternalTokenCountsBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -172,31 +249,43 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalTokenCountsBody)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalTokenCountsBody(document.RootElement, options);
+            return DeserializeInternalTokenCountsBody(document.RootElement, null, options);
         }
 
-        internal static InternalTokenCountsBody DeserializeInternalTokenCountsBody(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalTokenCountsBody DeserializeInternalTokenCountsBody(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            bool modelIsDefined = false;
             string model = default;
+            bool inputIsDefined = false;
             BinaryData input = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
-            IList<ResponseTool> tools = default;
+            IList<ResponseTool> tools = new ChangeTrackingList<ResponseTool>();
+            bool textIsDefined = false;
             InternalResponseTextParam text = default;
+            bool reasoningIsDefined = false;
             ResponseReasoningOptions reasoning = default;
             InternalTruncationEnum? truncation = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
+            bool conversationIsDefined = false;
             BinaryData conversation = default;
+            bool toolChoiceIsDefined = false;
             BinaryData toolChoice = default;
+            bool parallelToolCallsIsDefined = false;
             bool? parallelToolCalls = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("model"u8))
                 {
+                    modelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         model = null;
@@ -207,6 +296,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    inputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         input = null;
@@ -217,6 +307,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -229,6 +320,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        tools = null;
                         continue;
                     }
                     List<ResponseTool> array = new List<ResponseTool>();
@@ -241,16 +333,18 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("text"u8))
                 {
+                    textIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         text = null;
                         continue;
                     }
-                    text = InternalResponseTextParam.DeserializeInternalResponseTextParam(prop.Value, options);
+                    text = InternalResponseTextParam.DeserializeInternalResponseTextParam(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("reasoning"u8))
                 {
+                    reasoningIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reasoning = null;
@@ -270,6 +364,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -280,6 +375,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("conversation"u8))
                 {
+                    conversationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         conversation = null;
@@ -290,6 +386,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tool_choice"u8))
                 {
+                    toolChoiceIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         toolChoice = null;
@@ -300,6 +397,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
                 {
+                    parallelToolCallsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         parallelToolCalls = null;
@@ -308,14 +406,13 @@ namespace OpenAI.Responses
                     parallelToolCalls = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalTokenCountsBody(
                 model,
                 input,
                 previousResponseId,
-                tools ?? new ChangeTrackingList<ResponseTool>(),
+                tools,
                 text,
                 reasoning,
                 truncation,
@@ -323,7 +420,143 @@ namespace OpenAI.Responses
                 conversation,
                 toolChoice,
                 parallelToolCalls,
-                additionalBinaryDataProperties);
+                patch)
+            {
+                _modelIsDefined = modelIsDefined,
+                _inputIsDefined = inputIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _textIsDefined = textIsDefined,
+                _reasoningIsDefined = reasoningIsDefined,
+                _instructionsIsDefined = instructionsIsDefined,
+                _conversationIsDefined = conversationIsDefined,
+                _toolChoiceIsDefined = toolChoiceIsDefined,
+                _parallelToolCallsIsDefined = parallelToolCallsIsDefined
+            };
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("text"u8))
+            {
+                if (Text == null)
+                {
+                    return false;
+                }
+                return Text.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
+            }
+            if (local.StartsWith("reasoning"u8))
+            {
+                if (Reasoning == null)
+                {
+                    return false;
+                }
+                return Reasoning.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
+            }
+            if (local.StartsWith("tools"u8))
+            {
+                int propertyLength = "tools"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveToolsArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
+                {
+                    return false;
+                }
+                return Tools[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("text"u8))
+            {
+                if (Text == null)
+                {
+                    return false;
+                }
+                Text.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("reasoning"u8))
+            {
+                if (Reasoning == null)
+                {
+                    return false;
+                }
+                Reasoning.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tools"u8))
+            {
+                int propertyLength = "tools"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
+                {
+                    return false;
+                }
+                Tools[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveToolsArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveTools(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private IEnumerable<ResponseTool> ActiveTools()
+        {
+            if (!Optional.IsCollectionDefined(Tools))
+            {
+                yield break;
+            }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
+            for (int i = 0; i < Tools.Count; i++)
+            {
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return Tools[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -2,11 +2,9 @@ import "../base/typespec/realtime/main.tsp";
 import "../base/typespec/realtime/models_server_events_GA.tsp";
 import "../base/typespec/realtime/models_client_events_GA.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(RealtimeCreateClientSecretRequestExpiresAfter_GA.seconds, int32);
 @@alternateType(RealtimeSessionCreateRequestGAAudioOutput_GA.speed, float32);
@@ -121,40 +119,40 @@ model DotNetRealtimeLogProbsProperties {
 
 // ------------ JsonPatch ------------
 
-@@dynamicModel(RealtimeCreateClientSecretRequest_GA);
-@@dynamicModel(RealtimeCreateClientSecretResponse_GA);
+@@dynamicModel(RealtimeCreateClientSecretRequest_GA, "csharp");
+@@dynamicModel(RealtimeCreateClientSecretResponse_GA, "csharp");
 
-@@dynamicModel(RealtimeFunctionTool_GA);
-@@dynamicModel(MCPTool_GA);
+@@dynamicModel(RealtimeFunctionTool_GA, "csharp");
+@@dynamicModel(MCPTool_GA, "csharp");
 
-@@dynamicModel(RealtimeSessionCreateRequestGA_GA);
-@@dynamicModel(RealtimeTranscriptionSessionCreateRequestGA_GA);
+@@dynamicModel(RealtimeSessionCreateRequestGA_GA, "csharp");
+@@dynamicModel(RealtimeTranscriptionSessionCreateRequestGA_GA, "csharp");
 
-@@dynamicModel(RealtimeSessionCreateResponseGA_GA);
-@@dynamicModel(RealtimeTranscriptionSessionCreateResponseGA_GA);
+@@dynamicModel(RealtimeSessionCreateResponseGA_GA, "csharp");
+@@dynamicModel(RealtimeTranscriptionSessionCreateResponseGA_GA, "csharp");
 
-@@dynamicModel(RealtimeAudioFormatsAudioPcm_GA);
-@@dynamicModel(RealtimeAudioFormatsAudioPcmu_GA);
-@@dynamicModel(RealtimeAudioFormatsAudioPcma_GA);
+@@dynamicModel(RealtimeAudioFormatsAudioPcm_GA, "csharp");
+@@dynamicModel(RealtimeAudioFormatsAudioPcmu_GA, "csharp");
+@@dynamicModel(RealtimeAudioFormatsAudioPcma_GA, "csharp");
 
-@@dynamicModel(RealtimeServerEvent_GA);
-@@dynamicModel(RealtimeClientEvent_GA);
+@@dynamicModel(RealtimeServerEvent_GA, "csharp");
+@@dynamicModel(RealtimeClientEvent_GA, "csharp");
 
-@@dynamicModel(DotNetRealtimeSessionCreateRequestGADefaultTracing_GA);
-@@dynamicModel(DotNetRealtimeTracing_GA);
+@@dynamicModel(DotNetRealtimeSessionCreateRequestGADefaultTracing_GA, "csharp");
+@@dynamicModel(DotNetRealtimeTracing_GA, "csharp");
 
-@@dynamicModel(DotNetRealtimeDefaultTruncation_GA);
-@@dynamicModel(DotNetRealtimeTruncation_GA);
-@@dynamicModel(RealtimeTruncationRetentionRatio_GA);
+@@dynamicModel(DotNetRealtimeDefaultTruncation_GA, "csharp");
+@@dynamicModel(DotNetRealtimeTruncation_GA, "csharp");
+@@dynamicModel(RealtimeTruncationRetentionRatio_GA, "csharp");
 
-@@dynamicModel(DotNetRealtimeDefaultToolChoice_GA);
-@@dynamicModel(DotNetRealtimeToolChoice_GA);
-@@dynamicModel(ToolChoiceFunction_GA);
-@@dynamicModel(ToolChoiceMCP_GA);
+@@dynamicModel(DotNetRealtimeDefaultToolChoice_GA, "csharp");
+@@dynamicModel(DotNetRealtimeToolChoice_GA, "csharp");
+@@dynamicModel(ToolChoiceFunction_GA, "csharp");
+@@dynamicModel(ToolChoiceMCP_GA, "csharp");
 
-@@dynamicModel(DotNetRealtimeDefaultToolCallApprovalPolicy_GA);
-@@dynamicModel(DotNetRealtimeToolCallApprovalPolicy_GA);
-@@dynamicModel(MCPToolRequireApproval_GA);
+@@dynamicModel(DotNetRealtimeDefaultToolCallApprovalPolicy_GA, "csharp");
+@@dynamicModel(DotNetRealtimeToolCallApprovalPolicy_GA, "csharp");
+@@dynamicModel(MCPToolRequireApproval_GA, "csharp");
 
-@@dynamicModel(DotNetRealtimeDefaultMaxOutputTokenCount_GA);
-@@dynamicModel(DotNetRealtimeMaxOutputTokenCount_GA);
+@@dynamicModel(DotNetRealtimeDefaultMaxOutputTokenCount_GA, "csharp");
+@@dynamicModel(DotNetRealtimeMaxOutputTokenCount_GA, "csharp");

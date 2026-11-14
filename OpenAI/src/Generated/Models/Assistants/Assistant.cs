@@ -13,11 +13,15 @@ namespace OpenAI.Assistants
     public partial class Assistant
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private ToolResources _toolResources;
+        private bool _toolResourcesIsDefined;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
 
-        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions)
+        internal Assistant(string id, DateTimeOffset createdOn, string name, string description, string model, string instructions)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Name = name;
             Description = description;
             Model = model;
@@ -26,20 +30,20 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal Assistant(string id, string @object, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal Assistant(string id, string @object, DateTimeOffset createdOn, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Name = name;
             Description = description;
             Model = model;
             Instructions = instructions;
             Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
-            ToolResources = toolResources;
+            _toolResources = toolResources;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
+            _temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -47,7 +51,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string Name { get; }
 
@@ -59,11 +63,23 @@ namespace OpenAI.Assistants
 
         public IReadOnlyList<ToolDefinition> Tools { get; }
 
-        public ToolResources ToolResources { get; }
+        public ToolResources ToolResources
+        {
+            get
+            {
+                return _toolResources;
+            }
+        }
 
         public IReadOnlyDictionary<string, string> Metadata { get; }
 
-        public float? Temperature { get; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

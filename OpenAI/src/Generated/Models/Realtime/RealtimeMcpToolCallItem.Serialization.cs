@@ -93,10 +93,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
-            if (Optional.IsDefined(ApprovalRequestId) && !Patch.Contains("$.approval_request_id"u8))
+            if (Optional.IsDefined(ApprovalRequestId, _approvalRequestIdIsDefined) && !Patch.Contains("$.approval_request_id"u8))
             {
-                writer.WritePropertyName("approval_request_id"u8);
-                writer.WriteStringValue(ApprovalRequestId);
+                if (ApprovalRequestId != null)
+                {
+                    writer.WritePropertyName("approval_request_id"u8);
+                    writer.WriteStringValue(ApprovalRequestId);
+                }
+                else
+                {
+                    writer.WriteNull("approval_request_id"u8);
+                }
             }
             if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.output"u8))
             {
@@ -140,6 +147,7 @@ namespace OpenAI.Realtime
             string serverLabel = default;
             string toolName = default;
             BinaryData toolArguments = default;
+            bool approvalRequestIdIsDefined = false;
             string approvalRequestId = default;
             string toolOutput = default;
             RealtimeError error = default;
@@ -172,6 +180,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("approval_request_id"u8))
                 {
+                    approvalRequestIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         approvalRequestId = null;
@@ -210,7 +219,10 @@ namespace OpenAI.Realtime
                 toolArguments,
                 approvalRequestId,
                 toolOutput,
-                error);
+                error)
+            {
+                _approvalRequestIdIsDefined = approvalRequestIdIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

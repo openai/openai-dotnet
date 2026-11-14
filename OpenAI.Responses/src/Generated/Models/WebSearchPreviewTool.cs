@@ -10,6 +10,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchPreviewTool : ResponseTool
     {
+        private WebSearchToolLocation _userLocation;
+        private bool _userLocationIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public WebSearchPreviewTool() : this(ResponseToolKind.WebSearchPreview, default, null, default)
         {
@@ -19,13 +22,24 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal WebSearchPreviewTool(ResponseToolKind kind, in JsonPatch patch, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)
         {
-            UserLocation = userLocation;
+            _userLocation = userLocation;
             SearchContextSize = searchContextSize;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public WebSearchToolLocation UserLocation { get; set; }
+        public WebSearchToolLocation UserLocation
+        {
+            get
+            {
+                return _userLocation;
+            }
+            set
+            {
+                _userLocation = value;
+                _userLocationIsDefined = true;
+            }
+        }
 
         public WebSearchToolContextSize? SearchContextSize { get; set; }
     }

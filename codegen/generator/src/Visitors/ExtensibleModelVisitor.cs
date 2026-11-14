@@ -22,6 +22,7 @@ public class ExtensibleModelVisitor : ScmLibraryVisitor
 {
     private static readonly HashSet<string> _extensibleModelNamespaces = new(StringComparer.OrdinalIgnoreCase)
     {
+        "OpenAI.Decisions",
         "OpenAI.Responses",
     };
 

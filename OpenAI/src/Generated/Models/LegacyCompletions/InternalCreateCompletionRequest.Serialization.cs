@@ -87,93 +87,198 @@ namespace OpenAI.LegacyCompletions
                     writer.WriteNull("prompt"u8);
                 }
             }
-            if (Optional.IsDefined(BestOf) && _additionalBinaryDataProperties?.ContainsKey("best_of") != true)
+            if (Optional.IsDefined(BestOf, _bestOfIsDefined) && _additionalBinaryDataProperties?.ContainsKey("best_of") != true)
             {
-                writer.WritePropertyName("best_of"u8);
-                writer.WriteNumberValue(BestOf.Value);
+                if (BestOf != null)
+                {
+                    writer.WritePropertyName("best_of"u8);
+                    writer.WriteNumberValue(BestOf.Value);
+                }
+                else
+                {
+                    writer.WriteNull("best_of"u8);
+                }
             }
-            if (Optional.IsDefined(Echo) && _additionalBinaryDataProperties?.ContainsKey("echo") != true)
+            if (Optional.IsDefined(Echo, _echoIsDefined) && _additionalBinaryDataProperties?.ContainsKey("echo") != true)
             {
-                writer.WritePropertyName("echo"u8);
-                writer.WriteBooleanValue(Echo.Value);
+                if (Echo != null)
+                {
+                    writer.WritePropertyName("echo"u8);
+                    writer.WriteBooleanValue(Echo.Value);
+                }
+                else
+                {
+                    writer.WriteNull("echo"u8);
+                }
             }
-            if (Optional.IsDefined(FrequencyPenalty) && _additionalBinaryDataProperties?.ContainsKey("frequency_penalty") != true)
+            if (Optional.IsDefined(FrequencyPenalty, _frequencyPenaltyIsDefined) && _additionalBinaryDataProperties?.ContainsKey("frequency_penalty") != true)
             {
-                writer.WritePropertyName("frequency_penalty"u8);
-                writer.WriteNumberValue(FrequencyPenalty.Value);
+                if (FrequencyPenalty != null)
+                {
+                    writer.WritePropertyName("frequency_penalty"u8);
+                    writer.WriteNumberValue(FrequencyPenalty.Value);
+                }
+                else
+                {
+                    writer.WriteNull("frequency_penalty"u8);
+                }
             }
             if (Optional.IsCollectionDefined(LogitBias) && _additionalBinaryDataProperties?.ContainsKey("logit_bias") != true)
             {
-                writer.WritePropertyName("logit_bias"u8);
-                writer.WriteStartObject();
-                foreach (var item in LogitBias)
+                if (LogitBias != null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    writer.WriteNumberValue(item.Value);
+                    writer.WritePropertyName("logit_bias"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in LogitBias)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        writer.WriteNumberValue(item.Value);
+                    }
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("logit_bias"u8);
+                }
             }
-            if (Optional.IsDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            if (Optional.IsDefined(Logprobs, _logprobsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
-                writer.WritePropertyName("logprobs"u8);
-                writer.WriteNumberValue(Logprobs.Value);
+                if (Logprobs != null)
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteNumberValue(Logprobs.Value);
+                }
+                else
+                {
+                    writer.WriteNull("logprobs"u8);
+                }
             }
-            if (Optional.IsDefined(MaxTokens) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
+            if (Optional.IsDefined(MaxTokens, _maxTokensIsDefined) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
             {
-                writer.WritePropertyName("max_tokens"u8);
-                writer.WriteNumberValue(MaxTokens.Value);
+                if (MaxTokens != null)
+                {
+                    writer.WritePropertyName("max_tokens"u8);
+                    writer.WriteNumberValue(MaxTokens.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_tokens"u8);
+                }
             }
-            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
+            if (Optional.IsDefined(N, _nIsDefined) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
-                writer.WritePropertyName("n"u8);
-                writer.WriteNumberValue(N.Value);
+                if (N != null)
+                {
+                    writer.WritePropertyName("n"u8);
+                    writer.WriteNumberValue(N.Value);
+                }
+                else
+                {
+                    writer.WriteNull("n"u8);
+                }
             }
-            if (Optional.IsDefined(PresencePenalty) && _additionalBinaryDataProperties?.ContainsKey("presence_penalty") != true)
+            if (Optional.IsDefined(PresencePenalty, _presencePenaltyIsDefined) && _additionalBinaryDataProperties?.ContainsKey("presence_penalty") != true)
             {
-                writer.WritePropertyName("presence_penalty"u8);
-                writer.WriteNumberValue(PresencePenalty.Value);
+                if (PresencePenalty != null)
+                {
+                    writer.WritePropertyName("presence_penalty"u8);
+                    writer.WriteNumberValue(PresencePenalty.Value);
+                }
+                else
+                {
+                    writer.WriteNull("presence_penalty"u8);
+                }
             }
-            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
+            if (Optional.IsDefined(Seed, _seedIsDefined) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
-                writer.WritePropertyName("seed"u8);
-                writer.WriteNumberValue(Seed.Value);
+                if (Seed != null)
+                {
+                    writer.WritePropertyName("seed"u8);
+                    writer.WriteNumberValue(Seed.Value);
+                }
+                else
+                {
+                    writer.WriteNull("seed"u8);
+                }
             }
-            if (Optional.IsDefined(Stop) && _additionalBinaryDataProperties?.ContainsKey("stop") != true)
+            if (Optional.IsDefined(Stop, _stopIsDefined) && _additionalBinaryDataProperties?.ContainsKey("stop") != true)
             {
-                writer.WritePropertyName("stop"u8);
+                if (Stop != null)
+                {
+                    writer.WritePropertyName("stop"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Stop);
+                    writer.WriteRawValue(Stop);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Stop))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    using (JsonDocument document = JsonDocument.Parse(Stop))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("stop"u8);
+                }
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            if (Optional.IsDefined(Stream, _streamIsDefined) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
-                writer.WritePropertyName("stream"u8);
-                writer.WriteBooleanValue(Stream.Value);
+                if (Stream != null)
+                {
+                    writer.WritePropertyName("stream"u8);
+                    writer.WriteBooleanValue(Stream.Value);
+                }
+                else
+                {
+                    writer.WriteNull("stream"u8);
+                }
             }
-            if (Optional.IsDefined(StreamOptions) && _additionalBinaryDataProperties?.ContainsKey("stream_options") != true)
+            if (Optional.IsDefined(StreamOptions, _streamOptionsIsDefined) && _additionalBinaryDataProperties?.ContainsKey("stream_options") != true)
             {
-                writer.WritePropertyName("stream_options"u8);
-                writer.WriteObjectValue(StreamOptions, options);
+                if (StreamOptions != null)
+                {
+                    writer.WritePropertyName("stream_options"u8);
+                    writer.WriteObjectValue(StreamOptions, options);
+                }
+                else
+                {
+                    writer.WriteNull("stream_options"u8);
+                }
             }
-            if (Optional.IsDefined(Suffix) && _additionalBinaryDataProperties?.ContainsKey("suffix") != true)
+            if (Optional.IsDefined(Suffix, _suffixIsDefined) && _additionalBinaryDataProperties?.ContainsKey("suffix") != true)
             {
-                writer.WritePropertyName("suffix"u8);
-                writer.WriteStringValue(Suffix);
+                if (Suffix != null)
+                {
+                    writer.WritePropertyName("suffix"u8);
+                    writer.WriteStringValue(Suffix);
+                }
+                else
+                {
+                    writer.WriteNull("suffix"u8);
+                }
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP, _topPIsDefined) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP.Value);
+                if (TopP != null)
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
             }
             if (Optional.IsDefined(User) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
@@ -223,20 +328,34 @@ namespace OpenAI.LegacyCompletions
             }
             InternalCreateCompletionRequestModel model = default;
             BinaryData prompt = default;
+            bool bestOfIsDefined = false;
             int? bestOf = default;
+            bool echoIsDefined = false;
             bool? echo = default;
+            bool frequencyPenaltyIsDefined = false;
             float? frequencyPenalty = default;
-            IDictionary<string, int> logitBias = default;
+            IDictionary<string, int> logitBias = new ChangeTrackingDictionary<string, int>();
+            bool logprobsIsDefined = false;
             int? logprobs = default;
+            bool maxTokensIsDefined = false;
             int? maxTokens = default;
+            bool nIsDefined = false;
             int? n = default;
+            bool presencePenaltyIsDefined = false;
             float? presencePenalty = default;
+            bool seedIsDefined = false;
             long? seed = default;
+            bool stopIsDefined = false;
             BinaryData stop = default;
+            bool streamIsDefined = false;
             bool? stream = default;
+            bool streamOptionsIsDefined = false;
             InternalLegacyChatCompletionStreamOptions streamOptions = default;
+            bool suffixIsDefined = false;
             string suffix = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
+            bool topPIsDefined = false;
             float? topP = default;
             string user = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -259,6 +378,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("best_of"u8))
                 {
+                    bestOfIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         bestOf = null;
@@ -269,6 +389,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("echo"u8))
                 {
+                    echoIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         echo = null;
@@ -279,6 +400,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("frequency_penalty"u8))
                 {
+                    frequencyPenaltyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         frequencyPenalty = null;
@@ -291,6 +413,7 @@ namespace OpenAI.LegacyCompletions
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        logitBias = null;
                         continue;
                     }
                     Dictionary<string, int> dictionary = new Dictionary<string, int>();
@@ -303,6 +426,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("logprobs"u8))
                 {
+                    logprobsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         logprobs = null;
@@ -313,6 +437,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("max_tokens"u8))
                 {
+                    maxTokensIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         maxTokens = null;
@@ -323,6 +448,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("n"u8))
                 {
+                    nIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         n = null;
@@ -333,6 +459,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("presence_penalty"u8))
                 {
+                    presencePenaltyIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         presencePenalty = null;
@@ -343,6 +470,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("seed"u8))
                 {
+                    seedIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         seed = null;
@@ -353,6 +481,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("stop"u8))
                 {
+                    stopIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stop = null;
@@ -363,6 +492,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("stream"u8))
                 {
+                    streamIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stream = null;
@@ -373,6 +503,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("stream_options"u8))
                 {
+                    streamOptionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         streamOptions = null;
@@ -383,6 +514,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("suffix"u8))
                 {
+                    suffixIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         suffix = null;
@@ -393,6 +525,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -403,6 +536,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("top_p"u8))
                 {
+                    topPIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
@@ -425,7 +559,7 @@ namespace OpenAI.LegacyCompletions
                 bestOf,
                 echo,
                 frequencyPenalty,
-                logitBias ?? new ChangeTrackingDictionary<string, int>(),
+                logitBias,
                 logprobs,
                 maxTokens,
                 n,
@@ -438,7 +572,23 @@ namespace OpenAI.LegacyCompletions
                 temperature,
                 topP,
                 user,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _bestOfIsDefined = bestOfIsDefined,
+                _echoIsDefined = echoIsDefined,
+                _frequencyPenaltyIsDefined = frequencyPenaltyIsDefined,
+                _logprobsIsDefined = logprobsIsDefined,
+                _maxTokensIsDefined = maxTokensIsDefined,
+                _nIsDefined = nIsDefined,
+                _presencePenaltyIsDefined = presencePenaltyIsDefined,
+                _seedIsDefined = seedIsDefined,
+                _stopIsDefined = stopIsDefined,
+                _streamIsDefined = streamIsDefined,
+                _streamOptionsIsDefined = streamOptionsIsDefined,
+                _suffixIsDefined = suffixIsDefined,
+                _temperatureIsDefined = temperatureIsDefined,
+                _topPIsDefined = topPIsDefined
+            };
         }
     }
 }

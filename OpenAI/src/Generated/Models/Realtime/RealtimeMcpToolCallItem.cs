@@ -12,6 +12,9 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolCallItem : RealtimeItem
     {
+        private string _approvalRequestId;
+        private bool _approvalRequestIdIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(RealtimeItemKind.McpCall)
         {
@@ -33,7 +36,7 @@ namespace OpenAI.Realtime
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
-            ApprovalRequestId = approvalRequestId;
+            _approvalRequestId = approvalRequestId;
             ToolOutput = toolOutput;
             Error = error;
             Patch.SetPropagators(PropagateSet, PropagateGet);
@@ -44,7 +47,18 @@ namespace OpenAI.Realtime
 
         public string ServerLabel { get; set; }
 
-        public string ApprovalRequestId { get; set; }
+        public string ApprovalRequestId
+        {
+            get
+            {
+                return _approvalRequestId;
+            }
+            set
+            {
+                _approvalRequestId = value;
+                _approvalRequestIdIsDefined = true;
+            }
+        }
 
         public RealtimeError Error { get; set; }
     }

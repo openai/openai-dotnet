@@ -85,10 +85,17 @@ namespace OpenAI.Internal
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict, _strictIsDefined) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
             {
-                writer.WritePropertyName("strict"u8);
-                writer.WriteBooleanValue(Strict.Value);
+                if (Strict != null)
+                {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -134,6 +141,7 @@ namespace OpenAI.Internal
             string description = default;
             string name = default;
             BinaryData schema = default;
+            bool strictIsDefined = false;
             bool? strict = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -159,6 +167,7 @@ namespace OpenAI.Internal
                 }
                 if (prop.NameEquals("strict"u8))
                 {
+                    strictIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         strict = null;
@@ -170,7 +179,10 @@ namespace OpenAI.Internal
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties);
+            return new InternalResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties)
+            {
+                _strictIsDefined = strictIsDefined
+            };
         }
     }
 }

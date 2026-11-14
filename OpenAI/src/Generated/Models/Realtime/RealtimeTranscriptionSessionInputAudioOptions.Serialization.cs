@@ -83,10 +83,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("noise_reduction"u8);
                 writer.WriteObjectValue(NoiseReduction, options);
             }
-            if (Optional.IsDefined(TurnDetection) && !Patch.Contains("$.turn_detection"u8))
+            if (Optional.IsDefined(TurnDetection, _turnDetectionIsDefined) && !Patch.Contains("$.turn_detection"u8))
             {
-                writer.WritePropertyName("turn_detection"u8);
-                writer.WriteObjectValue(TurnDetection, options);
+                if (TurnDetection != null)
+                {
+                    writer.WritePropertyName("turn_detection"u8);
+                    writer.WriteObjectValue(TurnDetection, options);
+                }
+                else
+                {
+                    writer.WriteNull("turn_detection"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -115,6 +122,7 @@ namespace OpenAI.Realtime
             RealtimeAudioFormat audioFormat = default;
             RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default;
             RealtimeNoiseReduction noiseReduction = default;
+            bool turnDetectionIsDefined = false;
             RealtimeTurnDetection turnDetection = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -150,6 +158,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("turn_detection"u8))
                 {
+                    turnDetectionIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         turnDetection = null;
@@ -160,7 +169,10 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, patch);
+            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, patch)
+            {
+                _turnDetectionIsDefined = turnDetectionIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

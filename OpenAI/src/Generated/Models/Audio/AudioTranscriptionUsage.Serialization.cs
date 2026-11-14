@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
+    [PersistableModelProxy(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
     public partial class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>
     {
         internal AudioTranscriptionUsage()

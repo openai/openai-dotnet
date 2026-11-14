@@ -16,6 +16,10 @@ namespace OpenAI.Realtime
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _description;
+        private bool _descriptionIsDefined;
+        private BinaryData _annotations;
+        private bool _annotationsIsDefined;
 
         public RealtimeMcpToolDefinition(string name, BinaryData inputSchema)
         {
@@ -30,9 +34,9 @@ namespace OpenAI.Realtime
         internal RealtimeMcpToolDefinition(string name, string description, BinaryData inputSchema, BinaryData annotations, in JsonPatch patch)
         {
             Name = name;
-            Description = description;
+            _description = description;
             InputSchema = inputSchema;
-            Annotations = annotations;
+            _annotations = annotations;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -44,10 +48,32 @@ namespace OpenAI.Realtime
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                _descriptionIsDefined = true;
+            }
+        }
 
         public BinaryData InputSchema { get; set; }
 
-        public BinaryData Annotations { get; set; }
+        public BinaryData Annotations
+        {
+            get
+            {
+                return _annotations;
+            }
+            set
+            {
+                _annotations = value;
+                _annotationsIsDefined = true;
+            }
+        }
     }
 }

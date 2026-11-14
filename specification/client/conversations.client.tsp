@@ -1,10 +1,8 @@
 import "../base/typespec/conversations/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
-import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
-using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(ConversationItemCollectionOptions.limit, int32);
 
@@ -38,9 +36,9 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(IncludeEnum.`message.input_image.image_url`, "MessageInputImageUri");
 @@clientName(IncludeEnum.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
 
-@@dynamicModel(CreateConversationBody);
-@@dynamicModel(ConversationResource);
-@@dynamicModel(UpdateConversationBody);
-@@dynamicModel(DeletedConversationResource);
-@@dynamicModel(CreateConversationItemsParametersBody);
-@@dynamicModel(ConversationItemCollection);
+@@dynamicModel(CreateConversationBody, "csharp");
+@@dynamicModel(ConversationResource, "csharp");
+@@dynamicModel(UpdateConversationBody, "csharp");
+@@dynamicModel(DeletedConversationResource, "csharp");
+@@dynamicModel(CreateConversationItemsParametersBody, "csharp");
+@@dynamicModel(ConversationItemCollection, "csharp");

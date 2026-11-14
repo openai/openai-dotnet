@@ -254,7 +254,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.CreatedAt, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
+        Assert.That(response.CreatedOn, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
         // Assert.That(response.Status, Is.EqualTo(ResponsesStatus.Completed));
         Assert.That(response.Model, Is.Not.Null.And.Not.Empty);
         Assert.That(response.PreviousResponseId, Is.Null);
@@ -786,11 +786,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client1 = GetProxiedResponsesClient();
         ResponsesClient client2 = GetProxiedResponsesClient();
 
-        ResponseResult response1 = await client1.CreateResponseAsync("gpt-4o-mini", "Hello, Assistant! My name is Travis.");
-        ResponseResult response2 = await client2.CreateResponseAsync("o3-mini", "What's my name?", response1.Id);
+        ResponseResult response1 = await client1.CreateResponseAsync(TestModel.Responses, "Hello, Assistant! My name is Travis.");
+        ResponseResult response2 = await client2.CreateResponseAsync("gpt-6-luna", "What's my name?", response1.Id);
 
-        Assert.That(response1.Model.StartsWith("gpt-4o-mini"), Is.True);
-        Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
+        Assert.That(response1.Model.StartsWith(TestModel.Responses), Is.True);
+        Assert.That(response2.Model.StartsWith("gpt-6-luna"), Is.True);
     }
 
     [RecordedTest]

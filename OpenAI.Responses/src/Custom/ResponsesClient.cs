@@ -186,8 +186,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         foreach (var item in inputItems)
         {
@@ -206,8 +209,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         foreach (var item in inputItems)
         {
@@ -226,8 +232,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
@@ -243,8 +252,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
@@ -291,9 +303,12 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
             StreamingEnabled = true,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         foreach (var item in inputItems)
         {
@@ -312,9 +327,12 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
             StreamingEnabled = true,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 

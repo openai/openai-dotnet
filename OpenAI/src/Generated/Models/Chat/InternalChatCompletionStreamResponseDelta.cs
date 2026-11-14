@@ -15,6 +15,8 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private string _refusal;
+        private bool _refusalIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, default)
@@ -24,6 +26,8 @@ namespace OpenAI.Chat
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -32,12 +36,14 @@ namespace OpenAI.Chat
             FunctionCall = functionCall;
             ToolCalls = toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>();
             Role = role;
-            Refusal = refusal;
+            _refusal = refusal;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -48,10 +54,20 @@ namespace OpenAI.Chat
         public StreamingChatOutputAudioUpdate Audio { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         public StreamingChatFunctionCallUpdate FunctionCall { get; }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCalls { get; }
 
-        public string Refusal { get; }
+        public string Refusal
+        {
+            get
+            {
+                return _refusal;
+            }
+        }
     }
 }

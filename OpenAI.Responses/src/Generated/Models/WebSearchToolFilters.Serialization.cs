@@ -79,24 +79,31 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(AllowedDomains))
             {
-                writer.WritePropertyName("allowed_domains"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
-                for (int i = 0; i < AllowedDomains.Count; i++)
+                if (AllowedDomains != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
+                    writer.WritePropertyName("allowed_domains"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
+                    for (int i = 0; i < AllowedDomains.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
+                        {
+                            continue;
+                        }
+                        if (AllowedDomains[i] == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(AllowedDomains[i]);
                     }
-                    if (AllowedDomains[i] == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(AllowedDomains[i]);
+                    Patch.WriteTo(writer, "$.allowed_domains"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.allowed_domains"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("allowed_domains"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -122,7 +129,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            IList<string> allowedDomains = default;
+            IList<string> allowedDomains = new ChangeTrackingList<string>();
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -132,6 +139,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        allowedDomains = null;
                         continue;
                     }
                     List<string> array = new List<string>();
@@ -151,7 +159,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchToolFilters(allowedDomains ?? new ChangeTrackingList<string>(), patch);
+            return new WebSearchToolFilters(allowedDomains, patch);
         }
     }
 }

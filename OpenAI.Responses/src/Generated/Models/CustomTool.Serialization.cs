@@ -89,19 +89,26 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(AllowedCallers))
             {
-                writer.WritePropertyName("allowed_callers"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "allowed_callers"u8);
-                for (int i = 0; i < AllowedCallers.Count; i++)
+                if (AllowedCallers != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_callers[{i}]")))
+                    writer.WritePropertyName("allowed_callers"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "allowed_callers"u8);
+                    for (int i = 0; i < AllowedCallers.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_callers[{i}]")))
+                        {
+                            continue;
+                        }
+                        writer.WriteStringValue(AllowedCallers[i].ToString());
                     }
-                    writer.WriteStringValue(AllowedCallers[i].ToString());
+                    Patch.WriteTo(writer, "$.allowed_callers"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.allowed_callers"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("allowed_callers"u8);
+                }
             }
             if (Optional.IsDefined(DeferLoading) && !Patch.Contains("$.defer_loading"u8))
             {
@@ -147,7 +154,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string toolName = default;
-            IList<InternalCallableToolAllowedCaller> allowedCallers = default;
+            IList<InternalCallableToolAllowedCaller> allowedCallers = new ChangeTrackingList<InternalCallableToolAllowedCaller>();
             bool? deferLoading = default;
             string toolDescription = default;
             CustomToolFormat toolFormat = default;
@@ -167,6 +174,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        allowedCallers = null;
                         continue;
                     }
                     List<InternalCallableToolAllowedCaller> array = new List<InternalCallableToolAllowedCaller>();
@@ -206,7 +214,7 @@ namespace OpenAI.Responses
                 kind,
                 patch,
                 toolName,
-                allowedCallers ?? new ChangeTrackingList<InternalCallableToolAllowedCaller>(),
+                allowedCallers,
                 deferLoading,
                 toolDescription,
                 toolFormat);

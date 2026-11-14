@@ -1335,7 +1335,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
         Assert.That(result.Session, Is.Not.Null);
         Assert.That(result.Session, Is.TypeOf<RealtimeConversationSession>());
-        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+        Assert.That(result.ExpiresOn, Is.GreaterThan(DateTimeOffset.Now));
 
         RealtimeSessionClientOptions sessionClientOptions = new()
         {
@@ -1457,7 +1457,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
         Assert.That(result.Session, Is.Not.Null);
         Assert.That(result.Session, Is.TypeOf<RealtimeTranscriptionSession>());
-        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+        Assert.That(result.ExpiresOn, Is.GreaterThan(DateTimeOffset.Now));
 
         RealtimeSessionClientOptions sessionClientOptions = new()
         {

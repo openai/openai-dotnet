@@ -8,6 +8,8 @@ namespace OpenAI.Files
 {
     internal static partial class FileStatusExtensions
     {
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         public static string ToSerialString(this FileStatus value) => value switch
         {
             FileStatus.Uploaded => "uploaded",
@@ -15,7 +17,11 @@ namespace OpenAI.Files
             FileStatus.Error => "error",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileStatus value.")
         };
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         public static FileStatus ToFileStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "uploaded"))
@@ -32,5 +38,7 @@ namespace OpenAI.Files
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileStatus value.");
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

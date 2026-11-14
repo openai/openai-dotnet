@@ -107,15 +107,29 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.command"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(TimeoutMs) && !Patch.Contains("$.timeout_ms"u8))
+            if (Optional.IsDefined(TimeoutMs, _timeoutMsIsDefined) && !Patch.Contains("$.timeout_ms"u8))
             {
-                writer.WritePropertyName("timeout_ms"u8);
-                writer.WriteNumberValue(TimeoutMs.Value);
+                if (TimeoutMs != null)
+                {
+                    writer.WritePropertyName("timeout_ms"u8);
+                    writer.WriteNumberValue(TimeoutMs.Value);
+                }
+                else
+                {
+                    writer.WriteNull("timeout_ms"u8);
+                }
             }
-            if (Optional.IsDefined(WorkingDirectory) && !Patch.Contains("$.working_directory"u8))
+            if (Optional.IsDefined(WorkingDirectory, _workingDirectoryIsDefined) && !Patch.Contains("$.working_directory"u8))
             {
-                writer.WritePropertyName("working_directory"u8);
-                writer.WriteStringValue(WorkingDirectory);
+                if (WorkingDirectory != null)
+                {
+                    writer.WritePropertyName("working_directory"u8);
+                    writer.WriteStringValue(WorkingDirectory);
+                }
+                else
+                {
+                    writer.WriteNull("working_directory"u8);
+                }
             }
             if (!Patch.Contains("$.env"u8))
             {
@@ -164,10 +178,17 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(User) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(User, _userIsDefined) && !Patch.Contains("$.user"u8))
             {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                if (User != null)
+                {
+                    writer.WritePropertyName("user"u8);
+                    writer.WriteStringValue(User);
+                }
+                else
+                {
+                    writer.WriteNull("user"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -195,9 +216,12 @@ namespace OpenAI.Responses
             }
             string kind = default;
             IList<string> command = default;
+            bool timeoutMsIsDefined = false;
             int? timeoutMs = default;
+            bool workingDirectoryIsDefined = false;
             string workingDirectory = default;
             IDictionary<string, string> env = default;
+            bool userIsDefined = false;
             string user = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -228,6 +252,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("timeout_ms"u8))
                 {
+                    timeoutMsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         timeoutMs = null;
@@ -238,6 +263,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("working_directory"u8))
                 {
+                    workingDirectoryIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         workingDirectory = null;
@@ -265,6 +291,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("user"u8))
                 {
+                    userIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         user = null;
@@ -282,7 +309,12 @@ namespace OpenAI.Responses
                 workingDirectory,
                 env ?? new ChangeTrackingDictionary<string, string>(),
                 user,
-                patch);
+                patch)
+            {
+                _timeoutMsIsDefined = timeoutMsIsDefined,
+                _workingDirectoryIsDefined = workingDirectoryIsDefined,
+                _userIsDefined = userIsDefined
+            };
         }
     }
 }

@@ -90,23 +90,37 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsCollectionDefined(InternalMessages) && _additionalBinaryDataProperties?.ContainsKey("additional_messages") != true)
             {
-                writer.WritePropertyName("additional_messages"u8);
-                writer.WriteStartArray();
-                foreach (MessageCreationOptions item in InternalMessages)
+                if (InternalMessages != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("additional_messages"u8);
+                    writer.WriteStartArray();
+                    foreach (MessageCreationOptions item in InternalMessages)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("additional_messages"u8);
+                }
             }
             if (Optional.IsCollectionDefined(ToolsOverride) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ToolDefinition item in ToolsOverride)
+                if (ToolsOverride != null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("tools"u8);
+                    writer.WriteStartArray();
+                    foreach (ToolDefinition item in ToolsOverride)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("tools"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -215,8 +229,8 @@ namespace OpenAI.Assistants
             RunReasoningEffortLevel? reasoningEffortLevel = default;
             string instructionsOverride = default;
             string additionalInstructions = default;
-            IList<MessageCreationOptions> internalMessages = default;
-            IList<ToolDefinition> toolsOverride = default;
+            IList<MessageCreationOptions> internalMessages = new ChangeTrackingList<MessageCreationOptions>();
+            IList<ToolDefinition> toolsOverride = new ChangeTrackingList<ToolDefinition>();
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? nucleusSamplingFactor = default;
@@ -279,6 +293,7 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        internalMessages = null;
                         continue;
                     }
                     List<MessageCreationOptions> array = new List<MessageCreationOptions>();
@@ -293,6 +308,7 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        toolsOverride = null;
                         continue;
                     }
                     List<ToolDefinition> array = new List<ToolDefinition>();
@@ -422,8 +438,8 @@ namespace OpenAI.Assistants
                 reasoningEffortLevel,
                 instructionsOverride,
                 additionalInstructions,
-                internalMessages ?? new ChangeTrackingList<MessageCreationOptions>(),
-                toolsOverride ?? new ChangeTrackingList<ToolDefinition>(),
+                internalMessages,
+                toolsOverride,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 nucleusSamplingFactor,

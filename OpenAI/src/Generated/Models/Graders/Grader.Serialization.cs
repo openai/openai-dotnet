@@ -9,6 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
+    [PersistableModelProxy(typeof(UnknownGrader))]
     public partial class Grader : IJsonModel<Grader>
     {
         internal Grader()

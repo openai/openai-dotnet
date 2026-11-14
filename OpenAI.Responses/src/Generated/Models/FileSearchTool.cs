@@ -14,6 +14,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchTool : ResponseTool
     {
+        private BinaryData _filters;
+        private bool _filtersIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public FileSearchTool(IEnumerable<string> vectorStoreIds) : base(ResponseToolKind.FileSearch)
         {
@@ -31,7 +34,7 @@ namespace OpenAI.Responses
             VectorStoreIds = vectorStoreIds ?? new ChangeTrackingList<string>();
             MaxResultCount = maxResultCount;
             RankingOptions = rankingOptions;
-            Filters = filters;
+            _filters = filters;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -42,6 +45,17 @@ namespace OpenAI.Responses
 
         public FileSearchToolRankingOptions RankingOptions { get; set; }
 
-        public BinaryData Filters { get; set; }
+        public BinaryData Filters
+        {
+            get
+            {
+                return _filters;
+            }
+            set
+            {
+                _filters = value;
+                _filtersIsDefined = true;
+            }
+        }
     }
 }

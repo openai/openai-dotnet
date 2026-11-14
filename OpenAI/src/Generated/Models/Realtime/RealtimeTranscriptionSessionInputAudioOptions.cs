@@ -14,6 +14,8 @@ namespace OpenAI.Realtime
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private RealtimeTurnDetection _turnDetection;
+        private bool _turnDetectionIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeTranscriptionSessionInputAudioOptions()
@@ -28,7 +30,7 @@ namespace OpenAI.Realtime
             AudioFormat = audioFormat;
             AudioTranscriptionOptions = audioTranscriptionOptions;
             NoiseReduction = noiseReduction;
-            TurnDetection = turnDetection;
+            _turnDetection = turnDetection;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -41,6 +43,17 @@ namespace OpenAI.Realtime
 
         public RealtimeNoiseReduction NoiseReduction { get; set; }
 
-        public RealtimeTurnDetection TurnDetection { get; set; }
+        public RealtimeTurnDetection TurnDetection
+        {
+            get
+            {
+                return _turnDetection;
+            }
+            set
+            {
+                _turnDetection = value;
+                _turnDetectionIsDefined = true;
+            }
+        }
     }
 }

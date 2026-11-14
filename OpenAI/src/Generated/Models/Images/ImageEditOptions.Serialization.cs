@@ -142,10 +142,17 @@ namespace OpenAI.Images
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
-            if (Optional.IsDefined(InputFidelity) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
+            if (Optional.IsDefined(InputFidelity, _inputFidelityIsDefined) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
             {
-                writer.WritePropertyName("input_fidelity"u8);
-                writer.WriteStringValue(InputFidelity.Value.ToString());
+                if (InputFidelity != null)
+                {
+                    writer.WritePropertyName("input_fidelity"u8);
+                    writer.WriteStringValue(InputFidelity.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("input_fidelity"u8);
+                }
             }
             if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
@@ -217,6 +224,7 @@ namespace OpenAI.Images
             GeneratedImageFileFormat? outputFileFormat = default;
             int? outputCompressionFactor = default;
             string endUserId = default;
+            bool inputFidelityIsDefined = false;
             ImageInputFidelity? inputFidelity = default;
             bool? stream = default;
             int? partialImages = default;
@@ -320,6 +328,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("input_fidelity"u8))
                 {
+                    inputFidelityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         inputFidelity = null;
@@ -377,7 +386,10 @@ namespace OpenAI.Images
                 stream,
                 partialImages,
                 quality,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _inputFidelityIsDefined = inputFidelityIsDefined
+            };
         }
     }
 }

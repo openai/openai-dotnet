@@ -5,7 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalTokenCountsResource(document.RootElement, options);
+                        return DeserializeInternalTokenCountsResource(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalTokenCountsResource)} does not support reading '{options.Format}' format.");
@@ -53,12 +53,21 @@ namespace OpenAI.Responses
         public static explicit operator InternalTokenCountsResource(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalTokenCountsResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalTokenCountsResource(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<InternalTokenCountsResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,36 +80,20 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalTokenCountsResource)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.object"u8))
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
+            if (!Patch.Contains("$.input_tokens"u8))
             {
                 writer.WritePropertyName("input_tokens"u8);
                 writer.WriteNumberValue(InputTokens);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalTokenCountsResource IJsonModel<InternalTokenCountsResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -113,10 +106,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalTokenCountsResource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalTokenCountsResource(document.RootElement, options);
+            return DeserializeInternalTokenCountsResource(document.RootElement, null, options);
         }
 
-        internal static InternalTokenCountsResource DeserializeInternalTokenCountsResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalTokenCountsResource DeserializeInternalTokenCountsResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -124,7 +117,9 @@ namespace OpenAI.Responses
             }
             string @object = default;
             int inputTokens = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("object"u8))
@@ -137,10 +132,9 @@ namespace OpenAI.Responses
                     inputTokens = prop.Value.GetInt32();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalTokenCountsResource(@object, inputTokens, additionalBinaryDataProperties);
+            return new InternalTokenCountsResource(@object, inputTokens, patch);
         }
     }
 }

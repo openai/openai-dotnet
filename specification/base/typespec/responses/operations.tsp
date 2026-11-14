@@ -9,92 +9,98 @@ import "./models_tools.tsp";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Responses;
 
-@route("responses")
+/**
+ * Creates a model response.
+ */
 @tag("Responses")
-interface Responses {
+@operationId("createResponse")
+@post
+@route("/responses")
+op createResponse(
+  @header accept: "application/json" | "text/event-stream",
+  @body requestBody: CreateResponse,
+): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
+
+/**
+ * Retrieves a model response with the given ID.
+ *
+ * @param response_id The ID of the response to retrieve.
+ * @param include Specifies additional output data to include in the model response.
+ * @param stream If set to true, model response data will be streamed to the client as it is generated using server-sent events.
+ * @param starting_after The sequence number of the event after which to start streaming.
+ */
+@tag("Responses")
+@operationId("getResponse")
+@get
+@route("/responses/{response_id}")
+op getResponse(
+  @path
+  response_id: string,
+
+  @query(#{ name: "include[]", explode: true })
+  include?: Includable[],
+
+  @query(#{ explode: true })
+  stream?: boolean,
+
+  @query(#{ explode: true })
+  starting_after?: int32,
+
+  @query(#{ explode: true })
+  include_obfuscation?: boolean,
+): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
+
+@tag("Responses")
+@operationId("deleteResponse")
+@delete
+@route("/responses/{response_id}")
+op deleteResponse(
   /**
-   * Creates a model response.
+   * The ID of the response to delete.
    */
-  @operationId("createResponse")
-  @post
-  createResponse(
-    @header accept: "application/json" | "text/event-stream",
-    @body requestBody: CreateResponse,
-  ): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
+  @path
+  @example("resp_677efb5139a88190b512bc3fef8e535d")
+  response_id: string,
+): DeleteResponseResponse | ResponseErrorResponse;
 
+@tag("Responses")
+@operationId("cancelResponse")
+@post
+@route("/responses/{response_id}/cancel")
+op cancelResponse(
   /**
-   * Retrieves a model response with the given ID.
-   *
-   * @param response_id The ID of the response to retrieve.
-   * @param include Specifies additional output data to include in the model response.
-   * @param stream If set to true, model response data will be streamed to the client as it is generated using server-sent events.
-   * @param starting_after The sequence number of the event after which to start streaming.
+   * The ID of the response to cancel.
    */
-  @operationId("getResponse")
-  @get
-  @route("{response_id}")
-  getResponse(
-    @path
-    response_id: string,
+  @path
+  @example("resp_677efb5139a88190b512bc3fef8e535d")
+  response_id: string,
+): Response | ResponseErrorResponse;
 
-    @query(#{ name: "include[]", explode: true })
-    include?: Includable[],
+/**
+ * Returns a list of input items for a given response.
+ *
+ * @param response_id The ID of the response to retrieve.
+ */
+@tag("Responses")
+@operationId("listInputItems")
+@get
+@route("/responses/{response_id}/input_items")
+@list
+op listInputItems(
+  ...DotNetResponseItemCollectionOptions,
+): ResponseItemList | ResponseErrorResponse;
 
-    @query(#{ explode: true })
-    stream?: boolean,
-
-    @query(#{ explode: true })
-    starting_after?: int32,
-
-    @query(#{ explode: true })
-    include_obfuscation?: boolean,
-  ): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
-
-  @delete
-  @route("{response_id}")
-  @operationId("deleteResponse")
-  deleteResponse(
-    /**
-     * The ID of the response to delete.
-     */
-    @path
-    @example("resp_677efb5139a88190b512bc3fef8e535d")
-    response_id: string,
-  ): DeleteResponseResponse | ResponseErrorResponse;
-
-  @post
-  @route("{response_id}/cancel")
-  @operationId("cancelResponse")
-  cancelResponse(
-    /**
-     * The ID of the response to cancel.
-     */
-    @path
-    @example("resp_677efb5139a88190b512bc3fef8e535d")
-    response_id: string,
-  ): Response | ResponseErrorResponse;
-
-  /**
-   * Returns a list of input items for a given response.
-   *
-   * @param response_id The ID of the response to retrieve.
-   */
-  @operationId("listInputItems")
-  @get
-  @route("{response_id}/input_items")
-  @list
-  listInputItems(
-    ...DotNetResponseItemCollectionOptions,
-  ): ResponseItemList | ResponseErrorResponse;
-
- /** Get input token counts */
- @summary("Get input token counts")
- @post
- @route("input_tokens")
- @operationId("getInputTokenCounts")
- op getInputTokenCounts(
+/**
+ * Get input token counts
+ */
+@tag("Responses")
+@operationId("getInputTokenCounts")
+@summary("Get input token counts")
+@post
+@route("/responses/input_tokens")
+op getInputTokenCounts(
   @header
   contentType: "application/json" | "application/x-www-form-urlencoded",
   @body
@@ -117,10 +123,11 @@ interface Responses {
   body: ResponseErrorResponse;
 };
 
-  @post
-  @route("compact")
-  @operationId("compactConversation")
-  op compactConversation(
+@tag("Responses")
+@operationId("compactConversation")
+@post
+@route("/responses/compact")
+op compactConversation(
   @header
   contentType: "application/json" | "application/x-www-form-urlencoded",
   @body
@@ -142,4 +149,3 @@ interface Responses {
   @body
   body: ResponseErrorResponse;
 };
-}

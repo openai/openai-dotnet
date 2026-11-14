@@ -88,22 +88,36 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
-            if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.output"u8))
+            if (Optional.IsDefined(ToolOutput, _toolOutputIsDefined) && !Patch.Contains("$.output"u8))
             {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStringValue(ToolOutput);
-            }
-            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
-            {
-                writer.WritePropertyName("error"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Error);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Error))
+                if (ToolOutput != null)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("output"u8);
+                    writer.WriteStringValue(ToolOutput);
                 }
+                else
+                {
+                    writer.WriteNull("output"u8);
+                }
+            }
+            if (Optional.IsDefined(Error, _errorIsDefined) && !Patch.Contains("$.error"u8))
+            {
+                if (Error != null)
+                {
+                    writer.WritePropertyName("error"u8);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(Error);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(Error))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -137,7 +151,9 @@ namespace OpenAI.Responses
             string serverLabel = default;
             string toolName = default;
             BinaryData toolArguments = default;
+            bool toolOutputIsDefined = false;
             string toolOutput = default;
+            bool errorIsDefined = false;
             BinaryData error = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -168,6 +184,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
+                    toolOutputIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         toolOutput = null;
@@ -178,6 +195,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("error"u8))
                 {
+                    errorIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         error = null;
@@ -196,7 +214,11 @@ namespace OpenAI.Responses
                 toolName,
                 toolArguments,
                 toolOutput,
-                error);
+                error)
+            {
+                _toolOutputIsDefined = toolOutputIsDefined,
+                _errorIsDefined = errorIsDefined
+            };
         }
     }
 }

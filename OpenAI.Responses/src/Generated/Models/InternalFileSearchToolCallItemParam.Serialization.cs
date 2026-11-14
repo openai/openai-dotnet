@@ -113,19 +113,26 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(Results))
             {
-                writer.WritePropertyName("results"u8);
-                writer.WriteStartArray();
-                bool hasPatch = Patch.Contains("$"u8, "results"u8);
-                for (int i = 0; i < Results.Count; i++)
+                if (Results != null)
                 {
-                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) || Results[i] != null && Results[i].Patch.IsRemoved("$"u8))
+                    writer.WritePropertyName("results"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "results"u8);
+                    for (int i = 0; i < Results.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) || Results[i] != null && Results[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(Results[i], options);
                     }
-                    writer.WriteObjectValue(Results[i], options);
+                    Patch.WriteTo(writer, "$.results"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.results"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("results"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -156,7 +163,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<string> queries = default;
-            IList<FileSearchCallResult> results = default;
+            IList<FileSearchCallResult> results = new ChangeTrackingList<FileSearchCallResult>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -185,6 +192,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        results = null;
                         continue;
                     }
                     List<FileSearchCallResult> array = new List<FileSearchCallResult>();
@@ -197,7 +205,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFileSearchToolCallItemParam(kind, patch, queries ?? new ChangeTrackingList<string>(), results ?? new ChangeTrackingList<FileSearchCallResult>());
+            return new InternalFileSearchToolCallItemParam(kind, patch, queries ?? new ChangeTrackingList<string>(), results);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

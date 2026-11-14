@@ -78,10 +78,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (Optional.IsDefined(FunctionDescription) && !Patch.Contains("$.description"u8))
+            if (Optional.IsDefined(FunctionDescription, _functionDescriptionIsDefined) && !Patch.Contains("$.description"u8))
             {
-                writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(FunctionDescription);
+                if (FunctionDescription != null)
+                {
+                    writer.WritePropertyName("description"u8);
+                    writer.WriteStringValue(FunctionDescription);
+                }
+                else
+                {
+                    writer.WriteNull("description"u8);
+                }
             }
             if (Optional.IsDefined(FunctionParameters) && !Patch.Contains("$.parameters"u8))
             {
@@ -137,6 +144,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string functionName = default;
+            bool functionDescriptionIsDefined = false;
             string functionDescription = default;
             BinaryData functionParameters = default;
             bool? strictModeEnabled = default;
@@ -154,6 +162,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("description"u8))
                 {
+                    functionDescriptionIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         functionDescription = null;
@@ -190,7 +199,10 @@ namespace OpenAI.Responses
                 functionName,
                 functionDescription,
                 functionParameters,
-                strictModeEnabled);
+                strictModeEnabled)
+            {
+                _functionDescriptionIsDefined = functionDescriptionIsDefined
+            };
         }
     }
 }

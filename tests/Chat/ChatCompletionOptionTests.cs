@@ -33,4 +33,42 @@ public class ChatCompletionOptionTests
         Assert.That(root.TryGetProperty("custom_property", out JsonElement customProperty), Is.True);
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_value"));
     }
+
+    [Test]
+    public void Clone_PreservesOptionalPropertyPresence()
+    {
+        var unsetOptions = new ChatCompletionOptions();
+        var cloneMethod = typeof(ChatCompletionOptions).GetMethod("Clone", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        var unsetClone = (ChatCompletionOptions)cloneMethod.Invoke(unsetOptions, null);
+
+        using JsonDocument unsetDocument = JsonDocument.Parse(ModelReaderWriter.Write(unsetClone).ToString());
+        Assert.Multiple(() =>
+        {
+            Assert.That(unsetDocument.RootElement.TryGetProperty("temperature", out _), Is.False);
+            Assert.That(unsetDocument.RootElement.TryGetProperty("top_p", out _), Is.False);
+            Assert.That(unsetDocument.RootElement.TryGetProperty("frequency_penalty", out _), Is.False);
+            Assert.That(unsetDocument.RootElement.TryGetProperty("presence_penalty", out _), Is.False);
+            Assert.That(unsetDocument.RootElement.TryGetProperty("seed", out _), Is.False);
+        });
+
+        var nullOptions = new ChatCompletionOptions
+        {
+            Temperature = null,
+            TopP = null,
+            FrequencyPenalty = null,
+            PresencePenalty = null,
+            Seed = null,
+        };
+        var nullClone = (ChatCompletionOptions)cloneMethod.Invoke(nullOptions, null);
+
+        using JsonDocument nullDocument = JsonDocument.Parse(ModelReaderWriter.Write(nullClone).ToString());
+        Assert.Multiple(() =>
+        {
+            Assert.That(nullDocument.RootElement.GetProperty("temperature").ValueKind, Is.EqualTo(JsonValueKind.Null));
+            Assert.That(nullDocument.RootElement.GetProperty("top_p").ValueKind, Is.EqualTo(JsonValueKind.Null));
+            Assert.That(nullDocument.RootElement.GetProperty("frequency_penalty").ValueKind, Is.EqualTo(JsonValueKind.Null));
+            Assert.That(nullDocument.RootElement.GetProperty("presence_penalty").ValueKind, Is.EqualTo(JsonValueKind.Null));
+            Assert.That(nullDocument.RootElement.GetProperty("seed").ValueKind, Is.EqualTo(JsonValueKind.Null));
+        });
+    }
 }

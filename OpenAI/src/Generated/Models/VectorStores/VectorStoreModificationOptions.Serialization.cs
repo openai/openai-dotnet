@@ -59,10 +59,17 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreModificationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name, _nameIsDefined) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                if (Name != null)
+                {
+                    writer.WritePropertyName("name"u8);
+                    writer.WriteStringValue(Name);
+                }
+                else
+                {
+                    writer.WriteNull("name"u8);
+                }
             }
             if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
@@ -126,6 +133,7 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
+            bool nameIsDefined = false;
             string name = default;
             VectorStoreExpirationPolicy expirationPolicy = default;
             IDictionary<string, string> metadata = default;
@@ -134,6 +142,7 @@ namespace OpenAI.VectorStores
             {
                 if (prop.NameEquals("name"u8))
                 {
+                    nameIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         name = null;
@@ -175,7 +184,10 @@ namespace OpenAI.VectorStores
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new VectorStoreModificationOptions(name, expirationPolicy, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
+            return new VectorStoreModificationOptions(name, expirationPolicy, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties)
+            {
+                _nameIsDefined = nameIsDefined
+            };
         }
     }
 }

@@ -13,7 +13,7 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionCustomChunkingStrategy(InternalChunkingStrategyConfigType kind)
+        private protected AudioTranscriptionCustomChunkingStrategy(InternalChunkingStrategyConfigType kind)
         {
             Kind = kind;
         }

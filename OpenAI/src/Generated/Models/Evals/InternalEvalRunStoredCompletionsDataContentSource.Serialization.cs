@@ -87,25 +87,53 @@ namespace OpenAI.Evals
                     writer.WriteNull("metadata"u8);
                 }
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model, _modelIsDefined) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
+                if (Model != null)
+                {
+                    writer.WritePropertyName("model"u8);
+                    writer.WriteStringValue(Model);
+                }
+                else
+                {
+                    writer.WriteNull("model"u8);
+                }
             }
-            if (Optional.IsDefined(CreatedAfter) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
+            if (Optional.IsDefined(CreatedAfter, _createdAfterIsDefined) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
             {
-                writer.WritePropertyName("created_after"u8);
-                writer.WriteNumberValue(CreatedAfter.Value);
+                if (CreatedAfter != null)
+                {
+                    writer.WritePropertyName("created_after"u8);
+                    writer.WriteNumberValue(CreatedAfter.Value);
+                }
+                else
+                {
+                    writer.WriteNull("created_after"u8);
+                }
             }
-            if (Optional.IsDefined(CreatedBefore) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
+            if (Optional.IsDefined(CreatedBefore, _createdBeforeIsDefined) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
             {
-                writer.WritePropertyName("created_before"u8);
-                writer.WriteNumberValue(CreatedBefore.Value);
+                if (CreatedBefore != null)
+                {
+                    writer.WritePropertyName("created_before"u8);
+                    writer.WriteNumberValue(CreatedBefore.Value);
+                }
+                else
+                {
+                    writer.WriteNull("created_before"u8);
+                }
             }
-            if (Optional.IsDefined(Limit) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
+            if (Optional.IsDefined(Limit, _limitIsDefined) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
             {
-                writer.WritePropertyName("limit"u8);
-                writer.WriteNumberValue(Limit.Value);
+                if (Limit != null)
+                {
+                    writer.WritePropertyName("limit"u8);
+                    writer.WriteNumberValue(Limit.Value);
+                }
+                else
+                {
+                    writer.WriteNull("limit"u8);
+                }
             }
         }
 
@@ -131,9 +159,13 @@ namespace OpenAI.Evals
             InternalEvalRunDataContentSourceType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IDictionary<string, string> metadata = default;
+            bool modelIsDefined = false;
             string model = default;
+            bool createdAfterIsDefined = false;
             int? createdAfter = default;
+            bool createdBeforeIsDefined = false;
             int? createdBefore = default;
+            bool limitIsDefined = false;
             int? limit = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -166,6 +198,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("model"u8))
                 {
+                    modelIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         model = null;
@@ -176,6 +209,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_after"u8))
                 {
+                    createdAfterIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         createdAfter = null;
@@ -186,6 +220,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_before"u8))
                 {
+                    createdBeforeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         createdBefore = null;
@@ -196,6 +231,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("limit"u8))
                 {
+                    limitIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         limit = null;
@@ -214,7 +250,13 @@ namespace OpenAI.Evals
                 model,
                 createdAfter,
                 createdBefore,
-                limit);
+                limit)
+            {
+                _modelIsDefined = modelIsDefined,
+                _createdAfterIsDefined = createdAfterIsDefined,
+                _createdBeforeIsDefined = createdBeforeIsDefined,
+                _limitIsDefined = limitIsDefined
+            };
         }
     }
 }

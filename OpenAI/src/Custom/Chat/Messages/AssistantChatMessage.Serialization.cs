@@ -26,7 +26,13 @@ public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
         writer.WriteStartObject();
         WriteRoleProperty(writer, options);
         WriteContentProperty(writer, options);
-        writer.WriteOptionalProperty("refusal"u8, Refusal, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
+        {
+            writer.WritePropertyName("refusal"u8);
+            writer.WriteStringValue(Refusal);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteOptionalProperty("name"u8, ParticipantName, options);
         writer.WriteOptionalCollection("tool_calls"u8, ToolCalls, options);
         writer.WriteOptionalProperty("function_call"u8, FunctionCall, options);
