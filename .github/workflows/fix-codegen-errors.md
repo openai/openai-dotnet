@@ -133,6 +133,8 @@ network:
     - node
 
 safe-outputs:
+  max-patch-size: 10240
+  max-patch-files: 1000
   create-pull-request:
     draft: true
     preserve-branch-name: true
@@ -185,8 +187,10 @@ Read `/tmp/codegen-output.txt`, identify the failing phase, and apply the approp
 - `tsp compile` error on a decorator → **Category 3** (client TSP)
 - Codegen succeeds but `dotnet build` fails → **Category 5** (post-generation build)
 
-> **Ground rule:** Never modify `specification/base/` — these are upstream copies. All fixes go
-> in `specification/client/`, `OpenAI/src/Custom/`, or `OpenAI.Responses/src/Custom/`.
+> **Ground rule:** Never modify `specification/base/` — these are upstream copies. Put fixes in
+> `specification/client/`, `OpenAI/src/Custom/`, or `OpenAI.Responses/src/Custom/`. Change
+> `codegen/generator/src/` only for Category 4 and Category 5 fixes that require generator
+> plugin or visitor changes.
 
 The following workflow-specific guides are included in the prompt before the target branch
 is checked out:
@@ -252,8 +256,8 @@ git diff --name-only -- '*/Generated/*'
 ```
 
 - **Agent fixes:** files you edited to fix errors, such as `specification/client/`,
-  `OpenAI/src/Custom/`, and `OpenAI.Responses/src/Custom/`. Match these to the entries in
-  `/tmp/codegen-fixes.md`.
+  `OpenAI/src/Custom/`, `OpenAI.Responses/src/Custom/`, and `codegen/generator/src/`. Match
+  these to the entries in `/tmp/codegen-fixes.md`.
 - **Generated code:** files under `*/Generated/` produced by `Invoke-CodeGen.ps1`.
 - **API surface:** files under `api/in-progress/` produced by `Export-Api.ps1`.
 
