@@ -6,11 +6,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
-    "@azure-tools/typespec-client-generator-core": "0.73.1",
-    "@open-ai/plugin": "file:codegen",
-    "@typespec/http": "1.17.0",
-    "@typespec/http-client-csharp": "1.0.0-alpha.20261105.5",
-    "@typespec/openapi": "1.17.0"
+    "@open-ai/plugin": "file:codegen"
   },
   "private": true
 }

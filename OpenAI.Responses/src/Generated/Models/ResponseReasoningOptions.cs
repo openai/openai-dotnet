@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -29,7 +30,11 @@ namespace OpenAI.Responses
             ReasoningEffortLevel = reasoningEffortLevel;
             _context = context;
             ReasoningSummaryVerbosity = reasoningSummaryVerbosity;
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             _generateSummary = generateSummary;
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -52,6 +57,7 @@ namespace OpenAI.Responses
             }
         }
 
+        [Obsolete("This field is marked as deprecated.")]
         internal InternalCreateResponseReasoningGenerateSummary? GenerateSummary
         {
             get

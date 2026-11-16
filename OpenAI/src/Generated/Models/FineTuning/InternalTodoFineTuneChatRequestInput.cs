@@ -41,11 +41,8 @@ namespace OpenAI.FineTuning
 
         public bool? ParallelToolCalls { get; set; }
 
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        [Obsolete("This field is marked as deprecated.")]
         public IList<ChatFunction> Functions { get; }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
