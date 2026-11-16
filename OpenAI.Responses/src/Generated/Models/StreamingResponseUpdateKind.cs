@@ -15,8 +15,8 @@ namespace OpenAI.Responses
         private readonly string _value;
         private const string ResponseAudioDeltaValue = "response.audio.delta";
         private const string ResponseAudioDoneValue = "response.audio.done";
-        private const string ResponseAudioTranscriptDeltaValue = "response.audio_transcript.delta";
-        private const string ResponseAudioTranscriptDoneValue = "response.audio_transcript.done";
+        private const string ResponseAudioTranscriptDeltaValue = "response.audio.transcript.delta";
+        private const string ResponseAudioTranscriptDoneValue = "response.audio.transcript.done";
         private const string ResponseCodeInterpreterCallCodeDeltaValue = "response.code_interpreter_call_code.delta";
         private const string ResponseCodeInterpreterCallCodeDoneValue = "response.code_interpreter_call_code.done";
         private const string ResponseCodeInterpreterCallCompletedValue = "response.code_interpreter_call.completed";
@@ -191,10 +191,42 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is StreamingResponseUpdateKind other && Equals(other);
 
-        public bool Equals(StreamingResponseUpdateKind other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+        public bool Equals(StreamingResponseUpdateKind other)
+        {
+            if (string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+            if ((string.Equals(_value, "response.audio.transcript.delta", StringComparison.InvariantCultureIgnoreCase) && string.Equals(other._value, "response.audio_transcript.delta", StringComparison.InvariantCultureIgnoreCase))
+                || (string.Equals(_value, "response.audio_transcript.delta", StringComparison.InvariantCultureIgnoreCase) && string.Equals(other._value, "response.audio.transcript.delta", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return true;
+            }
+            if ((string.Equals(_value, "response.audio.transcript.done", StringComparison.InvariantCultureIgnoreCase) && string.Equals(other._value, "response.audio_transcript.done", StringComparison.InvariantCultureIgnoreCase))
+                || (string.Equals(_value, "response.audio_transcript.done", StringComparison.InvariantCultureIgnoreCase) && string.Equals(other._value, "response.audio.transcript.done", StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return true;
+            }
+            return false;
+        }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+        public override int GetHashCode()
+        {
+            if (_value == null)
+            {
+                return 0;
+            }
+            if (string.Equals(_value, "response.audio_transcript.delta", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return StringComparer.InvariantCultureIgnoreCase.GetHashCode("response.audio.transcript.delta");
+            }
+            if (string.Equals(_value, "response.audio_transcript.done", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return StringComparer.InvariantCultureIgnoreCase.GetHashCode("response.audio.transcript.done");
+            }
+            return StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value);
+        }
 
         public override string ToString() => _value;
     }
