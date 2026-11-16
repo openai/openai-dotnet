@@ -181,22 +181,24 @@ Read `/tmp/codegen-output.txt`, identify the failing phase, and apply the approp
 
 
 **Triage by phase:**
-- `npm ci` or `npm run build` failure → **Category 4** (npm/plugin)
+- `npm ci` or `npm run build` failure → **Category 3** (npm/plugin)
 - `tsp compile` error referencing a namespace → **Category 1** (prohibited-namespace)
-- `tsp compile` error for a missing type → **Category 2** (unresolved reference)
-- `tsp compile` error on a decorator → **Category 3** (client TSP)
-- Codegen succeeds but `dotnet build` fails → **Category 5** (post-generation build)
+- `tsp compile` error on a decorator → **Category 2** (client TSP)
+- Codegen succeeds but `dotnet build` fails → **Category 4** (post-generation build)
 
-> **Ground rule:** Never modify `specification/base/` — these are upstream copies. Put fixes in
-> `specification/client/`, `OpenAI/src/Custom/`, or `OpenAI.Responses/src/Custom/`. Change
-> `codegen/generator/src/` only for Category 4 and Category 5 fixes that require generator
+> **Ground rule:** Make each fix where it belongs, based on the conventions of the existing
+> files. Fixes may go in `specification/base/`, `specification/client/`, `OpenAI/src/Custom/`,
+> or `OpenAI.Responses/src/Custom/`. API shape and service definitions usually belong in the
+> base spec; client names, locations, access, and other SDK-specific customizations usually
+> belong in the client spec or custom C# code. Follow the surrounding `.tsp` file conventions,
+> including namespaces, imports, file placement, naming, decorators, and documentation. Change
+> `codegen/generator/src/` only for Category 3 and Category 4 fixes that require generator
 > plugin or visitor changes.
 
 The following workflow-specific guides are included in the prompt before the target branch
 is checked out:
 
 {{#runtime-import .github/workflows/fix-codegen-errors-guides/prohibited-namespace.md}}
-{{#runtime-import .github/workflows/fix-codegen-errors-guides/missing-type.md}}
 {{#runtime-import .github/workflows/fix-codegen-errors-guides/client-tsp-decorators.md}}
 {{#runtime-import .github/workflows/fix-codegen-errors-guides/npm-plugin-build.md}}
 {{#runtime-import .github/workflows/fix-codegen-errors-guides/post-generation-build.md}}
@@ -218,7 +220,7 @@ BUILD_EXIT=${PIPESTATUS[0]}
 echo "Build exit code: $BUILD_EXIT"
 ```
 
-If the build fails, apply the appropriate fix from Category 5 above, record it in
+If the build fails, apply the appropriate fix from Category 4 above, record it in
 `/tmp/codegen-fixes.md`, and go back to Step 1 to re-run codegen and build again. Once both
 codegen and build succeed, proceed to Step 4.
 
@@ -255,9 +257,9 @@ git diff --name-status
 git diff --name-only -- '*/Generated/*'
 ```
 
-- **Agent fixes:** files you edited to fix errors, such as `specification/client/`,
-  `OpenAI/src/Custom/`, `OpenAI.Responses/src/Custom/`, and `codegen/generator/src/`. Match
-  these to the entries in `/tmp/codegen-fixes.md`.
+- **Agent fixes:** files you edited to fix errors, such as `specification/base/`,
+  `specification/client/`, `OpenAI/src/Custom/`, `OpenAI.Responses/src/Custom/`, and
+  `codegen/generator/src/`. Match these to the entries in `/tmp/codegen-fixes.md`.
 - **Generated code:** files under `*/Generated/` produced by `Invoke-CodeGen.ps1`.
 - **API surface:** files under `api/in-progress/` produced by `Export-Api.ps1`.
 
@@ -290,7 +292,7 @@ git diff -- api/in-progress/
 
 For each changed `api/in-progress/` file, note:
 - Which types or members were **added** (e.g., new model introduced by the generator update).
-- Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
+- Which types or members were **removed** or **renamed** (e.g., generated type renamed by the generator update).
 - Which types or members were **modified** (e.g., property type changed).
 
 ### Step 5a: Map changes to upstream TypeSpec PRs

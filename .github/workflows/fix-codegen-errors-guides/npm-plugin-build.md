@@ -1,4 +1,4 @@
-# Category 4 — npm / build errors (plugin compilation)
+# Category 3 — npm / build errors (plugin compilation)
 
 ## Symptom
 

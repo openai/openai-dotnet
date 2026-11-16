@@ -257,7 +257,6 @@ jobs:
           cat << 'GH_AW_PROMPT_357a1adf6f4497d1_EOF'
           </system>
           {{#runtime-import .github/workflows/fix-codegen-errors-guides/prohibited-namespace.md}}
-          {{#runtime-import .github/workflows/fix-codegen-errors-guides/missing-type.md}}
           {{#runtime-import .github/workflows/fix-codegen-errors-guides/client-tsp-decorators.md}}
           {{#runtime-import .github/workflows/fix-codegen-errors-guides/npm-plugin-build.md}}
           {{#runtime-import .github/workflows/fix-codegen-errors-guides/post-generation-build.md}}
