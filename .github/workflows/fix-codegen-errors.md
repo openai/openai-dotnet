@@ -255,28 +255,36 @@ git diff --name-only -- '*/Generated/*'
   `OpenAI/src/Custom/`, and `OpenAI.Responses/src/Custom/`. Match these to the entries in
   `/tmp/codegen-fixes.md`.
 - **Generated code:** files under `*/Generated/` produced by `Invoke-CodeGen.ps1`.
-- **API surface:** files under `api/` produced by `Export-Api.ps1`.
+- **API surface:** files under `api/in-progress/` produced by `Export-Api.ps1`.
 
 For generated code, inspect the diff and group related changes by pattern instead of listing
 each file. Note the affected areas, what changed (for example, serialization, model shape,
 naming, client methods, or formatting), and whether it came from the generator update or from
 one of your fixes. Flag unexpected or behavior-changing generated changes.
 
-Then check whether any `api/` files were modified:
+Only compare API surface changes in `api/in-progress/`. Files under `api/released/` are
+release snapshots and must not change in this workflow. If any `api/released/` file changed,
+restore it before continuing:
 
 ```bash
-git diff --name-only -- api/
+git restore --source=HEAD --staged --worktree -- api/released/
 ```
 
-API surface changes (additions, removals, or modifications in `api/` files) do **not** block PR
-creation — they may or may not be expected depending on the generator update. Capture a diff of
-each changed `api/` file so you can explain the changes in the PR description:
+Then check whether any `api/in-progress/` files were modified:
 
 ```bash
-git diff -- api/
+git diff --name-only -- api/in-progress/
 ```
 
-For each changed `api/` file, note:
+API surface changes (additions, removals, or modifications in `api/in-progress/`) do **not**
+block PR creation — they may or may not be expected depending on the generator update. Capture
+a diff of each changed in-progress API file so you can explain the changes in the PR description:
+
+```bash
+git diff -- api/in-progress/
+```
+
+For each changed `api/in-progress/` file, note:
 - Which types or members were **added** (e.g., new model introduced by the generator update).
 - Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
 - Which types or members were **modified** (e.g., property type changed).
@@ -321,8 +329,8 @@ The PR body must include these sections:
   changed, and why the fix was needed.
 - **Generated Code Changes:** grouped explanations of generated-file changes from Step 5, including
   unexpected or behavior-changing changes. Write "None" if no generated files changed.
-- **API Changes:** explanations of each `api/` change from Step 5. Write "None" if no API files
-  changed.
+- **API Changes:** explanations of each `api/in-progress/` change from Step 5. Write "None" if
+  no in-progress API files changed.
 - **Upstream TypeSpec Changes:** based on Step 5a, the likely `microsoft/typespec#<number>` PR
   for each fix, generated-code change group, or API change, with a short explanation and
   confidence level. Include changes that could not be mapped to an upstream PR.
