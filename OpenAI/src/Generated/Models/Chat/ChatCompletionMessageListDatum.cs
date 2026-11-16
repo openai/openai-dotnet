@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,7 +40,11 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             FunctionCall = functionCall;
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             OutputAudio = outputAudio;
             ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
@@ -61,6 +66,7 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
+        [Obsolete("This field is marked as deprecated.")]
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
 
         public IList<ChatMessageContentPart> ContentParts { get; }

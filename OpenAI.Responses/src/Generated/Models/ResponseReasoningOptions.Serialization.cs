@@ -90,6 +90,8 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(GenerateSummary, _generateSummaryIsDefined) && !Patch.Contains("$.generate_summary"u8))
             {
                 if (GenerateSummary != null)
@@ -102,6 +104,8 @@ namespace OpenAI.Responses
                     writer.WriteNull("generate_summary"u8);
                 }
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

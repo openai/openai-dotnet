@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -54,11 +55,8 @@ namespace OpenAI.Chat
         public StreamingChatOutputAudioUpdate Audio { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
+        [Obsolete("This field is marked as deprecated.")]
         public StreamingChatFunctionCallUpdate FunctionCall { get; }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCalls { get; }
 
