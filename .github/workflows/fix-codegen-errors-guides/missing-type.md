@@ -9,8 +9,8 @@
 The base spec references a type that doesn't yet exist in the local copy. Types are distributed
 across the individual area `.tsp` files in the base spec directory.
 
-See [file-locations.md](../ingesting-spec/file-locations.md) for all upstream and local path mappings
-referenced in this document.
+The local base spec is under `specification/base/typespec/`; client customizations are under
+`specification/client/`.
 
 ## Fix
 
