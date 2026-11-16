@@ -10,8 +10,8 @@ Version incompatibilities after a generator update, or breaking API changes in t
 
 ## Fix
 
-1. Check the codegen package manifest for version mismatches (see
-   [file-locations.md](../ingesting-spec/file-locations.md) for the codegen plugin source path).
+1. Check `codegen/package.json` for version mismatches; the generator plugin source is under
+   `codegen/generator/src/`.
 2. Delete `node_modules` only, then reinstall from the existing lockfile:
    ```powershell
    npm ci

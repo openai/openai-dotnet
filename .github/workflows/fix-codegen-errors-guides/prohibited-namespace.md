@@ -13,8 +13,9 @@ it in the correct area namespace (e.g., `OpenAI.Audio`).
 
 1. Identify the type name from the error message.
 2. Determine visibility: types prefixed with `Internal` are internal; others are public.
-3. Add a stub in the correct Custom generator stub file. Consult [file-locations.md](../ingesting-spec/file-locations.md)
-   for the canonical mapping of areas to custom C# code directories and generator stub paths.
+3. Add a stub in the correct custom C# directory. Most areas use `OpenAI/src/Custom/{Area}/`;
+   Responses uses `OpenAI.Responses/src/Custom/`. Locate the existing `GeneratorStubs.cs` for
+   the affected area.
 
    If the target `GeneratorStubs.cs` file does not yet exist for an area, create it with the
    appropriate namespace. Match the namespace and file header of an existing `GeneratorStubs.cs`
