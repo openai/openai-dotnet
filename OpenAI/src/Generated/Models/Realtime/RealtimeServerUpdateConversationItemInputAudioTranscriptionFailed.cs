@@ -10,16 +10,8 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionFailed)
-        {
-            EventId = eventId;
-            ItemId = itemId;
-            ContentIndex = contentIndex;
-            Error = error;
-        }
-
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionFailed)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -29,12 +21,23 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)
+        {
+            EventId = eventId;
+            ItemId = itemId;
+            ContentIndex = contentIndex;
+            Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ItemId { get; }
+        public string EventId { get; set; }
 
-        public int ContentIndex { get; }
+        public string ItemId { get; set; }
 
-        public RealtimeError Error { get; }
+        public int ContentIndex { get; set; }
+
+        public RealtimeError Error { get; set; }
     }
 }

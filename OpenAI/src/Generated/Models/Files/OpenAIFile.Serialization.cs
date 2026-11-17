@@ -81,6 +81,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
                 if (Optional.IsDefined(SizeInBytesLong))
@@ -93,15 +94,16 @@ namespace OpenAI.Files
                     writer.WriteNull("bytes"u8);
                 }
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
@@ -118,16 +120,27 @@ namespace OpenAI.Files
                 writer.WritePropertyName("purpose"u8);
                 writer.WriteStringValue(Purpose.ToSerialString());
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToSerialString());
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
-            if (Optional.IsDefined(StatusDetails) && _additionalBinaryDataProperties?.ContainsKey("status_details") != true)
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+            if (_additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
-                writer.WritePropertyName("status_details"u8);
-                writer.WriteStringValue(StatusDetails);
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
+                if (Optional.IsDefined(StatusDetails))
+                {
+                    writer.WritePropertyName("status_details"u8);
+                    writer.WriteStringValue(StatusDetails);
+                }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -164,6 +177,8 @@ namespace OpenAI.Files
             return DeserializeOpenAIFile(document.RootElement, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static OpenAIFile DeserializeOpenAIFile(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -173,7 +188,7 @@ namespace OpenAI.Files
             string id = default;
             long? sizeInBytesLong = default;
             DateTimeOffset createdAt = default;
-            DateTimeOffset? expiresAt = default;
+            DateTimeOffset? expiresOn = default;
             string filename = default;
             string @object = default;
             FilePurpose purpose = default;
@@ -208,7 +223,7 @@ namespace OpenAI.Files
                     {
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -237,13 +252,13 @@ namespace OpenAI.Files
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new OpenAIFile(
                 id,
                 sizeInBytesLong,
                 createdAt,
-                expiresAt,
+                expiresOn,
                 filename,
                 @object,
                 purpose,
@@ -251,5 +266,7 @@ namespace OpenAI.Files
                 statusDetails,
                 additionalBinaryDataProperties);
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

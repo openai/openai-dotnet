@@ -21,6 +21,5 @@ public enum VectorStoreExpirationAnchor
     /// Specifies that the expiration policy should apply relative to the last timestamp at which the vector store was
     /// used.
     /// </summary>
-    [CodeGenMember("LastActiveAt")]
     LastActiveAt
 }

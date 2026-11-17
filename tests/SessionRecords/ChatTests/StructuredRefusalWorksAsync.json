@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "827",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "temperature": 0,
@@ -56,10 +56,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102b5ad65a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513afb90cfe6c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -68,7 +72,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -82,9 +85,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWs2avqBiFFcFjxOoS1lNo51eOv",
+        "id": "chatcmpl-Edfzlig9mqDUHP4IfH1KpyhSJn6Od",
         "object": "chat.completion",
-        "created": 1770950946,
+        "created": 1793124929,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
@@ -126,7 +129,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "323",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -147,10 +150,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102b84851a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513afbd6d9d6c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -159,7 +166,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -173,16 +179,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWsdBsGDbu14uvRYi5LmsqktyTK",
+        "id": "chatcmpl-Edfzm2MuLFiReqQwvYUaJOqLLwTNQ",
         "object": "chat.completion",
-        "created": 1770950946,
+        "created": 1793124930,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "I can't assist with that request because it involves illegal and unethical activities. If you are in need of financial assistance or facing difficulties, I encourage you to seek legal and constructive solutions. There are many organizations and resources available that can offer support and guidance.",
+              "content": "I'm sorry, but I cannot assist with that.",
               "refusal": null,
               "annotations": []
             },
@@ -192,8 +198,8 @@
         ],
         "usage": {
           "prompt_tokens": 52,
-          "completion_tokens": 50,
-          "total_tokens": 102,
+          "completion_tokens": 10,
+          "total_tokens": 62,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

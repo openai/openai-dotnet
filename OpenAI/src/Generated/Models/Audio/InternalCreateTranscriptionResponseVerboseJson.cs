@@ -21,6 +21,7 @@ namespace OpenAI.Audio
             Segments = new ChangeTrackingList<TranscribedSegment>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateTranscriptionResponseVerboseJson(string language, TimeSpan duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, AudioTranscriptionUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -32,6 +33,7 @@ namespace OpenAI.Audio
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Language { get; }
 
@@ -43,7 +45,9 @@ namespace OpenAI.Audio
 
         public IReadOnlyList<TranscribedSegment> Segments { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public AudioTranscriptionUsage Usage { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

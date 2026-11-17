@@ -13,25 +13,44 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningResponseItem : ResponseItem
     {
+        private string _encryptedContent;
+        private bool _encryptedContentIsDefined;
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(ResponseItemKind.Reasoning)
         {
             Argument.AssertNotNull(summaryParts, nameof(summaryParts));
 
             SummaryParts = summaryParts.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ReasoningResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
-            EncryptedContent = encryptedContent;
+            _encryptedContent = encryptedContent;
             SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EncryptedContent { get; set; }
+        public ReasoningStatus? Status { get; set; }
+
+        public string EncryptedContent
+        {
+            get
+            {
+                return _encryptedContent;
+            }
+            set
+            {
+                _encryptedContent = value;
+                _encryptedContentIsDefined = true;
+            }
+        }
 
         public IList<ReasoningSummaryPart> SummaryParts { get; }
     }

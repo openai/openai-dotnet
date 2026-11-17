@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>
     {
-        internal RealtimeMcpToolCallApprovalResponseItem() : this(InternalRealtimeConversationItemTypeGA.McpApprovalResponse, default, null, null, default, null)
+        public RealtimeMcpToolCallApprovalResponseItem() : this(RealtimeItemKind.McpApprovalResponse, default, null, null, default, null)
         {
         }
 
@@ -88,10 +88,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("approve"u8);
                 writer.WriteBooleanValue(Approved);
             }
-            if (Optional.IsDefined(Reason) && !Patch.Contains("$.reason"u8))
+            if (Optional.IsDefined(Reason, _reasonIsDefined) && !Patch.Contains("$.reason"u8))
             {
-                writer.WritePropertyName("reason"u8);
-                writer.WriteStringValue(Reason);
+                if (Reason != null)
+                {
+                    writer.WritePropertyName("reason"u8);
+                    writer.WriteStringValue(Reason);
+                }
+                else
+                {
+                    writer.WriteNull("reason"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -117,19 +124,20 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeConversationItemTypeGA kind = default;
+            RealtimeItemKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string id = default;
             string approvalRequestId = default;
             bool approved = default;
+            bool reasonIsDefined = false;
             string reason = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeConversationItemTypeGA(prop.Value.GetString());
+                    kind = new RealtimeItemKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -149,6 +157,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("reason"u8))
                 {
+                    reasonIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reason = null;
@@ -165,7 +174,10 @@ namespace OpenAI.Realtime
                 id,
                 approvalRequestId,
                 approved,
-                reason);
+                reason)
+            {
+                _reasonIsDefined = reasonIsDefined
+            };
         }
     }
 }

@@ -11,12 +11,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchOpenPageAction : WebSearchAction
     {
-        public WebSearchOpenPageAction() : this(InternalWebSearchActionType.OpenPage, default, null)
+        public WebSearchOpenPageAction() : this(WebSearchActionKind.OpenPage, default, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchOpenPageAction(InternalWebSearchActionType kind, in JsonPatch patch, Uri uri) : base(kind, patch)
+        internal WebSearchOpenPageAction(WebSearchActionKind kind, in JsonPatch patch, Uri uri) : base(kind, patch)
         {
             Uri = uri;
         }

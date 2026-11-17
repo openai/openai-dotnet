@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(ResponseTool)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ResponseTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ResponseTool IPersistableModel<ResponseTool>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<ResponseTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ResponseTool IJsonModel<ResponseTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeResponseTool(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownTool DeserializeInternalUnknownTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

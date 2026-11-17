@@ -183,12 +183,6 @@ try {
     } else {
         Write-WarningLog "Directory.Packages.props not found at: $directoryPackagesPropsPath"
     }
-    
-    # Delete previous package-lock.json
-    Write-Log "Deleting previous package-lock.json"
-    if (Test-Path "package-lock.json") {
-        Remove-Item -Path "package-lock.json" -Force
-    }
 
     # Install dependencies from root directory (using workspaces)
     Write-Log "Installing dependencies from root directory"

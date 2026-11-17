@@ -10,14 +10,8 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationCreated : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationCreated(string eventId, RealtimeConversation conversation) : base(InternalRealtimeServerEventTypeGA.ConversationCreated)
-        {
-            EventId = eventId;
-            Conversation = conversation;
-        }
-
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationCreated(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeConversation conversation) : base(kind, patch)
+        internal RealtimeServerUpdateConversationCreated(string eventId, RealtimeConversation conversation) : base(RealtimeServerUpdateKind.ConversationCreated)
         {
             EventId = eventId;
             Conversation = conversation;
@@ -25,8 +19,17 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateConversationCreated(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeConversation conversation) : base(kind, patch)
+        {
+            EventId = eventId;
+            Conversation = conversation;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public RealtimeConversation Conversation { get; }
+        public string EventId { get; set; }
+
+        public RealtimeConversation Conversation { get; set; }
     }
 }

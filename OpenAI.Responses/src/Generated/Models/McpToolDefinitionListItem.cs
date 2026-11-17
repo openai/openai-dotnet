@@ -14,6 +14,10 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolDefinitionListItem : ResponseItem
     {
+        private BinaryData _error;
+        private bool _errorIsDefined;
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(ResponseItemKind.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -21,7 +25,9 @@ namespace OpenAI.Responses
 
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal McpToolDefinitionListItem(ResponseItemKind kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)
@@ -29,7 +35,7 @@ namespace OpenAI.Responses
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>();
-            Error = error;
+            _error = error;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,6 +44,17 @@ namespace OpenAI.Responses
 
         public IList<McpToolDefinition> ToolDefinitions { get; }
 
-        public BinaryData Error { get; set; }
+        public BinaryData Error
+        {
+            get
+            {
+                return _error;
+            }
+            set
+            {
+                _error = value;
+                _errorIsDefined = true;
+            }
+        }
     }
 }

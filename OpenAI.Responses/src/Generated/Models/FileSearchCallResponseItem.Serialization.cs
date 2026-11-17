@@ -74,8 +74,6 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -93,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("queries"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "queries"u8);
                 for (int i = 0; i < Queries.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
                     {
                         continue;
                     }
@@ -119,18 +118,26 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(Results))
             {
-                writer.WritePropertyName("results"u8);
-                writer.WriteStartArray();
-                for (int i = 0; i < Results.Count; i++)
+                if (Results != null)
                 {
-                    if (Results[i].Patch.IsRemoved("$"u8))
+                    writer.WritePropertyName("results"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "results"u8);
+                    for (int i = 0; i < Results.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) || Results[i] != null && Results[i].Patch.IsRemoved("$"u8))
+                        {
+                            continue;
+                        }
+                        writer.WriteObjectValue(Results[i], options);
                     }
-                    writer.WriteObjectValue(Results[i], options);
+                    Patch.WriteTo(writer, "$.results"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.results"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("results"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -163,7 +170,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             FileSearchCallStatus? status = default;
             IList<string> queries = default;
-            IList<FileSearchCallResult> results = default;
+            IList<FileSearchCallResult> results = new ChangeTrackingList<FileSearchCallResult>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -178,6 +185,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = prop.Value.GetString().ToFileSearchCallStatus();
                     continue;
                 }
@@ -202,6 +213,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        results = null;
                         continue;
                     }
                     List<FileSearchCallResult> array = new List<FileSearchCallResult>();
@@ -219,8 +231,8 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 status,
-                queries,
-                results ?? new ChangeTrackingList<FileSearchCallResult>());
+                queries ?? new ChangeTrackingList<string>(),
+                results);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -233,11 +245,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Results == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveResultsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -256,7 +276,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Results == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -285,9 +313,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "results"u8);
             for (int i = 0; i < Results.Count; i++)
             {
-                if (!Results[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]"))) && (Results[i] == null || !Results[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Results[i];
                 }

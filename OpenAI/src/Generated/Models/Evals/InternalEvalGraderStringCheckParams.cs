@@ -10,6 +10,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderStringCheckParams : InternalEvalGraderParams
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalEvalGraderStringCheckParams(string name, string input, string reference, GraderStringCheckOperation operation) : base(GraderType.StringCheck)
         {
             Name = name;
@@ -17,7 +18,9 @@ namespace OpenAI.Evals
             Reference = reference;
             Operation = operation;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalEvalGraderStringCheckParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, GraderStringCheckOperation operation) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
@@ -25,6 +28,7 @@ namespace OpenAI.Evals
             Reference = reference;
             Operation = operation;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Name { get; }
 
@@ -32,6 +36,8 @@ namespace OpenAI.Evals
 
         public string Reference { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public GraderStringCheckOperation Operation { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

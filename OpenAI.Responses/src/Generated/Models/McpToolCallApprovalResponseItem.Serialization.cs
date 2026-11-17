@@ -83,10 +83,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("approve"u8);
                 writer.WriteBooleanValue(Approved);
             }
-            if (Optional.IsDefined(Reason) && !Patch.Contains("$.reason"u8))
+            if (Optional.IsDefined(Reason, _reasonIsDefined) && !Patch.Contains("$.reason"u8))
             {
-                writer.WritePropertyName("reason"u8);
-                writer.WriteStringValue(Reason);
+                if (Reason != null)
+                {
+                    writer.WritePropertyName("reason"u8);
+                    writer.WriteStringValue(Reason);
+                }
+                else
+                {
+                    writer.WriteNull("reason"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -119,6 +126,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string approvalRequestId = default;
             bool approved = default;
+            bool reasonIsDefined = false;
             string reason = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -144,6 +152,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("reason"u8))
                 {
+                    reasonIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         reason = null;
@@ -160,7 +169,10 @@ namespace OpenAI.Responses
                 patch,
                 approvalRequestId,
                 approved,
-                reason);
+                reason)
+            {
+                _reasonIsDefined = reasonIsDefined
+            };
         }
     }
 }

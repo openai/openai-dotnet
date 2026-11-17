@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>
     {
-        internal RealtimeTranscriptionSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription, default, null, null, default, null, null)
+        public RealtimeTranscriptionSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription, default, null, null, default, null, null)
         {
         }
 
@@ -84,10 +84,10 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(ExpiresAt) && !Patch.Contains("$.expires_at"u8))
+            if (Optional.IsDefined(ExpiresOn) && !Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
             if (Patch.Contains("$.include"u8))
             {
@@ -101,9 +101,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "include"u8);
                 for (int i = 0; i < IncludedProperties.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
                     {
                         continue;
                     }
@@ -147,7 +148,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string id = default;
             string @object = default;
-            DateTimeOffset? expiresAt = default;
+            DateTimeOffset? expiresOn = default;
             IList<RealtimeIncludedProperty> includedProperties = default;
             RealtimeTranscriptionSessionAudioOptions audioOptions = default;
             foreach (var prop in element.EnumerateObject())
@@ -173,7 +174,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("include"u8))
@@ -206,7 +207,7 @@ namespace OpenAI.Realtime
                 patch,
                 id,
                 @object,
-                expiresAt,
+                expiresOn,
                 includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>(),
                 audioOptions);
         }
@@ -219,6 +220,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             return false;
@@ -232,6 +237,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }

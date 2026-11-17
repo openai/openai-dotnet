@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeConversation()
+        public RealtimeConversation()
         {
         }
 
@@ -33,8 +33,8 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        internal InternalRealtimeServerEventConversationCreatedConversationGAObject? Object { get; }
+        internal InternalRealtimeServerEventConversationCreatedConversationGAObject? Object { get; set; }
     }
 }

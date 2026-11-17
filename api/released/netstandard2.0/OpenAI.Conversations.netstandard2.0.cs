@@ -9,11 +9,11 @@ namespace OpenAI.Conversations {
     public class ConversationClient {
         protected ConversationClient();
         public ConversationClient(ConversationClientSettings settings);
-        public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ConversationClient(ApiKeyCredential credential, ConversationClientOptions options);
         public ConversationClient(ApiKeyCredential credential);
-        public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy, ConversationClientOptions options);
         public ConversationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ConversationClient(ClientPipeline pipeline, ConversationClientOptions options);
         public ConversationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -42,8 +42,14 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
+    public class ConversationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ConversationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ConversationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {

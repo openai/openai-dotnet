@@ -6,21 +6,22 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "362",
+        "Content-Length": "459",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "model": "gpt-5",
+        "model": "gpt-5.6",
+        "max_tool_calls": 1,
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "allowed_tools": {
               "tool_names": [
-                "roll"
+                "microsoft_docs_search"
               ]
             },
             "require_approval": "never"
@@ -33,7 +34,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Roll 2d4+1"
+                "text": "Search Microsoft Learn documentation for the OpenAI service."
               }
             ]
           }
@@ -41,83 +42,110 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f13a39ff576a0-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a389ab48ed30eb43-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3099",
+        "Content-Length": "31110",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:44:38 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "5840",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "5850",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999500",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5f000a8808190a33a81f4b42b340e0a895ebbc14105a4",
+        "id": "resp_0344cd066396c27c006aa1df4e580487d0bb5ffd387095aaef",
         "object": "response",
-        "created_at": 1758851072,
+        "created_at": 1788993358,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788993372,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
-        "max_tool_calls": null,
-        "model": "gpt-5-2025-08-07",
+        "max_tool_calls": 1,
+        "model": "gpt-5.6-sol",
+        "moderation": null,
         "output": [
           {
-            "id": "mcpl_68d5f000bb688190a13ce5309556b9a10a895ebbc14105a4",
+            "id": "mcpl_0344cd066396c27c006aa1df4e89e887d0ac2adf60b0abfe30",
             "type": "mcp_list_tools",
-            "server_label": "dmcp",
+            "server_label": "microsoft-learn",
             "tools": [
               {
                 "annotations": {
-                  "read_only": false
+                  "read_only": true
                 },
-                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "description": "Search official Microsoft/Azure documentation to find the most relevant and trustworthy content for a user's query. This tool returns up to 10 high-quality content chunks (each max 500 tokens), extracted from Microsoft Learn and other official sources. Each result includes the article title, URL, and a self-contained content excerpt optimized for fast retrieval and reasoning. Always use this tool to quickly ground your answers in accurate, first-party Microsoft/Azure knowledge.\n\n## Follow-up Pattern\nTo ensure completeness, use microsoft_docs_fetch when high-value pages are identified by search. The fetch tool complements search by providing the full detail. This is a required step for comprehensive results.",
                 "input_schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
                   "type": "object",
                   "properties": {
-                    "diceRollExpression": {
-                      "type": "string"
+                    "query": {
+                      "description": "a query or topic about Microsoft/Azure products, services, platforms, developer tools, frameworks, or APIs",
+                      "type": "string",
+                      "default": null
                     }
-                  },
-                  "required": [
-                    "diceRollExpression"
-                  ],
-                  "additionalProperties": false
+                  }
                 },
-                "name": "roll"
+                "name": "microsoft_docs_search"
               }
             ]
           },
           {
-            "id": "rs_68d5f002524881908e75c8f2a3520a510a895ebbc14105a4",
+            "id": "rs_0344cd066396c27c006aa1df4fdf0887d0a471fb20ccdca6b5",
             "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
             "summary": []
           },
           {
-            "id": "mcp_68d5f0047f888190af0f9ac70f7b76a90a895ebbc14105a4",
+            "id": "mcp_0344cd066396c27c006aa1df523c1087d0a49f0ec74d71588f",
             "type": "mcp_call",
+            "status": "completed",
             "approval_request_id": null,
-            "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
+            "arguments": "{\"query\":\"Azure OpenAI Service Microsoft Learn documentation overview quickstart models API responsible AI\"}",
             "error": null,
-            "name": "roll",
-            "output": "9",
-            "server_label": "dmcp"
+            "name": "microsoft_docs_search",
+            "output": "{\"results\": [{\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Mitigate\\n3.2. **Highlight potential inaccuracies in the AI-generated outputs** (see [HAX G2](https://www.microsoft.com/en-us/haxtoolkit/library/?taxonomy_guideline-term%5B%5D=4): Make clear how well the system can do what it can do), both when users first start using the system and at appropriate times during ongoing use. In the first run experience (FRE), notify users that AI-generated outputs might contain inaccuracies and that they should verify information. Throughout the experience, include reminders to check AI-generated output for potential inaccuracies, both overall and in relation to specific types of content the system might generate incorrectly. For example, if your measurement process determines that your system has lower accuracy with numbers, mark numbers in generated outputs to alert the user and encourage them to check the numbers or seek external sources for verification.\\n3.3. **User responsibility.** Remind people that they're accountable for the final content when they're reviewing AI-generated content. For example, when offering code suggestions, remind the developer to review and test suggestions before accepting.\\n3.4. **Disclose AI's role in the interaction.** Make people aware that they're interacting with an AI system (as opposed to another human). Where appropriate, inform content consumers that content is partly or fully generated by an AI model. Such notices might be required by law or applicable best practices. They can reduce inappropriate reliance on AI-generated outputs and can help consumers use their own judgment about how to interpret and act on such content.\\n3.5. **Prevent the system from anthropomorphizing.** AI models might output content containing opinions, emotive statements, or other formulations that could imply that they're human-like. Such content could be mistaken for a human identity. Such content could mislead people to think that a system has certain capabilities when it doesn't. Implement mechanisms that reduce the risk of such outputs or incorporate disclosures to help prevent misinterpretation of outputs.\\n3.6. **Cite references and information sources.** If your system generates content based on references sent to the model, clearly citing information sources helps people understand where the AI-generated content is coming from.\\n3.7. **Limit the length of inputs and outputs, where appropriate.** Restricting input and output length can reduce the likelihood of producing undesirable content, misuse of the system beyond its intended uses, or other harmful or unintended uses.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#mitigate\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Identify\\nThe first stage of the Responsible AI lifecycle is identifying potential harms that could occur in or be caused by an AI system. The earlier you begin to identify potential harms, the more effective you can be at mitigating them. When assessing potential harms, develop an understanding of the types of harms that could result from using the Azure OpenAI Service in your specific contexts. This section provides recommendations and resources you can use to identify harms through an impact assessment, iterative red team testing, stress-testing, and analysis. Red teaming and stress-testing are approaches where a group of testers intentionally probe a system to identify its limitations, risk surface, and vulnerabilities.\\nThese steps produce a prioritized list of potential harms for each specific scenario.\\n1. **Identify harms that are relevant**for your specific model, application, and deployment scenario.\\n1.1. Identify potential harms associated with the model and model capabilities (for example, GPT-3 model versus GPT-4 model) that you use in your system. Each model has different capabilities, limitations, and risks.\\n1.2. Identify any other harms or increased scope of harm presented by the intended use of the system you're developing. Consider using a [Responsible AI Impact Assessment](https://aka.ms/rai)to identify potential harms.\\n1.2.1. For example, consider an AI system that summarizes text. Some uses of text generation are lower risk than others. If the system is used in a healthcare domain for summarizing doctor's notes, the risk of harm arising from inaccuracies is higher than if the system is summarizing online articles.\\n2. **Prioritize harms based on elements of risk such as frequency and severity**. Assess the level of risk for each harm and the likelihood of each risk occurring to prioritize the list of harms you identified. Consider working with subject matter experts and risk managers within your organization and with relevant external stakeholders when appropriate.\\n3. **Conduct red team testing and stress testing** starting with the highest priority harms. Develop a better understanding of whether and how the identified harms occur in your scenario. Identify new harms you didn't initially anticipate.\\n4. **Share this information with relevant stakeholders** by using your organization's internal compliance processes.\\nAt the end of this Identify stage, you have a documented, prioritized list of harms. When new harms and new instances of harms emerge through further testing and use of the system, update and improve this list.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#identify\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Operate\\nAfter you put measurement and mitigation systems in place, define and execute a deployment and operational readiness plan. This stage includes completing appropriate reviews of your system and mitigation plans with relevant stakeholders, establishing pipelines to collect telemetry and feedback, and developing an incident response and rollback plan.\\nConsider the following recommendations for deploying and operating a system that uses the Azure OpenAI service with appropriate, targeted harms mitigations:\\n1. Work with compliance teams within your organization to understand what types of reviews are required for your system and when to complete them. Reviews might include legal review, privacy review, security review, accessibility review, and others.\\n2. Develop and implement the following components:\\n2.1. **Phased delivery plan.** Launch systems that use the Azure OpenAI service gradually with a phased delivery approach. This approach gives a limited set of people the opportunity to try the system, provide feedback, report issues and concerns, and suggest improvements before the system is released more widely. It also helps you manage the risk of unanticipated failure modes, unexpected system behaviors, and unexpected concerns being reported.\\n2.2. **Incident response plan.** Develop an incident response plan and evaluate the time needed to respond to an incident.\\n2.3. **Rollback plan.** Ensure you can roll back the system quickly and efficiently if an unanticipated incident occurs.\\n2.4. **Immediate action for unanticipated harms.** Build the necessary features and processes to block problematic prompts and responses as they're discovered and as close to real-time as possible. When unanticipated harms occur, block the problematic prompts and responses as quickly as possible. Develop and deploy appropriate mitigations. Investigate the incident and implement a long-term solution.\\n2.5. **Mechanism to block people who misuse your system.** Develop a mechanism to identify users who violate your content policies (for example, by generating hate speech) or are otherwise using your system for unintended or harmful purposes. Take action against further abuse. For example, if a user frequently uses your system to generate content that is blocked or flagged by content safety systems, consider blocking them from further use of your system. Implement an appeal mechanism where appropriate.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#operate\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Operate\\n2.6. **Effective user feedback channels.** Implement feedback channels through which stakeholders (and the general public, if applicable) can submit feedback or report issues with generated content or that otherwise arise during their use of the system. Document how you process, consider, and address such feedback. Evaluate the feedback and work to improve the system based on user feedback. One approach could be to include buttons with generated content that allow users to identify content as \\\"inaccurate,\\\" \\\"harmful,\\\" or \\\"incomplete.\\\" This approach could provide a more widely used, structured, and feedback signal for analysis.\\n2.7. **Telemetry data.** Identify and record (consistent with applicable privacy laws, policies, and commitments) signals that indicate user satisfaction or their ability to use the system as intended. Use telemetry data to identify gaps and improve the system.\\nThis document is not intended to be, and should not be construed as providing, legal advice. The jurisdiction in which you're operating may have various regulatory or legal requirements that apply to your AI system. Consult a legal specialist if you are uncertain about laws or regulations that might apply to your system, especially if you think those might impact these recommendations. Be aware that not all of these recommendations and resources are appropriate for every scenario, and conversely, these recommendations and resources may be insufficient for some scenarios.\\n## Learn more about responsible AI\\n1. [Microsoft AI principles](https://www.microsoft.com/ai/responsible-ai)\\n2. [Microsoft responsible AI resources](https://www.microsoft.com/ai/responsible-ai-resources)\\n3. [Microsoft Azure Learning courses on responsible AI](https://learn.microsoft.com/en-us/training/paths/responsible-ai-business-principles/)\\n## Learn more about Azure OpenAI\\n1. [Limited access to Azure OpenAI Service - Foundry Tools | Microsoft Learn](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/limited-access)\\n2. [Code of Conduct for the Azure OpenAI Service | Microsoft Learn](https://learn.microsoft.com/en-us/legal/ai-code-of-conduct?context=%2Fazure%2Fcognitive-services%2Fopenai%2Fcontext%2Fcontext)\\n3. [Data, privacy, and security for Azure OpenAI Service - Foundry Tools | Microsoft Learn](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/data-privacy)\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#operate\"}, {\"title\": \"AI: Create an Azure OpenAI Resource and Deploy a Model\", \"content\": \"# AI: Create an Azure OpenAI Resource and Deploy a Model\\nTo get started using Azure OpenAI in your applications, you need to create an Azure OpenAI Service and deploy a model that can be used to perform tasks such as converting natural language to SQL, generating email/SMS message content, and more.\\nIn this exercise you will:\\n1. Create an Azure OpenAI Service resource.\\n2. Deploy a model.\\n3. Update the *.env* file with values from your Azure OpenAI service resource.\\n![Microsoft Cloud scenario overview](https://learn.microsoft.com/microsoft-cloud/dev/tutorials/openai-acs-msgraph/media/scenario-overview-no-title.png)\\n### Create an Azure OpenAI Service Resource\\n1. Visit the [Azure portal](https://portal.azure.com) in your browser and sign in.\\n2. Enter *openai* in the **search bar** at the top of the portal page and select **Azure OpenAI** from the options that appear.\\n ![Azure OpenAI Service in the Azure portal](https://learn.microsoft.com/microsoft-cloud/dev/tutorials/openai-acs-msgraph/media/search-openai-portal.png)\\n3. Select **Create** in the toolbar.\\n Note\\n While this tutorial focuses on Azure OpenAI, if you have an OpenAI API key and would like to use it, you can skip this section and go directly to the **Update the Project's .env File** section below. Assign your OpenAI API key to `OPENAI_API_KEY` in the *.env* file (you can ignore any other `.env` instructions related to OpenAI).\\n4. Azure OpenAI models are available in specific regions. Visit the [Azure OpenAI model availability](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?WT.mc_id=m365-94501-dwahlin#global-standard-model-availability) document to learn which regions support the gpt-4o model used in this tutorial.\\n5. Perform the following tasks:\\n5.1. Select your Azure subscription.\\n5.2. Select the resource group to use (create a new one if needed).\\n5.3. Select a region where the gpt-4o model is supported based on the document you looked at earlier.\\n5.4. Enter the resource name. It must be a unique value.\\n5.5. Select the **Standard S0** pricing tier.\\n6. Select **Next** until you get to the **Review + submit** screen. Select **Create**.\\n7. Once your Azure OpenAI resource is created, navigate to it and select **Resource Management** --> **Keys and Endpoint** .\", \"contentUrl\": \"https://learn.microsoft.com/microsoft-cloud/dev/tutorials/openai-acs-msgraph/02-openai-create-resource\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Mitigate\\nMitigating harms presented by large language models such as the Azure OpenAI models requires an iterative, layered approach that includes experimentation and continual measurement. We recommend developing a mitigation plan that encompasses four layers of mitigations for the harms you identified in the earlier stages of this process:\\n![Diagram of Mitigation Layers.](https://learn.microsoft.com/azure/foundry/responsible-ai/openai/media/mitigation-layers.png)\\n1. At the **model level**, understand the model(s) you use and what fine-tuning steps the model developers take to align the model toward its intended uses and to reduce the risk of potentially harmful uses and outcomes.\\n1.1. For example, developers use reinforcement learning methods as a responsible AI tool to better align GPT-4 toward the designers' intended goals.\\n2. At the **safety system level**, understand the platform level mitigations that the developers implement, such as the [Azure OpenAI Guardrails (previously content filters)](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/content-filter) which help to block the output of harmful content.\\n3. At the **application level**, application developers can implement metaprompt and user-centered design and user experience mitigations. Metaprompts are instructions you provide to the model to guide its behavior. Their use can make a critical difference in guiding the system to behave in accordance with your expectations. User-centered design and user experience (UX) interventions are also key mitigation tools to prevent misuse and overreliance on AI.\\n4. At the **positioning level**, educate the people who use or are affected by your system about its capabilities and limitations.\\nThe following sections provide specific recommendations to implement mitigations at the different layers. Not all of these mitigations are appropriate for every scenario. Conversely, these mitigations might be insufficient for some scenarios. Give careful consideration to your scenario and the prioritized harms you identified. As you implement mitigations, develop a process to **measure and document their effectiveness** for your system and scenario.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#mitigate\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Mitigate\\n1. **Model level Mitigations:** Review and identify which Azure OpenAI base model best suits the system you're building. Educate yourself about its capabilities, limitations, and any measures taken to reduce the risk of the potential harms you identified. For example, if you use GPT-4, in addition to reading this Transparency Note, review OpenAI's [GPT-4 System Card](https://cdn.openai.com/papers/gpt-4-system-card.pdf) that explains the safety challenges presented by the model and the safety processes that OpenAI adopted to prepare GPT-4 for deployment. Experiment with different versions of the model(s) (including through red teaming and measuring) to see how the harms present differently.\\n2. **Safety System Level Mitigations:** Identify and evaluate the effectiveness of platform level solutions such as the [Azure OpenAI Guardrails (previously content filters)](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/content-filter) to help mitigate the potential harms that you identified.\\n3. **Application Level Mitigations:** Prompt engineering, including **metaprompt tuning, can be an effective mitigation** for many different types of harm. Review and implement metaprompt (also called the \\\"system message\\\" or \\\"system prompt\\\") guidance and best practices documented [here](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/prompt-engineering).\\n Implement the following user-centered design and user experience (UX) interventions, guidance, and best practices to guide users to use the system as intended and to prevent overreliance on the AI system:\\n3.1. **Review and edit interventions:** Design the user experience (UX) to encourage people who use the system to review and edit the AI-generated outputs before accepting them (see [HAX G9](https://www.microsoft.com/en-us/haxtoolkit/library/?taxonomy_guideline-term%5B%5D=11): Support efficient correction).\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#mitigate\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\n## Mitigate\\n3.8. **Structure inputs and/or system outputs.** Use [prompt engineering](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/prompt-engineering) techniques within your application to structure inputs to the system to prevent open-ended responses. You can also limit outputs to be structured in certain formats or patterns. For example, if your system generates dialog for a fictional character in response to queries, limit the inputs so that people can only query for a predetermined set of concepts.\\n3.9. **Prepare pre-determined responses.** There are certain queries to which a model might generate offensive, inappropriate, or otherwise harmful responses. When harmful or offensive queries or responses are detected, you can design your system to deliver a predetermined response to the user. Predetermined responses should be crafted thoughtfully. For example, the application can provide prewritten answers to questions such as \\\"who/what are you?\\\" to avoid having the system respond with anthropomorphized responses. You can also use predetermined responses for questions like, \\\"What are your terms of use?\\\" to direct people to the correct policy.\\n3.10. **Restrict automatic posting on social media.** Limit how people can automate your product or service. For example, you might choose to prohibit automated posting of AI-generated content to external sites (including social media), or to prohibit the automated execution of generated code.\\n3.11. **Bot detection.** Devise and implement a mechanism to prohibit users from building an API on top of your product.\\n4. **Positioning Level Mitigations:**\\n4.1. **Be appropriately transparent.** Provide the right level of transparency to people who use the system, so that they can make informed decisions around the use of the system.\\n4.2. **Provide system documentation.** Produce and provide educational materials for your system, including explanations of its capabilities and limitations. For example, this content could be in the form of a \\\"learn more\\\" page accessible via the system.\\n4.3. **Publish user guidelines and best practices.** Help users and stakeholders use the system appropriately by publishing best practices, for example on prompt crafting, reviewing generations before accepting them, and so on. Such guidelines can help people understand how the system works. When possible, incorporate the guidelines and best practices directly into the UX.\\nAs you implement mitigations to address potential identified harms, develop a process for ongoing measurement of the effectiveness of such mitigations. Document measurement results. Review those measurement results to continually improve the system.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview#mitigate\"}, {\"title\": \"Overview of responsible AI practices for Azure OpenAI models\", \"content\": \"# Overview of responsible AI practices for Azure OpenAI models\\nImportant\\nNon-English translations are provided for convenience only. Please consult the [`EN-US` version of this document](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/customer-copyright-commitment) for the definitive version.\\nMany of the Azure OpenAI models are generative AI models that demonstrate improvements in advanced capabilities such as content and code generation, summarization, and search. With many of these improvements also come increased responsible AI challenges related to harmful content, manipulation, human-like behavior, privacy, and more. For more information about the capabilities, limitations, and appropriate use cases for these models, review the [Transparency Note](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/transparency-note).\\nIn addition to the Transparency Note, we provide technical recommendations and resources to help customers design, develop, deploy, and use AI systems that implement the Azure OpenAI models responsibly. Our recommendations are grounded in the [Microsoft Responsible AI Standard](https://aka.ms/RAI), which sets policy requirements that our own engineering teams follow. Much of the content of the Standard follows a pattern, asking teams to identify, measure, and mitigate potential harms, and plan for how to operate the AI system. In alignment with those practices, these recommendations are organized into four stages:\\n1. **Identify** : Identify and prioritize potential harms that could result from your AI system through iterative red-teaming, stress-testing, and analysis.\\n2. **Measure** : Measure the frequency and severity of those harms by establishing clear metrics, creating measurement test sets, and completing iterative, systematic testing (both manual and automated).\\n3. **Mitigate** : Mitigate harms by implementing tools and strategies such as [prompt engineering](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/prompt-engineering) and using our [Guardrails (previously content filters)](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/content-filter). Repeat measurement to test effectiveness after implementing mitigations.\\n4. **Operate** : Define and execute a deployment and operational readiness plan.\\nIn addition to their correspondence to the Microsoft Responsible AI Standard, these stages correspond closely to the functions in the [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework).\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/responsible-ai/openai/overview\"}, {\"title\": \"Quickstart: Get started generating text using the legacy completions API (programming-language-csharp)\", \"content\": \"# Quickstart: Get started generating text using the legacy completions API (programming-language-csharp)\\n## Clean up resources\\nIf you want to clean up and remove an Azure OpenAI resource, you can delete the resource. Before deleting the resource you must first delete any deployed models.\\n1. [Azure portal](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azportal#clean-up-resources)\\n2. [Azure CLI](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azcli#clean-up-resources)\\n# Quickstart: Get started generating text using the legacy completions API (programming-language-go)\\nUse this article to get started making your first calls to Azure OpenAI.\\n[Source code](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai) | [Package (Go)](https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai)| [Samples](https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai#pkg-examples)\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services?azure-portal=true)\\n2. [Go 1.21.0](https://go.dev/dl/) or higher installed locally.\\n3. An Azure OpenAI in Azure AI Foundry Models resource with the `gpt-35-turbo-instuct` model deployed. For more information about model deployment, see the [resource deployment guide](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource).\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/quickstart#clean-up-resources\"}]}",
+            "server_label": "microsoft-learn"
           },
           {
-            "id": "msg_68d5f0061f8c81909ec8a277de34eda70a895ebbc14105a4",
+            "id": "rs_0344cd066396c27c006aa1df53b98887d09891350eb04ffd63",
+            "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
+            "summary": []
+          },
+          {
+            "id": "rs_0344cd066396c27c006aa1df55e5ec87d0bf8510b336bd016d",
+            "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
+            "summary": []
+          },
+          {
+            "id": "msg_0344cd066396c27c006aa1df578d6487d0914d0d08f312a48a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -125,17 +153,22 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "You rolled 9."
+                "text": "I searched Microsoft Learn for **Azure OpenAI Service**. Key documentation includes:\n\n- [Azure OpenAI quickstart](https://learn.microsoft.com/azure/ai-foundry/openai/quickstart) — Make your first model calls.\n- [Create an Azure OpenAI resource and deploy a model](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource) — Resource creation and model deployment.\n- [Azure OpenAI models and regional availability](https://learn.microsoft.com/azure/ai-services/openai/concepts/models) — Supported models, versions, and regions.\n- [Prompt engineering concepts](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/prompt-engineering) — Guidance for designing effective prompts.\n- [Azure OpenAI Guardrails and content filtering](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter) — Safety filtering and configuration.\n- [Responsible AI practices for Azure OpenAI](https://learn.microsoft.com/azure/ai-foundry/responsible-ai/openai/overview) — Identifying, measuring, mitigating, and operating for potential harms.\n- [Data, privacy, and security](https://learn.microsoft.com/azure/ai-foundry/responsible-ai/openai/data-privacy) — How prompts, outputs, and customer data are handled.\n- [Azure OpenAI transparency note](https://learn.microsoft.com/azure/ai-foundry/responsible-ai/openai/transparency-note) — Capabilities, limitations, and intended uses.\n\nMicrosoft documentation increasingly presents Azure OpenAI under **Azure AI Foundry** while continuing to use the Azure OpenAI product name."
               }
             ],
+            "phase": "final_answer",
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": "24h",
         "reasoning": {
+          "context": "all_turns",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -149,35 +182,54 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
             "allowed_tools": {
               "read_only": null,
               "tool_names": [
-                "roll"
+                "microsoft_docs_search"
               ]
             },
             "headers": null,
             "require_approval": "never",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
-        "top_p": 1.0,
+        "top_p": 0.98,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 488,
+          "input_tokens": 5792,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 101,
+          "output_tokens": 522,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 157
           },
-          "total_tokens": 589
+          "total_tokens": 6314
         },
         "user": null,
         "metadata": {}
@@ -185,6 +237,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

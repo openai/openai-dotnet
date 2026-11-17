@@ -8,15 +8,18 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallItemResource : ResponseItem
     {
-        internal InternalLocalShellToolCallItemResource(InternalLocalShellToolCallItemResourceStatus status, string callId, InternalLocalShellExecAction action) : base(ResponseItemKind.LocalShellCall)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalLocalShellToolCallItemResource(string callId, InternalLocalShellExecAction action) : base(ResponseItemKind.LocalShellCall)
         {
-            Status = status;
             CallId = callId;
             Action = action;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalLocalShellToolCallItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallItemResourceStatus status, string callId, InternalLocalShellExecAction action) : base(kind, id, patch)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalLocalShellToolCallItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallItemResourceStatus? status, string callId, InternalLocalShellExecAction action) : base(kind, id, patch)
         {
             Status = status;
             CallId = callId;
@@ -24,8 +27,9 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        internal InternalLocalShellToolCallItemResourceStatus Status { get; set; }
+        internal InternalLocalShellToolCallItemResourceStatus? Status { get; set; }
 
         public string CallId { get; set; }
 

@@ -18,13 +18,16 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ChatTokenTopLogProbabilityDetails> topLogProbabilities)
         {
             Token = token;
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
             TopLogProbabilities = topLogProbabilities.ToList();
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ChatTokenTopLogProbabilityDetails> topLogProbabilities, in JsonPatch patch)

@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "output"u8);
                 for (int i = 0; i < Output.Count; i++)
                 {
-                    if (Output[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || Output[i] != null && Output[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -102,15 +103,29 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Agent) && !Patch.Contains("$.agent"u8))
+            if (Optional.IsDefined(Agent, _agentIsDefined) && !Patch.Contains("$.agent"u8))
             {
-                writer.WritePropertyName("agent"u8);
-                writer.WriteObjectValue(Agent, options);
+                if (Agent != null)
+                {
+                    writer.WritePropertyName("agent"u8);
+                    writer.WriteObjectValue(Agent, options);
+                }
+                else
+                {
+                    writer.WriteNull("agent"u8);
+                }
             }
-            if (Optional.IsDefined(Caller) && !Patch.Contains("$.caller"u8))
+            if (Optional.IsDefined(Caller, _callerIsDefined) && !Patch.Contains("$.caller"u8))
             {
-                writer.WritePropertyName("caller"u8);
-                writer.WriteObjectValue(Caller, options);
+                if (Caller != null)
+                {
+                    writer.WritePropertyName("caller"u8);
+                    writer.WriteObjectValue(Caller, options);
+                }
+                else
+                {
+                    writer.WriteNull("caller"u8);
+                }
             }
             if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
             {
@@ -153,7 +168,9 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             IList<ResponseContentPart> output = default;
+            bool agentIsDefined = false;
             InternalBetaAgentTag agent = default;
+            bool callerIsDefined = false;
             InternalToolCallCaller caller = default;
             string createdBy = default;
             CustomToolCallOutputStatus? status = default;
@@ -181,6 +198,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("agent"u8))
                 {
+                    agentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         agent = null;
@@ -191,6 +209,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("caller"u8))
                 {
+                    callerIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         caller = null;
@@ -220,11 +239,15 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 callId,
-                output,
+                output ?? new ChangeTrackingList<ResponseContentPart>(),
                 agent,
                 caller,
                 createdBy,
-                status);
+                status)
+            {
+                _agentIsDefined = agentIsDefined,
+                _callerIsDefined = callerIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -235,21 +258,37 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
             }
             if (local.StartsWith("caller"u8))
             {
+                if (Caller == null)
+                {
+                    return false;
+                }
                 return Caller.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("caller"u8.Length)], out value);
             }
             if (local.StartsWith("output"u8))
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Output == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveOutputArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
+                {
+                    return false;
+                }
+                if (Output[index] == null)
                 {
                     return false;
                 }
@@ -266,11 +305,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("caller"u8))
             {
+                if (Caller == null)
+                {
+                    return false;
+                }
                 Caller.Patch.Set([.. "$"u8, .. local.Slice("caller"u8.Length)], value);
                 return true;
             }
@@ -278,7 +325,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Output == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
+                {
+                    return false;
+                }
+                if (Output[index] == null)
                 {
                     return false;
                 }
@@ -307,9 +362,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "output"u8);
             for (int i = 0; i < Output.Count; i++)
             {
-                if (!Output[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]"))) && (Output[i] == null || !Output[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Output[i];
                 }

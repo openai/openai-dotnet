@@ -21,5 +21,5 @@ public partial class RealtimeClientCommandConversationItemTruncate
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioEndMs")]
-    public TimeSpan AudioEndTime { get; }
+    public TimeSpan AudioEndTime { get; set; }
 }

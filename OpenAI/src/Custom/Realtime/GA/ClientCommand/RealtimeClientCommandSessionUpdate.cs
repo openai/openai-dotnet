@@ -19,5 +19,5 @@ public partial class RealtimeClientCommandSessionUpdate
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Session")]
-    public RealtimeSessionOptions SessionOptions { get; }
+    public RealtimeSessionOptions SessionOptions { get; set; }
 }

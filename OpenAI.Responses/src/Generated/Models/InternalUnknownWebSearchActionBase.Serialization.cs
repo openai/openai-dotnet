@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override WebSearchAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchAction>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(WebSearchAction)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<WebSearchAction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         WebSearchAction IPersistableModel<WebSearchAction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<WebSearchAction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         WebSearchAction IJsonModel<WebSearchAction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override WebSearchAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchAction>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeWebSearchAction(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownWebSearchActionBase DeserializeInternalUnknownWebSearchActionBase(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -97,7 +105,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalWebSearchActionType kind = default;
+            WebSearchActionKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -105,7 +113,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalWebSearchActionType(prop.Value.GetString());
+                    kind = new WebSearchActionKind(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

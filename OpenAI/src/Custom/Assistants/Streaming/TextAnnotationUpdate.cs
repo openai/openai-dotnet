@@ -32,7 +32,7 @@ public class TextAnnotationUpdate
     public int? EndIndex
         => _fileSearchCitation?.EndIndex
         ?? _codeCitation?.EndIndex
-        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("start_index", out BinaryData indexData) == true
+        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("end_index", out BinaryData indexData) == true
             ? int.Parse(indexData.ToString())
             : null);
 

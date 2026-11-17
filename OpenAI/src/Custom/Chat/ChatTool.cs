@@ -48,7 +48,7 @@ public partial class ChatTool
     /// <summary>
     ///     The parameters that the function accepts, which are described as a JSON schema. If omitted, this
     ///     defines a function with an empty parameter list. Learn more in the
-    ///     <see href="https://platform.openai.com/docs/api-reference/chat/docs/guides/function-calling">function calling guide</see>
+    ///     <see href="https://platform.openai.com/docs/guides/function-calling">function calling guide</see>
     ///     and the
     ///     <see href="https://json-schema.org/understanding-json-schema">JSON schema reference documentation</see>.
     /// </summary>
@@ -64,7 +64,7 @@ public partial class ChatTool
     ///     <para>
     ///         Only a subset of the JSON schema specification is supported when this is set to <c>true</c>. Learn more
     ///         about structured outputs in the
-    ///         <see href="https://platform.openai.com/docs/api-reference/chat/docs/guides/function-calling">function calling guide</see>.
+    ///         <see href="https://platform.openai.com/docs/guides/function-calling">function calling guide</see>.
     ///     </para>
     /// </summary>
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatToolKind.Function"/>. </remarks>
@@ -80,7 +80,7 @@ public partial class ChatTool
     ///     <para>
     ///         The parameters that the function accepts, which are described as a JSON schema. If omitted, this
     ///         defines a function with an empty parameter list. Learn more in the
-    ///         <see href="https://platform.openai.com/docs/api-reference/chat/docs/guides/function-calling">function calling guide</see>
+    ///         <see href="https://platform.openai.com/docs/guides/function-calling">function calling guide</see>
     ///         and the
     ///         <see href="https://json-schema.org/understanding-json-schema">JSON schema reference documentation</see>.
     ///     </para>
@@ -114,7 +114,7 @@ public partial class ChatTool
     ///     <para>
     ///         Only a subset of the JSON schema specification is supported when this is set to <c>true</c>. Learn more
     ///         about structured outputs in the
-    ///         <see href="https://platform.openai.com/docs/api-reference/chat/docs/guides/function-calling">function calling guide</see>.
+    ///         <see href="https://platform.openai.com/docs/guides/function-calling">function calling guide</see>.
     ///     </para>
     /// </param>
     public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? functionSchemaIsStrict = null)

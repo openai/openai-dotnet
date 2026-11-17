@@ -5,7 +5,7 @@ import "./models.tsp";
 using Azure.ClientGenerator.Core;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Responses;
 
 // --------- Programmatic Tool Calling ---------
 

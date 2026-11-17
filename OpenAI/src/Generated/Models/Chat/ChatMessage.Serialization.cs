@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatMessage))]
     public partial class ChatMessage : IJsonModel<ChatMessage>
     {
         internal ChatMessage() : this(default, null, default)
@@ -89,6 +88,8 @@ namespace OpenAI.Chat
             return DeserializeChatMessage(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static ChatMessage DeserializeChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -99,21 +100,23 @@ namespace OpenAI.Chat
             {
                 switch (discriminator.GetString())
                 {
-                    case "system":
-                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
-                    case "developer":
-                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
-                    case "user":
-                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
                     case "assistant":
                         return AssistantChatMessage.DeserializeAssistantChatMessage(element, data, options);
-                    case "tool":
-                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
+                    case "developer":
+                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
                     case "function":
                         return FunctionChatMessage.DeserializeFunctionChatMessage(element, data, options);
+                    case "system":
+                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
+                    case "tool":
+                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
+                    case "user":
+                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
                 }
             }
             return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, data, options);
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

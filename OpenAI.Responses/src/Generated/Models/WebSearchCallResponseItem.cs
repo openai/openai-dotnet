@@ -10,9 +10,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchCallResponseItem : ResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public WebSearchCallResponseItem() : this(ResponseItemKind.WebSearchCall, null, default, default, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal WebSearchCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, WebSearchCallStatus? status, WebSearchAction action) : base(kind, id, patch)
@@ -22,6 +24,8 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public WebSearchCallStatus? Status { get; set; }
 
         public WebSearchAction Action { get; set; }
     }

@@ -59,9 +59,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string maskImagePath = Path.Combine("Assets", maskFilename);
         using FileStream mask = File.OpenRead(maskImagePath);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt));
-
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -71,8 +72,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(maskImagePath, CatPrompt));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditAsync(maskImagePath, CatPrompt),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -125,8 +128,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         using FileStream originalImage = File.OpenRead(originalImagePath);
         using FileStream mask = File.OpenRead(maskImagePath);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -138,8 +143,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
         string maskImagePath = Path.Combine("Assets", maskFilename);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -193,8 +200,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string maskImagePath = Path.Combine("Assets", maskFilename);
         using FileStream mask = File.OpenRead(maskImagePath);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -204,8 +213,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -265,8 +276,10 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         using FileStream originalImage = File.OpenRead(originalImagePath);
         using FileStream mask = File.OpenRead(maskImagePath);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -278,7 +291,9 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
         string maskImagePath = Path.Combine("Assets", maskFilename);
 
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 }

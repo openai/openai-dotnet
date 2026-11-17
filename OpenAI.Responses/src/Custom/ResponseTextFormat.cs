@@ -10,7 +10,7 @@ namespace OpenAI.Responses;
 public partial class ResponseTextFormat
 {
     // CUSTOM: Renamed to "Kind" and converted to public enum from internal extensible type.
-    [CodeGenMember("Type")]
+    [CodeGenMember("Kind")]
     internal InternalResponsesTextFormatType InternalType { get; set;  }
     public ResponseTextFormatKind Kind
     {

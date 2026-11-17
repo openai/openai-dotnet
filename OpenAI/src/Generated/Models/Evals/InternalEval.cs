@@ -13,18 +13,18 @@ namespace OpenAI.Evals
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalEval(string id, string name, InternalEvalDataSourceConfigResource dataSourceConfig, IEnumerable<InternalEvalGraderResource> testingCriteria, DateTimeOffset createdAt, IDictionary<string, string> metadata)
+        internal InternalEval(string id, string name, InternalEvalDataSourceConfigResource dataSourceConfig, IEnumerable<InternalEvalGraderResource> testingCriteria, DateTimeOffset createdOn, IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Name = name;
             DataSourceConfig = dataSourceConfig;
             TestingCriteria = testingCriteria?.ToList();
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalEval(string @object, string id, string name, InternalEvalDataSourceConfigResource dataSourceConfig, IList<InternalEvalGraderResource> testingCriteria, DateTimeOffset createdAt, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEval(string @object, string id, string name, InternalEvalDataSourceConfigResource dataSourceConfig, IList<InternalEvalGraderResource> testingCriteria, DateTimeOffset createdOn, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -32,7 +32,7 @@ namespace OpenAI.Evals
             Name = name;
             DataSourceConfig = dataSourceConfig;
             TestingCriteria = testingCriteria ?? new ChangeTrackingList<InternalEvalGraderResource>();
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -47,7 +47,7 @@ namespace OpenAI.Evals
 
         internal IList<InternalEvalGraderResource> TestingCriteria { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public IDictionary<string, string> Metadata { get; }
 

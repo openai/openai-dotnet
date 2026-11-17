@@ -19,6 +19,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities)
         {
             Argument.AssertNotNull(token, nameof(token));
@@ -28,7 +29,9 @@ namespace OpenAI.Responses
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
             TopLogProbabilities = topLogProbabilities.ToList();
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ResponseTokenTopLogProbabilityDetails> topLogProbabilities, in JsonPatch patch)

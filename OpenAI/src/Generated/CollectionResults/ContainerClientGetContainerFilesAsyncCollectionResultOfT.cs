@@ -8,6 +8,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Containers
 {
     internal partial class ContainerClientGetContainerFilesAsyncCollectionResultOfT : AsyncCollectionResult<ContainerFileResource>
@@ -78,3 +79,4 @@ namespace OpenAI.Containers
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

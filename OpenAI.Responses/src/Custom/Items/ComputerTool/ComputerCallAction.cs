@@ -10,6 +10,7 @@ namespace OpenAI.Responses;
 // - Renamed.
 [CodeGenType("ComputerAction")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
+[CodeGenVisibility(nameof(ComputerCallAction), CodeGenVisibility.Internal, typeof(ComputerCallActionKind))]
 public partial class ComputerCallAction
 {
     // CUSTOM: Exposed click action properties.

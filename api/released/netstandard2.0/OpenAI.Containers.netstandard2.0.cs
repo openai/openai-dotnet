@@ -15,11 +15,11 @@ namespace OpenAI.Containers {
     public class ContainerClient {
         protected ContainerClient();
         public ContainerClient(ContainerClientSettings settings);
-        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential, ContainerClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
-        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, ContainerClientOptions options);
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ContainerClient(ClientPipeline pipeline, ContainerClientOptions options);
         public ContainerClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -62,8 +62,14 @@ namespace OpenAI.Containers {
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    public class ContainerClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ContainerClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ContainerClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ContainerCollectionOptions : IJsonModel<ContainerCollectionOptions>, IPersistableModel<ContainerCollectionOptions> {

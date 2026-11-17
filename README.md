@@ -24,6 +24,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to use responses with streaming and reasoning](#how-to-use-responses-with-streaming-and-reasoning)
 - [How to use responses with file search](#how-to-use-responses-with-file-search)
 - [How to use responses with web search](#how-to-use-responses-with-web-search)
+- [How to create decisions](#how-to-create-decisions)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
@@ -96,6 +97,7 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Audio`                | `AudioClient`                |
 | `OpenAI.Batch`                | `BatchClient`                |
 | `OpenAI.Chat`                 | `ChatClient`                 |
+| `OpenAI.Decisions`            | `DecisionsClient`            |
 | `OpenAI.Embeddings`           | `EmbeddingClient`            |
 | `OpenAI.Evals`                | `EvaluationClient`           |
 | `OpenAI.FineTuning`           | `FineTuningClient`           |
@@ -461,7 +463,7 @@ void PrintAudioContent()
         }
 
         Console.WriteLine($"Response audio written to file: {outputFilePath}");
-        Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresAt}");
+        Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresOn}");
     }
 }
 
@@ -515,7 +517,7 @@ CreateResponseOptions streamingOptions = new()
 streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
 await foreach (StreamingResponseUpdate update
-    in client.CreateResponseStreamingAsync(streamingOptions))
+    in await client.CreateResponseStreamingAsync(streamingOptions))
 {
     if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
         && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -595,6 +597,45 @@ foreach (ResponseItem item in response.OutputItems)
     }
 }
 ```
+
+## How to create decisions
+
+The Decisions API evaluates predicate, choice, and score questions against supplied input. The .NET APIs remain experimental (`OPENAI001`), even though the REST API is generally available.
+
+```C# Snippet:ReadMe_Decisions
+DecisionsClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+DecisionCreationOptions options = new()
+{
+    Model = "gpt-6-luna",
+    InputItems =
+    {
+        new DecisionsUserMessageItem
+        {
+            Content =
+            {
+                new DecisionsInputTextContentPart("The order total is $42."),
+            },
+        },
+    },
+    Questions =
+    {
+        new DecisionsPredicateQuestion
+        {
+            Name = "positive_total",
+            Instructions =
+            {
+                new DecisionsInputTextInstructionsPart { Text = "The order total is positive." },
+            },
+        },
+    },
+};
+
+DecisionResource decision = await client.CreateDecisionAsync(options);
+DecisionsPredicateAnswer answer = (DecisionsPredicateAnswer)decision.Answers[0];
+Console.WriteLine(answer.Probability);
+```
+
+See the [Decisions API guide](https://developers.openai.com/api/docs/guides/decisions) for service behavior and constraints.
 
 ## How to generate text embeddings
 
@@ -929,10 +970,10 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
 });
 ```
 
-With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `CollectionResult<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncCollectionResult<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
+With the assistant and thread prepared, await the `CreateRunStreamingAsync` method to get an `AsyncStreamingResult<StreamingUpdate>`. The result exposes the status and headers of the established service response, and you can iterate over its updates once with `await foreach`. Streaming variants also exist as `CreateThreadAndRunStreamingAsync` and `SubmitToolOutputsToRunStreamingAsync`.
 
 ```C# Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
-CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+AsyncStreamingResult<StreamingUpdate> streamingUpdates = await assistantClient.CreateRunStreamingAsync(
     thread.Id,
     assistant.Id,
     new RunCreationOptions()
@@ -944,7 +985,7 @@ CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunSt
 Finally, to handle the `StreamingUpdates` as they arrive, you can use the `UpdateKind` property on the base `StreamingUpdate` and/or downcast to a specifically desired update type, like `MessageContentUpdate` for `thread.message.delta` events or `RequiredActionUpdate` for streaming tool calls.
 
 ```C# Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
-foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
 {
     if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
     {

@@ -6,6 +6,7 @@ import "../responses/main.tsp";
 using TypeSpec.OpenAPI;
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
+using OpenAI.Responses;
 
 namespace OpenAI;
 

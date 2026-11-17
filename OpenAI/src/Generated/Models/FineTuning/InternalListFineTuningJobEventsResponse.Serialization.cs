@@ -159,9 +159,9 @@ namespace OpenAI.FineTuning
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalListFineTuningJobEventsResponse(data, @object, hasMore, additionalBinaryDataProperties);
+            return new InternalListFineTuningJobEventsResponse(data ?? new ChangeTrackingList<FineTuningEvent>(), @object, hasMore, additionalBinaryDataProperties);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionKeyPress>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,6 +32,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionKeyPress)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -86,9 +88,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("keys"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "keys"u8);
                 for (int i = 0; i < Keys.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.keys[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.keys[{i}]")))
                     {
                         continue;
                     }
@@ -109,6 +112,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionKeyPress IJsonModel<InternalComputerActionKeyPress>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionKeyPress)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionKeyPress>)this).GetFormatFromOptions(options) : options.Format;
@@ -119,7 +123,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionKeyPress(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionKeyPress DeserializeInternalComputerActionKeyPress(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -157,7 +163,8 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionKeyPress(kind, patch, keys);
+            return new InternalComputerActionKeyPress(kind, patch, keys ?? new ChangeTrackingList<string>());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

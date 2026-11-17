@@ -8,6 +8,7 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreFileStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this VectorStoreFileStatus value) => value switch
         {
             VectorStoreFileStatus.InProgress => "in_progress",
@@ -16,7 +17,9 @@ namespace OpenAI.VectorStores
             VectorStoreFileStatus.Failed => "failed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreFileStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static VectorStoreFileStatus ToVectorStoreFileStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -37,5 +40,6 @@ namespace OpenAI.VectorStores
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreFileStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

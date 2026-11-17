@@ -11,23 +11,23 @@ namespace OpenAI.Skills
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalSkillResource(string id, string name, string description, DateTimeOffset createdAt, string defaultVersion, string latestVersion)
+        internal InternalSkillResource(string id, string name, string description, DateTimeOffset createdOn, string defaultVersion, string latestVersion)
         {
             Id = id;
             Name = name;
             Description = description;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             DefaultVersion = defaultVersion;
             LatestVersion = latestVersion;
         }
 
-        internal InternalSkillResource(string id, string @object, string name, string description, DateTimeOffset createdAt, string defaultVersion, string latestVersion, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalSkillResource(string id, string @object, string name, string description, DateTimeOffset createdOn, string defaultVersion, string latestVersion, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Object = @object;
             Name = name;
             Description = description;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             DefaultVersion = defaultVersion;
             LatestVersion = latestVersion;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -41,7 +41,7 @@ namespace OpenAI.Skills
 
         public string Description { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string DefaultVersion { get; }
 

@@ -103,10 +103,10 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "logs":
-                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, data, options);
                     case "image":
                         return CodeInterpreterCallImageOutput.DeserializeCodeInterpreterCallImageOutput(element, data, options);
+                    case "logs":
+                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, data, options);
                 }
             }
             return InternalUnknownCodeInterpreterToolOutput.DeserializeInternalUnknownCodeInterpreterToolOutput(element, data, options);

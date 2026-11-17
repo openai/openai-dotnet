@@ -8,6 +8,11 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPCallItemParam : InternalItemParam
     {
+        private string _output;
+        private bool _outputIsDefined;
+        private string _error;
+        private bool _errorIsDefined;
+
         public InternalMCPCallItemParam(string serverLabel, string name, string arguments) : base(ResponseItemKind.McpCall)
         {
             ServerLabel = serverLabel;
@@ -16,15 +21,17 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMCPCallItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, string name, string arguments, string output, string error) : base(kind, patch)
         {
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;
-            Output = output;
-            Error = error;
+            _output = output;
+            _error = error;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ServerLabel { get; set; }
 
@@ -32,8 +39,30 @@ namespace OpenAI.Responses
 
         public string Arguments { get; set; }
 
-        public string Output { get; set; }
+        public string Output
+        {
+            get
+            {
+                return _output;
+            }
+            set
+            {
+                _output = value;
+                _outputIsDefined = true;
+            }
+        }
 
-        public string Error { get; set; }
+        public string Error
+        {
+            get
+            {
+                return _error;
+            }
+            set
+            {
+                _error = value;
+                _errorIsDefined = true;
+            }
+        }
     }
 }

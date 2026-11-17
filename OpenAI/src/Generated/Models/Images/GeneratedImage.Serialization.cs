@@ -66,7 +66,7 @@ namespace OpenAI.Images
             if (Optional.IsDefined(ImageBytes) && _additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(ImageBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageBytes, "D");
             }
             if (Optional.IsDefined(ImageUri) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
@@ -150,7 +150,7 @@ namespace OpenAI.Images
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new GeneratedImage(imageBytes, imageUri, revisedPrompt, additionalBinaryDataProperties);
         }

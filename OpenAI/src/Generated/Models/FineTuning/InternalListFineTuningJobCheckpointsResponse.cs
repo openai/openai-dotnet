@@ -12,31 +12,53 @@ namespace OpenAI.FineTuning
     internal partial class InternalListFineTuningJobCheckpointsResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private string _firstId;
+        private bool _firstIdIsDefined;
+        private string _lastId;
+        private bool _lastIdIsDefined;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<FineTuningCheckpoint> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalListFineTuningJobCheckpointsResponse(IList<FineTuningCheckpoint> data, string @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Data = data ?? new ChangeTrackingList<FineTuningCheckpoint>();
             Object = @object;
-            FirstId = firstId;
-            LastId = lastId;
+            _firstId = firstId;
+            _lastId = lastId;
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<FineTuningCheckpoint> Data { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Object { get; } = "list";
 
-        public string FirstId { get; }
+        public string FirstId
+        {
+            get
+            {
+                return _firstId;
+            }
+        }
 
-        public string LastId { get; }
+        public string LastId
+        {
+            get
+            {
+                return _lastId;
+            }
+        }
 
         public bool HasMore { get; }
 

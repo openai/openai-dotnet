@@ -16,6 +16,12 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private int? _timeoutMs;
+        private bool _timeoutMsIsDefined;
+        private string _workingDirectory;
+        private bool _workingDirectoryIsDefined;
+        private string _user;
+        private bool _userIsDefined;
 
         public InternalLocalShellExecAction(IEnumerable<string> command, IDictionary<string, string> env)
         {
@@ -30,10 +36,10 @@ namespace OpenAI.Responses
             // Plugin customization: ensure initialization of collections
             Kind = kind;
             Command = command ?? new ChangeTrackingList<string>();
-            TimeoutMs = timeoutMs;
-            WorkingDirectory = workingDirectory;
+            _timeoutMs = timeoutMs;
+            _workingDirectory = workingDirectory;
             Env = env ?? new ChangeTrackingDictionary<string, string>();
-            User = user;
+            _user = user;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -47,12 +53,45 @@ namespace OpenAI.Responses
 
         public IList<string> Command { get; }
 
-        public int? TimeoutMs { get; set; }
+        public int? TimeoutMs
+        {
+            get
+            {
+                return _timeoutMs;
+            }
+            set
+            {
+                _timeoutMs = value;
+                _timeoutMsIsDefined = true;
+            }
+        }
 
-        public string WorkingDirectory { get; set; }
+        public string WorkingDirectory
+        {
+            get
+            {
+                return _workingDirectory;
+            }
+            set
+            {
+                _workingDirectory = value;
+                _workingDirectoryIsDefined = true;
+            }
+        }
 
         public IDictionary<string, string> Env { get; }
 
-        public string User { get; set; }
+        public string User
+        {
+            get
+            {
+                return _user;
+            }
+            set
+            {
+                _user = value;
+                _userIsDefined = true;
+            }
+        }
     }
 }

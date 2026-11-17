@@ -30,18 +30,18 @@ namespace OpenAI.Batch
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetBatchesRequest(string after, int? limit, RequestOptions options)
+        internal virtual PipelineMessage CreateGetBatchesRequest(string afterId, int? pageSizeLimit, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/batches", false);
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;

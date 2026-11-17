@@ -70,11 +70,15 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(Query) && !Patch.Contains("$.query"u8))
             {
                 writer.WritePropertyName("query"u8);
                 writer.WriteStringValue(Query);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (Patch.Contains("$.queries"u8))
             {
                 if (!Patch.IsRemoved("$.queries"u8))
@@ -87,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("queries"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "queries"u8);
                 for (int i = 0; i < Queries.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
                     {
                         continue;
                     }
@@ -115,9 +120,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("sources"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "sources"u8);
                 for (int i = 0; i < Sources.Count; i++)
                 {
-                    if (Sources[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]")) || Sources[i] != null && Sources[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -150,7 +156,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalWebSearchActionType kind = default;
+            WebSearchActionKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -161,7 +167,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalWebSearchActionType(prop.Value.GetString());
+                    kind = new WebSearchActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("query"u8))
@@ -219,11 +225,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "sources"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Sources == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveSourcesArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
+                {
+                    return false;
+                }
+                if (Sources[index] == null)
                 {
                     return false;
                 }
@@ -242,7 +256,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "sources"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Sources == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
+                {
+                    return false;
+                }
+                if (Sources[index] == null)
                 {
                     return false;
                 }
@@ -271,9 +293,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "sources"u8);
             for (int i = 0; i < Sources.Count; i++)
             {
-                if (!Sources[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]"))) && (Sources[i] == null || !Sources[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Sources[i];
                 }

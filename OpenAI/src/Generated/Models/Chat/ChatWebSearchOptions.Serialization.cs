@@ -141,6 +141,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("user_location"u8))
             {
+                if (UserLocation == null)
+                {
+                    return false;
+                }
                 return UserLocation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("user_location"u8.Length)], out value);
             }
             return false;
@@ -154,6 +158,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("user_location"u8))
             {
+                if (UserLocation == null)
+                {
+                    return false;
+                }
                 UserLocation.Patch.Set([.. "$"u8, .. local.Slice("user_location"u8.Length)], value);
                 return true;
             }

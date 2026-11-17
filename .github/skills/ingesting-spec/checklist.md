@@ -23,13 +23,13 @@ Use this checklist when performing a spec ingestion for any area.
 - [ ] Add `@@clientLocation` for **all** operations (no more `interface` blocks)
 - [ ] Update `@@clientName` for any renamed operations
 - [ ] Update `@@visibility`, `@@alternateType`, `@@usage` — fix these if `./scripts/Invoke-CodeGen.ps1` reports errors referencing these decorators (e.g., a type or property was renamed or removed upstream)
-- [ ] Update client models TSP (`specification/client/models/{area}.models.tsp`) — **only if this file already exists** for the area (see patterns-and-gotchas.md §4 for criteria)
+- [ ] Update client models TSP (`specification/client/models/{area}.models.tsp`) — **only if this file already exists** for the area (see patterns-and-gotchas.md §3 for criteria)
 
 ## Compile and Generate Code
 
 - [ ] Run `./scripts/Invoke-CodeGen.ps1` (no params) — this handles `npm ci`, build, compile, and code generation in one step
 - [ ] Ignore warnings; only **errors** matter
-- [ ] If `prohibited-namespace` errors appear, add `[CodeGenType]` stubs — internal types go in `Internal/GeneratorStubs.cs`, public types go in `GeneratorStubs.cs` (see patterns-and-gotchas.md §5)
+- [ ] If `prohibited-namespace` errors appear, add `[CodeGenType]` stubs — internal types go in `Internal/GeneratorStubs.cs`, public types go in `GeneratorStubs.cs` (see patterns-and-gotchas.md §4)
 - [ ] If client TSP fixes are needed, fix and re-run `./scripts/Invoke-CodeGen.ps1`
 - [ ] Resolve remaining compile errors in `specification/base/typespec/`; use `specification/client/` only for `Azure.ClientGenerator.Core` decorators. Document anything that must be deferred (do NOT file issues yourself)
 
@@ -50,7 +50,6 @@ Use this checklist when performing a spec ingestion for any area.
 ## Post-Generation Verification
 
 - [ ] Verify generated files: `Get-ChildItem src/Generated/Models/{Area}/ -Name`
-- [ ] **Review numeric types** — check if any `long` or `double` properties, parameters, or fields were incorrectly converted to `int`/`float` by the `NumericTypesVisitor`; add exclusions if needed (see patterns-and-gotchas.md §3)
 - [ ] Verify build: `dotnet build`
 - [ ] Export API surface: `./scripts/Export-Api.ps1`
 

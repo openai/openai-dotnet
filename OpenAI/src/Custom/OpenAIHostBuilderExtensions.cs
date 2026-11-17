@@ -5,6 +5,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Conversations;
+using OpenAI.Decisions;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
@@ -179,6 +180,33 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<ConversationClient, ConversationClientSettings>(serviceKey, sectionName);
+    }
+
+    // CUSTOM: Register a Decisions client using configuration-bound client settings.
+    public static IClientBuilder AddDecisionsClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<DecisionsClient, DecisionsClientSettings>(sectionName);
+    }
+
+    // CUSTOM: Register a keyed Decisions client using configuration-bound client settings.
+    public static IClientBuilder AddKeyedDecisionsClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<DecisionsClient, DecisionsClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddEmbeddingClient(

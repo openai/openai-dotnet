@@ -15,13 +15,13 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeClientCommand(InternalRealtimeClientEventTypeGA kind)
+        protected internal RealtimeClientCommand(RealtimeClientCommandKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommand(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch)
+        internal RealtimeClientCommand(RealtimeClientCommandKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalRealtimeClientEventTypeGA Kind { get; set; }
+        public RealtimeClientCommandKind Kind { get; }
     }
 }

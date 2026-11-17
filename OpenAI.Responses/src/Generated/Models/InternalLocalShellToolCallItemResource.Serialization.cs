@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalLocalShellToolCallItemResource)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -73,10 +75,10 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.status"u8))
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (!Patch.Contains("$.call_id"u8))
             {
@@ -95,6 +97,7 @@ namespace OpenAI.Responses
 
         InternalLocalShellToolCallItemResource IJsonModel<InternalLocalShellToolCallItemResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalLocalShellToolCallItemResource)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
@@ -105,6 +108,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalLocalShellToolCallItemResource(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalLocalShellToolCallItemResource DeserializeInternalLocalShellToolCallItemResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -117,7 +121,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            InternalLocalShellToolCallItemResourceStatus status = default;
+            InternalLocalShellToolCallItemResourceStatus? status = default;
             string callId = default;
             InternalLocalShellExecAction action = default;
             foreach (var prop in element.EnumerateObject())
@@ -134,6 +138,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = new InternalLocalShellToolCallItemResourceStatus(prop.Value.GetString());
                     continue;
                 }
@@ -166,6 +174,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 return Action.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("action"u8.Length)], out value);
             }
             return false;
@@ -179,6 +191,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 Action.Patch.Set([.. "$"u8, .. local.Slice("action"u8.Length)], value);
                 return true;
             }

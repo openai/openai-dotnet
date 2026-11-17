@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolCallItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallItem>
     {
-        internal RealtimeMcpToolCallItem() : this(InternalRealtimeConversationItemTypeGA.McpCall, default, null, null, null, null, null, null, null)
+        public RealtimeMcpToolCallItem() : this(RealtimeItemKind.McpCall, default, null, null, null, null, null, null, null)
         {
         }
 
@@ -93,10 +93,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
-            if (Optional.IsDefined(ApprovalRequestId) && !Patch.Contains("$.approval_request_id"u8))
+            if (Optional.IsDefined(ApprovalRequestId, _approvalRequestIdIsDefined) && !Patch.Contains("$.approval_request_id"u8))
             {
-                writer.WritePropertyName("approval_request_id"u8);
-                writer.WriteStringValue(ApprovalRequestId);
+                if (ApprovalRequestId != null)
+                {
+                    writer.WritePropertyName("approval_request_id"u8);
+                    writer.WriteStringValue(ApprovalRequestId);
+                }
+                else
+                {
+                    writer.WriteNull("approval_request_id"u8);
+                }
             }
             if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.output"u8))
             {
@@ -132,7 +139,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeConversationItemTypeGA kind = default;
+            RealtimeItemKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -140,6 +147,7 @@ namespace OpenAI.Realtime
             string serverLabel = default;
             string toolName = default;
             BinaryData toolArguments = default;
+            bool approvalRequestIdIsDefined = false;
             string approvalRequestId = default;
             string toolOutput = default;
             RealtimeError error = default;
@@ -147,7 +155,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeConversationItemTypeGA(prop.Value.GetString());
+                    kind = new RealtimeItemKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -172,6 +180,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("approval_request_id"u8))
                 {
+                    approvalRequestIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         approvalRequestId = null;
@@ -210,7 +219,10 @@ namespace OpenAI.Realtime
                 toolArguments,
                 approvalRequestId,
                 toolOutput,
-                error);
+                error)
+            {
+                _approvalRequestIdIsDefined = approvalRequestIdIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -221,6 +233,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
             }
             return false;
@@ -234,6 +250,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 Error.Patch.Set([.. "$"u8, .. local.Slice("error"u8.Length)], value);
                 return true;
             }

@@ -153,7 +153,7 @@ namespace OpenAI.VectorStores
             {
                 if (prop.NameEquals("query"u8))
                 {
-                    query = BinaryData.FromString(prop.Value.GetRawText());
+                    query = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("rewrite_query"u8))
@@ -180,7 +180,7 @@ namespace OpenAI.VectorStores
                     {
                         continue;
                     }
-                    filters = BinaryData.FromString(prop.Value.GetRawText());
+                    filters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("ranking_options"u8))
@@ -193,7 +193,7 @@ namespace OpenAI.VectorStores
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalVectorStoreSearchRequest(
                 query,

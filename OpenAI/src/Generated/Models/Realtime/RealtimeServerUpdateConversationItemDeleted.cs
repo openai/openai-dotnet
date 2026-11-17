@@ -10,22 +10,22 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemDeleted : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemDeleted(string eventId, string itemId) : base(InternalRealtimeServerEventTypeGA.ConversationItemDeleted)
+        internal RealtimeServerUpdateConversationItemDeleted(string eventId, string itemId) : base(RealtimeServerUpdateKind.ConversationItemDeleted)
         {
             EventId = eventId;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemDeleted(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemDeleted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
 }

@@ -78,8 +78,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -147,6 +145,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = new ApplyPatchCallStatus(prop.Value.GetString());
                     continue;
                 }
@@ -180,6 +182,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("operation"u8))
             {
+                if (Operation == null)
+                {
+                    return false;
+                }
                 return Operation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("operation"u8.Length)], out value);
             }
             return false;
@@ -193,6 +199,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("operation"u8))
             {
+                if (Operation == null)
+                {
+                    return false;
+                }
                 Operation.Patch.Set([.. "$"u8, .. local.Slice("operation"u8.Length)], value);
                 return true;
             }

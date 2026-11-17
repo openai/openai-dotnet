@@ -17,6 +17,8 @@ namespace OpenAI.FineTuning
         {
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal InternalTodoFineTuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -26,13 +28,20 @@ namespace OpenAI.FineTuning
             Functions = functions ?? new ChangeTrackingList<ChatFunction>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         public IList<BinaryData> Messages { get; }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
         public IList<ChatTool> Tools { get; }
 
         public bool? ParallelToolCalls { get; set; }
 
+        [Obsolete("This field is marked as deprecated.")]
         public IList<ChatFunction> Functions { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData

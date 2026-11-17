@@ -13,6 +13,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string text, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(StreamingResponseUpdateKind.ResponseOutputTextDone, sequenceNumber)
         {
             ItemId = itemId;
@@ -20,7 +21,9 @@ namespace OpenAI.Responses
             ContentIndex = contentIndex;
             Text = text;
             TokenLogProbabilities = tokenLogProbabilities.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputTextDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string text, IList<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(kind, sequenceNumber, patch)

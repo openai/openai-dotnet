@@ -238,11 +238,11 @@ namespace OpenAI.Evals
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalRunOutputItemSample(
-                input,
-                output,
+                input ?? new ChangeTrackingList<InternalEvalRunOutputItemSampleInput>(),
+                output ?? new ChangeTrackingList<InternalEvalRunOutputItemSampleOutput>(),
                 finishReason,
                 model,
                 usage,

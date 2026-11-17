@@ -8,13 +8,16 @@ namespace OpenAI.Assistants
 {
     internal static partial class MessageRoleExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this MessageRole value) => value switch
         {
             MessageRole.User => "user",
             MessageRole.Assistant => "assistant",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown MessageRole value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static MessageRole ToMessageRole(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "user"))
@@ -27,5 +30,6 @@ namespace OpenAI.Assistants
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown MessageRole value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

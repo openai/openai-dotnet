@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "110",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -21,18 +21,19 @@
       },
       "StatusCode": 401,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd0fedd99a4c37c-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ad67194f0882-SEA",
         "Connection": "keep-alive",
         "Content-Length": "288",
         "Content-Type": "application/json; charset=utf-8",
         "Date": "Sanitized",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": "Origin",
         "X-Content-Type-Options": "nosniff",

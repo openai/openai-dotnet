@@ -25,8 +25,6 @@ namespace OpenAI.Audio
 
         public AudioTranslationFormat? ResponseFormat { get; set; }
 
-        public float? Temperature { get; set; }
-
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;

@@ -36,7 +36,7 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
+            AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
 
             await foreach (StreamingResponseUpdate update in responseUpdates)
             {

@@ -15,9 +15,12 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseStatusDetails()
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public RealtimeResponseStatusDetails()
         {
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind, RealtimeResponseStatusReason? reason, RealtimeError error, in JsonPatch patch)
@@ -35,10 +38,10 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeResponseStatusErrorKind? Kind { get; }
+        public RealtimeResponseStatusErrorKind? Kind { get; set; }
 
-        public RealtimeResponseStatusReason? Reason { get; }
+        public RealtimeResponseStatusReason? Reason { get; set; }
 
-        public RealtimeError Error { get; }
+        public RealtimeError Error { get; set; }
     }
 }

@@ -6,6 +6,7 @@ import "./chat";
 import "./completions";
 import "./containers";
 import "./conversations";
+import "./decisions";
 import "./embeddings";
 import "./evals";
 import "./files";

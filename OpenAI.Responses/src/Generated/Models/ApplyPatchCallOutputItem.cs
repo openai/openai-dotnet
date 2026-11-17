@@ -11,6 +11,9 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchCallOutputItem : ResponseItem
     {
+        private string _output;
+        private bool _outputIsDefined;
+
         public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status) : base(ResponseItemKind.ApplyPatchCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -24,7 +27,7 @@ namespace OpenAI.Responses
         {
             CallId = callId;
             Status = status;
-            Output = output;
+            _output = output;
             CreatedBy = createdBy;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -33,7 +36,18 @@ namespace OpenAI.Responses
 
         public ApplyPatchCallOutputStatus Status { get; set; }
 
-        public string Output { get; set; }
+        public string Output
+        {
+            get
+            {
+                return _output;
+            }
+            set
+            {
+                _output = value;
+                _outputIsDefined = true;
+            }
+        }
 
         public string CreatedBy { get; set; }
     }

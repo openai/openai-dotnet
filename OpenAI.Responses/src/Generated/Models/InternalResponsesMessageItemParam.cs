@@ -14,11 +14,13 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalResponsesMessageItemParam(ResponseItemKind kind, in JsonPatch patch, InternalResponsesMessageRole role) : base(kind, patch)
         {
             Role = role;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalResponsesMessageRole Role { get; set; }
     }

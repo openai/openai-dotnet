@@ -267,11 +267,10 @@ public class ChatToolTests : OpenAIRecordedTestBase
 
         if (failureExpectation == FailureExpectation.FailureExpected)
         {
-            ClientResultException thrownException = Assert.ThrowsAsync<ClientResultException>(async () =>
-            {
-                ChatCompletion completion = await client.CompleteChatAsync(messages, options);
-            });
-            Assert.That(thrownException.Message, Does.Contain("function.parameters"));
+            Assert.That(
+                async () => await client.CompleteChatAsync(messages, options),
+                Throws.TypeOf<ClientResultException>()
+                    .With.Message.Contains("function.parameters"));
         }
         else
         {

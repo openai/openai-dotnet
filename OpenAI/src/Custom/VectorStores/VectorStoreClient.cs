@@ -39,7 +39,7 @@ public partial class VectorStoreClient
     /// <summary> Initializes a new instance of <see cref="VectorStoreClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public VectorStoreClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public VectorStoreClient(string apiKey) : this(new ApiKeyCredential(apiKey), new VectorStoreClientOptions())
     {
     }
 
@@ -49,7 +49,7 @@ public partial class VectorStoreClient
     /// <summary> Initializes a new instance of <see cref="VectorStoreClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public VectorStoreClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public VectorStoreClient(ApiKeyCredential credential) : this(credential, new VectorStoreClientOptions())
     {
     }
 
@@ -59,7 +59,7 @@ public partial class VectorStoreClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> Additional options to customize the client. </param>
     /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public VectorStoreClient(ApiKeyCredential credential, VectorStoreClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -67,7 +67,7 @@ public partial class VectorStoreClient
     /// <summary> Initializes a new instance of <see cref="VectorStoreClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public VectorStoreClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public VectorStoreClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new VectorStoreClientOptions())
     {
     }
 
@@ -76,13 +76,13 @@ public partial class VectorStoreClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public VectorStoreClient(AuthenticationPolicy authenticationPolicy, VectorStoreClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new VectorStoreClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -93,13 +93,13 @@ public partial class VectorStoreClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal VectorStoreClient(ClientPipeline pipeline, VectorStoreClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new VectorStoreClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     [Experimental("SCME0002")]

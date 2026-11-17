@@ -18,6 +18,8 @@ namespace OpenAI.Chat
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
+        private const string ExtraHighValue = "xhigh";
+        private const string MaxValue = "max";
 
         public ChatReasoningEffortLevel(string value)
         {
@@ -35,6 +37,10 @@ namespace OpenAI.Chat
         public static ChatReasoningEffortLevel Medium { get; } = new ChatReasoningEffortLevel(MediumValue);
 
         public static ChatReasoningEffortLevel High { get; } = new ChatReasoningEffortLevel(HighValue);
+
+        public static ChatReasoningEffortLevel ExtraHigh { get; } = new ChatReasoningEffortLevel(ExtraHighValue);
+
+        public static ChatReasoningEffortLevel Max { get; } = new ChatReasoningEffortLevel(MaxValue);
 
         public static bool operator ==(ChatReasoningEffortLevel left, ChatReasoningEffortLevel right) => left.Equals(right);
 

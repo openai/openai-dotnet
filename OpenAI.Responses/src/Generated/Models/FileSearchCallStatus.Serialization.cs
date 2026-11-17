@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class FileSearchCallStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this FileSearchCallStatus value) => value switch
         {
             FileSearchCallStatus.InProgress => "in_progress",
@@ -17,7 +18,9 @@ namespace OpenAI.Responses
             FileSearchCallStatus.Failed => "failed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileSearchCallStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static FileSearchCallStatus ToFileSearchCallStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -42,5 +45,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileSearchCallStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

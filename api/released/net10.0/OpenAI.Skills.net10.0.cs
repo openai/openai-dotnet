@@ -11,11 +11,11 @@ namespace OpenAI.Skills {
         protected SkillClient();
         [Experimental("SCME0002")]
         public SkillClient(SkillClientSettings settings);
-        public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public SkillClient(ApiKeyCredential credential, SkillClientOptions options);
         public SkillClient(ApiKeyCredential credential);
-        public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public SkillClient(AuthenticationPolicy authenticationPolicy, SkillClientOptions options);
         public SkillClient(AuthenticationPolicy authenticationPolicy);
-        protected internal SkillClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal SkillClient(ClientPipeline pipeline, SkillClientOptions options);
         public SkillClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -43,9 +43,16 @@ namespace OpenAI.Skills {
         public virtual ClientResult UploadSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class SkillClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class SkillClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public SkillClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }

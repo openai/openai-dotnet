@@ -21,6 +21,7 @@ public class OmittedTypesVisitor : ScmLibraryVisitor
             "FineTuneChatCompletionRequestAssistantMessage",
             "FineTuneChatCompletionRequestAssistantMessageWeight",
             "FineTuneChatCompletionRequestAssistantMessageRole",
+            "OpenAIModelFactory",
         ];
 
     // Types the emitter generates once per package but that should only live

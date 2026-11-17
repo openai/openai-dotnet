@@ -12,13 +12,16 @@ namespace OpenAI.Containers
 {
     internal partial class ContainerClientGetContainersAsyncCollectionResult : AsyncCollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly ContainerClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
         private readonly string _name;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ContainerClientGetContainersAsyncCollectionResult(ContainerClient client, int? limit, string order, string after, string name, RequestOptions options)
         {
             _client = client;
@@ -28,6 +31,7 @@ namespace OpenAI.Containers
             _name = name;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {

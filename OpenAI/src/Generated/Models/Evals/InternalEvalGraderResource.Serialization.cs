@@ -115,12 +115,12 @@ namespace OpenAI.Evals
                 {
                     case "label_model":
                         return InternalEvalGraderLabelModelResource.DeserializeInternalEvalGraderLabelModelResource(element, options);
-                    case "text_similarity":
-                        return InternalEvalGraderTextSimilarityResource.DeserializeInternalEvalGraderTextSimilarityResource(element, options);
                     case "python":
                         return InternalEvalGraderPythonResource.DeserializeInternalEvalGraderPythonResource(element, options);
                     case "score_model":
                         return InternalEvalGraderScoreModelResource.DeserializeInternalEvalGraderScoreModelResource(element, options);
+                    case "text_similarity":
+                        return InternalEvalGraderTextSimilarityResource.DeserializeInternalEvalGraderTextSimilarityResource(element, options);
                 }
             }
             return InternalUnknownEvalGraderResource.DeserializeInternalUnknownEvalGraderResource(element, options);

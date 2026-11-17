@@ -23,7 +23,22 @@ namespace OpenAI.Audio
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
-            request.Headers.Set("Accept", "application/octet-stream, text/event-stream");
+            request.Headers.Set("Accept", "application/octet-stream");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGenerateSpeechStreamingRequest(BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/audio/speech", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "text/event-stream");
             request.Content = content;
             message.Apply(options);
             return message;
@@ -38,7 +53,22 @@ namespace OpenAI.Audio
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", contentType);
-            request.Headers.Set("Accept", "application/json, text/event-stream");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateTranscribeAudioStreamingRequest(BinaryContent content, string contentType, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/audio/transcriptions", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "text/event-stream");
             request.Content = content;
             message.Apply(options);
             return message;

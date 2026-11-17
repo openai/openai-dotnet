@@ -10,6 +10,21 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalRunResponsesDataContentSource : InternalEvalRunDataContentSource
     {
+        private string _model;
+        private bool _modelIsDefined;
+        private string _instructionsSearch;
+        private bool _instructionsSearchIsDefined;
+        private int? _createdAfter;
+        private bool _createdAfterIsDefined;
+        private int? _createdBefore;
+        private bool _createdBeforeIsDefined;
+        private EvalReasoningEffortLevel? _reasoningEffort;
+        private bool _reasoningEffortIsDefined;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
+        private float? _topP;
+        private bool _topPIsDefined;
+
         public InternalEvalRunResponsesDataContentSource() : this(InternalEvalRunDataContentSourceType.Responses, null, null, null, null, default, default, default, default, default, null, null)
         {
         }
@@ -18,32 +33,109 @@ namespace OpenAI.Evals
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Model = model;
-            InstructionsSearch = instructionsSearch;
-            CreatedAfter = createdAfter;
-            CreatedBefore = createdBefore;
-            ReasoningEffort = reasoningEffort;
-            Temperature = temperature;
-            TopP = topP;
+            _model = model;
+            _instructionsSearch = instructionsSearch;
+            _createdAfter = createdAfter;
+            _createdBefore = createdBefore;
+            _reasoningEffort = reasoningEffort;
+            _temperature = temperature;
+            _topP = topP;
             Users = users ?? new ChangeTrackingList<string>();
             Tools = tools ?? new ChangeTrackingList<string>();
         }
 
         public IDictionary<string, string> Metadata { get; }
 
-        public string Model { get; set; }
+        public string Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                _model = value;
+                _modelIsDefined = true;
+            }
+        }
 
-        public string InstructionsSearch { get; set; }
+        public string InstructionsSearch
+        {
+            get
+            {
+                return _instructionsSearch;
+            }
+            set
+            {
+                _instructionsSearch = value;
+                _instructionsSearchIsDefined = true;
+            }
+        }
 
-        public int? CreatedAfter { get; set; }
+        public int? CreatedAfter
+        {
+            get
+            {
+                return _createdAfter;
+            }
+            set
+            {
+                _createdAfter = value;
+                _createdAfterIsDefined = true;
+            }
+        }
 
-        public int? CreatedBefore { get; set; }
+        public int? CreatedBefore
+        {
+            get
+            {
+                return _createdBefore;
+            }
+            set
+            {
+                _createdBefore = value;
+                _createdBeforeIsDefined = true;
+            }
+        }
 
-        internal EvalReasoningEffortLevel? ReasoningEffort { get; set; }
+        internal EvalReasoningEffortLevel? ReasoningEffort
+        {
+            get
+            {
+                return _reasoningEffort;
+            }
+            set
+            {
+                _reasoningEffort = value;
+                _reasoningEffortIsDefined = true;
+            }
+        }
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
-        public float? TopP { get; set; }
+        public float? TopP
+        {
+            get
+            {
+                return _topP;
+            }
+            set
+            {
+                _topP = value;
+                _topPIsDefined = true;
+            }
+        }
 
         public IList<string> Users { get; set; }
 

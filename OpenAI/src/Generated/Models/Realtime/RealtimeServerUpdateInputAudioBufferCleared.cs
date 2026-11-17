@@ -10,18 +10,18 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateInputAudioBufferCleared : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateInputAudioBufferCleared(string eventId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferCleared)
+        internal RealtimeServerUpdateInputAudioBufferCleared(string eventId) : base(RealtimeServerUpdateKind.InputAudioBufferCleared)
         {
             EventId = eventId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferCleared(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferCleared(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId) : base(kind, patch)
         {
             EventId = eventId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
     }
 }

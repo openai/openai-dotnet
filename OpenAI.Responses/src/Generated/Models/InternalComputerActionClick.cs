@@ -8,14 +8,17 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionClick : ComputerCallAction
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalComputerActionClick(ComputerCallActionMouseButton button, int x, int y) : base(ComputerCallActionKind.Click)
         {
             Button = button;
             X = x;
             Y = y;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerActionClick(ComputerCallActionKind kind, in JsonPatch patch, ComputerCallActionMouseButton button, int x, int y) : base(kind, patch)
         {
             Button = button;
@@ -23,8 +26,11 @@ namespace OpenAI.Responses
             Y = y;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ComputerCallActionMouseButton Button { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int X { get; set; }
 

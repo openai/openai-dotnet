@@ -74,10 +74,17 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(EncryptedContent) && !Patch.Contains("$.encrypted_content"u8))
+            if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && !Patch.Contains("$.encrypted_content"u8))
             {
-                writer.WritePropertyName("encrypted_content"u8);
-                writer.WriteStringValue(EncryptedContent);
+                if (EncryptedContent != null)
+                {
+                    writer.WritePropertyName("encrypted_content"u8);
+                    writer.WriteStringValue(EncryptedContent);
+                }
+                else
+                {
+                    writer.WriteNull("encrypted_content"u8);
+                }
             }
             if (Patch.Contains("$.summary"u8))
             {
@@ -91,9 +98,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "summary"u8);
                 for (int i = 0; i < Summary.Count; i++)
                 {
-                    if (Summary[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]")) || Summary[i] != null && Summary[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -130,6 +138,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool encryptedContentIsDefined = false;
             string encryptedContent = default;
             IList<ReasoningSummaryPart> summary = default;
             foreach (var prop in element.EnumerateObject())
@@ -141,6 +150,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("encrypted_content"u8))
                 {
+                    encryptedContentIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         encryptedContent = null;
@@ -161,7 +171,10 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalReasoningItemParam(kind, patch, encryptedContent, summary);
+            return new InternalReasoningItemParam(kind, patch, encryptedContent, summary ?? new ChangeTrackingList<ReasoningSummaryPart>())
+            {
+                _encryptedContentIsDefined = encryptedContentIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -174,11 +187,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "summary"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Summary == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveSummaryArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Summary.Count)
+                {
+                    return false;
+                }
+                if (Summary[index] == null)
                 {
                     return false;
                 }
@@ -197,7 +218,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "summary"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Summary == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Summary.Count)
+                {
+                    return false;
+                }
+                if (Summary[index] == null)
                 {
                     return false;
                 }
@@ -220,20 +249,23 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ReasoningSummaryPart> ActiveSummary()
         {
             if (!Optional.IsCollectionDefined(Summary))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "summary"u8);
             for (int i = 0; i < Summary.Count; i++)
             {
-                if (!Summary[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]"))) && (Summary[i] == null || !Summary[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Summary[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

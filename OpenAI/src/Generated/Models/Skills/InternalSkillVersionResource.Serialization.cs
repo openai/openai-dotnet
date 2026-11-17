@@ -94,7 +94,7 @@ namespace OpenAI.Skills
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -151,7 +151,7 @@ namespace OpenAI.Skills
             string id = default;
             string skillId = default;
             string version = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string name = default;
             string description = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -179,7 +179,7 @@ namespace OpenAI.Skills
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -193,14 +193,14 @@ namespace OpenAI.Skills
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalSkillVersionResource(
                 @object,
                 id,
                 skillId,
                 version,
-                createdAt,
+                createdOn,
                 name,
                 description,
                 additionalBinaryDataProperties);

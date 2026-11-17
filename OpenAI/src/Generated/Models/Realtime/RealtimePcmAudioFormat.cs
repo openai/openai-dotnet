@@ -17,6 +17,6 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public int Rate { get; } = 24000;
+        public int Rate { get; set; } = 24000;
     }
 }

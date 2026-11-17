@@ -73,8 +73,6 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -95,15 +93,29 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("output_format"u8);
                 writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Quality) && !Patch.Contains("$.quality"u8))
+            if (Optional.IsDefined(Quality, _qualityIsDefined) && !Patch.Contains("$.quality"u8))
             {
-                writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.Value.ToString());
+                if (Quality != null)
+                {
+                    writer.WritePropertyName("quality"u8);
+                    writer.WriteStringValue(Quality.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("quality"u8);
+                }
             }
-            if (Optional.IsDefined(Size) && !Patch.Contains("$.size"u8))
+            if (Optional.IsDefined(Size, _sizeIsDefined) && !Patch.Contains("$.size"u8))
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size"u8);
+                }
             }
             if (Optional.IsDefined(RevisedPrompt) && !Patch.Contains("$.revised_prompt"u8))
             {
@@ -113,7 +125,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
-                writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageResultBytes, "D");
             }
             else if (!Patch.Contains("$.result"u8))
             {
@@ -152,7 +164,9 @@ namespace OpenAI.Responses
             ImageGenerationToolAction? action = default;
             ImageGenerationToolBackground? background = default;
             ImageGenerationToolOutputFileFormat? outputFileFormat = default;
+            bool qualityIsDefined = false;
             ImageGenerationToolQuality? quality = default;
+            bool sizeIsDefined = false;
             ImageGenerationToolSize? size = default;
             string revisedPrompt = default;
             BinaryData imageResultBytes = default;
@@ -170,6 +184,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = prop.Value.GetString().ToImageGenerationCallStatus();
                     continue;
                 }
@@ -203,6 +221,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("quality"u8))
                 {
+                    qualityIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         quality = null;
@@ -213,6 +232,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("size"u8))
                 {
+                    sizeIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         size = null;
@@ -249,7 +269,11 @@ namespace OpenAI.Responses
                 quality,
                 size,
                 revisedPrompt,
-                imageResultBytes);
+                imageResultBytes)
+            {
+                _qualityIsDefined = qualityIsDefined,
+                _sizeIsDefined = sizeIsDefined
+            };
         }
     }
 }

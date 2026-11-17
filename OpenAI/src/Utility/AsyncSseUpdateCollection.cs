@@ -21,8 +21,6 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
-    public List<Action> AdditionalDisposalActions { get; } = [];
-
     public AsyncSseUpdateCollection(
         Func<Task<ClientResult>> sendRequestAsync,
         Func<JsonElement, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
@@ -84,21 +82,20 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         _cancellationToken = cancellationToken;
     }
 
-    public override ContinuationToken? GetContinuationToken(ClientResult page)
-        // Continuation is not supported for SSE streams.
-        => null;
+    // Continuation is not supported for SSE streams.
+    public override ContinuationToken? GetContinuationToken(ClientResult page) => null;
 
-    public async override IAsyncEnumerable<ClientResult> GetRawPagesAsync()
+    public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
-        yield return await _sendRequestAsync();
+        yield return await _sendRequestAsync().ConfigureAwait(false);
     }
 
-    protected async override IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
+    protected override async IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
     {
-        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
-        
+        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken);
+
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             yield return enumerator.Current;
@@ -107,11 +104,12 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToMultipleViaJson<U>(
-    Func<JsonElement, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
+        Func<JsonElement, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
     {
         return (item) =>
         {
             using JsonDocument document = JsonDocument.Parse(item.Data);
+
             return jsonDeserializationFunc.Invoke(document.RootElement, ModelSerializationExtensions.WireOptions);
         };
     }
@@ -123,11 +121,12 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToMultipleViaJson<U>(
-    Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
     {
         return (item) =>
         {
             using JsonDocument document = JsonDocument.Parse(item.Data);
+
             return jsonDeserializationFunc.Invoke(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions);
         };
     }
@@ -136,12 +135,10 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToSingleViaJson<U>(
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, U> jsonSingleDeserializationFunc)
             => DeserializeSseToMultipleViaJson<U>((e, d, o) => [jsonSingleDeserializationFunc.Invoke(e, d, o)]);
-    
+
     private sealed class AsyncSseUpdateEnumerator<U> : IAsyncEnumerator<U>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
-
-        private List<Action> _additionalDisposalActions;
 
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
@@ -159,26 +156,25 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
         private U? _current;
         private bool _started;
+        private bool _disposed;
 
         public AsyncSseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> deserializerFunc,
             ClientResult page,
-            CancellationToken cancellationToken,
-            List<Action> additionalDisposalActions)
+            CancellationToken cancellationToken)
         {
             Argument.AssertNotNull(page, nameof(page));
 
             _deserializerFunc = deserializerFunc;
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
-            _additionalDisposalActions = additionalDisposalActions;
         }
 
         U IAsyncEnumerator<U>.Current => _current!;
 
         async ValueTask<bool> IAsyncEnumerator<U>.MoveNextAsync()
         {
-            if (_events is null && _started)
+            if ((_events is null) && (_started))
             {
                 throw new ObjectDisposedException(nameof(AsyncSseUpdateEnumerator<U>));
             }
@@ -187,9 +183,10 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             _events ??= CreateEventEnumeratorAsync();
             _started = true;
 
-            if (_updates is not null && _updates.MoveNext())
+            if ((_updates is not null) && (_updates.MoveNext()))
             {
                 _current = _updates.Current;
+
                 return true;
             }
 
@@ -215,6 +212,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
+
                     return false;
                 }
 
@@ -225,11 +223,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 if (_updates.MoveNext())
                 {
                     _current = _updates.Current;
+
                     return true;
                 }
             }
 
             _current = default;
+
             return false;
         }
 
@@ -241,32 +241,40 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             }
 
             IAsyncEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(_response.ContentStream, (_, bytes) => bytes.ToArray()).EnumerateAsync();
+
             return enumerable.GetAsyncEnumerator(_cancellationToken);
         }
 
         public async ValueTask DisposeAsync()
         {
             await DisposeAsyncCore().ConfigureAwait(false);
-
             GC.SuppressFinalize(this);
         }
 
         private async ValueTask DisposeAsyncCore()
         {
-            if (_events is not null)
+            if (_disposed)
             {
-                await _events.DisposeAsync().ConfigureAwait(false);
+                return;
+            }
+
+            _disposed = true;
+
+            try
+            {
+                _updates?.Dispose();
+
+                if (_events is not null)
+                {
+                    await _events.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
                 _events = null;
-
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+                // Cancellation can occur before the first parser read, but the connection is already open.
+                _response.Dispose();
             }
-
-            foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
-            {
-                additionalDisposalAction.Invoke();
-            }
-            _additionalDisposalActions?.Clear();
         }
     }
 }

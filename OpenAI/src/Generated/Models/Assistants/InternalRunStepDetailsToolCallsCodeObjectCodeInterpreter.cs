@@ -18,6 +18,7 @@ namespace OpenAI.Assistants
             Outputs = new ChangeTrackingList<RunStepCodeInterpreterOutput>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -25,10 +26,13 @@ namespace OpenAI.Assistants
             Outputs = outputs ?? new ChangeTrackingList<RunStepCodeInterpreterOutput>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Input { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IReadOnlyList<RunStepCodeInterpreterOutput> Outputs { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

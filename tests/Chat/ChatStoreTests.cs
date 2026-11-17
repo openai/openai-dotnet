@@ -488,10 +488,9 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             await Task.Delay(DelayInMilliseconds); // Wait for completions to be deleted
         }
 
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            ChatCompletion deletedCompletion = await client.GetChatCompletionAsync(completion.Id);
-        });
+        Assert.That(
+            async () => await client.GetChatCompletionAsync(completion.Id),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
@@ -540,10 +539,9 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             await Task.Delay(DelayInMilliseconds); // Wait for completions to be deleted
         }
 
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            _ = await client.GetChatCompletionAsync(chatCompletion.Id);
-        });
+        Assert.That(
+            async () => await client.GetChatCompletionAsync(chatCompletion.Id),
+            Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]
@@ -744,8 +742,8 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             new UserChatMessage("Name something I could do outside in this weather."),
             new UserChatMessage("Name something else I could do outside in this weather."),
             new UserChatMessage([
-                ChatMessageContentPart.CreateTextPart("Whose logo is this?: "),
-                ChatMessageContentPart.CreateImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png"))]),
+                ChatMessageContentPart.CreateTextPart("What is in this image?: "),
+                ChatMessageContentPart.CreateImagePart(new Uri("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/tests/Assets/images_dog_and_cat.png"))]),
         };
 
         // Add function definition to trigger more back-and-forth
@@ -798,7 +796,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
                 if (message.ContentParts.Count > 0)
                 {
                     foundContentParts = true;
-                    Assert.That(message.ContentParts[0].Text, Is.EqualTo("Whose logo is this?: "));
+                    Assert.That(message.ContentParts[0].Text, Is.EqualTo("What is in this image?: "));
                     Assert.That(message.ContentParts[1].ImageBytes, Is.Not.Null);
                 }
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);

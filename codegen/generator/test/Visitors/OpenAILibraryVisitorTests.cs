@@ -41,7 +41,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             Assert.That(jsonWriteCoreMethod, Is.Not.Null);
 
             // Invoke the visitor
-            jsonWriteCoreMethod = visitor.InvokeVisitMethod(jsonWriteCoreMethod!);
+            jsonWriteCoreMethod = visitor.InvokeVisitMethod(model, jsonWriteCoreMethod!);
             Assert.That(jsonWriteCoreMethod!.BodyStatements, Is.Not.Null);
 
             var methodBody = jsonWriteCoreMethod!.BodyStatements!.ToDisplayString();
@@ -71,7 +71,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             Assert.That(jsonWriteCoreMethod, Is.Not.Null);
 
             // Invoke the visitor
-            jsonWriteCoreMethod = visitor.InvokeVisitMethod(jsonWriteCoreMethod!);
+            jsonWriteCoreMethod = visitor.InvokeVisitMethod(model, jsonWriteCoreMethod!);
             Assert.That(jsonWriteCoreMethod!.BodyStatements, Is.Not.Null);
 
             var methodBody = jsonWriteCoreMethod!.BodyStatements!.ToDisplayString();
@@ -80,8 +80,9 @@ namespace OpenAILibraryPlugin.Tests.Visitors
 
         private class TestOpenAILibraryVisitor : OpenAILibraryVisitor
         {
-            public MethodProvider? InvokeVisitMethod(MethodProvider method)
+            public MethodProvider? InvokeVisitMethod(ModelProvider model, MethodProvider method)
             {
+                base.VisitType(model);
                 return base.VisitMethod(method);
             }
         }

@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonObject : ResponseTextFormat, IJsonModel<InternalResponsesTextFormatJsonObject>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTextFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonObject)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -76,6 +78,7 @@ namespace OpenAI.Responses
 
         InternalResponsesTextFormatJsonObject IJsonModel<InternalResponsesTextFormatJsonObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesTextFormatJsonObject)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTextFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -86,6 +89,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponsesTextFormatJsonObject(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalResponsesTextFormatJsonObject DeserializeInternalResponsesTextFormatJsonObject(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

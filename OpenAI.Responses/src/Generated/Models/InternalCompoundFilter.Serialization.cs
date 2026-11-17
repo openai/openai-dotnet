@@ -90,9 +90,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("filters"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "filters"u8);
                 for (int i = 0; i < Filters.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.filters[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.filters[{i}]")))
                     {
                         continue;
                     }
@@ -160,7 +161,7 @@ namespace OpenAI.Responses
                         }
                         else
                         {
-                            array.Add(BinaryData.FromString(item.GetRawText()));
+                            array.Add(item.GetUtf8Bytes());
                         }
                     }
                     filters = array;
@@ -168,7 +169,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCompoundFilter(kind, filters, patch);
+            return new InternalCompoundFilter(kind, filters ?? new ChangeTrackingList<BinaryData>(), patch);
         }
     }
 }

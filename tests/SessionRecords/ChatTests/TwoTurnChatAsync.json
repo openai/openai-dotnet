@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "158",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -21,10 +21,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102bf5ef6a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513afc3ac6d6c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -33,7 +37,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -41,22 +44,22 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999975",
+        "x-ratelimit-remaining-tokens": "149999972",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWt6nbkTZ8DrR9Ao7XAFbWtWLQy",
+        "id": "chatcmpl-EdfznIcMT3l3tG1PNTP4m45Q0UKap",
         "object": "chat.completion",
-        "created": 1770950947,
+        "created": 1793124931,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all angles in an equilateral triangle are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This gives the isosceles triangle its distinctive shape.\n\n3. **Scalene Triangle**: All three sides are of different lengths, and consequently, all three angles are also different.\n\nThese classifications help in understanding the properties and characteristics of triangles in geometry.",
+              "content": "In geometry, triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This means it has at least two sides that are the same length.\n\n3. **Scalene Triangle**: All three sides are of different lengths. Consequently, all three angles are also different.\n\nThese classifications are purely based on side lengths and can be further combined with classifications based on angles, such as acute, right, and obtuse triangles, to provide a more comprehensive understanding of triangle types.",
               "refusal": null,
               "annotations": []
             },
@@ -66,8 +69,8 @@
         ],
         "usage": {
           "prompt_tokens": 26,
-          "completion_tokens": 131,
-          "total_tokens": 157,
+          "completion_tokens": 157,
+          "total_tokens": 183,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -89,9 +92,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "944",
+        "Content-Length": "1063",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "messages": [
@@ -101,7 +104,7 @@
           },
           {
             "role": "assistant",
-            "content": "Triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all angles in an equilateral triangle are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This gives the isosceles triangle its distinctive shape.\n\n3. **Scalene Triangle**: All three sides are of different lengths, and consequently, all three angles are also different.\n\nThese classifications help in understanding the properties and characteristics of triangles in geometry."
+            "content": "In geometry, triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This means it has at least two sides that are the same length.\n\n3. **Scalene Triangle**: All three sides are of different lengths. Consequently, all three angles are also different.\n\nThese classifications are purely based on side lengths and can be further combined with classifications based on angles, such as acute, right, and obtuse triangles, to provide a more comprehensive understanding of triangle types."
           },
           {
             "role": "user",
@@ -112,10 +115,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd102cdaae2a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513afd01a116c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -124,7 +131,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -132,22 +138,22 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999795",
+        "x-ratelimit-remaining-tokens": "149999765",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dWwot1DrFTo4mXWbsIPl1kHx98R",
+        "id": "chatcmpl-EdfzpgSipSP6biTUYAi9vHuDIIrSz",
         "object": "chat.completion",
-        "created": 1770950950,
+        "created": 1793124933,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The type of triangle where exactly two sides are of the same length is called an **Isosceles Triangle**. In an isosceles triangle, the angles opposite the equal sides are also equal.",
+              "content": "The triangle where exactly two sides are of equal length is called an **Isosceles Triangle**. In an isosceles triangle, the two equal sides are referred to as the legs, and the side opposite the equal sides is called the base. Additionally, the angles opposite the equal sides are also equal.",
               "refusal": null,
               "annotations": []
             },
@@ -156,9 +162,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 180,
-          "completion_tokens": 42,
-          "total_tokens": 222,
+          "prompt_tokens": 206,
+          "completion_tokens": 64,
+          "total_tokens": 270,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

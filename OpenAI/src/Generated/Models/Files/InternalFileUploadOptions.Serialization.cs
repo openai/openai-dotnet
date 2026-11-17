@@ -131,7 +131,7 @@ namespace OpenAI.Files
             {
                 if (prop.NameEquals("file"u8))
                 {
-                    @file = BinaryData.FromString(prop.Value.GetRawText()).ToStream();
+                    @file = prop.Value.GetUtf8Bytes().ToStream();
                     continue;
                 }
                 if (prop.NameEquals("purpose"u8))
@@ -149,7 +149,7 @@ namespace OpenAI.Files
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalFileUploadOptions(@file, purpose, expiresAfter, additionalBinaryDataProperties);
         }

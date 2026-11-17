@@ -30,16 +30,14 @@ public partial class RealtimeMaxOutputTokenCount
         {
             throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support writing '{format}' format.");
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        if (Optional.IsDefined(DefaultMaxOutputTokenCount) && !Patch.Contains("$.default_max_output_token_count"u8))
+        if (Optional.IsDefined(DefaultMaxOutputTokenCount))
         {
             writer.WriteStringValue(DefaultMaxOutputTokenCount.Value.ToString());
         }
-        if (Optional.IsDefined(CustomMaxOutputTokenCount) && !Patch.Contains("$.custom_max_output_token_count"u8))
+        else if (Optional.IsDefined(CustomMaxOutputTokenCount))
         {
             writer.WriteNumberValue(CustomMaxOutputTokenCount.Value);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
@@ -60,11 +58,25 @@ public partial class RealtimeMaxOutputTokenCount
         {
             defaultMaxOutputTokenCount = new RealtimeDefaultMaxOutputTokenCount(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Number)
         {
             customMaxOutputTokenCount = element.GetInt32();
+        }
+        else
+        {
+            throw new JsonException($"Expected realtime max output token count to be null, a number, or a string but found {element.ValueKind}.");
         }
 
         return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return false;
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value) => false;
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

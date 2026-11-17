@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class CodeInterpreterCallStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this CodeInterpreterCallStatus value) => value switch
         {
             CodeInterpreterCallStatus.InProgress => "in_progress",
@@ -15,7 +16,9 @@ namespace OpenAI.Responses
             CodeInterpreterCallStatus.Completed => "completed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown CodeInterpreterCallStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static CodeInterpreterCallStatus ToCodeInterpreterCallStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -32,5 +35,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown CodeInterpreterCallStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -28,30 +28,31 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetRuns(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunsCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunsAsyncCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual CollectionResult<ThreadRun> GetRuns(string threadId, RunCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantRunClientGetRunsCollectionResultOfT(
@@ -63,7 +64,9 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(string threadId, RunCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantRunClientGetRunsAsyncCollectionResultOfT(
@@ -75,6 +78,7 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
         {
@@ -88,46 +92,51 @@ namespace OpenAI.Assistants
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
         {
             ClientResult result = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
         {
             ClientResult result = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public virtual CollectionResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        public virtual CollectionResult GetRunSteps(string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunStepsCollectionResult(
                 this,
                 threadId,
                 runId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 include,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunStepsAsyncCollectionResult(
                 this,
                 threadId,
                 runId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 include,
                 options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual CollectionResult<RunStep> GetRunSteps(string threadId, string runId, RunStepCollectionOptions options = default, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantRunClientGetRunStepsCollectionResultOfT(
@@ -141,7 +150,9 @@ namespace OpenAI.Assistants
                 include,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(string threadId, string runId, RunStepCollectionOptions options = default, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantRunClientGetRunStepsAsyncCollectionResultOfT(
@@ -155,6 +166,7 @@ namespace OpenAI.Assistants
                 include,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
@@ -168,16 +180,20 @@ namespace OpenAI.Assistants
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
         {
             ClientResult result = GetRunStep(threadId, runId, stepId, include, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
         {
             ClientResult result = await GetRunStepAsync(threadId, runId, stepId, include, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

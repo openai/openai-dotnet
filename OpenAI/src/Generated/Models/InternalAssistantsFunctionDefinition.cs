@@ -10,6 +10,8 @@ namespace OpenAI
     internal partial class InternalAssistantsFunctionDefinition
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private bool? _strict;
+        private bool _strictIsDefined;
 
         public InternalAssistantsFunctionDefinition(string name)
         {
@@ -21,7 +23,7 @@ namespace OpenAI
             Description = description;
             Name = name;
             Parameters = parameters;
-            Strict = strict;
+            _strict = strict;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -29,7 +31,18 @@ namespace OpenAI
 
         public string Name { get; set; }
 
-        public bool? Strict { get; set; }
+        public bool? Strict
+        {
+            get
+            {
+                return _strict;
+            }
+            set
+            {
+                _strict = value;
+                _strictIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

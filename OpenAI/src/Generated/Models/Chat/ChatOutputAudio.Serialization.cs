@@ -80,12 +80,12 @@ namespace OpenAI.Chat
             if (!Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt, "U");
+                writer.WriteNumberValue(ExpiresOn, "U");
             }
             if (!Patch.Contains("$.data"u8))
             {
                 writer.WritePropertyName("data"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
             if (!Patch.Contains("$.transcript"u8))
             {
@@ -117,7 +117,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
-            DateTimeOffset expiresAt = default;
+            DateTimeOffset expiresOn = default;
             BinaryData audioBytes = default;
             string transcript = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -132,7 +132,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("expires_at"u8))
                 {
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("data"u8))
@@ -147,7 +147,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, patch);
+            return new ChatOutputAudio(id, expiresOn, audioBytes, transcript, patch);
         }
     }
 }

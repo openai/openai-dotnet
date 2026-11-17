@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemTruncated : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemTruncated(string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(InternalRealtimeServerEventTypeGA.ConversationItemTruncated)
+        internal RealtimeServerUpdateConversationItemTruncated(string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(RealtimeServerUpdateKind.ConversationItemTruncated)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemTruncated(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemTruncated(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -29,10 +29,10 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
     }
 }

@@ -258,7 +258,9 @@ public class ChatMockTests : ClientTestBase
 
         Assert.That(cancellationTokenSource.IsCancellationRequested, Is.True);
         Assert.That(cancellationTokenSource.Token.IsCancellationRequested, Is.True);
-        Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
+        Assert.That(
+            async () => await enumerator.MoveNextAsync(),
+            Throws.TypeOf<OperationCanceledException>());
     }
 
     [Test]

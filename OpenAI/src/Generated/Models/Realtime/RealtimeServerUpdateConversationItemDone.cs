@@ -10,26 +10,43 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemDone(string eventId, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ConversationItemDone)
-        {
-            EventId = eventId;
-            Item = item;
-        }
+        private string _previousItemId;
+        private bool _previousItemIdIsDefined;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemDone(string eventId, RealtimeItem item) : base(RealtimeServerUpdateKind.ConversationItemDone)
         {
             EventId = eventId;
-            PreviousItemId = previousItemId;
             Item = item;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateConversationItemDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
+        {
+            EventId = eventId;
+            _previousItemId = previousItemId;
+            Item = item;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string PreviousItemId { get; }
+        public string EventId { get; set; }
 
-        public RealtimeItem Item { get; }
+        public string PreviousItemId
+        {
+            get
+            {
+                return _previousItemId;
+            }
+            set
+            {
+                _previousItemId = value;
+                _previousItemIdIsDefined = true;
+            }
+        }
+
+        public RealtimeItem Item { get; set; }
     }
 }

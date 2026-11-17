@@ -10,16 +10,8 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputItemDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseOutputItemDone(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ResponseOutputItemDone)
-        {
-            EventId = eventId;
-            ResponseId = responseId;
-            OutputIndex = outputIndex;
-            Item = item;
-        }
-
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputItemDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputItemDone(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(RealtimeServerUpdateKind.ResponseOutputItemDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -29,12 +21,23 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateResponseOutputItemDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)
+        {
+            EventId = eventId;
+            ResponseId = responseId;
+            OutputIndex = outputIndex;
+            Item = item;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ResponseId { get; }
+        public string EventId { get; set; }
 
-        public int OutputIndex { get; }
+        public string ResponseId { get; set; }
 
-        public RealtimeItem Item { get; }
+        public int OutputIndex { get; set; }
+
+        public RealtimeItem Item { get; set; }
     }
 }

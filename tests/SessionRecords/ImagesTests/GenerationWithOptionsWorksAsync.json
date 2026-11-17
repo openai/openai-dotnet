@@ -4,15 +4,15 @@
       "RequestUri": "https://api.openai.com/v1/images/generations",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "175",
+        "Content-Length": "183",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
-        "model": "gpt-image-1",
+        "model": "gpt-image-2.6-flare",
         "n": 2,
         "output_format": "webp",
         "output_compression": 42,
@@ -23,15 +23,14 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
-          "X-Request-ID",
-          "CF-Ray",
+          "X-Request-ID, Server-Timing-Total",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e28b2fac647d-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a5597d45abb7a341-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "525",
+        "Content-Length": "658",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -44,18 +43,21 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1781047436,
+        "created": 1793856872,
         "background": "transparent",
         "data": [
           {
-            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=",
+            "generation_id": "b3954bfe-2bad-4887-8c1a-f27f011a4f24"
           },
           {
-            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=",
+            "generation_id": "735666f2-ebf4-4382-8643-8c44fc68781e"
           }
         ],
         "output_format": "webp",
-        "quality": "medium",
+        "quality": "high",
+        "safety_identifier": null,
         "size": "1024x1536",
         "usage": {
           "input_tokens": 22,
@@ -63,12 +65,12 @@
             "image_tokens": 0,
             "text_tokens": 22
           },
-          "output_tokens": 3168,
+          "output_tokens": 2703,
           "output_tokens_details": {
-            "image_tokens": 3168,
+            "image_tokens": 2703,
             "text_tokens": 0
           },
-          "total_tokens": 3190
+          "total_tokens": 2725
         }
       }
     },
@@ -80,7 +82,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "messages": [
@@ -112,9 +114,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e30dbeef647d-SEA",
+        "CF-Ray": "a5597d6dec79a341-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "904",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -123,6 +124,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -137,16 +139,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp05UTHPlt4faF7b6FZofl6zOtGd0",
+        "id": "chatcmpl-EgkPJk3nVu5c6AqriS8MuHIezrRBh",
         "object": "chat.completion",
-        "created": 1781047436,
+        "created": 1793856873,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a red octagonal stop sign mounted on a gray pole. The word \"STOP\" is prominently displayed in bold white letters in the center of the sign. The background has a blurred effect, giving the impression of speed or movement. The sign is clearly visible, contrasting against the dynamic backdrop.",
+              "content": "The image shows a red stop sign, which is octagonal in shape. The word \"STOP\" is prominently displayed in white capital letters in the center of the sign. It is mounted on a metallic pole with a dotted pattern. The background appears to be black, emphasizing the vivid colors of the sign.",
               "refusal": null,
               "annotations": []
             },
@@ -181,7 +183,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.15.0 (.NET 10.0.14; Microsoft Windows 10.0.26300)"
       },
       "RequestBody": {
         "messages": [
@@ -213,9 +215,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e3256d3b647d-SEA",
+        "CF-Ray": "a5597d771ff1a341-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "980",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -224,6 +225,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -231,23 +233,23 @@
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-input-images": "49999",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999225",
+        "x-ratelimit-remaining-tokens": "149999227",
         "x-ratelimit-reset-input-images": "1ms",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp05Y7S0KMuJmRPVwAfjLcnvVHHud",
+        "id": "chatcmpl-EgkPKuckSO8bZ0sIjTrp4h2yamfTo",
         "object": "chat.completion",
-        "created": 1781047440,
+        "created": 1793856874,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image shows a red stop sign in an octagonal shape. The word \"STOP\" is prominently displayed in white letters across the center of the sign. The background features a blur effect, creating a sense of motion. The sign is mounted on a vertical pole, which has small lights or reflectors along its length. The overall presentation seems dynamic, emphasizing urgency or the need to stop.",
+              "content": "The image shows a red stop sign in the shape of an octagon. The word \"STOP\" is prominently displayed in white letters in the center of the sign. It is mounted on a metal pole, and the background appears to be a gradient that transitions from light to dark. The sign is designed to convey a clear signal to drivers to come to a complete stop.",
               "refusal": null,
               "annotations": []
             },
@@ -257,8 +259,8 @@
         ],
         "usage": {
           "prompt_tokens": 36849,
-          "completion_tokens": 78,
-          "total_tokens": 36927,
+          "completion_tokens": 74,
+          "total_tokens": 36923,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

@@ -22,10 +22,7 @@ public partial class McpToolCallApprovalPolicy
         JsonModelWriteCore(writer, options);
     }
 
-    // CUSTOM:
-    // - Edited to serialize the GlobalPolicy component as a string value.
-    // - Edited to serialize the CustomPolicy component as an object value.
-    // - Removed serialization of additional properties.
+    // CUSTOM: Edited to serialize the different components of the union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
@@ -33,9 +30,9 @@ public partial class McpToolCallApprovalPolicy
         {
             throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support writing '{format}' format.");
         }
-        if (Optional.IsDefined(GlobalPolicy))
+        if (Optional.IsDefined(DefaultPolicy))
         {
-            writer.WriteStringValue(GlobalPolicy.Value.ToString());
+            writer.WriteStringValue(DefaultPolicy.Value.ToString());
         }
         else if (Optional.IsDefined(CustomPolicy))
         {
@@ -43,9 +40,7 @@ public partial class McpToolCallApprovalPolicy
         }
     }
 
-    // CUSTOM:
-    // - Edited to deserialize a string value into a GlobalPolicy component.
-    // - Edited to deserialize an object value into a CustomPolicy component.
+    // CUSTOM: Edited to deserialize the different components of the union.
     internal static McpToolCallApprovalPolicy DeserializeMcpToolCallApprovalPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
@@ -53,7 +48,7 @@ public partial class McpToolCallApprovalPolicy
             return null;
         }
 
-        GlobalMcpToolCallApprovalPolicy? globalPolicy = default;
+        DefaultMcpToolCallApprovalPolicy? defaultPolicy = default;
         CustomMcpToolCallApprovalPolicy customPolicy = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -61,7 +56,7 @@ public partial class McpToolCallApprovalPolicy
 
         if (element.ValueKind == JsonValueKind.String)
         {
-            globalPolicy = new GlobalMcpToolCallApprovalPolicy(element.GetString());
+            defaultPolicy = new DefaultMcpToolCallApprovalPolicy(element.GetString());
         }
         else if (element.ValueKind == JsonValueKind.Object)
         {
@@ -72,7 +67,7 @@ public partial class McpToolCallApprovalPolicy
             throw new JsonException($"Expected MCP tool call approval policy to be null, an object, or a string but found {element.ValueKind}.");
         }
 
-        return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, patch);
+        return new McpToolCallApprovalPolicy(defaultPolicy, customPolicy, patch);
     }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

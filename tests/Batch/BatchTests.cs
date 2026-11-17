@@ -104,7 +104,9 @@ public class BatchTests : OpenAIRecordedTestBase
 
         var collection = client.GetBatchesAsync(options, cts.Token);
         var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
-        Assert.ThrowsAsync<TaskCanceledException>(async () => await enumerator.MoveNextAsync().AsTask());
+        Assert.That(
+            async () => await enumerator.MoveNextAsync().AsTask(),
+            Throws.TypeOf<TaskCanceledException>());
     }
 
     [RecordedTest]
@@ -328,6 +330,6 @@ public class BatchTests : OpenAIRecordedTestBase
     private static void AssertBasicJobFields(BatchJob job)
     {
         Assert.That(job.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(job.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(job.CreatedOn, Is.GreaterThan(s_2024));
     }
 }

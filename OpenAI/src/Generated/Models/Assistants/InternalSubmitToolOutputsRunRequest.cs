@@ -12,23 +12,42 @@ namespace OpenAI.Assistants
     internal partial class InternalSubmitToolOutputsRunRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private bool? _stream;
+        private bool _streamIsDefined;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalSubmitToolOutputsRunRequest(IEnumerable<ToolOutput> toolOutputs)
         {
             ToolOutputs = toolOutputs.ToList();
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalSubmitToolOutputsRunRequest(IList<ToolOutput> toolOutputs, bool? stream, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ToolOutputs = toolOutputs ?? new ChangeTrackingList<ToolOutput>();
-            Stream = stream;
+            _stream = stream;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ToolOutput> ToolOutputs { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public bool? Stream { get; set; }
+        public bool? Stream
+        {
+            get
+            {
+                return _stream;
+            }
+            set
+            {
+                _stream = value;
+                _streamIsDefined = true;
+            }
+        }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

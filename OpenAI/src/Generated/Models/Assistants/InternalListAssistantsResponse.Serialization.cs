@@ -182,11 +182,11 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalListAssistantsResponse(
                 @object,
-                data,
+                data ?? new ChangeTrackingList<Assistant>(),
                 firstId,
                 lastId,
                 hasMore,

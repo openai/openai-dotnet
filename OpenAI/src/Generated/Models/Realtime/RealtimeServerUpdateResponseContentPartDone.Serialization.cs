@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateResponseContentPartDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseContentPartDone>
     {
-        internal RealtimeServerUpdateResponseContentPartDone() : this(InternalRealtimeServerEventTypeGA.ResponseContentPartDone, default, null, null, null, default, default, null)
+        public RealtimeServerUpdateResponseContentPartDone() : this(RealtimeServerUpdateKind.ResponseContentPartDone, default, null, null, null, default, default, null)
         {
         }
 
@@ -127,7 +127,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -141,7 +141,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -195,6 +195,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("part"u8))
             {
+                if (Part == null)
+                {
+                    return false;
+                }
                 return Part.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("part"u8.Length)], out value);
             }
             return false;
@@ -208,6 +212,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("part"u8))
             {
+                if (Part == null)
+                {
+                    return false;
+                }
                 Part.Patch.Set([.. "$"u8, .. local.Slice("part"u8.Length)], value);
                 return true;
             }

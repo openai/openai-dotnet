@@ -96,18 +96,37 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Metadata)
+                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Metadata)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+                            writer.WriteStringValue(item.Value);
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.metadata"u8);
+                }
+                else
+                {
+                    foreach (var item in Metadata)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -118,8 +137,6 @@ namespace OpenAI.Conversations
                         writer.WriteStringValue(item.Value);
                     }
                 }
-
-                Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
             else if (!Patch.Contains("$.metadata"u8))
@@ -129,7 +146,7 @@ namespace OpenAI.Conversations
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
 
             Patch.WriteTo(writer);
@@ -158,7 +175,7 @@ namespace OpenAI.Conversations
             string id = default;
             string @object = default;
             IDictionary<string, string> metadata = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -198,12 +215,12 @@ namespace OpenAI.Conversations
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ConversationResource(id, @object, metadata, createdAt, patch);
+            return new ConversationResource(id, @object, metadata, createdOn, patch);
         }
     }
 }

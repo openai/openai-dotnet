@@ -6,18 +6,19 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "323",
+        "Content-Length": "403",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "model": "gpt-5",
+        "model": "gpt-5.6",
+        "max_tool_calls": 1,
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "require_approval": "always"
           }
         ],
@@ -28,7 +29,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Roll 2d4+1"
+                "text": "Search Microsoft Learn documentation for the OpenAI service."
               }
             ]
           }
@@ -36,84 +37,143 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f21bf1ec7c22a-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a389ac1c7f29eb43-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2619",
+        "Content-Length": "5945",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:54:13 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "3208",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "3214",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5f2427cd8819486568e5c11a75af40b5385822f12acb1",
+        "id": "resp_0ad888c4cea9d8eb006aa1df7023ec87d0820b6714f4b188ec",
         "object": "response",
-        "created_at": 1758851650,
+        "created_at": 1788993392,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788993394,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
-        "max_tool_calls": null,
-        "model": "gpt-5-2025-08-07",
+        "max_tool_calls": 1,
+        "model": "gpt-5.6-sol",
+        "moderation": null,
         "output": [
           {
-            "id": "mcpl_68d5f2429b408194bef724598e1abbc90b5385822f12acb1",
+            "id": "mcpl_0ad888c4cea9d8eb006aa1df704e3487d0966eef169297e3a7",
             "type": "mcp_list_tools",
-            "server_label": "dmcp",
+            "server_label": "microsoft-learn",
             "tools": [
               {
                 "annotations": {
-                  "read_only": false
+                  "read_only": true
                 },
-                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "description": "Search official Microsoft/Azure documentation to find the most relevant and trustworthy content for a user's query. This tool returns up to 10 high-quality content chunks (each max 500 tokens), extracted from Microsoft Learn and other official sources. Each result includes the article title, URL, and a self-contained content excerpt optimized for fast retrieval and reasoning. Always use this tool to quickly ground your answers in accurate, first-party Microsoft/Azure knowledge.\n\n## Follow-up Pattern\nTo ensure completeness, use microsoft_docs_fetch when high-value pages are identified by search. The fetch tool complements search by providing the full detail. This is a required step for comprehensive results.",
                 "input_schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
                   "type": "object",
                   "properties": {
-                    "diceRollExpression": {
+                    "query": {
+                      "description": "a query or topic about Microsoft/Azure products, services, platforms, developer tools, frameworks, or APIs",
+                      "type": "string",
+                      "default": null
+                    }
+                  }
+                },
+                "name": "microsoft_docs_search"
+              },
+              {
+                "annotations": {
+                  "read_only": true
+                },
+                "description": "Search for code snippets and examples in official Microsoft Learn documentation. This tool retrieves relevant code samples from Microsoft documentation pages providing developers with practical implementation examples and best practices for Microsoft/Azure products and services related coding tasks. This tool will help you use the **LATEST OFFICIAL** code snippets to empower coding capabilities.\n\n## When to Use This Tool\n- When you are going to provide sample Microsoft/Azure related code snippets in your answers.\n- When you are **generating any Microsoft/Azure related code**.\n\n## Usage Pattern\nInput a descriptive query, or SDK/class/method name to retrieve related code samples. The optional parameter `language` can help to filter results.\n\nEligible values for `language` parameter include: csharp javascript typescript python powershell azurecli al sql java kusto cpp go rust ruby php",
+                "input_schema": {
+                  "type": "object",
+                  "properties": {
+                    "query": {
+                      "description": "a descriptive query, SDK name, method name or code snippet related to Microsoft/Azure products, services, platforms, developer tools, frameworks, APIs or SDKs",
+                      "type": "string"
+                    },
+                    "language": {
+                      "description": "Optional parameter specifying the programming language of code snippets to retrieve. Can significantly improve search quality if provided. Eligible values: csharp javascript typescript python powershell azurecli al sql java kusto cpp go rust ruby php",
+                      "type": "string",
+                      "default": null
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ]
+                },
+                "name": "microsoft_code_sample_search"
+              },
+              {
+                "annotations": {
+                  "read_only": true
+                },
+                "description": "Fetch and convert a Microsoft Learn documentation webpage to markdown format. This tool retrieves the latest complete content of Microsoft documentation webpages including Azure, .NET, Microsoft 365, and other Microsoft technologies.\n\n## When to Use This Tool\n- When search results provide incomplete information or truncated content\n- When you need complete step-by-step procedures or tutorials\n- When you need troubleshooting sections, prerequisites, or detailed explanations\n- When search results reference a specific page that seems highly relevant\n- For comprehensive guides that require full context\n\n## Usage Pattern\nUse this tool AFTER microsoft_docs_search when you identify specific high-value pages that need complete content. The search tool gives you an overview; this tool gives you the complete picture.\n\n## URL Requirements\n- The URL must be a valid HTML documentation webpage from the microsoft.com domain\n- Binary files (PDF, DOCX, images, etc.) are not supported\n\n## Output Format\nmarkdown with headings, code blocks, tables, and links preserved.",
+                "input_schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "description": "URL of the Microsoft documentation page to read",
                       "type": "string"
                     }
                   },
                   "required": [
-                    "diceRollExpression"
-                  ],
-                  "additionalProperties": false
+                    "url"
+                  ]
                 },
-                "name": "roll"
+                "name": "microsoft_docs_fetch"
               }
             ]
           },
           {
-            "id": "rs_68d5f2444d6881949a641408f3d5e65b0b5385822f12acb1",
+            "id": "rs_0ad888c4cea9d8eb006aa1df7191e487d0bc64c0008ebd50ee",
             "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
             "summary": []
           },
           {
-            "id": "mcpr_68d5f2455bb081948accdd4a6de7774f0b5385822f12acb1",
+            "id": "mcpr_0ad888c4cea9d8eb006aa1df728b6487d0a78107e724145f28",
             "type": "mcp_approval_request",
-            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
-            "name": "roll",
-            "server_label": "dmcp"
+            "arguments": "{\"query\":\"Azure OpenAI Service documentation overview quickstart Microsoft Learn\"}",
+            "name": "microsoft_docs_search",
+            "server_label": "microsoft-learn"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": "24h",
         "reasoning": {
+          "context": "all_turns",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -127,30 +187,49 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
             "allowed_tools": null,
             "headers": null,
             "require_approval": "always",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
-        "top_p": 1.0,
+        "top_p": 0.98,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 187,
+          "input_tokens": 801,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 91,
+          "output_tokens": 59,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 25
           },
-          "total_tokens": 278
+          "total_tokens": 860
         },
         "user": null,
         "metadata": {}
@@ -162,95 +241,114 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "441",
+        "Content-Length": "475",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_68d5f2427cd8819486568e5c11a75af40b5385822f12acb1",
-        "model": "gpt-5",
+        "previous_response_id": "resp_0ad888c4cea9d8eb006aa1df7023ec87d0820b6714f4b188ec",
+        "model": "gpt-5.6",
+        "max_tool_calls": 1,
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "require_approval": "always"
           }
         ],
         "input": [
           {
             "type": "mcp_approval_response",
-            "approval_request_id": "mcpr_68d5f2455bb081948accdd4a6de7774f0b5385822f12acb1",
+            "approval_request_id": "mcpr_0ad888c4cea9d8eb006aa1df728b6487d0a78107e724145f28",
             "approve": true
           }
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f21d3d81cc22a-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a389ac2fbaf2eb43-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2109",
+        "Content-Length": "21817",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:54:15 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "2087",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2091",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5f245ccf48194a42e6c5e0275fb9c0b5385822f12acb1",
+        "id": "resp_0ad888c4cea9d8eb006aa1df733e7887d0943d7c62eb9eb68e",
         "object": "response",
-        "created_at": 1758851653,
+        "created_at": 1788993395,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788993397,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
-        "max_tool_calls": null,
-        "model": "gpt-5-2025-08-07",
+        "max_tool_calls": 1,
+        "model": "gpt-5.6-sol",
+        "moderation": null,
         "output": [
           {
-            "id": "mcp_68d5f245f7788194948cde65db21bf720b5385822f12acb1",
+            "id": "mcp_0ad888c4cea9d8eb006aa1df73765087d0924babcd102ee15f",
             "type": "mcp_call",
-            "approval_request_id": "mcpr_68d5f2455bb081948accdd4a6de7774f0b5385822f12acb1",
-            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
+            "status": "completed",
+            "approval_request_id": "mcpr_0ad888c4cea9d8eb006aa1df728b6487d0a78107e724145f28",
+            "arguments": "{\"query\":\"Azure OpenAI Service documentation overview quickstart Microsoft Learn\"}",
             "error": null,
-            "name": "roll",
-            "output": "7",
-            "server_label": "dmcp"
+            "name": "microsoft_docs_search",
+            "output": "{\"results\": [{\"title\": \"Intern project using Azure OpenAI - Microsoft Q&A\", \"content\": \"Intern project using Azure OpenAI - Microsoft Q&A Hello, I'm an intern on the Python services team. My project revolves around using the Azure OpenAI service. I was wondering if anyone with expertise using this service could meet with me this week to talk more about its capabilities? Or point me in the right direction to get the help I'm looking for. Thanks!\\n##Accepted Answers:\\nHi\\nAngel Alvarado Reyes\\n\\u2022\\nAzure Open AI documentation is robust and categorized into multiple section\\nMain Categories on the Azure OpenAI Documentation Site\\nOverview\\nIntroduction to Azure OpenAI Service\\nKey capabilities and use cases\\nSupported models (e.g., GPT-4, GPT-3.5, DALL\\u00b7E, Whisper)\\nQuickstarts\\nHow to get started with the service\\nSample apps and setup guides\\nHow-to Guides\\nDeploying models\\nUsing your own data (RAG)\\nPrompt engineering\\nFine-tuning models\\nConcepts\\nModel lifecycle\\nResponsible AI\\nContent filtering\\nAuthentication and authorization\\nTutorials\\nEnd-to-end examples\\nIntegration with other Azure services\\nReference\\nREST API reference\\nSDKs for Python, .NET, Java, JavaScript\\nResources\\nPricing\\nQuotas and limits\\nRegional availability\\nYou can start from\\nQuickstarts section\\nand gradually deep dive into all concepts like assistants, video generation, embedding, api_version etc\\nfrom concepts section.\\nAzure OpenAI documentation\\nFeel free to leverage windows copilot to understand any new concept or procure any sample usage based on documentation.\\nYou can post your queries here on forum if you are facing difficulties while developing any POCs.\\nThank you.\", \"contentUrl\": \"https://learn.microsoft.com/answers/a/2060260\"}, {\"title\": \"Quickstart: Get started generating text using the legacy completions API (programming-language-studio)\", \"content\": \"# Quickstart: Get started generating text using the legacy completions API (programming-language-studio)\\nUse this article to get started making your first calls to Azure OpenAI.\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services).\\n2. An Azure OpenAI resource with a model deployed. For more information about model deployment, see the [resource deployment guide](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource).\\n## Go to the Azure AI Foundry\\nNavigate to the [Azure AI Foundry portal](https://ai.azure.com/) and sign-in with credentials that have access to your Azure OpenAI resource. During or after the sign-in workflow, select the appropriate directory, Azure subscription, and Azure OpenAI resource.\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/quickstart\"}, {\"title\": \"Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-javascript)\", \"content\": \"# Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-javascript)\\nIn this quickstart, you transcribe speech to text using the [Azure OpenAI Whisper model](https://learn.microsoft.com/azure/ai-services/speech-service/whisper-overview). The Whisper model can transcribe human speech in numerous languages and translate other languages into English.\\nTip\\nThis quickstart takes approximately 10-15 minutes to complete.\\n[Source code](https://github.com/openai/openai-node) | [Package (npm)](https://www.npmjs.com/package/openai) | [Samples](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai/samples)\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/pricing/purchase-options/azure-account?cid=msft_learn)\\n2. [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule)\\n3. [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) used for passwordless authentication in a local development environment, create the necessary context by signing in with the Azure CLI.\\n4. An Azure OpenAI resource with a speech to text model deployed in a [supported region](https://learn.microsoft.com/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=standard-audio). For more information, see [Create a resource and deploy a model with Azure OpenAI](https://learn.microsoft.com/azure/foundry-classic/openai/how-to/create-resource).\\n### Microsoft Entra ID prerequisites\\nFor the recommended keyless authentication with Microsoft Entra ID, you need to:\\n1. Install the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) used for keyless authentication with Microsoft Entra ID.\\n2. Assign the `Cognitive Services User` role to your user account. You can assign roles in the Azure portal under **Access control (IAM)** > **Add role assignment**.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/whisper-quickstart\"}, {\"title\": \"Quickstart: Get started generating text using the legacy completions API (programming-language-csharp)\", \"content\": \"# Quickstart: Get started generating text using the legacy completions API (programming-language-csharp)\\n## Clean up resources\\nIf you want to clean up and remove an Azure OpenAI resource, you can delete the resource. Before deleting the resource you must first delete any deployed models.\\n1. [Azure portal](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azportal#clean-up-resources)\\n2. [Azure CLI](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azcli#clean-up-resources)\\n# Quickstart: Get started generating text using the legacy completions API (programming-language-go)\\nUse this article to get started making your first calls to Azure OpenAI.\\n[Source code](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai) | [Package (Go)](https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai)| [Samples](https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai#pkg-examples)\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services?azure-portal=true)\\n2. [Go 1.21.0](https://go.dev/dl/) or higher installed locally.\\n3. An Azure OpenAI in Azure AI Foundry Models resource with the `gpt-35-turbo-instuct` model deployed. For more information about model deployment, see the [resource deployment guide](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource).\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/quickstart#clean-up-resources\"}, {\"title\": \"Quickstart: Get started generating text using the legacy completions API (rest-api)\", \"content\": \"# Quickstart: Get started generating text using the legacy completions API (rest-api)\\n## Clean up resources\\nIf you want to clean up and remove an Azure OpenAI resource, you can delete the resource or resource group. Deleting the resource group also deletes any other resources associated with it.\\n1. [Azure portal](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azportal#clean-up-resources)\\n2. [Azure CLI](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azcli#clean-up-resources)\\n# Quickstart: Get started generating text using the legacy completions API (programming-language-powershell)\\nUse this article to get started making your first calls to Azure OpenAI.\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services)\\n2. [You can use either the latest version, PowerShell 7, or Windows PowerShell 5.1.](https://aka.ms/installpowershell)\\n3. An Azure OpenAI in Azure AI Foundry Models resource with a model deployed. For more information about model deployment, see the [resource deployment guide](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource).\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/quickstart#clean-up-resources\"}, {\"title\": \"Quickstart: Speech to text with Azure OpenAI transcription models (rest-api)\", \"content\": \"# Quickstart: Speech to text with Azure OpenAI transcription models (rest-api)\\nIn this quickstart, you transcribe speech to text by using the [OpenAI transcription model](https://learn.microsoft.com/azure/ai-services/speech-service/transcribe-overview). The transcription model can transcribe human speech in numerous languages and translate other languages into English.\\nFor offline transcription, use `gpt-transcribe`. This model uses the Audio API transcription path and isn't a Realtime API model.\\nThis quickstart uses a file upload request and response flow (one request per audio file), not a live streaming session.\\nFor offline transcription, use `gpt-transcribe`. This model uses the Audio API transcription path and isn't a Realtime API model.\\nThis quickstart uses a file upload request and response flow (one request per audio file), not a live streaming session.\\nTip\\nThis quickstart takes approximately 10-15 minutes to complete.\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/pricing/purchase-options/azure-account?cid=msft_learn).\\n2. An Azure OpenAI resource with a speech to text model deployed in a [supported region](https://learn.microsoft.com/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=standard-audio). For more information, see [Create a resource and deploy a model with Azure OpenAI](https://learn.microsoft.com/azure/foundry-classic/openai/how-to/create-resource).\\n3. Be sure that you are assigned at least the [Cognitive Services Contributor](https://learn.microsoft.com/azure/foundry-classic/openai/how-to/role-based-access-control#cognitive-services-contributor) role for the Azure OpenAI resource.\\n4. A sample audio file. You can get sample audio, such as *wikipediaOcelot.wav*, from the [Azure Speech in Foundry Tools SDK repository at GitHub](https://github.com/Azure-Samples/cognitive-services-speech-sdk/tree/master/sampledata/audiofiles).\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/whisper-quickstart\"}, {\"title\": \"Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-javascript)\", \"content\": \"# Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-javascript)\\n## Clean up resources\\nIf you want to clean up and remove an Azure OpenAI resource, you can delete the resource. Before deleting the resource, you must first delete any deployed models.\\n1. [Azure portal](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azportal#clean-up-resources)\\n2. [Azure CLI](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azcli#clean-up-resources)\\n# Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-typescript)\\nIn this quickstart, you transcribe speech to text using the [Azure OpenAI Whisper model](https://learn.microsoft.com/azure/ai-services/speech-service/whisper-overview). The Whisper model can transcribe human speech in numerous languages and translate other languages into English.\\nTip\\nThis quickstart takes approximately 10-15 minutes to complete.\\n[Source code](https://github.com/openai/openai-node) | [Package (npm)](https://www.npmjs.com/package/openai) | [Samples](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai/samples)\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/whisper-quickstart#clean-up-resources\"}, {\"title\": \"Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-typescript)\", \"content\": \"# Quickstart: Speech to text with the Azure OpenAI Whisper model (programming-language-typescript)\\nThis quickstart explains how to use the [Azure OpenAI Whisper model](https://learn.microsoft.com/azure/ai-services/speech-service/whisper-overview) for speech to text conversion. The Whisper model can transcribe human speech in numerous languages, and it can also translate other languages into English.\\nNote\\nFor information about other audio models that you can use with Azure OpenAI, see [Audio models](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/models?tabs=standard-audio#standard-deployment-regional-models-by-endpoint).\\nThe file size limit for the Whisper model is 25 MB. If you need to transcribe a file larger than 25 MB, you can use the Azure AI Speech [batch transcription](https://learn.microsoft.com/azure/ai-services/speech-service/batch-transcription-create#use-a-whisper-model) API.\\n[Source code](https://github.com/openai/openai-node) | [Package (npm)](https://www.npmjs.com/package/openai) | [Samples](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai/samples)\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services?azure-portal=true)\\n2. [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule)\\n3. [TypeScript](https://www.typescriptlang.org/download/)\\n4. [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) used for passwordless authentication in a local development environment, create the necessary context by signing in with the Azure CLI.\\n5. An Azure OpenAI resource with a speech to text model deployed in a [supported region](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/models?tabs=standard-audio#standard-deployment-regional-models-by-endpoint). For more information, see [Create a resource and deploy a model with Azure OpenAI](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource).\\n### Microsoft Entra ID prerequisites\\nFor the recommended keyless authentication with Microsoft Entra ID, you need to:\\n1. Install the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) used for keyless authentication with Microsoft Entra ID.\\n2. Assign the `Cognitive Services User` role to your user account. You can assign roles in the Azure portal under **Access control (IAM)** > **Add role assignment**.\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/whisper-quickstart\"}, {\"title\": \"Build natural language solutions with Azure OpenAI Service - Training\", \"content\": \"# Build natural language solutions with Azure OpenAI Service\\r\\n\\r\\n- Module\\r\\n- 7 Units\\r\\n\\r\\n Intermediate \\r\\n\\r\\n AI Engineer \\r\\n\\r\\n Developer \\r\\n\\r\\n Solution Architect \\r\\n\\r\\n Student \\r\\n\\r\\n Azure OpenAI Service \\r\\n\\r\\n Azure \\r\\n\\r\\nThis module provides engineers with the skills to begin building apps that integrate with the Azure OpenAI Service.\\r\\n\\r\\n##  Learning objectives \\r\\n\\r\\nBy the end of this module, you'll be able to:\\r\\n\\r\\n- Integrate Azure OpenAI into your application\\r\\n- Differentiate between different endpoints available to your application\\r\\n- Generate completions to prompts using the REST API and language specific SDKs\\r\\n\\r\\n## Prerequisites\\r\\n\\r\\n- Familiarity with Azure and the Azure portal.\\r\\n- An understanding of generative AI. You can learn more with [Introduction to Azure OpenAI Service](https://learn.microsoft.com/en-us/training/modules/explore-azure-openai/).\\r\\n- Experience programming with C# or Python. If you have no previous programming experience, we recommend you complete the [Take your first steps with C#](https://learn.microsoft.com/en-us/training/paths/csharp-first-steps/) or [Take your first steps with Python](https://learn.microsoft.com/en-us/training/paths/python-first-steps/) learning path before starting this one.\\r\\n\\r\\n## Get started with Azure\\r\\n\\r\\nChoose the Azure account that's right for you. Pay as you go or try Azure free for up to 30 days. [Sign up.](https://azure.microsoft.com/pricing/purchase-options/azure-account?icid=msft_learn)\\r\\n\\r\\nTake the module assessment\\r\\n\\r\\n Module Assessment Results\\r\\n\\r\\nAssess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.\\r\\n\\r\\n- [Introduction](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/1-introduction)\\r\\n- [Integrate Azure OpenAI into your app](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/2-integrate-azure-openai-into-app)\\r\\n- [Use Azure OpenAI REST API](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/3-use-openai-rest)\\r\\n- [Use Azure OpenAI SDK](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/4-use-openai-sdk)\\r\\n- [Exercise - Integrate Azure OpenAI into your app](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/5-exercise)\\r\\n- [Module assessment](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/6-knowledge-check)\\r\\n- [Summary](https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/7-summary)\\r\\n\\r\\nTake the module assessment\\r\\n\\r\\n Module Assessment Results\\r\\n\\r\\nAssess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.\", \"contentUrl\": \"https://learn.microsoft.com/training/modules/build-language-solution-azure-openai/\"}, {\"title\": \"Quickstart: Speech to text with Azure OpenAI transcription models (programming-language-powershell)\", \"content\": \"# Quickstart: Speech to text with Azure OpenAI transcription models (programming-language-powershell)\\nIn this quickstart, you transcribe speech to text by using the [OpenAI transcription model](https://learn.microsoft.com/azure/ai-services/speech-service/transcribe-overview). The transcription model can transcribe human speech in numerous languages and translate other languages into English.\\nFor offline transcription, use `gpt-transcribe`. This model uses the Audio API transcription path and isn't a Realtime API model.\\nThis quickstart uses a file upload request and response flow (one request per audio file), not a live streaming session.\\nFor offline transcription, use `gpt-transcribe`. This model uses the Audio API transcription path and isn't a Realtime API model.\\nThis quickstart uses a file upload request and response flow (one request per audio file), not a live streaming session.\\nTip\\nThis quickstart takes approximately 10-15 minutes to complete.\\n## Prerequisites\\n1. An Azure subscription - [Create one for free](https://azure.microsoft.com/pricing/purchase-options/azure-account?cid=msft_learn)\\n2. [You can use either the latest version, PowerShell 7, or Windows PowerShell 5.1.](https://aka.ms/installpowershell)\\n3. An Azure OpenAI resource with a speech to text model deployed in a [supported region](https://learn.microsoft.com/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=standard-audio). For more information, see [Create a resource and deploy a model with Azure OpenAI](https://learn.microsoft.com/azure/foundry-classic/openai/how-to/create-resource).\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/whisper-quickstart\"}]}",
+            "server_label": "microsoft-learn"
           },
           {
-            "id": "msg_68d5f2478eb0819490ced817d482cb980b5385822f12acb1",
-            "type": "message",
-            "status": "completed",
-            "content": [
-              {
-                "type": "output_text",
-                "annotations": [],
-                "logprobs": [],
-                "text": "7"
-              }
-            ],
-            "role": "assistant"
+            "id": "rs_0ad888c4cea9d8eb006aa1df74dbe087d09950f8a5f3bff4c4",
+            "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
+            "summary": []
+          },
+          {
+            "id": "mcpr_0ad888c4cea9d8eb006aa1df757bf487d0b2fccbf95db3952d",
+            "type": "mcp_approval_request",
+            "arguments": "{\"query\":\"site:learn.microsoft.com/azure/ai-foundry/openai Azure OpenAI overview models quotas authentication documentation\"}",
+            "name": "microsoft_docs_search",
+            "server_label": "microsoft-learn"
           }
         ],
         "parallel_tool_calls": true,
-        "previous_response_id": "resp_68d5f2427cd8819486568e5c11a75af40b5385822f12acb1",
+        "presence_penalty": 0.0,
+        "previous_response_id": "resp_0ad888c4cea9d8eb006aa1df7023ec87d0820b6714f4b188ec",
         "prompt_cache_key": null,
+        "prompt_cache_retention": "24h",
         "reasoning": {
+          "context": "all_turns",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -264,30 +362,49 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
             "allowed_tools": null,
             "headers": null,
             "require_approval": "always",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
-        "top_p": 1.0,
+        "top_p": 0.98,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 293,
+          "input_tokens": 5319,
           "input_tokens_details": {
+            "cache_write_tokens": 5316,
             "cached_tokens": 0
           },
-          "output_tokens": 5,
+          "output_tokens": 58,
           "output_tokens_details": {
-            "reasoning_tokens": 0
+            "reasoning_tokens": 13
           },
-          "total_tokens": 298
+          "total_tokens": 5377
         },
         "user": null,
         "metadata": {}
@@ -295,6 +412,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

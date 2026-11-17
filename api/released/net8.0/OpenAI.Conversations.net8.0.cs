@@ -11,11 +11,11 @@ namespace OpenAI.Conversations {
         protected ConversationClient();
         [Experimental("SCME0002")]
         public ConversationClient(ConversationClientSettings settings);
-        public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ConversationClient(ApiKeyCredential credential, ConversationClientOptions options);
         public ConversationClient(ApiKeyCredential credential);
-        public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy, ConversationClientOptions options);
         public ConversationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ConversationClient(ClientPipeline pipeline, ConversationClientOptions options);
         public ConversationClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -45,9 +45,16 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class ConversationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ConversationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ConversationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]

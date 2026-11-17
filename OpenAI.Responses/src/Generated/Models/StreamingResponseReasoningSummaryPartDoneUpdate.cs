@@ -10,13 +10,16 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseReasoningSummaryPartDoneUpdate : StreamingResponseUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseReasoningSummaryPartDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, ReasoningSummaryPart part) : base(StreamingResponseUpdateKind.ResponseReasoningSummaryPartDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             SummaryIndex = summaryIndex;
             Part = part;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseReasoningSummaryPartDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int summaryIndex, ReasoningSummaryPart part) : base(kind, sequenceNumber, patch)

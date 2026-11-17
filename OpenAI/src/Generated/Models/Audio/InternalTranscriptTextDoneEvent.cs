@@ -18,6 +18,7 @@ namespace OpenAI.Audio
             Logprobs = new ChangeTrackingList<InternalTranscriptTextDoneEventLogprobs>();
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalTranscriptTextDoneEvent(string kind, string text, IList<InternalTranscriptTextDoneEventLogprobs> logprobs, AudioTranscriptionTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
@@ -27,6 +28,7 @@ namespace OpenAI.Audio
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Kind { get; } = "transcript.text.done";
 
@@ -34,7 +36,9 @@ namespace OpenAI.Audio
 
         internal IList<InternalTranscriptTextDoneEventLogprobs> Logprobs { get; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public AudioTranscriptionTokenUsage Usage { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

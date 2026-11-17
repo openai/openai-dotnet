@@ -10,12 +10,18 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate
     {
+        private InternalBetaAgentTag _agent;
+        private bool _agentIsDefined;
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber, string inputDelta, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, sequenceNumber)
         {
             InputDelta = inputDelta;
             ItemId = itemId;
             OutputIndex = outputIndex;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string inputDelta, string itemId, int outputIndex, InternalBetaAgentTag agent) : base(kind, sequenceNumber, patch)
@@ -23,7 +29,7 @@ namespace OpenAI.Responses
             InputDelta = inputDelta;
             ItemId = itemId;
             OutputIndex = outputIndex;
-            Agent = agent;
+            _agent = agent;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -34,6 +40,17 @@ namespace OpenAI.Responses
 
         public int OutputIndex { get; set; }
 
-        internal InternalBetaAgentTag Agent { get; set; }
+        internal InternalBetaAgentTag Agent
+        {
+            get
+            {
+                return _agent;
+            }
+            set
+            {
+                _agent = value;
+                _agentIsDefined = true;
+            }
+        }
     }
 }

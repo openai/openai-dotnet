@@ -117,10 +117,10 @@ namespace OpenAI.Assistants
                         return InternalMessageDeltaContentImageFileObject.DeserializeInternalMessageDeltaContentImageFileObject(element, options);
                     case "image_url":
                         return InternalMessageDeltaContentImageUrlObject.DeserializeInternalMessageDeltaContentImageUrlObject(element, options);
-                    case "text":
-                        return InternalMessageDeltaContentTextObject.DeserializeInternalMessageDeltaContentTextObject(element, options);
                     case "refusal":
                         return InternalMessageDeltaContentRefusalObject.DeserializeInternalMessageDeltaContentRefusalObject(element, options);
+                    case "text":
+                        return InternalMessageDeltaContentTextObject.DeserializeInternalMessageDeltaContentTextObject(element, options);
                 }
             }
             return UnknownMessageDeltaContent.DeserializeUnknownMessageDeltaContent(element, options);

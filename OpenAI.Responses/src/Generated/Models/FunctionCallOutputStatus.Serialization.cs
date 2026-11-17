@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class FunctionCallOutputStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this FunctionCallOutputStatus value) => value switch
         {
             FunctionCallOutputStatus.InProgress => "in_progress",
@@ -15,7 +16,9 @@ namespace OpenAI.Responses
             FunctionCallOutputStatus.Incomplete => "incomplete",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FunctionCallOutputStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static FunctionCallOutputStatus ToFunctionCallOutputStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -32,5 +35,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FunctionCallOutputStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

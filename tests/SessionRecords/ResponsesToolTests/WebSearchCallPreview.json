@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "304",
+        "Content-Length": "312",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -27,7 +27,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Searching the internet, what is the weather today in Redmond, WA?"
+                "text": "Searching the internet, tell me about something good that happened today."
               }
             ]
           }
@@ -38,11 +38,16 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e347c963f8fba28-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3b326bc1d61755d-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "6289",
+        "Content-Length": "6386",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -50,21 +55,20 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0e394ee28d10ee6f0069c7716f20c4819497d0b686973242de",
+        "id": "resp_06f4fb10815c4786006aa8826afa0c87d0a95415add38fb008",
         "object": "response",
-        "created_at": 1774678383,
+        "created_at": 1789428331,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1774678385,
+        "completed_at": 1789428333,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -72,75 +76,76 @@
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "ws_0e394ee28d10ee6f0069c7716f322081948016a379a91adf55",
+            "id": "ws_06f4fb10815c4786006aa8826b325087d0a2974bb45b79f4c0",
             "type": "web_search_call",
             "status": "completed",
             "action": {
               "type": "search",
               "queries": [
-                "Searching the internet, what is the weather today in Redmond, WA?"
+                "Searching the internet, tell me about something good that happened today."
               ],
-              "query": "Searching the internet, what is the weather today in Redmond, WA?",
+              "query": "Searching the internet, tell me about something good that happened today.",
               "sources": [
                 {
                   "type": "url",
-                  "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                  "url": "https://www.democracynow.org/2026/9/14/headlines?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.weather-atlas.com/en/west-virginia-usa/redmond-weather-march?utm_source=openai"
+                  "url": "https://www.gpb.org/news/2026/09/14/gpb-morning-headlines-for-september-14-2026?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://weatherspark.com/h/m/905/2026/3/Historical-Weather-in-March-2026-in-Redmond-Washington-United-States?utm_source=openai"
+                  "url": "https://www.kiowacountypress.net/content/daily-audio-newscast-september-14-2026?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://weatherspark.com/h/m/1218/2026/3/Historical-Weather-in-March-2026-in-Redmond-Oregon-United-States?utm_source=openai"
+                  "url": "https://www.wknofm.org/podcast/wkno-daily/2026-09-14/wkno-daily-newscast-monday-september-14-2026?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://weatherspark.com/h/m/905/2026/3/%25E9%259B%25B7%25E5%25BE%25B7%25E8%2592%2599%25E5%25BE%25B7%25E3%2580%2581%25E5%258D%258E%25E7%259B%259B%25E9%25A1%25BF%25E5%25B7%259E%25E3%2580%2581%25E7%25BE%258E%25E5%259C%258B2026%25E5%25B9%25B43%25E6%259C%2588%25E6%25AD%25B7%25E5%258F%25B2%25E5%25A4%25A9%25E6%25B0%25A3?utm_source=openai"
+                  "url": "https://www.southpeacenews.com/todays-happenings-september-14-2026/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.almanac.com/weather/forecast/WA/Redmond?utm_source=openai"
+                  "url": "https://savedelete.com/news/archive/2026/09/14/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.almanac.com/weather/longrange/WA/Redmond/1000?utm_source=openai"
+                  "url": "https://www.almanac.com/kids/calendar/date/2026-09-14?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.weather2visit.com/north-america/united-states/redmond-wa-march.htm?utm_source=openai"
+                  "url": "https://brightnewsdaily.com/daily-brief/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.weather-us.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                  "url": "https://www.theguardian.com/world/2026/sep/14/all?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.theweathernetwork.com/en/city/us/washington/redmond/monthly?utm_source=openai"
+                  "url": "https://www.theguardian.com/us-news/2026/sep/14/all?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.theweathernetwork.com/en/city/au/western-australia/redmond/monthly?utm_source=openai"
+                  "url": "https://www.sacbee.com/news/nation-world/?utm_source=openai"
                 },
                 {
                   "type": "url",
-                  "url": "https://www.weatherworld.com/forecast/wa/redmond.html?utm_source=openai"
+                  "url": "https://www.careerindia.com/news/school-assembly-news-headlines-today-september-14-2026-national-international-education-spo-065549.html?utm_source=openai"
                 },
                 {
-                  "type": "api",
-                  "name": "oai-weather"
+                  "type": "url",
+                  "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
                 }
               ]
             }
           },
           {
-            "id": "msg_0e394ee28d10ee6f0069c771700f90819492fa802357cf9325",
+            "id": "msg_06f4fb10815c4786006aa8826c959087d0b6e3a35822f540b5",
             "type": "message",
             "status": "completed",
             "content": [
@@ -149,14 +154,21 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 1044,
-                    "start_index": 934,
-                    "title": "March weather - Spring 2026 - Redmond, WA",
-                    "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                    "end_index": 715,
+                    "start_index": 603,
+                    "title": "\uD83D\uDEA6 Axios AM: Hitting AI brakes",
+                    "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 865,
+                    "start_index": 735,
+                    "title": "\uD83D\uDEA6 Axios AM: Hitting AI brakes",
+                    "url": "https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "As of 6:13 AM on Saturday, March 28, 2026, in Redmond, WA, the current weather is cloudy with a temperature of 47°F (8°C).\n\n## Weather for Redmond, WA:\nCurrent Conditions: Cloudy, 47°F (8°C)\n\nHourly Forecast:\n* 12:00\u202FAM: 40°F (5°C), Partly cloudy\n* 1:00\u202FAM: 42°F (6°C), Partly cloudy\n* 2:00\u202FAM: 42°F (6°C), Partly cloudy\n* 3:00\u202FAM: 43°F (6°C), Partly cloudy\n* 4:00\u202FAM: 42°F (6°C), Partly cloudy\n* 5:00\u202FAM: 42°F (6°C), Partly cloudy\n* 6:00\u202FAM: 42°F (5°C), Partly cloudy\n* 7:00\u202FAM: 41°F (5°C), Partly sunny\n* 8:00\u202FAM: 42°F (5°C), Partly sunny\n* 9:00\u202FAM: 44°F (6°C), Partly sunny\n* 10:00\u202FAM: 47°F (8°C), Partly sunny\n* 11:00\u202FAM: 49°F (10°C), Partly sunny\n\n\nIn March, Redmond typically experiences cool and damp conditions, with average high temperatures around 50.2°F (10.1°C) and average low temperatures around 36.5°F (2.5°C). The city receives approximately 3.11 inches (79 mm) of precipitation over about 19.7 days during the month. ([weather-atlas.com](https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai))\n\nPlease note that weather conditions can change rapidly; for the most current information, consider checking a local weather service. "
+                "text": "On September 13, 2026, leaders from major AI labs—including Anthropic, SpaceXAI, OpenAI, and Google DeepMind—collectively called for a slowdown in AI development. Anthropic CEO Dario Amodei initiated this call, expressing concerns that rapid AI progress could lead to catastrophic scenarios within six months. His remarks were echoed by top executives such as Elon Musk, Sam Altman, and Demis Hassabis, who emphasized prioritizing safety over growth. This rare moment of unity within the competitive industry reflects growing public concern and legislative pressures regarding unchecked AI development. ([axios.com](https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai))\n\n\n## Highlights:\n- [\uD83D\uDEA6 Axios AM: Hitting AI brakes](https://www.axios.com/newsletters/axios-am-68956162-ed74-42e1-a892-ae3da8e7d74f?utm_source=openai), Published on Sunday, September 13 "
               }
             ],
             "role": "assistant"
@@ -166,8 +178,9 @@
         "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -184,9 +197,30 @@
         "tool_choice": {
           "type": "web_search_preview"
         },
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 1
+          }
+        },
         "tools": [
           {
             "type": "web_search_preview",
+            "search_content_types": [
+              "text"
+            ],
             "search_context_size": "medium",
             "user_location": {
               "type": "approximate",
@@ -201,15 +235,16 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 324,
+          "input_tokens": 319,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 415,
+          "output_tokens": 223,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 739
+          "total_tokens": 542
         },
         "user": null,
         "metadata": {}

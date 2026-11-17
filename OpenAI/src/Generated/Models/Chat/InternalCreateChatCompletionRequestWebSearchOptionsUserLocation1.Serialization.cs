@@ -137,6 +137,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("approximate"u8))
             {
+                if (Approximate == null)
+                {
+                    return false;
+                }
                 return Approximate.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("approximate"u8.Length)], out value);
             }
             return false;
@@ -150,6 +154,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("approximate"u8))
             {
+                if (Approximate == null)
+                {
+                    return false;
+                }
                 Approximate.Patch.Set([.. "$"u8, .. local.Slice("approximate"u8.Length)], value);
                 return true;
             }

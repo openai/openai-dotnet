@@ -14,9 +14,11 @@ namespace OpenAI.Moderations
             InternalText = internalText;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalModerationTextPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(kind, additionalBinaryDataProperties)
         {
             InternalText = internalText;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

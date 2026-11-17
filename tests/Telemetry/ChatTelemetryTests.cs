@@ -114,6 +114,7 @@ public class ChatTelemetryTests
         var chatCompletion = CreateChatCompletion();
 
         Activity activity = null;
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             activity = Activity.Current;
@@ -156,6 +157,7 @@ public class ChatTelemetryTests
             Assert.That(Activity.Current.GetTagItem("gen_ai.request.max_tokens"), Is.EqualTo(options.MaxOutputTokenCount.Value));
             scope.RecordChatCompletion(chatCompletion);
         }
+
         Assert.That(Activity.Current, Is.Null);
 
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port, useLatestSemconv: false);
@@ -172,6 +174,7 @@ public class ChatTelemetryTests
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
         var error = new SocketException(42, "test error");
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordException(error);
@@ -208,6 +211,7 @@ public class ChatTelemetryTests
         var tasks = new Task[5];
         int numberOfSuccessfulResponses = 3;
         int totalPromptTokens = 0, totalCompletionTokens = 0;
+
         for (int i = 0; i < tasks.Length; i++)
         {
             int t = i;
@@ -216,6 +220,7 @@ public class ChatTelemetryTests
             {
                 using var scope = source.StartChatScope(options);
                 await Task.Delay(10);
+
                 if (t < numberOfSuccessfulResponses)
                 {
                     var promptTokens = Random.Shared.Next(100);
@@ -254,6 +259,30 @@ public class ChatTelemetryTests
             .Sum(u => (long)u.value), Is.EqualTo(totalCompletionTokens));
     }
 
+    [Test]
+    public void ModelFactoryTotalsRemainAvailableWithoutInventingOptionalDetails()
+    {
+        var usage = OpenTelemetryTokenUsage.FromChat(OpenAIChatModelFactory.ChatTokenUsage(
+            inputTokenCount: 12, outputTokenCount: 34,
+            inputTokenDetails: OpenAIChatModelFactory.ChatInputTokenUsageDetails(),
+            outputTokenDetails: OpenAIChatModelFactory.ChatOutputTokenUsageDetails()));
+        Assert.That(usage.InputTokens, Is.EqualTo(12L));
+        Assert.That(usage.OutputTokens, Is.EqualTo(34L));
+        Assert.That(usage.InputAudioTokens, Is.Null);
+        Assert.That(usage.OutputAudioTokens, Is.Null);
+        Assert.That(usage.CacheReadInputTokens, Is.Null);
+        Assert.That(usage.CacheWriteInputTokens, Is.Null);
+        Assert.That(usage.ReasoningOutputTokens, Is.Null);
+    }
+
+    [Test]
+    public void ModelFactoryDefaultCountsDoNotInventAvailability()
+    {
+        var usage = OpenTelemetryTokenUsage.FromChat(OpenAIChatModelFactory.ChatTokenUsage());
+        Assert.That(usage.InputTokens, Is.Null);
+        Assert.That(usage.OutputTokens, Is.Null);
+    }
+
     private void SetMessages(ChatCompletionOptions options, params ChatMessage[] messages)
     {
         var messagesProperty = typeof(ChatCompletionOptions).GetProperty("Messages", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -283,6 +312,26 @@ public class ChatTelemetryTests
 
     private void ValidateUsage(TestMeterListener listener, ChatCompletion response, int inputTokens, int outputTokens, bool useLatestSemconv = false)
     {
+        if (useLatestSemconv)
+        {
+            Assert.That(listener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
+
+            foreach (var direction in new[] { "input", "output" })
+            {
+                var expected = direction == "input" ? inputTokens : outputTokens;
+                var counter = listener.GetMeasurements($"gen_ai.client.inference.usage.{direction}_tokens").Single();
+                var histogram = listener.GetMeasurements($"gen_ai.client.inference.operation.{direction}_tokens").Single();
+                Assert.That(counter.value, Is.EqualTo(expected));
+                Assert.That(counter.tags["gen_ai.token.modality"], Is.EqualTo("unknown"));
+                Assert.That(histogram.value, Is.EqualTo(expected));
+                Assert.That(histogram.tags.ContainsKey("gen_ai.token.modality"), Is.False);
+                ValidateChatMetricTags(counter, response, RequestModel, Host, Port, useLatestSemconv: true);
+                ValidateChatMetricTags(histogram, response, RequestModel, Host, Port, useLatestSemconv: true);
+            }
+
+            return;
+        }
+
         var usage = listener.GetInstrument("gen_ai.client.token.usage");
         Assert.That(usage, Is.Not.Null);
         Assert.That(usage, Is.InstanceOf<Histogram<long>>());

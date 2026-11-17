@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Tools[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -102,10 +103,17 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.tools"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
+            if (Optional.IsDefined(Error, _errorIsDefined) && !Patch.Contains("$.error"u8))
             {
-                writer.WritePropertyName("error"u8);
-                writer.WriteStringValue(Error);
+                if (Error != null)
+                {
+                    writer.WritePropertyName("error"u8);
+                    writer.WriteStringValue(Error);
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -137,6 +145,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string serverLabel = default;
             IList<McpToolDefinition> tools = default;
+            bool errorIsDefined = false;
             string error = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -162,6 +171,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("error"u8))
                 {
+                    errorIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         error = null;
@@ -172,7 +182,10 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalMCPListToolsItemParam(kind, patch, serverLabel, tools, error);
+            return new InternalMCPListToolsItemParam(kind, patch, serverLabel, tools ?? new ChangeTrackingList<McpToolDefinition>(), error)
+            {
+                _errorIsDefined = errorIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -185,11 +198,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -208,7 +229,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Tools == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -231,20 +260,23 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<McpToolDefinition> ActiveTools()
         {
             if (!Optional.IsCollectionDefined(Tools))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
             for (int i = 0; i < Tools.Count; i++)
             {
-                if (!Tools[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Tools[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

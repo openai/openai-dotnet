@@ -12,15 +12,21 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchSearchAction : WebSearchAction
     {
-        public WebSearchSearchAction() : this(InternalWebSearchActionType.Search, default, null, null, null)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public WebSearchSearchAction() : this(WebSearchActionKind.Search, default, null, null, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchSearchAction(InternalWebSearchActionType kind, in JsonPatch patch, string query, IList<string> queries, IList<WebSearchActionSource> sources) : base(kind, patch)
+        internal WebSearchSearchAction(WebSearchActionKind kind, in JsonPatch patch, string query, IList<string> queries, IList<WebSearchActionSource> sources) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             Query = query;
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             Queries = queries ?? new ChangeTrackingList<string>();
             Sources = sources ?? new ChangeTrackingList<WebSearchActionSource>();
             Patch.SetPropagators(PropagateSet, PropagateGet);

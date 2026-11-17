@@ -80,11 +80,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (Patch.Contains("$.tool_calls"u8))
             {
                 if (!Patch.IsRemoved("$.tool_calls"u8))
@@ -97,9 +101,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
                 for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -113,10 +118,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
-            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
+            if (Optional.IsDefined(Refusal, _refusalIsDefined) && !Patch.Contains("$.refusal"u8))
             {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
+                if (Refusal != null)
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStringValue(Refusal);
+                }
+                else
+                {
+                    writer.WriteNull("refusal"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -136,6 +148,8 @@ namespace OpenAI.Chat
             return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static InternalChatCompletionStreamResponseDelta DeserializeInternalChatCompletionStreamResponseDelta(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -147,6 +161,7 @@ namespace OpenAI.Chat
             StreamingChatFunctionCallUpdate functionCall = default;
             IReadOnlyList<StreamingChatToolCallUpdate> toolCalls = default;
             ChatMessageRole? role = default;
+            bool refusalIsDefined = false;
             string refusal = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -201,6 +216,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("refusal"u8))
                 {
+                    refusalIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         refusal = null;
@@ -218,8 +234,13 @@ namespace OpenAI.Chat
                 toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>(),
                 role,
                 refusal,
-                patch);
+                patch)
+            {
+                _refusalIsDefined = refusalIsDefined
+            };
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -229,21 +250,41 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolCallsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -260,19 +301,39 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -301,9 +362,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
             for (int i = 0; i < ToolCalls.Count; i++)
             {
-                if (!ToolCalls[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]"))) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolCalls[i];
                 }

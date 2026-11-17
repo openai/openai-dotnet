@@ -10,7 +10,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(string eventId, string itemId, int contentIndex, string text, string id, string speaker, float start, float end) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionSegment)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(string eventId, string itemId, int contentIndex, string text, string id, string speaker, float start, float end) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionSegment)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -23,7 +23,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string text, string id, string speaker, float start, float end) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string text, string id, string speaker, float start, float end) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -36,20 +36,20 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public string Text { get; }
+        public string Text { get; set; }
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        public string Speaker { get; }
+        public string Speaker { get; set; }
 
-        public float Start { get; }
+        public float Start { get; set; }
 
-        public float End { get; }
+        public float End { get; set; }
     }
 }

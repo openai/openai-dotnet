@@ -16,6 +16,7 @@ namespace OpenAI.Moderations
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationTextPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Moderations
                     throw new FormatException($"The model {nameof(InternalModerationTextPart)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -73,6 +75,7 @@ namespace OpenAI.Moderations
 
         InternalModerationTextPart IJsonModel<InternalModerationTextPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalModerationTextPart)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationTextPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -83,7 +86,9 @@ namespace OpenAI.Moderations
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalModerationTextPart(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalModerationTextPart DeserializeInternalModerationTextPart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -106,9 +111,10 @@ namespace OpenAI.Moderations
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalModerationTextPart(kind, additionalBinaryDataProperties, internalText);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

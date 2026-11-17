@@ -9,11 +9,11 @@ namespace OpenAI.Evals {
     public class EvaluationClient {
         protected EvaluationClient();
         public EvaluationClient(EvaluationClientSettings settings);
-        public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public EvaluationClient(ApiKeyCredential credential, EvaluationClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
-        public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy, EvaluationClientOptions options);
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal EvaluationClient(ClientPipeline pipeline, EvaluationClientOptions options);
         public EvaluationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -42,8 +42,14 @@ namespace OpenAI.Evals {
         public virtual ClientResult UpdateEvaluation(string evaluationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateEvaluationAsync(string evaluationId, BinaryContent content, RequestOptions options = null);
     }
+    public class EvaluationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class EvaluationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public EvaluationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }

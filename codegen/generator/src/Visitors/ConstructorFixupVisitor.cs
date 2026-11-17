@@ -135,6 +135,21 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
         IEnumerable<ParameterProvider> parameters,
         out MethodBodyStatement handledStatement)
     {
+        if (originalStatement is SuppressionStatement { Inner: not null } suppressionStatement)
+        {
+            List<MethodBodyStatement> innerStatements =
+                [.. suppressionStatement.Inner.SelectMany(statement => statement)];
+
+            if (TryUpdateStatementsForParameters(innerStatements, parameters))
+            {
+                handledStatement = new SuppressionStatement(
+                    innerStatements,
+                    suppressionStatement.Code,
+                    suppressionStatement.Justification);
+                return true;
+            }
+        }
+
         if (originalStatement is ExpressionStatement expressionStatement
             && expressionStatement.Expression is AssignmentExpression assignmentExpression)
         {

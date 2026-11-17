@@ -13,8 +13,11 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpTool : RealtimeTool
     {
+        private RealtimeMcpToolFilter _allowedTools;
+        private bool _allowedToolsIsDefined;
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpTool(InternalRealtimeToolBaseTypeGA kind, in JsonPatch patch, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
+        internal RealtimeMcpTool(RealtimeToolKind kind, in JsonPatch patch, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
@@ -23,7 +26,7 @@ namespace OpenAI.Realtime
             AuthorizationToken = authorizationToken;
             ServerDescription = serverDescription;
             Headers = headers ?? new ChangeTrackingDictionary<string, string>();
-            AllowedTools = allowedTools;
+            _allowedTools = allowedTools;
             ToolCallApprovalPolicy = toolCallApprovalPolicy;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -37,6 +40,17 @@ namespace OpenAI.Realtime
 
         public IDictionary<string, string> Headers { get; set; }
 
-        public RealtimeMcpToolFilter AllowedTools { get; set; }
+        public RealtimeMcpToolFilter AllowedTools
+        {
+            get
+            {
+                return _allowedTools;
+            }
+            set
+            {
+                _allowedTools = value;
+                _allowedToolsIsDefined = true;
+            }
+        }
     }
 }

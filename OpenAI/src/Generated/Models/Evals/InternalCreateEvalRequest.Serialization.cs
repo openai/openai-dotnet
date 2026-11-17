@@ -189,9 +189,9 @@ namespace OpenAI.Evals
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateEvalRequest(name, metadata ?? new ChangeTrackingDictionary<string, string>(), dataSourceConfig, testingCriteria, additionalBinaryDataProperties);
+            return new InternalCreateEvalRequest(name, metadata ?? new ChangeTrackingDictionary<string, string>(), dataSourceConfig, testingCriteria ?? new ChangeTrackingList<InternalEvalGraderParams>(), additionalBinaryDataProperties);
         }
     }
 }

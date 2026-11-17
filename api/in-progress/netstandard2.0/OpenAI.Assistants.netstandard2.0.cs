@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 namespace OpenAI.Assistants {
     public class Assistant : IJsonModel<Assistant>, IPersistableModel<Assistant> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Description { get; }
         public string Id { get; }
         public string Instructions { get; }
@@ -24,11 +24,11 @@ namespace OpenAI.Assistants {
     public class AssistantClient {
         protected AssistantClient();
         public AssistantClient(AssistantClientSettings settings);
-        public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public AssistantClient(ApiKeyCredential credential, AssistantClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
-        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options);
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
-        protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal AssistantClient(ClientPipeline pipeline, AssistantClientOptions options);
         public AssistantClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -48,16 +48,14 @@ namespace OpenAI.Assistants {
         public virtual ClientResult<ThreadRun> CreateRun(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> CreateRunAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<StreamingUpdate>> CreateRunStreamingAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AssistantThread> CreateThread(ThreadCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateThread(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ThreadRun> CreateThreadAndRun(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> CreateThreadAndRunAsync(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<StreamingUpdate>> CreateThreadAndRunStreamingAsync(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteAssistant(string assistantId, RequestOptions options);
@@ -126,11 +124,16 @@ namespace OpenAI.Assistants {
         public virtual ClientResult<ThreadRun> SubmitToolOutputsToRun(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> SubmitToolOutputsToRunAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingResult<StreamingUpdate>> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
+    }
+    public class AssistantClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
     }
     public sealed class AssistantClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public AssistantClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class AssistantCollectionOptions : IJsonModel<AssistantCollectionOptions>, IPersistableModel<AssistantCollectionOptions> {
@@ -207,7 +210,7 @@ namespace OpenAI.Assistants {
         public override string ToString();
     }
     public class AssistantThread : IJsonModel<AssistantThread>, IPersistableModel<AssistantThread> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }
@@ -478,12 +481,12 @@ namespace OpenAI.Assistants {
     }
     public class RunStep : IJsonModel<RunStep>, IPersistableModel<RunStep> {
         public string AssistantId { get; }
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset CreatedOn { get; }
         public RunStepDetails Details { get; }
-        public DateTimeOffset? ExpiredAt { get; }
-        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? ExpiredOn { get; }
+        public DateTimeOffset? FailedOn { get; }
         public string Id { get; }
         public RunStepKind Kind { get; }
         public RunStepError LastError { get; }
@@ -697,12 +700,12 @@ namespace OpenAI.Assistants {
     public class ThreadMessage : IJsonModel<ThreadMessage>, IPersistableModel<ThreadMessage> {
         public string AssistantId { get; }
         public IReadOnlyList<MessageCreationAttachment> Attachments { get; }
-        public DateTimeOffset? CompletedAt { get; }
+        public DateTimeOffset? CompletedOn { get; }
         public IReadOnlyList<MessageContent> Content { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
-        public DateTimeOffset? IncompleteAt { get; }
         public MessageFailureDetails IncompleteDetails { get; }
+        public DateTimeOffset? IncompleteOn { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public MessageRole Role { get; }
         public string RunId { get; }
@@ -717,11 +720,11 @@ namespace OpenAI.Assistants {
     public class ThreadRun : IJsonModel<ThreadRun>, IPersistableModel<ThreadRun> {
         public bool? AllowParallelToolCalls { get; }
         public string AssistantId { get; }
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public DateTimeOffset? ExpiresAt { get; }
-        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? FailedOn { get; }
         public string Id { get; }
         public RunIncompleteDetails IncompleteDetails { get; }
         public string Instructions { get; }
@@ -733,7 +736,7 @@ namespace OpenAI.Assistants {
         public float? NucleusSamplingFactor { get; }
         public IReadOnlyList<RequiredAction> RequiredActions { get; }
         public AssistantResponseFormat ResponseFormat { get; }
-        public DateTimeOffset? StartedAt { get; }
+        public DateTimeOffset? StartedOn { get; }
         public RunStatus Status { get; }
         public float? Temperature { get; }
         public string ThreadId { get; }
@@ -744,7 +747,7 @@ namespace OpenAI.Assistants {
         public static explicit operator ThreadRun(ClientResult result);
     }
     public class ThreadUpdate : StreamingUpdate<AssistantThread> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }

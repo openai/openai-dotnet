@@ -69,6 +69,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task StreamingResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -78,7 +79,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -111,6 +112,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase(true)]
     [TestCase(false)]
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
@@ -136,7 +138,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -252,7 +254,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.CreatedAt, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
+        Assert.That(response.CreatedOn, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
         // Assert.That(response.Status, Is.EqualTo(ResponsesStatus.Completed));
         Assert.That(response.Model, Is.Not.Null.And.Not.Empty);
         Assert.That(response.PreviousResponseId, Is.Null);
@@ -356,6 +358,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task ReasoningStreamingWorks()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -380,7 +383,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<string> reasoningTextDeltas = [];
         string finalOutput = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
             {
@@ -439,6 +442,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
@@ -454,7 +458,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
         }
@@ -473,12 +477,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             Assert.That(retrievedResponse.Id, Is.EqualTo(response.Id));
         }
 
-        Assert.DoesNotThrowAsync(RetrieveThatResponseAsync);
+        Assert.That(RetrieveThatResponseAsync, Throws.Nothing);
 
         ResponseDeletionResult deletionResult = await client.DeleteResponseAsync(response.Id);
         Assert.That(deletionResult.Deleted, Is.True);
 
-        Assert.ThrowsAsync<ClientResultException>(RetrieveThatResponseAsync);
+        Assert.That(RetrieveThatResponseAsync, Throws.TypeOf<ClientResultException>());
     }
 
     [RecordedTest]
@@ -493,8 +497,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new GetResponseOptions(response.Id)));
-        Assert.That(expectedException.Message, Does.Contain("not found"));
+        Assert.That(
+            async () => await client.GetResponseAsync(new GetResponseOptions(response.Id)),
+            Throws.TypeOf<ClientResultException>()
+                .With.Message.Contains("not found"));
     }
 
     [RecordedTest]
@@ -780,11 +786,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client1 = GetProxiedResponsesClient();
         ResponsesClient client2 = GetProxiedResponsesClient();
 
-        ResponseResult response1 = await client1.CreateResponseAsync("gpt-4o-mini", "Hello, Assistant! My name is Travis.");
-        ResponseResult response2 = await client2.CreateResponseAsync("o3-mini", "What's my name?", response1.Id);
+        ResponseResult response1 = await client1.CreateResponseAsync(TestModel.Responses, "Hello, Assistant! My name is Travis.");
+        ResponseResult response2 = await client2.CreateResponseAsync("gpt-6-luna", "What's my name?", response1.Id);
 
-        Assert.That(response1.Model.StartsWith("gpt-4o-mini"), Is.True);
-        Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
+        Assert.That(response1.Model.StartsWith(TestModel.Responses), Is.True);
+        Assert.That(response2.Model.StartsWith("gpt-6-luna"), Is.True);
     }
 
     [RecordedTest]
@@ -881,6 +887,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [AsyncOnly]
     public async Task CanStreamBackgroundResponses()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -891,7 +898,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(createOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
@@ -924,7 +931,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(getOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;

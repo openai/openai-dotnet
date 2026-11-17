@@ -151,7 +151,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("file"u8))
                 {
-                    @file = BinaryData.FromString(prop.Value.GetRawText());
+                    @file = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -183,7 +183,7 @@ namespace OpenAI.Audio
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new AudioTranslationOptions(
                 @file,

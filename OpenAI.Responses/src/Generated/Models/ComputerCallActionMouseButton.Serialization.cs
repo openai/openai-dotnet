@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class ComputerCallActionMouseButtonExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ComputerCallActionMouseButton value) => value switch
         {
             ComputerCallActionMouseButton.Left => "left",
@@ -17,7 +18,9 @@ namespace OpenAI.Responses
             ComputerCallActionMouseButton.Forward => "forward",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ComputerCallActionMouseButton value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ComputerCallActionMouseButton ToComputerCallActionMouseButton(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "left"))
@@ -42,5 +45,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ComputerCallActionMouseButton value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

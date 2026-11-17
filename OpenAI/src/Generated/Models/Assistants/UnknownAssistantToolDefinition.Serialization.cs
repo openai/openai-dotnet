@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
                     throw new FormatException($"The model {nameof(ToolDefinition)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<ToolDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ToolDefinition IPersistableModel<ToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         string IPersistableModel<ToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -66,8 +70,11 @@ namespace OpenAI.Assistants
             base.JsonModelWriteCore(writer, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         ToolDefinition IJsonModel<ToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -78,6 +85,7 @@ namespace OpenAI.Assistants
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeToolDefinition(document.RootElement, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static UnknownAssistantToolDefinition DeserializeUnknownAssistantToolDefinition(JsonElement element, ModelReaderWriterOptions options)
         {
@@ -95,7 +103,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new UnknownAssistantToolDefinition(kind, additionalBinaryDataProperties);
         }

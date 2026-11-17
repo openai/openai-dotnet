@@ -12,9 +12,11 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeConversationSessionOptions : RealtimeSessionOptions
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeConversationSessionOptions() : this(InternalRealtimeSessionCreateRequestGABaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeConversationSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA kind, in JsonPatch patch, IList<RealtimeOutputModality> outputModalities, string model, string instructions, RealtimeConversationSessionAudioOptions audioOptions, IList<RealtimeIncludedProperty> includedProperties, RealtimeTracing tracing, IList<RealtimeTool> tools, RealtimeToolChoice toolChoice, RealtimeMaxOutputTokenCount maxOutputTokenCount, RealtimeTruncation truncation) : base(kind, patch)

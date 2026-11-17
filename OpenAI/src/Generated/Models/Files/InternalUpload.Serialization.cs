@@ -79,7 +79,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
@@ -104,17 +104,24 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt, "U");
+                writer.WriteNumberValue(ExpiresOn, "U");
             }
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.Value.ToString());
             }
-            if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
+            if (Optional.IsDefined(File, _fileIsDefined) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
-                writer.WritePropertyName("file"u8);
-                writer.WriteObjectValue(File, options);
+                if (File != null)
+                {
+                    writer.WritePropertyName("file"u8);
+                    writer.WriteObjectValue(File, options);
+                }
+                else
+                {
+                    writer.WriteNull("file"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -158,13 +165,14 @@ namespace OpenAI.Files
                 return null;
             }
             string id = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string filename = default;
             int bytes = default;
             string purpose = default;
             InternalUploadStatus status = default;
-            DateTimeOffset expiresAt = default;
+            DateTimeOffset expiresOn = default;
             InternalUploadObject? @object = default;
+            bool fileIsDefined = false;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -176,7 +184,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -201,7 +209,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("expires_at"u8))
                 {
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -215,6 +223,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("file"u8))
                 {
+                    fileIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         @file = null;
@@ -224,19 +233,22 @@ namespace OpenAI.Files
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalUpload(
                 id,
-                createdAt,
+                createdOn,
                 filename,
                 bytes,
                 purpose,
                 status,
-                expiresAt,
+                expiresOn,
                 @object,
                 @file,
-                additionalBinaryDataProperties);
+                additionalBinaryDataProperties)
+            {
+                _fileIsDefined = fileIsDefined
+            };
         }
     }
 }

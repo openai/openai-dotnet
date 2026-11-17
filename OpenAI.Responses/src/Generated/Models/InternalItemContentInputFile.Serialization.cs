@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputFile : ResponseContentPart, IJsonModel<InternalItemContentInputFile>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -69,15 +71,29 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            if (Optional.IsDefined(FileId, _fileIdIsDefined) && !Patch.Contains("$.file_id"u8))
             {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
+                if (FileId != null)
+                {
+                    writer.WritePropertyName("file_id"u8);
+                    writer.WriteStringValue(FileId);
+                }
+                else
+                {
+                    writer.WriteNull("file_id"u8);
+                }
             }
-            if (Optional.IsDefined(FileUrl) && !Patch.Contains("$.file_url"u8))
+            if (Optional.IsDefined(FileUrl, _fileUrlIsDefined) && !Patch.Contains("$.file_url"u8))
             {
-                writer.WritePropertyName("file_url"u8);
-                writer.WriteStringValue(FileUrl.AbsoluteUri);
+                if (FileUrl != null)
+                {
+                    writer.WritePropertyName("file_url"u8);
+                    writer.WriteStringValue(FileUrl.AbsoluteUri);
+                }
+                else
+                {
+                    writer.WriteNull("file_url"u8);
+                }
             }
             if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
             {
@@ -96,6 +112,7 @@ namespace OpenAI.Responses
 
         InternalItemContentInputFile IJsonModel<InternalItemContentInputFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentInputFile)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -106,6 +123,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalItemContentInputFile(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalItemContentInputFile DeserializeInternalItemContentInputFile(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -117,7 +135,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool fileIdIsDefined = false;
             string fileId = default;
+            bool fileUrlIsDefined = false;
             Uri fileUrl = default;
             string filename = default;
             string internalFileData = default;
@@ -130,6 +150,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("file_id"u8))
                 {
+                    fileIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         fileId = null;
@@ -140,6 +161,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("file_url"u8))
                 {
+                    fileUrlIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         fileUrl = null;
@@ -166,7 +188,11 @@ namespace OpenAI.Responses
                 fileId,
                 fileUrl,
                 filename,
-                internalFileData);
+                internalFileData)
+            {
+                _fileIdIsDefined = fileIdIsDefined,
+                _fileUrlIsDefined = fileUrlIsDefined
+            };
         }
     }
 }

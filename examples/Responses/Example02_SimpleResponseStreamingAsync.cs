@@ -18,7 +18,7 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync("gpt-5", "Say 'this is a test.'");
+        AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync("gpt-5", "Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
         await foreach (StreamingResponseUpdate update in responseUpdates)

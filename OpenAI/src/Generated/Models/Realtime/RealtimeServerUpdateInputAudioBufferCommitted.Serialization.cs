@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateInputAudioBufferCommitted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferCommitted>
     {
-        internal RealtimeServerUpdateInputAudioBufferCommitted() : this(InternalRealtimeServerEventTypeGA.InputAudioBufferCommitted, default, null, null, null)
+        public RealtimeServerUpdateInputAudioBufferCommitted() : this(RealtimeServerUpdateKind.InputAudioBufferCommitted, default, null, null, null)
         {
         }
 
@@ -78,10 +78,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
-            if (Optional.IsDefined(PreviousItemId) && !Patch.Contains("$.previous_item_id"u8))
+            if (Optional.IsDefined(PreviousItemId, _previousItemIdIsDefined) && !Patch.Contains("$.previous_item_id"u8))
             {
-                writer.WritePropertyName("previous_item_id"u8);
-                writer.WriteStringValue(PreviousItemId);
+                if (PreviousItemId != null)
+                {
+                    writer.WritePropertyName("previous_item_id"u8);
+                    writer.WriteStringValue(PreviousItemId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_item_id"u8);
+                }
             }
             if (!Patch.Contains("$.item_id"u8))
             {
@@ -112,18 +119,19 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string eventId = default;
+            bool previousItemIdIsDefined = false;
             string previousItemId = default;
             string itemId = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -133,6 +141,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("previous_item_id"u8))
                 {
+                    previousItemIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousItemId = null;
@@ -148,7 +157,10 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateInputAudioBufferCommitted(kind, patch, eventId, previousItemId, itemId);
+            return new RealtimeServerUpdateInputAudioBufferCommitted(kind, patch, eventId, previousItemId, itemId)
+            {
+                _previousItemIdIsDefined = previousItemIdIsDefined
+            };
         }
     }
 }

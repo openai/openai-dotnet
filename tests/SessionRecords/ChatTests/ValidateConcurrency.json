@@ -8,24 +8,28 @@
         "Authorization": "Sanitized",
         "Content-Length": "90",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "temperature": 0,
         "messages": [
           {
             "role": "user",
-            "content": "4 + 6 = ?"
+            "content": "3 + 5 = ?"
           }
         ],
         "model": "gpt-4o-mini"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd10026bdb8c37c-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ae1d795f0882-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -34,7 +38,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -48,16 +51,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dVBtutXq0D9rdJ6i9UwC3OdUdK6",
+        "id": "chatcmpl-Edfyh7VNtUt3o6rdJIsOdSGghbKJa",
         "object": "chat.completion",
-        "created": 1770950841,
+        "created": 1793124863,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "4 + 6 = 10.",
+              "content": "3 + 5 = 8.",
               "refusal": null,
               "annotations": []
             },
@@ -92,7 +95,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "90",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "temperature": 0,
@@ -106,10 +109,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd10026ddcedb33-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ae1dc9955050-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -118,7 +125,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -132,9 +138,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dVBLpXiGjI4dl3TauvaNilN30pj",
+        "id": "chatcmpl-EdfyhHdiXfveLoszKxQSkYHRLqFC3",
         "object": "chat.completion",
-        "created": 1770950841,
+        "created": 1793124863,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
@@ -176,24 +182,28 @@
         "Authorization": "Sanitized",
         "Content-Length": "90",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; macOS 15.8.1)"
       },
       "RequestBody": {
         "temperature": 0,
         "messages": [
           {
             "role": "user",
-            "content": "3 + 5 = ?"
+            "content": "4 + 6 = ?"
           }
         ],
         "model": "gpt-4o-mini"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd10026d8c7a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a513ae1dc80f6c9a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -202,7 +212,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
@@ -216,16 +225,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-D8dVBkQzDhuira7OcCKXLrn6HZ2MN",
+        "id": "chatcmpl-EdfyhPjFxsi9YWcIWMRLEcPHfog7m",
         "object": "chat.completion",
-        "created": 1770950841,
+        "created": 1793124863,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "3 + 5 = 8.",
+              "content": "4 + 6 = 10.",
               "refusal": null,
               "annotations": []
             },

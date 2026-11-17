@@ -83,18 +83,37 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Metadata)
+                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Metadata)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+                            writer.WriteStringValue(item.Value);
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.metadata"u8);
+                }
+                else
+                {
+                    foreach (var item in Metadata)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -105,24 +124,36 @@ namespace OpenAI.Responses
                         writer.WriteStringValue(item.Value);
                     }
                 }
-
-                Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && !Patch.Contains("$.temperature"u8))
+            if (Optional.IsDefined(Temperature, _temperatureIsDefined) && !Patch.Contains("$.temperature"u8))
             {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature.Value);
+                if (Temperature != null)
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
             if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
             {
                 writer.WritePropertyName("top_logprobs"u8);
                 writer.WriteNumberValue(TopLogProbabilityCount.Value);
             }
-            if (Optional.IsDefined(TopP) && !Patch.Contains("$.top_p"u8))
+            if (Optional.IsDefined(TopP, _topPIsDefined) && !Patch.Contains("$.top_p"u8))
             {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP.Value);
+                if (TopP != null)
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
             }
             if (Optional.IsDefined(EndUserId) && !Patch.Contains("$.user"u8))
             {
@@ -139,10 +170,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("service_tier"u8);
                 writer.WriteStringValue(ServiceTier.Value.ToString());
             }
-            if (Optional.IsDefined(PreviousResponseId) && !Patch.Contains("$.previous_response_id"u8))
+            if (Optional.IsDefined(PreviousResponseId, _previousResponseIdIsDefined) && !Patch.Contains("$.previous_response_id"u8))
             {
-                writer.WritePropertyName("previous_response_id"u8);
-                writer.WriteStringValue(PreviousResponseId);
+                if (PreviousResponseId != null)
+                {
+                    writer.WritePropertyName("previous_response_id"u8);
+                    writer.WriteStringValue(PreviousResponseId);
+                }
+                else
+                {
+                    writer.WriteNull("previous_response_id"u8);
+                }
             }
             if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
@@ -186,9 +224,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Tools[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -219,9 +258,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("input"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "input"u8);
                 for (int i = 0; i < InputItems.Count; i++)
                 {
-                    if (InputItems[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) || InputItems[i] != null && InputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -240,18 +280,26 @@ namespace OpenAI.Responses
             }
             else if (Optional.IsCollectionDefined(IncludedProperties))
             {
-                writer.WritePropertyName("include"u8);
-                writer.WriteStartArray();
-                for (int i = 0; i < IncludedProperties.Count; i++)
+                if (IncludedProperties != null)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                    writer.WritePropertyName("include"u8);
+                    writer.WriteStartArray();
+                    bool hasPatch = Patch.Contains("$"u8, "include"u8);
+                    for (int i = 0; i < IncludedProperties.Count; i++)
                     {
-                        continue;
+                        if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
+                        {
+                            continue;
+                        }
+                        writer.WriteStringValue(IncludedProperties[i].ToString());
                     }
-                    writer.WriteStringValue(IncludedProperties[i].ToString());
+                    Patch.WriteTo(writer, "$.include"u8);
+                    writer.WriteEndArray();
                 }
-                Patch.WriteTo(writer, "$.include"u8);
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteNull("include"u8);
+                }
             }
             if (Optional.IsDefined(ParallelToolCallsEnabled) && !Patch.Contains("$.parallel_tool_calls"u8))
             {
@@ -263,10 +311,17 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("store"u8);
                 writer.WriteBooleanValue(StoredOutputEnabled.Value);
             }
-            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
+            if (Optional.IsDefined(Instructions, _instructionsIsDefined) && !Patch.Contains("$.instructions"u8))
             {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
+                if (Instructions != null)
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteStringValue(Instructions);
+                }
+                else
+                {
+                    writer.WriteNull("instructions"u8);
+                }
             }
             if (Optional.IsDefined(StreamingEnabled) && !Patch.Contains("$.stream"u8))
             {
@@ -313,12 +368,15 @@ namespace OpenAI.Responses
                 return null;
             }
             IDictionary<string, string> metadata = default;
+            bool temperatureIsDefined = false;
             float? temperature = default;
             int? topLogProbabilityCount = default;
+            bool topPIsDefined = false;
             float? topP = default;
             string endUserId = default;
             string safetyIdentifier = default;
             ResponseServiceTier? serviceTier = default;
+            bool previousResponseIdIsDefined = false;
             string previousResponseId = default;
             string model = default;
             ResponseReasoningOptions reasoningOptions = default;
@@ -330,9 +388,10 @@ namespace OpenAI.Responses
             ResponseToolChoice toolChoice = default;
             ResponseTruncationMode? truncationMode = default;
             IList<ResponseItem> inputItems = default;
-            IList<IncludedResponseProperty> includedProperties = default;
+            IList<IncludedResponseProperty> includedProperties = new ChangeTrackingList<IncludedResponseProperty>();
             bool? parallelToolCallsEnabled = default;
             bool? storedOutputEnabled = default;
+            bool instructionsIsDefined = false;
             string instructions = default;
             bool? streamingEnabled = default;
             ResponseConversationOptions conversationOptions = default;
@@ -366,6 +425,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("temperature"u8))
                 {
+                    temperatureIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
@@ -386,6 +446,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("top_p"u8))
                 {
+                    topPIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
@@ -415,6 +476,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
+                    previousResponseIdIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         previousResponseId = null;
@@ -528,6 +590,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        includedProperties = null;
                         continue;
                     }
                     List<IncludedResponseProperty> array = new List<IncludedResponseProperty>();
@@ -560,6 +623,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("instructions"u8))
                 {
+                    instructionsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         instructions = null;
@@ -622,7 +686,7 @@ namespace OpenAI.Responses
                 toolChoice,
                 truncationMode,
                 inputItems ?? new ChangeTrackingList<ResponseItem>(),
-                includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
+                includedProperties,
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
                 instructions,
@@ -630,7 +694,13 @@ namespace OpenAI.Responses
                 conversationOptions,
                 promptCacheKey,
                 promptCacheRetentionPolicy,
-                patch);
+                patch)
+            {
+                _temperatureIsDefined = temperatureIsDefined,
+                _topPIsDefined = topPIsDefined,
+                _previousResponseIdIsDefined = previousResponseIdIsDefined,
+                _instructionsIsDefined = instructionsIsDefined
+            };
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -641,25 +711,45 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
+                if (ReasoningOptions == null)
+                {
+                    return false;
+                }
                 return ReasoningOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
             if (local.StartsWith("text"u8))
             {
+                if (TextOptions == null)
+                {
+                    return false;
+                }
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
             if (local.StartsWith("conversation"u8))
             {
+                if (ConversationOptions == null)
+                {
+                    return false;
+                }
                 return ConversationOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -669,11 +759,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InputItems == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveInputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
+                {
+                    return false;
+                }
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
@@ -690,16 +788,28 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
+                if (ReasoningOptions == null)
+                {
+                    return false;
+                }
                 ReasoningOptions.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("text"u8))
             {
+                if (TextOptions == null)
+                {
+                    return false;
+                }
                 TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("conversation"u8))
             {
+                if (ConversationOptions == null)
+                {
+                    return false;
+                }
                 ConversationOptions.Patch.Set([.. "$"u8, .. local.Slice("conversation"u8.Length)], value);
                 return true;
             }
@@ -707,7 +817,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Tools == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -718,7 +836,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (InputItems == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
+                {
+                    return false;
+                }
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
@@ -747,9 +873,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
             for (int i = 0; i < Tools.Count; i++)
             {
-                if (!Tools[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Tools[i];
                 }
@@ -775,9 +902,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "input"u8);
             for (int i = 0; i < InputItems.Count; i++)
             {
-                if (!InputItems[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]"))) && (InputItems[i] == null || !InputItems[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return InputItems[i];
                 }

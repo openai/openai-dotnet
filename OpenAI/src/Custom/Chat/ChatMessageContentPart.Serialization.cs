@@ -23,37 +23,40 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         writer.WriteStartObject();
-        writer.WritePropertyName("type"u8);
-        writer.WriteStringValue(instance._kind.ToSerialString());
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (!instance.Patch.Contains("$.type"u8))
+        {
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(instance._kind.ToSerialString());
+        }
 
-        if (instance._kind == ChatMessageContentPartKind.Text)
+        if (instance._kind == ChatMessageContentPartKind.Text && !instance.Patch.Contains("$.text"u8))
         {
             writer.WritePropertyName("text"u8);
             writer.WriteStringValue(instance._text);
         }
-        else if (instance._kind == ChatMessageContentPartKind.Refusal)
+        else if (instance._kind == ChatMessageContentPartKind.Refusal && !instance.Patch.Contains("$.refusal"u8))
         {
             writer.WritePropertyName("refusal"u8);
             writer.WriteStringValue(instance._refusal);
         }
-        else if (instance._kind == ChatMessageContentPartKind.Image)
+        else if (instance._kind == ChatMessageContentPartKind.Image && !instance.Patch.Contains("$.image_url"u8))
         {
             writer.WritePropertyName("image_url"u8);
             writer.WriteObjectValue(instance._imageUri, options);
         }
-        else if (instance._kind == ChatMessageContentPartKind.InputAudio)
+        else if (instance._kind == ChatMessageContentPartKind.InputAudio && !instance.Patch.Contains("$.input_audio"u8))
         {
             writer.WritePropertyName("input_audio"u8);
             writer.WriteObjectValue(instance._inputAudio, options);
         }
-        else if (instance._kind == ChatMessageContentPartKind.File)
+        else if (instance._kind == ChatMessageContentPartKind.File && !instance.Patch.Contains("$.file"u8))
         {
             writer.WritePropertyName("file"u8);
             writer.WriteObjectValue(instance._fileFile, options);
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         instance.Patch.WriteTo(writer);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteEndObject();
     }
 

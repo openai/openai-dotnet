@@ -90,9 +90,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("command"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "command"u8);
                 for (int i = 0; i < Command.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.command[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.command[{i}]")))
                     {
                         continue;
                     }
@@ -106,32 +107,65 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.command"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(TimeoutMs) && !Patch.Contains("$.timeout_ms"u8))
+            if (Optional.IsDefined(TimeoutMs, _timeoutMsIsDefined) && !Patch.Contains("$.timeout_ms"u8))
             {
-                writer.WritePropertyName("timeout_ms"u8);
-                writer.WriteNumberValue(TimeoutMs.Value);
+                if (TimeoutMs != null)
+                {
+                    writer.WritePropertyName("timeout_ms"u8);
+                    writer.WriteNumberValue(TimeoutMs.Value);
+                }
+                else
+                {
+                    writer.WriteNull("timeout_ms"u8);
+                }
             }
-            if (Optional.IsDefined(WorkingDirectory) && !Patch.Contains("$.working_directory"u8))
+            if (Optional.IsDefined(WorkingDirectory, _workingDirectoryIsDefined) && !Patch.Contains("$.working_directory"u8))
             {
-                writer.WritePropertyName("working_directory"u8);
-                writer.WriteStringValue(WorkingDirectory);
+                if (WorkingDirectory != null)
+                {
+                    writer.WritePropertyName("working_directory"u8);
+                    writer.WriteStringValue(WorkingDirectory);
+                }
+                else
+                {
+                    writer.WriteNull("working_directory"u8);
+                }
             }
             if (!Patch.Contains("$.env"u8))
             {
                 writer.WritePropertyName("env"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Env)
+                bool hasPatch = Patch.Contains("$"u8, "env"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.env"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.env"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.env"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Env)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.env"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.env"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.env"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+                            writer.WriteStringValue(item.Value);
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.env"u8);
+                }
+                else
+                {
+                    foreach (var item in Env)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -142,14 +176,19 @@ namespace OpenAI.Responses
                         writer.WriteStringValue(item.Value);
                     }
                 }
-
-                Patch.WriteTo(writer, "$.env"u8);
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(User) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(User, _userIsDefined) && !Patch.Contains("$.user"u8))
             {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                if (User != null)
+                {
+                    writer.WritePropertyName("user"u8);
+                    writer.WriteStringValue(User);
+                }
+                else
+                {
+                    writer.WriteNull("user"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -177,9 +216,12 @@ namespace OpenAI.Responses
             }
             string kind = default;
             IList<string> command = default;
+            bool timeoutMsIsDefined = false;
             int? timeoutMs = default;
+            bool workingDirectoryIsDefined = false;
             string workingDirectory = default;
             IDictionary<string, string> env = default;
+            bool userIsDefined = false;
             string user = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -210,6 +252,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("timeout_ms"u8))
                 {
+                    timeoutMsIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         timeoutMs = null;
@@ -220,6 +263,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("working_directory"u8))
                 {
+                    workingDirectoryIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         workingDirectory = null;
@@ -247,6 +291,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("user"u8))
                 {
+                    userIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         user = null;
@@ -259,12 +304,17 @@ namespace OpenAI.Responses
             }
             return new InternalLocalShellExecAction(
                 kind,
-                command,
+                command ?? new ChangeTrackingList<string>(),
                 timeoutMs,
                 workingDirectory,
-                env,
+                env ?? new ChangeTrackingDictionary<string, string>(),
                 user,
-                patch);
+                patch)
+            {
+                _timeoutMsIsDefined = timeoutMsIsDefined,
+                _workingDirectoryIsDefined = workingDirectoryIsDefined,
+                _userIsDefined = userIsDefined
+            };
         }
     }
 }

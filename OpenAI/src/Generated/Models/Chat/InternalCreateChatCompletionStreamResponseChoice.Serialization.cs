@@ -61,10 +61,17 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("delta"u8);
                 writer.WriteObjectValue(Delta, options);
             }
-            if (Optional.IsDefined(Logprobs) && !Patch.Contains("$.logprobs"u8))
+            if (Optional.IsDefined(Logprobs, _logprobsIsDefined) && !Patch.Contains("$.logprobs"u8))
             {
-                writer.WritePropertyName("logprobs"u8);
-                writer.WriteObjectValue(Logprobs, options);
+                if (Logprobs != null)
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteObjectValue(Logprobs, options);
+                }
+                else
+                {
+                    writer.WriteNull("logprobs"u8);
+                }
             }
             if (Optional.IsDefined(FinishReason) && !Patch.Contains("$.finish_reason"u8))
             {
@@ -106,10 +113,18 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("delta"u8))
             {
+                if (Delta == null)
+                {
+                    return false;
+                }
                 return Delta.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("delta"u8.Length)], out value);
             }
             if (local.StartsWith("logprobs"u8))
             {
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 return Logprobs.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("logprobs"u8.Length)], out value);
             }
             return false;
@@ -123,11 +138,19 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("delta"u8))
             {
+                if (Delta == null)
+                {
+                    return false;
+                }
                 Delta.Patch.Set([.. "$"u8, .. local.Slice("delta"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("logprobs"u8))
             {
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 Logprobs.Patch.Set([.. "$"u8, .. local.Slice("logprobs"u8.Length)], value);
                 return true;
             }

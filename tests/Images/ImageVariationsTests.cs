@@ -98,10 +98,10 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         string imagePath = Path.Combine("Assets", imageFilename);
         using FileStream imageFile = File.OpenRead(imagePath);
 
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imageFile, imageFilename));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageVariationAsync(imageFile, imageFilename),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -111,10 +111,10 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
 
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imagePath));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageVariationAsync(imagePath),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -212,10 +212,10 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         string imagePath = Path.Combine("Assets", imageFilename);
         using FileStream imageFile = File.OpenRead(imagePath);
 
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -225,9 +225,9 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
 
-        ClientResultException ex = null;
-
-        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imagePath, 2));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageVariationsAsync(imagePath, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 }

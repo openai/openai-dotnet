@@ -15,7 +15,7 @@ public enum ChatMessageContentPartKind
     [CodeGenMember("Refusal")]
     Refusal,
 
-    [CodeGenMember("ImageUrl")]
+    [CodeGenMember("ImageUri")]
     Image,
 
     [Experimental("OPENAI001")]

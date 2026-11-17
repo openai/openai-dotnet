@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionMove>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionMove)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -90,6 +92,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionMove IJsonModel<InternalComputerActionMove>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionMove)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionMove>)this).GetFormatFromOptions(options) : options.Format;
@@ -100,7 +103,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionMove(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionMove DeserializeInternalComputerActionMove(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -134,5 +139,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionMove(kind, patch, x, y);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

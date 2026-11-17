@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatText : ResponseTextFormat, IJsonModel<InternalResponsesTextFormatText>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTextFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatText>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalResponsesTextFormatText)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -76,6 +78,7 @@ namespace OpenAI.Responses
 
         InternalResponsesTextFormatText IJsonModel<InternalResponsesTextFormatText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesTextFormatText)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseTextFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatText>)this).GetFormatFromOptions(options) : options.Format;
@@ -86,6 +89,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponsesTextFormatText(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalResponsesTextFormatText DeserializeInternalResponsesTextFormatText(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

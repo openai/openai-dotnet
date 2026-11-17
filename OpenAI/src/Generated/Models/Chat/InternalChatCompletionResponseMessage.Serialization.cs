@@ -103,9 +103,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
                 for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -126,9 +127,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
                 for (int i = 0; i < Annotations.Count; i++)
                 {
-                    if (Annotations[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -142,15 +144,26 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
-            if (Optional.IsDefined(Audio) && !Patch.Contains("$.audio"u8))
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+            if (Optional.IsDefined(Audio, _audioIsDefined) && !Patch.Contains("$.audio"u8))
             {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(Audio, options);
+                if (Audio != null)
+                {
+                    writer.WritePropertyName("audio"u8);
+                    writer.WriteObjectValue(Audio, options);
+                }
+                else
+                {
+                    writer.WriteNull("audio"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -170,6 +183,8 @@ namespace OpenAI.Chat
             return DeserializeInternalChatCompletionResponseMessage(document.RootElement, null, options);
         }
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static InternalChatCompletionResponseMessage DeserializeInternalChatCompletionResponseMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -182,6 +197,7 @@ namespace OpenAI.Chat
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
             ChatMessageRole role = default;
             ChatFunctionCall functionCall = default;
+            bool audioIsDefined = false;
             ChatOutputAudio audio = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -247,6 +263,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("audio"u8))
                 {
+                    audioIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         audio = null;
@@ -265,8 +282,13 @@ namespace OpenAI.Chat
                 role,
                 functionCall,
                 audio,
-                patch);
+                patch)
+            {
+                _audioIsDefined = audioIsDefined
+            };
         }
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -274,23 +296,43 @@ namespace OpenAI.Chat
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolCallsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -300,11 +342,19 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Annotations == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveAnnotationsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
+                {
+                    return false;
+                }
+                if (Annotations[index] == null)
                 {
                     return false;
                 }
@@ -319,13 +369,25 @@ namespace OpenAI.Chat
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
@@ -333,7 +395,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -344,7 +414,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Annotations == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
+                {
+                    return false;
+                }
+                if (Annotations[index] == null)
                 {
                     return false;
                 }
@@ -373,9 +451,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tool_calls"u8);
             for (int i = 0; i < ToolCalls.Count; i++)
             {
-                if (!ToolCalls[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]"))) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolCalls[i];
                 }
@@ -395,20 +474,23 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ChatMessageAnnotation> ActiveAnnotations()
         {
             if (!Optional.IsCollectionDefined(Annotations))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
             for (int i = 0; i < Annotations.Count; i++)
             {
-                if (!Annotations[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Annotations[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

@@ -10,12 +10,12 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandInputAudioBufferClear : RealtimeClientCommand
     {
-        public RealtimeClientCommandInputAudioBufferClear() : this(InternalRealtimeClientEventTypeGA.InputAudioBufferClear, default, null)
+        public RealtimeClientCommandInputAudioBufferClear() : this(RealtimeClientCommandKind.InputAudioBufferClear, default, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandInputAudioBufferClear(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId) : base(kind, patch)
+        internal RealtimeClientCommandInputAudioBufferClear(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId) : base(kind, patch)
         {
             EventId = eventId;
         }

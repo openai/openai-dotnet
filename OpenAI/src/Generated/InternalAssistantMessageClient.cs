@@ -26,30 +26,31 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetMessages(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantMessageClientGetMessagesCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantMessageClientGetMessagesCollectionResultOfT(
@@ -61,7 +62,9 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(
@@ -73,5 +76,6 @@ namespace OpenAI.Assistants
                 options?.BeforeId,
                 cancellationToken.ToRequestOptions());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

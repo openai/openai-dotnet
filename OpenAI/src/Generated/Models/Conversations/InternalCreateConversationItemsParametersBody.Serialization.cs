@@ -86,9 +86,10 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "items"u8);
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (Items[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -139,7 +140,7 @@ namespace OpenAI.Conversations
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateConversationItemsParametersBody(items, patch);
+            return new InternalCreateConversationItemsParametersBody(items ?? new ChangeTrackingList<ResponseItem>(), patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -152,11 +153,19 @@ namespace OpenAI.Conversations
             {
                 int propertyLength = "items"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Items == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -175,7 +184,15 @@ namespace OpenAI.Conversations
             {
                 int propertyLength = "items"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Items == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -198,20 +215,23 @@ namespace OpenAI.Conversations
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseItem> ActiveItems()
         {
             if (!Optional.IsCollectionDefined(Items))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "items"u8);
             for (int i = 0; i < Items.Count; i++)
             {
-                if (!Items[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]"))) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Items[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

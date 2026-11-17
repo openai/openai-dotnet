@@ -10,9 +10,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ImageGenerationTool() : this(ResponseToolKind.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default, default)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ImageGenerationTool(ResponseToolKind kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, patch)

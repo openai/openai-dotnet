@@ -7,26 +7,27 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
 namespace OpenAI.Batch
 {
     internal partial class BatchClientGetBatchesCollectionResultOfT : CollectionResult<BatchJob>
     {
         private readonly BatchClient _client;
-        private readonly string _after;
-        private readonly int? _limit;
+        private readonly string _afterId;
+        private readonly int? _pageSizeLimit;
         private readonly RequestOptions _options;
 
-        public BatchClientGetBatchesCollectionResultOfT(BatchClient client, string after, int? limit, RequestOptions options)
+        public BatchClientGetBatchesCollectionResultOfT(BatchClient client, string afterId, int? pageSizeLimit, RequestOptions options)
         {
             _client = client;
-            _after = after;
-            _limit = limit;
+            _afterId = afterId;
+            _pageSizeLimit = pageSizeLimit;
             _options = options;
         }
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetBatchesRequest(_after, _limit, _options);
+            PipelineMessage message = _client.CreateGetBatchesRequest(_afterId, _pageSizeLimit, _options);
             string nextToken = null;
             while (true)
             {
@@ -41,7 +42,7 @@ namespace OpenAI.Batch
                 {
                     yield break;
                 }
-                message = _client.CreateGetBatchesRequest(nextToken, _limit, _options);
+                message = _client.CreateGetBatchesRequest(nextToken, _pageSizeLimit, _options);
             }
         }
 
@@ -69,3 +70,4 @@ namespace OpenAI.Batch
         }
     }
 }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

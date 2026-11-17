@@ -22,6 +22,7 @@ namespace OpenAI {
         public virtual Chat.ChatClient GetChatClient(string model);
         public virtual Containers.ContainerClient GetContainerClient();
         public virtual Conversations.ConversationClient GetConversationClient();
+        public virtual Decisions.DecisionsClient GetDecisionsClient();
         public virtual Embeddings.EmbeddingClient GetEmbeddingClient(string model);
         public virtual Evals.EvaluationClient GetEvaluationClient();
         public virtual FineTuning.FineTuningClient GetFineTuningClient();
@@ -53,6 +54,7 @@ namespace OpenAI {
         public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddDecisionsClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
@@ -64,6 +66,7 @@ namespace OpenAI {
         public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedDecisionsClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);

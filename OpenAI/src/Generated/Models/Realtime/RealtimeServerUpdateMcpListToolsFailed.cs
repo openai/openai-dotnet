@@ -10,22 +10,22 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateMcpListToolsFailed : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateMcpListToolsFailed(string eventId, string itemId) : base(InternalRealtimeServerEventTypeGA.McpListToolsFailed)
+        internal RealtimeServerUpdateMcpListToolsFailed(string eventId, string itemId) : base(RealtimeServerUpdateKind.McpListToolsFailed)
         {
             EventId = eventId;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateMcpListToolsFailed(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateMcpListToolsFailed(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
 }

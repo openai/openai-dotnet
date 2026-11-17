@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateResponseMcpCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>
     {
-        internal RealtimeServerUpdateResponseMcpCallArgumentsDelta() : this(InternalRealtimeServerEventTypeGA.ResponseMcpCallArgumentsDelta, default, null, null, null, default, null, null)
+        public RealtimeServerUpdateResponseMcpCallArgumentsDelta() : this(RealtimeServerUpdateKind.ResponseMcpCallArgumentsDelta, default, null, null, null, default, null, null)
         {
         }
 
@@ -98,10 +98,17 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("delta"u8);
                 SerializeDeltaValue(writer, options);
             }
-            if (Optional.IsDefined(Obfuscation) && !Patch.Contains("$.obfuscation"u8))
+            if (Optional.IsDefined(Obfuscation, _obfuscationIsDefined) && !Patch.Contains("$.obfuscation"u8))
             {
-                writer.WritePropertyName("obfuscation"u8);
-                writer.WriteStringValue(Obfuscation);
+                if (Obfuscation != null)
+                {
+                    writer.WritePropertyName("obfuscation"u8);
+                    writer.WriteStringValue(Obfuscation);
+                }
+                else
+                {
+                    writer.WriteNull("obfuscation"u8);
+                }
             }
 
             Patch.WriteTo(writer);
@@ -127,7 +134,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -136,12 +143,13 @@ namespace OpenAI.Realtime
             string itemId = default;
             int outputIndex = default;
             BinaryData delta = default;
+            bool obfuscationIsDefined = false;
             string obfuscation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -171,6 +179,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("obfuscation"u8))
                 {
+                    obfuscationIsDefined = true;
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         obfuscation = null;
@@ -189,7 +198,10 @@ namespace OpenAI.Realtime
                 itemId,
                 outputIndex,
                 delta,
-                obfuscation);
+                obfuscation)
+            {
+                _obfuscationIsDefined = obfuscationIsDefined
+            };
         }
     }
 }

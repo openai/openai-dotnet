@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatCompletionMessageListDatum(string content, string refusal, string id)
         {
             Content = content;
@@ -25,7 +27,9 @@ namespace OpenAI.Chat
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
             ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, IList<ChatMessageContentPart> contentParts, string id, in JsonPatch patch)
@@ -36,7 +40,11 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
+#pragma warning disable CS0612 // This generated code references obsolete functionality.
+#pragma warning disable CS0618 // This generated code references obsolete functionality.
             FunctionCall = functionCall;
+#pragma warning restore CS0618 // This generated code references obsolete functionality.
+#pragma warning restore CS0612 // This generated code references obsolete functionality.
             OutputAudio = outputAudio;
             ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
@@ -58,6 +66,7 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
+        [Obsolete("This field is marked as deprecated.")]
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
 
         public IList<ChatMessageContentPart> ContentParts { get; }

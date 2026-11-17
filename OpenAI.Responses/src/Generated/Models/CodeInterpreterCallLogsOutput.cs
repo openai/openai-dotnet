@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput
     {
-        public CodeInterpreterCallLogsOutput(string logs) : base(InternalCodeInterpreterToolOutputType.Logs)
+        public CodeInterpreterCallLogsOutput(string logs) : base(CodeInterpreterCallOutputKind.Logs)
         {
             Argument.AssertNotNull(logs, nameof(logs));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterCallLogsOutput(InternalCodeInterpreterToolOutputType kind, in JsonPatch patch, string logs) : base(kind, patch)
+        internal CodeInterpreterCallLogsOutput(CodeInterpreterCallOutputKind kind, in JsonPatch patch, string logs) : base(kind, patch)
         {
             Logs = logs;
         }

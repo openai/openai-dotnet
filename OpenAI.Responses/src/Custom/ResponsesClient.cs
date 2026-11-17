@@ -1,9 +1,11 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,13 +19,16 @@ namespace OpenAI.Responses;
 [CodeGenType("Responses")]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
+// Suppression is evaluated before PaginationVisitor, so these signatures match the shared model's expanded scalar order.
+[CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(ResponseItemCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(ResponseItemCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 
 public partial class ResponsesClient
 {
+    private readonly OpenTelemetrySource _telemetry;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
@@ -73,6 +78,7 @@ public partial class ResponsesClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint, options.ClientLoggingOptions);
     }
 
     // CUSTOM:
@@ -90,6 +96,7 @@ public partial class ResponsesClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint, options.ClientLoggingOptions);
     }
 
     [Experimental("SCME0002")]
@@ -114,11 +121,22 @@ public partial class ResponsesClient
         {
             throw new InvalidOperationException(
                 $"{nameof(CreateResponseOptions.StreamingEnabled)} must not be set to true when calling {nameof(CreateResponse)}. "
-                + $"For streaming scenarios, call {nameof(CreateResponseStreaming)} instead.");
+                + $"For streaming scenarios, call {nameof(CreateResponseStreamingAsync)} instead.");
         }
 
-        ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        using var scope = _telemetry?.StartResponsesScope(options);
+        try
+        {
+            ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions());
+            var response = (ResponseResult)result;
+            scope?.RecordResponseResult(response);
+            return ClientResult.FromValue(response, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     // CUSTOM: Added protocol model method.
@@ -144,8 +162,19 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to true when calling {nameof(CreateResponseAsync)}.");
         }
 
-        ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        using var scope = _telemetry?.StartResponsesScope(options);
+        try
+        {
+            ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
+            var response = (ResponseResult)result;
+            scope?.RecordResponseResult(response);
+            return ClientResult.FromValue(response, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     // CUSTOM: Added convenience method with no options.
@@ -157,8 +186,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         foreach (var item in inputItems)
         {
@@ -177,8 +209,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         foreach (var item in inputItems)
         {
@@ -197,8 +232,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
@@ -214,8 +252,11 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
         };
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
@@ -223,30 +264,12 @@ public partial class ResponsesClient
     }
 
     // CUSTOM: Added protocol model method.
-    public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-
-        if (options.StreamingEnabled != true)
-        {
-            throw new InvalidOperationException(
-                $"{nameof(CreateResponseOptions.StreamingEnabled)} must be set to true when calling {nameof(CreateResponseStreaming)}. "
-                + $"For non-streaming scenarios, call {nameof(CreateResponse)} instead.");
-        }
-
-        return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
-    }
-
-    // CUSTOM: Added protocol model method.
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         return CreateResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
     }
 
-    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, RequestOptions requestOptions)
+    internal Task<AsyncStreamingResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(CreateResponseOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -263,14 +286,16 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to false when calling {nameof(CreateResponseStreamingAsync)}.");
         }
 
-        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
+        return SseStreamingResult.CreateAsync(
             async () => await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            requestOptions.CancellationToken);
+            requestOptions.CancellationToken,
+            () => _telemetry?.StartResponsesStreamingScope(options),
+            CreateStreamingResult);
     }
 
     // CUSTOM: Added convenience method with no options.
-    public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
+    public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(inputItems, nameof(inputItems));
@@ -278,30 +303,12 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
             StreamingEnabled = true,
         };
-
-        foreach (var item in inputItems)
+        if (previousResponseId is not null)
         {
-            options.InputItems.Add(item);
+            options.PreviousResponseId = previousResponseId;
         }
-
-        return CreateResponseStreaming(options, cancellationToken);
-    }
-
-    // CUSTOM: Added convenience method with no options.
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(inputItems, nameof(inputItems));
-
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-            PreviousResponseId = previousResponseId,
-            StreamingEnabled = true,
-        };
 
         foreach (var item in inputItems)
         {
@@ -312,7 +319,7 @@ public partial class ResponsesClient
     }
 
     // CUSTOM: Added convenience method with no options.
-    public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default)
+    public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
@@ -320,27 +327,12 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            PreviousResponseId = previousResponseId,
             StreamingEnabled = true,
         };
-
-        options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
-
-        return CreateResponseStreaming(options, cancellationToken);
-    }
-
-    // CUSTOM: Added convenience method with no options.
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
-
-        var options = new CreateResponseOptions
+        if (previousResponseId is not null)
         {
-            Model = model,
-            PreviousResponseId = previousResponseId,
-            StreamingEnabled = true,
-        };
+            options.PreviousResponseId = previousResponseId;
+        }
 
         options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
@@ -361,7 +353,7 @@ public partial class ResponsesClient
         {
             throw new InvalidOperationException(
                 $"{nameof(GetResponseOptions.StreamingEnabled)} must not be set to true when calling {nameof(GetResponse)}. "
-                + $"For streaming scenarios, call {nameof(GetResponseStreaming)} instead.");
+                + $"For streaming scenarios, call {nameof(GetResponseStreamingAsync)} instead.");
         }
 
         ClientResult result = GetResponse(
@@ -429,37 +421,12 @@ public partial class ResponsesClient
     }
 
     // CUSTOM: Added protocol model method.
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
-
-        if (options.StreamingEnabled != true)
-        {
-            throw new InvalidOperationException(
-                $"{nameof(GetResponseOptions.StreamingEnabled)} must be set to true when calling {nameof(GetResponseStreaming)}. "
-                + $"For non-streaming scenarios, call {nameof(GetResponse)} instead.");
-        }
-
-        return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(
-                responseId: options.ResponseId,
-                include: options.IncludedProperties,
-                stream: options.StreamingEnabled,
-                startingAfter: options.StartingAfter,
-                includeObfuscation: options.IncludeObfuscation,
-                cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
-    }
-
-    // CUSTOM: Added protocol model method.
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         return GetResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
     }
 
-    internal AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, RequestOptions requestOptions)
+    internal Task<AsyncStreamingResult<StreamingResponseUpdate>> GetResponseStreamingAsync(GetResponseOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
@@ -477,7 +444,7 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to false when calling {nameof(GetResponseStreamingAsync)}.");
         }
 
-        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
+        return SseStreamingResult.CreateAsync(
             async () => await GetResponseAsync(
                 responseId: options.ResponseId,
                 include: options.IncludedProperties,
@@ -486,24 +453,12 @@ public partial class ResponsesClient
                 includeObfuscation: options.IncludeObfuscation,
                 requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            requestOptions.CancellationToken);
+            requestOptions.CancellationToken,
+            resultFactory: CreateStreamingResult);
     }
 
     // CUSTOM: Added convenience method with no options.
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        var options = new GetResponseOptions(responseId)
-        {
-            StreamingEnabled = true,
-        };
-
-        return GetResponseStreaming(options, cancellationToken);
-    }
-
-    // CUSTOM: Added convenience method with no options.
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default)
+    public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
@@ -515,6 +470,29 @@ public partial class ResponsesClient
         return GetResponseStreamingAsync(options, cancellationToken);
     }
 
+    /// <summary>
+    /// Creates the result that the streaming methods of this client return for an established streaming response.
+    /// </summary>
+    /// <remarks>
+    /// Derived clients can override this method to observe or transform updates, typically by wrapping
+    /// <paramref name="updateProducer"/> and then calling the base implementation. The returned result takes
+    /// ownership of <paramref name="response"/>, so exactly one result must be created for it.
+    /// </remarks>
+    /// <param name="response"> The established streaming response. </param>
+    /// <param name="updateProducer"> Reads the updates from the content stream of <paramref name="response"/>. </param>
+    /// <param name="cancellationToken"> The cancellation token of the streaming operation. </param>
+    /// <returns> A result that can be enumerated once and that owns <paramref name="response"/>. </returns>
+    protected virtual AsyncStreamingResult<StreamingResponseUpdate> CreateStreamingResult(
+        PipelineResponse response,
+        Func<Stream, CancellationToken, IAsyncEnumerable<StreamingResponseUpdate>> updateProducer,
+        CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(response, nameof(response));
+        Argument.AssertNotNull(updateProducer, nameof(updateProducer));
+
+        return AsyncStreamingResult.Create(response, updateProducer, cancellationToken);
+    }
+
     #endregion
 
     #region GetResponseInputItems
@@ -524,7 +502,13 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(
+            responseId: responseId,
+            afterId: after,
+            beforeId: before,
+            pageSizeLimit: limit,
+            order: order,
+            options: options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
@@ -533,7 +517,13 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(
+            responseId: responseId,
+            afterId: after,
+            beforeId: before,
+            pageSizeLimit: limit,
+            order: order,
+            options: options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -578,11 +568,11 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
-            cancellationToken.ToRequestOptions());
+            options: cancellationToken.ToRequestOptions());
     }
 
     // CUSTOM: Added convenience method with pagination.
@@ -593,11 +583,11 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
-            cancellationToken.ToRequestOptions());
+            options: cancellationToken.ToRequestOptions());
     }
 
     // CUSTOM: Added convenience method with pagination and no options.

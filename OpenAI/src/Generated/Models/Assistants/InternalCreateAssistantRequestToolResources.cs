@@ -15,16 +15,20 @@ namespace OpenAI.Assistants
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalCreateAssistantRequestToolResources(InternalCreateAssistantRequestToolResourcesCodeInterpreter codeInterpreter, FileSearchToolResources fileSearch, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalCreateAssistantRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public FileSearchToolResources FileSearch { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

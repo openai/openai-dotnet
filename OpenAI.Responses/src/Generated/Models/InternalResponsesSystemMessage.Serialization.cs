@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesSystemMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,6 +32,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalResponsesSystemMessage)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -86,9 +88,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "content"u8);
                 for (int i = 0; i < InternalContent.Count; i++)
                 {
-                    if (InternalContent[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || InternalContent[i] != null && InternalContent[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -104,6 +107,7 @@ namespace OpenAI.Responses
 
         InternalResponsesSystemMessage IJsonModel<InternalResponsesSystemMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesSystemMessage)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesSystemMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -114,7 +118,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponsesSystemMessage(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalResponsesSystemMessage DeserializeInternalResponsesSystemMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -143,6 +149,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = prop.Value.GetString().ToMessageStatus();
                     continue;
                 }
@@ -169,8 +179,9 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 internalRole,
-                internalContent);
+                internalContent ?? new ChangeTrackingList<ResponseContentPart>());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -182,11 +193,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InternalContent == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveInternalContentArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InternalContent.Count)
+                {
+                    return false;
+                }
+                if (InternalContent[index] == null)
                 {
                     return false;
                 }
@@ -205,7 +224,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (InternalContent == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InternalContent.Count)
+                {
+                    return false;
+                }
+                if (InternalContent[index] == null)
                 {
                     return false;
                 }
@@ -228,20 +255,23 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseContentPart> ActiveInternalContent()
         {
             if (!Optional.IsCollectionDefined(InternalContent))
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "content"u8);
             for (int i = 0; i < InternalContent.Count; i++)
             {
-                if (!InternalContent[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]"))) && (InternalContent[i] == null || !InternalContent[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return InternalContent[i];
                 }
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

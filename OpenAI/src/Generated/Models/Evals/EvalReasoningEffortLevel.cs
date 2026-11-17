@@ -15,6 +15,8 @@ namespace OpenAI.Evals
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
+        private const string ExtraHighValue = "xhigh";
+        private const string MaxValue = "max";
 
         public EvalReasoningEffortLevel(string value)
         {
@@ -30,6 +32,10 @@ namespace OpenAI.Evals
         internal static EvalReasoningEffortLevel Medium { get; } = new EvalReasoningEffortLevel(MediumValue);
 
         internal static EvalReasoningEffortLevel High { get; } = new EvalReasoningEffortLevel(HighValue);
+
+        internal static EvalReasoningEffortLevel ExtraHigh { get; } = new EvalReasoningEffortLevel(ExtraHighValue);
+
+        internal static EvalReasoningEffortLevel Max { get; } = new EvalReasoningEffortLevel(MaxValue);
 
         public static bool operator ==(EvalReasoningEffortLevel left, EvalReasoningEffortLevel right) => left.Equals(right);
 

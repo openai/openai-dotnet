@@ -16,23 +16,33 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
+        private float? _temperature;
+        private bool _temperatureIsDefined;
+        private float? _topP;
+        private bool _topPIsDefined;
+        private string _previousResponseId;
+        private bool _previousResponseIdIsDefined;
+        private string _instructions;
+        private bool _instructionsIsDefined;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, default, null, null, default, default)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, string instructions, bool? streamingEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
+            _temperature = temperature;
             TopLogProbabilityCount = topLogProbabilityCount;
-            TopP = topP;
+            _topP = topP;
             EndUserId = endUserId;
             SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
-            PreviousResponseId = previousResponseId;
+            _previousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
             BackgroundModeEnabled = backgroundModeEnabled;
@@ -46,7 +56,7 @@ namespace OpenAI.Responses
             IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
-            Instructions = instructions;
+            _instructions = instructions;
             StreamingEnabled = streamingEnabled;
             ConversationOptions = conversationOptions;
             PromptCacheKey = promptCacheKey;
@@ -63,21 +73,65 @@ namespace OpenAI.Responses
 
         public IDictionary<string, string> Metadata { get; }
 
-        public float? Temperature { get; set; }
+        public float? Temperature
+        {
+            get
+            {
+                return _temperature;
+            }
+            set
+            {
+                _temperature = value;
+                _temperatureIsDefined = true;
+            }
+        }
 
-        public float? TopP { get; set; }
+        public float? TopP
+        {
+            get
+            {
+                return _topP;
+            }
+            set
+            {
+                _topP = value;
+                _topPIsDefined = true;
+            }
+        }
 
         public string SafetyIdentifier { get; set; }
 
         public ResponseServiceTier? ServiceTier { get; set; }
 
-        public string PreviousResponseId { get; set; }
+        public string PreviousResponseId
+        {
+            get
+            {
+                return _previousResponseId;
+            }
+            set
+            {
+                _previousResponseId = value;
+                _previousResponseIdIsDefined = true;
+            }
+        }
 
         public string Model { get; set; }
 
         public IList<ResponseTool> Tools { get; }
 
-        public string Instructions { get; set; }
+        public string Instructions
+        {
+            get
+            {
+                return _instructions;
+            }
+            set
+            {
+                _instructions = value;
+                _instructionsIsDefined = true;
+            }
+        }
 
         public string PromptCacheKey { get; set; }
 

@@ -17,6 +17,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,6 +32,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -86,9 +88,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("path"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "path"u8);
                 for (int i = 0; i < Path.Count; i++)
                 {
-                    if (Path[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]")) || Path[i] != null && Path[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -104,6 +107,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionDrag IJsonModel<InternalComputerActionDrag>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionDrag)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
@@ -114,7 +118,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionDrag(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -145,8 +151,9 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionDrag(kind, patch, path);
+            return new InternalComputerActionDrag(kind, patch, path ?? new ChangeTrackingList<InternalCoordinate>());
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
@@ -158,11 +165,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "path"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Path == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolvePathArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
+                {
+                    return false;
+                }
+                if (Path[index] == null)
                 {
                     return false;
                 }
@@ -181,7 +196,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "path"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Path == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
+                {
+                    return false;
+                }
+                if (Path[index] == null)
                 {
                     return false;
                 }
@@ -210,9 +233,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "path"u8);
             for (int i = 0; i < Path.Count; i++)
             {
-                if (!Path[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]"))) && (Path[i] == null || !Path[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Path[i];
                 }
