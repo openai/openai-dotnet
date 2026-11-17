@@ -9,7 +9,7 @@
 
   <!-- General Dependencies -->
   <ItemGroup>
-    <PackageVersion Include="System.ClientModel" Version="1.16.0" />
+    <PackageVersion Include="System.ClientModel" Version="1.17.0" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.14" />
     <PackageVersion Include="System.Net.ServerSentEvents" Version="10.0.14" />
   </ItemGroup>
