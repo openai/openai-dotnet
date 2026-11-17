@@ -176,6 +176,12 @@ public partial class ResponsesSmokeTests
         {
             string serialized = ModelReaderWriter.Write(choice).ToString();
             Assert.That(serialized, Is.EqualTo(expected));
+
+            AssertSerializationRoundTrip<ResponseToolChoice>(expected, deserializedChoice =>
+            {
+                Assert.That(deserializedChoice.DefaultToolChoice, Is.EqualTo(choice.DefaultToolChoice));
+                Assert.That(deserializedChoice.CustomToolChoice?.GetType(), Is.EqualTo(choice.CustomToolChoice?.GetType()));
+            });
         }
 
         AssertChoiceEqual(
@@ -241,6 +247,165 @@ public partial class ResponsesSmokeTests
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
             toolChoice => Assert.That(toolChoice.CustomToolChoice, Is.Not.Null));
+    }
+
+    [Test]
+    public void ToolChoiceDeserializesStructuredFields()
+    {
+        AssertSerializationRoundTrip<ResponseToolChoice>(
+            """{"type":"function","name":"search"}""",
+            choice =>
+            {
+                Assert.That(choice.CustomToolChoice, Is.TypeOf<ResponseFunctionToolChoice>());
+                Assert.That(((ResponseFunctionToolChoice)choice.CustomToolChoice).FunctionName, Is.EqualTo("search"));
+            });
+        AssertSerializationRoundTrip<ResponseToolChoice>(
+            """{"type":"mcp","name":"search","server_label":"server"}""",
+            choice =>
+            {
+                Assert.That(choice.CustomToolChoice, Is.TypeOf<ResponseMcpToolChoice>());
+                ResponseMcpToolChoice mcpChoice = (ResponseMcpToolChoice)choice.CustomToolChoice;
+                Assert.That(mcpChoice.ToolName, Is.EqualTo("search"));
+                Assert.That(mcpChoice.ServerLabel, Is.EqualTo("server"));
+            });
+        AssertSerializationRoundTrip<ResponseToolChoice>(
+            """{"type":"allowed_tools","mode":"required","tools":[{"type":"custom","name":"search"}]}""",
+            choice =>
+            {
+                Assert.That(choice.CustomToolChoice, Is.TypeOf<ResponseAllowedToolsChoice>());
+                ResponseAllowedToolsChoice allowedChoice = (ResponseAllowedToolsChoice)choice.CustomToolChoice;
+                Assert.That(allowedChoice.Mode, Is.EqualTo(ResponseAllowedToolsChoiceMode.Required));
+                Assert.That(allowedChoice.Tools, Has.Count.EqualTo(1));
+                Assert.That(allowedChoice.Tools[0], Is.TypeOf<CustomTool>());
+                Assert.That(((CustomTool)allowedChoice.Tools[0]).ToolName, Is.EqualTo("search"));
+            });
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ToolChoicePropagatesJsonPatchToObjectComponent(bool fromRawJson)
+    {
+        CreateResponseOptions options = fromRawJson
+            ? ModelReaderWriter.Read<CreateResponseOptions>(
+                BinaryData.FromString("""{"tool_choice":{"type":"function","name":"search","extra":true}}"""))
+            : new() { ToolChoice = new ResponseFunctionToolChoice("search") };
+
+#pragma warning disable SCME0001
+        options.Patch.Set("$.tool_choice.name"u8, "\"patched\""u8);
+        options.Patch.Set("$.tool_choice.additional_property"u8, "\"added\""u8);
+        Assert.That(options.ToolChoice.CustomToolChoice.Patch.TryGetEncodedValue("$.additional_property"u8, out _), Is.True);
+#pragma warning restore SCME0001
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        JsonElement choice = json.RootElement.GetProperty("tool_choice");
+        Assert.That(choice.GetProperty("name").GetString(), Is.EqualTo("patched"));
+        Assert.That(choice.GetProperty("additional_property").GetString(), Is.EqualTo("added"));
+        if (fromRawJson)
+        {
+            Assert.That(choice.GetProperty("extra").GetBoolean(), Is.True);
+        }
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ToolChoicePropagatesJsonPatchLookupFromObjectComponent(bool fromRawJson)
+    {
+        CreateResponseOptions options = fromRawJson
+            ? ModelReaderWriter.Read<CreateResponseOptions>(
+                BinaryData.FromString("""{"tool_choice":{"type":"function","name":"search"}}"""))
+            : new() { ToolChoice = new ResponseFunctionToolChoice("search") };
+
+#pragma warning disable SCME0001
+        options.ToolChoice.CustomToolChoice.Patch.Set("$.additional_property"u8, "\"patched\""u8);
+        Assert.That(options.Patch.TryGetEncodedValue("$.tool_choice.additional_property"u8, out _), Is.True);
+#pragma warning restore SCME0001
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ToolChoicePreservesTypedChanges(bool fromRawJson)
+    {
+        CreateResponseOptions options = fromRawJson
+            ? ModelReaderWriter.Read<CreateResponseOptions>(
+                BinaryData.FromString("""{"tool_choice":{"type":"function","name":"search","extra":true}}"""))
+            : new() { ToolChoice = new ResponseFunctionToolChoice("search") };
+        ((ResponseFunctionToolChoice)options.ToolChoice.CustomToolChoice).FunctionName = "updated";
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        JsonElement choice = json.RootElement.GetProperty("tool_choice");
+        Assert.That(choice.GetProperty("name").GetString(), Is.EqualTo("updated"));
+        if (fromRawJson)
+        {
+            Assert.That(choice.GetProperty("extra").GetBoolean(), Is.True);
+        }
+    }
+
+    [Test]
+    public void ToolChoiceSupportsRootJsonPatchFromContainingModel(
+        [Values] bool fromRawJson, [Values] bool replaceWithString)
+    {
+        string original = replaceWithString ? """{"type":"function","name":"search"}""" : "\"auto\"";
+        CreateResponseOptions options = fromRawJson
+            ? ModelReaderWriter.Read<CreateResponseOptions>(BinaryData.FromString($$"""{"tool_choice":{{original}}}"""))
+            : new()
+            {
+                ToolChoice = replaceWithString
+                    ? new ResponseToolChoice(new ResponseFunctionToolChoice("search"))
+                    : new ResponseToolChoice(ResponseToolChoiceEnum.Auto)
+            };
+        string replacement = replaceWithString ? "\"required\"" : """{"type":"function","name":"patched"}""";
+
+#pragma warning disable SCME0001
+        options.Patch.Set("$.tool_choice"u8, Encoding.UTF8.GetBytes(replacement));
+#pragma warning restore SCME0001
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("tool_choice").GetRawText(), Is.EqualTo(replacement));
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void ToolChoicePropagatesJsonPatchThroughAllowedTools(bool fromRawJson)
+    {
+        CreateResponseOptions options = fromRawJson
+            ? ModelReaderWriter.Read<CreateResponseOptions>(BinaryData.FromString(
+                """{"tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"custom","name":"search"}]}}"""))
+            : new()
+            {
+                ToolChoice = new ResponseAllowedToolsChoice(
+                    ResponseAllowedToolsChoiceMode.Required, [ResponseTool.CreateCustomTool("search")])
+            };
+
+#pragma warning disable SCME0001
+        options.Patch.Set("$.tool_choice.tools[0].name"u8, "\"patched\""u8);
+        CustomTool tool = (CustomTool)((ResponseAllowedToolsChoice)options.ToolChoice.CustomToolChoice).Tools[0];
+        tool.Patch.Set("$.additional_property"u8, "\"added\""u8);
+        Assert.That(options.Patch.TryGetEncodedValue("$.tool_choice.tools[0].additional_property"u8, out _), Is.True);
+#pragma warning restore SCME0001
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        JsonElement toolJson = json.RootElement.GetProperty("tool_choice").GetProperty("tools")[0];
+        Assert.That(toolJson.GetProperty("name").GetString(), Is.EqualTo("patched"));
+        Assert.That(toolJson.GetProperty("additional_property").GetString(), Is.EqualTo("added"));
+    }
+
+    [Test]
+    public void ToolChoicePropagatesJsonPatchThroughResponseResult()
+    {
+        ResponseResult response = ModelReaderWriter.Read<ResponseResult>(BinaryData.FromString(
+            """{"id":"resp_123","tool_choice":{"type":"function","name":"search","extra":true}}"""));
+
+#pragma warning disable SCME0001
+        response.Patch.Set("$.tool_choice.name"u8, "\"patched\""u8);
+        response.ToolChoice.CustomToolChoice.Patch.Set("$.additional_property"u8, "\"added\""u8);
+        Assert.That(response.Patch.TryGetEncodedValue("$.tool_choice.additional_property"u8, out _), Is.True);
+#pragma warning restore SCME0001
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(response));
+        JsonElement choice = json.RootElement.GetProperty("tool_choice");
+        Assert.That(choice.GetProperty("name").GetString(), Is.EqualTo("patched"));
+        Assert.That(choice.GetProperty("additional_property").GetString(), Is.EqualTo("added"));
+        Assert.That(choice.GetProperty("extra").GetBoolean(), Is.True);
     }
 
     [Test]

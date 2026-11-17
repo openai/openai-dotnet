@@ -27,16 +27,15 @@ public partial class ResponseToolChoice
             throw new FormatException($"The model {nameof(ResponseToolChoice)} does not support writing '{format}' format.");
         }
 
-#pragma warning disable SCME0001
-        if (Optional.IsDefined(DefaultToolChoice) && !Patch.Contains("$.default_tool_choice"u8))
+        // CUSTOM: The active component is serialized at the union root, without synthetic property names.
+        if (Optional.IsDefined(DefaultToolChoice))
         {
             writer.WriteStringValue(DefaultToolChoice.Value.ToString());
         }
-        if (Optional.IsDefined(CustomToolChoice) && !Patch.Contains("$.custom_tool_choice"u8))
+        else if (Optional.IsDefined(CustomToolChoice))
         {
             writer.WriteObjectValue(CustomToolChoice, options);
         }
-#pragma warning restore SCME0001
     }
 
     internal static ResponseToolChoice DeserializeResponseToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -63,4 +62,26 @@ public partial class ResponseToolChoice
 
         return new ResponseToolChoice(defaultToolChoice, customToolChoice, patch);
     }
+
+    // CUSTOM: Forward non-root wire paths to the object component of the flattened union.
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomToolChoice is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomToolChoice.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomToolChoice is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomToolChoice.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

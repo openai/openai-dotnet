@@ -49,23 +49,23 @@ union DotNetResponseDefaultToolChoice {
 
 The `string` member is not a distinct model alternative. It keeps the enum open so the client can accept values added by the service in the future. The named literal members provide the known values exposed by the .NET type.
 
-Model this declaration as one extensible enum. It does not need a discriminator or a compositional union class:
+Model this declaration as one extensible enum. It does not need a discriminator or a compositional union class. The SDK customizes the public name to `ResponseToolChoiceEnum` to distinguish it from the `ResponseToolChoiceObject` hierarchy:
 
 ```csharp
-public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDefaultToolChoice>
+public readonly partial struct ResponseToolChoiceEnum : IEquatable<ResponseToolChoiceEnum>
 {
-    public ResponseDefaultToolChoice(string value);
+    public ResponseToolChoiceEnum(string value);
 
-    public static ResponseDefaultToolChoice None { get; }
-    public static ResponseDefaultToolChoice Auto { get; }
-    public static ResponseDefaultToolChoice Required { get; }
+    public static ResponseToolChoiceEnum None { get; }
+    public static ResponseToolChoiceEnum Auto { get; }
+    public static ResponseToolChoiceEnum Required { get; }
 
-    public static implicit operator ResponseDefaultToolChoice(string value);
+    public static implicit operator ResponseToolChoiceEnum(string value);
     public override string ToString();
 }
 ```
 
-Modelling extensible string enums in this format is the default behavior of the code generator; it should not be done with code customization. 
+Modelling extensible string enums in this format is the default behavior of the code generator; do not handwrite the enum implementation. Only the public name is customized in this example.
 
 ## Pattern 1: Represent distinct components through composition
 
