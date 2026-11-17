@@ -89,7 +89,14 @@ steps:
         fi
       fi
 
+      if [[ ! "$BRANCH" =~ ^typespec/update-http-client-csharp-[A-Za-z0-9._-]+$ ]]; then
+        echo "::error::Target branch must match typespec/update-http-client-csharp-*."
+        exit 1
+      fi
+
       echo "target-branch=$BRANCH" >> "$GITHUB_OUTPUT"
+      # The safe-output server uses this as the patch base instead of the PR tool's base argument.
+      echo "GH_AW_CUSTOM_BASE_BRANCH=$BRANCH" >> "$GITHUB_ENV"
       echo "Target branch resolved: $BRANCH"
   - name: Check out target branch and verify
     run: |

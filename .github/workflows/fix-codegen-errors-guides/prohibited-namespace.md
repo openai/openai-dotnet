@@ -11,20 +11,24 @@ it in the correct area namespace (e.g., `OpenAI.Audio`).
 
 ## Fix
 
-1. Identify the type name from the error message.
-2. Determine visibility: types prefixed with `Internal` are internal; others are public.
-3. Add a stub in the correct custom C# directory. Most areas use `OpenAI/src/Custom/{Area}/`;
-   Responses uses `OpenAI.Responses/src/Custom/`. Locate the existing `GeneratorStubs.cs` for
-   the affected area.
+1. Identify the type name and the suggested stub from the error message.
+2. Preserve internal visibility by default. The diagnostic suggests an `internal` stub with an
+   `Internal` prefix, and the TypeSpec name does not determine SDK visibility. Make the type
+   public only when the intended SDK contract requires it, such as when it is used by an
+   existing public API or matches public patterns in the area's existing customizations.
+3. Add an internal stub to the area's existing `Internal/GeneratorStubs.cs`:
+   `OpenAI/src/Custom/{Area}/Internal/GeneratorStubs.cs`, or
+   `OpenAI.Responses/src/Custom/Internal/GeneratorStubs.cs` for Responses. Public types instead
+   use a dedicated custom file named after the type in the area's custom directory, such as
+   `OpenAI/src/Custom/Batch/BatchCollectionOptions.cs`.
 
-   If the target `GeneratorStubs.cs` file does not yet exist for an area, create it with the
-   appropriate namespace. Match the namespace and file header of an existing `GeneratorStubs.cs`
-   in a sibling area.
+   If the area has no `Internal/GeneratorStubs.cs`, create one. Match the namespace and file
+   header of the same file in a sibling area.
 
 ```csharp
-// Internal example
-[CodeGenType("SomeNewInternalType")] internal partial class InternalSomeNewInternalType { }
+// Default, as suggested by the diagnostic
+[CodeGenType("SomeNewType")] internal partial class InternalSomeNewType { }
 
-// Public example
+// Only when the type is intended to be public SDK API
 [CodeGenType("SomeNewPublicType")] public partial class SomeNewPublicType { }
 ```
