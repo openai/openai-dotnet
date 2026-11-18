@@ -1053,7 +1053,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
-        public MessageResponseItem(MessageRole role) : base(default);
         public IList<ResponseContentPart> Content { get; }
         public MessageRole Role { get; }
         public MessageStatus? Status { get; set; }

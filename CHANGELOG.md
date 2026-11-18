@@ -35,7 +35,6 @@
     - `WebSearchCallStatus`
   - Removed the `Unknown` value from `MessageRole`, `ResponseContentPartKind`, and `ResponseTextFormatKind`. Unrecognized values are now kept as-is.
   - Added the `InputAudio` and `OutputAudio` values to `ResponseContentPartKind`.
-  - Added a public `MessageResponseItem(MessageRole)` constructor.
 - OpenAI.VectorStores:
   - Converted the `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus` enums to extensible enums.
   - Removed the `Unknown` value from `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus`. Unrecognized values are now kept as-is.

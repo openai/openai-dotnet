@@ -162,6 +162,14 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
+    public void ResponseItemPreservesUnknownStatus()
+    {
+        AssertSerializationRoundTrip<FileSearchCallResponseItem>(
+            @"{""type"":""file_search_call"",""id"":""fs_123"",""status"":""future_status"",""queries"":[]}",
+            item => Assert.That(item.Status, Is.EqualTo(new FileSearchCallStatus("future_status"))));
+    }
+
+    [Test]
     public void ToolChoiceSerialization()
     {
         static void AssertChoiceEqual(ResponseToolChoice choice, string expected)

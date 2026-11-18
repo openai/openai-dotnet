@@ -3,8 +3,11 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses;
 
-// CUSTOM: Renamed.
+// CUSTOM:
+// - Renamed.
+// - Kept the role constructor internal because a base message item can't round-trip content.
 [CodeGenType("ResponsesMessageItemResource")]
+[CodeGenVisibility(nameof(MessageResponseItem), CodeGenVisibility.Internal, typeof(MessageRole))]
 public partial class MessageResponseItem
 {
     // CUSTOM:

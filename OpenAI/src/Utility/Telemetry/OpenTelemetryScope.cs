@@ -512,17 +512,15 @@ internal partial class OpenTelemetryScope : IDisposable
 
     private void SetResponseFinishReasonAttribute(ResponseResult response)
     {
-        string reason = response.Status == ResponseStatus.Completed
-            ? "stop"
-            : response.Status == ResponseStatus.Failed || response.Status == ResponseStatus.Cancelled
-                ? "error"
-                : response.Status == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
-                    ? "length"
-                    : response.Status == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
-                        ? "content_filter"
-                        : response.Status == ResponseStatus.Incomplete
-                            ? "incomplete"
-                            : null;
+        string reason = response.Status switch
+        {
+            var s when s == ResponseStatus.Completed => "stop",
+            var s when s == ResponseStatus.Failed || s == ResponseStatus.Cancelled => "error",
+            var s when s == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens => "length",
+            var s when s == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter => "content_filter",
+            var s when s == ResponseStatus.Incomplete => "incomplete",
+            _ => null,
+        };
 
         if (reason != null)
         {
