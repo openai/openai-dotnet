@@ -74,10 +74,11 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (Optional.IsDefined(EncryptedContent, _encryptedContentIsDefined) && !Patch.Contains("$.encrypted_content"u8))
             {
@@ -166,7 +167,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    status = prop.Value.GetString().ToReasoningStatus();
+                    status = new ReasoningStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("encrypted_content"u8))

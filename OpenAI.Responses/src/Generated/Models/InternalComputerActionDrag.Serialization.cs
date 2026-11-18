@@ -120,7 +120,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -136,7 +135,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToComputerCallActionKind();
+                    kind = new ComputerCallActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("path"u8))
@@ -153,7 +152,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionDrag(kind, patch, path ?? new ChangeTrackingList<InternalCoordinate>());
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

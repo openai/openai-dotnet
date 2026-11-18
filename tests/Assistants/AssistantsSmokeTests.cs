@@ -42,6 +42,27 @@ public class AssistantsSmokeTests
     }
 
     [Test]
+    public void VectorStoreDeserializationPreservesUnknownStatus()
+    {
+        VectorStore vectorStore = ModelReaderWriter.Read<VectorStore>(BinaryData.FromString("""
+            {
+              "id": "vs_abc123",
+              "object": "vector_store",
+              "created_at": 1767865408,
+              "name": "example",
+              "usage_bytes": 0,
+              "file_counts": { "in_progress": 0, "completed": 0, "failed": 0, "cancelled": 0, "total": 0 },
+              "status": "future_status",
+              "last_active_at": null,
+              "metadata": {}
+            }
+            """));
+
+        Assert.That(vectorStore.Status, Is.EqualTo(new VectorStoreStatus("future_status")));
+        Assert.That(ModelReaderWriter.Write(vectorStore).ToString(), Does.Contain("\"future_status\""));
+    }
+
+    [Test]
     public void RunStepDeserialization()
     {
         BinaryData runStepData = BinaryData.FromString(

@@ -120,7 +120,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalResponsesAssistantMessage DeserializeInternalResponsesAssistantMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -133,7 +132,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             MessageStatus? status = default;
-            InternalResponsesMessageRole internalRole = default;
+            MessageRole role = default;
             IList<ResponseContentPart> internalContent = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -153,12 +152,12 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    status = prop.Value.GetString().ToMessageStatus();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
+                    role = new MessageRole(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -178,10 +177,9 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 status,
-                internalRole,
+                role,
                 internalContent ?? new ChangeTrackingList<ResponseContentPart>());
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

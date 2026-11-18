@@ -53,9 +53,20 @@ namespace OpenAI.Moderations {
         public static ModerationInputPart CreateImagePart(Uri imageUri);
         public static ModerationInputPart CreateTextPart(string text);
     }
-    public enum ModerationInputPartKind {
-        Text = 0,
-        Image = 1
+    public readonly partial struct ModerationInputPartKind : IEquatable<ModerationInputPartKind> {
+        public ModerationInputPartKind(string value);
+        public static ModerationInputPartKind Image { get; }
+        public static ModerationInputPartKind Text { get; }
+        public readonly bool Equals(ModerationInputPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ModerationInputPartKind left, ModerationInputPartKind right);
+        public static implicit operator ModerationInputPartKind(string value);
+        public static implicit operator ModerationInputPartKind?(string value);
+        public static bool operator !=(ModerationInputPartKind left, ModerationInputPartKind right);
+        public override readonly string ToString();
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }

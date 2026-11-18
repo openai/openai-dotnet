@@ -6,7 +6,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -148,7 +147,7 @@ public partial class ResponsesSmokeTests
             @"{""type"":""message"",""role"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoMessage =>
             {
-                Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));
+                Assert.That(potatoMessage.Role, Is.EqualTo(new MessageRole("potato")));
                 Assert.That(potatoMessage.Content, Has.Count.EqualTo(0));
             });
     }
@@ -160,6 +159,14 @@ public partial class ResponsesSmokeTests
             BinaryData.FromString(@"{""type"":""reasoning"",""status"":null,""summary"":[]}"));
 
         Assert.That(reasoningItem.Status, Is.Null);
+    }
+
+    [Test]
+    public void ResponseItemPreservesUnknownStatus()
+    {
+        AssertSerializationRoundTrip<FileSearchCallResponseItem>(
+            @"{""type"":""file_search_call"",""id"":""fs_123"",""status"":""future_status"",""queries"":[]}",
+            item => Assert.That(item.Status, Is.EqualTo(new FileSearchCallStatus("future_status"))));
     }
 
     [Test]
@@ -223,30 +230,9 @@ public partial class ResponsesSmokeTests
             @"{""type"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoPart =>
             {
-                Assert.That(potatoPart.Kind, Is.EqualTo(ResponseContentPartKind.Unknown));
+                Assert.That(potatoPart.Kind, Is.EqualTo(new ResponseContentPartKind("potato")));
                 Assert.That(potatoPart.Text, Is.Null);
             });
-    }
-
-    [Test]
-    public void ContentPartKindSetterUpdatesBackingType()
-    {
-        ResponseContentPart contentPart = ResponseContentPart.CreateInputTextPart("hello");
-
-        PropertyInfo kindProperty = typeof(ResponseContentPart).GetProperty(
-            nameof(ResponseContentPart.Kind),
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        PropertyInfo internalTypeProperty = typeof(ResponseContentPart).GetProperty(
-            "InternalType",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        Assert.That(kindProperty, Is.Not.Null);
-        Assert.That(internalTypeProperty, Is.Not.Null);
-
-        kindProperty.SetValue(contentPart, ResponseContentPartKind.OutputText);
-
-        Assert.That(contentPart.Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-        Assert.That(internalTypeProperty.GetValue(contentPart)?.ToString(), Is.EqualTo("output_text"));
     }
 
     [Test]

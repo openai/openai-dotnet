@@ -1,18 +1,10 @@
 using Microsoft.TypeSpec.Generator.Customizations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("FileSearchToolCallItemResourceStatus")]
-public enum FileSearchCallStatus
-{
-    InProgress,
-    Searching,
-    Completed,
-    Incomplete,
-    Failed
-}
+// - Converted to extensible enum.
+[CodeGenType("FileSearchCallStatus")]
+public readonly partial struct FileSearchCallStatus { }

@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart, IJsonModel<InternalModerationImagePart>
     {
-        internal InternalModerationImagePart() : this(default, null, null)
+        internal InternalModerationImagePart() : this(ModerationInputPartKind.Image, null, null)
         {
         }
 
@@ -88,7 +88,6 @@ namespace OpenAI.Moderations
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalModerationImagePart DeserializeInternalModerationImagePart(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -102,7 +101,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToModerationInputPartKind();
+                    kind = new ModerationInputPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))
@@ -115,6 +114,5 @@ namespace OpenAI.Moderations
             }
             return new InternalModerationImagePart(kind, additionalBinaryDataProperties, imageUrl);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

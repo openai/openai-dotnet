@@ -21,3 +21,5 @@ using Azure.ClientGenerator.Core;
 @@clientName(createModeration, "ClassifyInputs");
 
 @@clientLocation(createModeration, "Moderations");
+
+@@dynamicModel(CreateModerationRequestInputType, "csharp");

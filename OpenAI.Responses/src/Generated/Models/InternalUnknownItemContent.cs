@@ -9,9 +9,11 @@ namespace OpenAI.Responses
     internal partial class InternalUnknownItemContent : ResponseContentPart
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownItemContent(InternalItemContentType internalType, in JsonPatch patch) : base(internalType != default ? internalType : "unknown", patch)
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        internal InternalUnknownItemContent(ResponseContentPartKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

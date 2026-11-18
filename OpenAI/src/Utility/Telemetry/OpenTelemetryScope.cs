@@ -382,12 +382,12 @@ internal partial class OpenTelemetryScope : IDisposable
             SetActivityTagIfNotNull(OpenAiRequestServiceTierKey, serviceTier.ToString());
         }
 
-        var outputType = options?.TextOptions?.TextFormat?.Kind switch
-        {
-            ResponseTextFormatKind.Text => "text",
-            ResponseTextFormatKind.JsonObject or ResponseTextFormatKind.JsonSchema => "json",
-            _ => null,
-        };
+        ResponseTextFormatKind? textFormatKind = options?.TextOptions?.TextFormat?.Kind;
+        string outputType = textFormatKind == ResponseTextFormatKind.Text
+            ? "text"
+            : textFormatKind == ResponseTextFormatKind.JsonObject || textFormatKind == ResponseTextFormatKind.JsonSchema
+                ? "json"
+                : null;
         SetActivityTagIfNotNull(GenAiOutputTypeKey, outputType);
     }
 
@@ -512,13 +512,13 @@ internal partial class OpenTelemetryScope : IDisposable
 
     private void SetResponseFinishReasonAttribute(ResponseResult response)
     {
-        var reason = response.Status switch
+        string reason = response.Status switch
         {
-            ResponseStatus.Completed => "stop",
-            ResponseStatus.Failed or ResponseStatus.Cancelled => "error",
-            ResponseStatus.Incomplete when response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens => "length",
-            ResponseStatus.Incomplete when response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter => "content_filter",
-            ResponseStatus.Incomplete => "incomplete",
+            var s when s == ResponseStatus.Completed => "stop",
+            var s when s == ResponseStatus.Failed || s == ResponseStatus.Cancelled => "error",
+            var s when s == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens => "length",
+            var s when s == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter => "content_filter",
+            var s when s == ResponseStatus.Incomplete => "incomplete",
             _ => null,
         };
 

@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalUnknownResponsesMessageItemResource(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind != default ? kind : "unknown", id, patch, status, internalRole != default ? internalRole : "unknown")
+        internal InternalUnknownResponsesMessageItemResource(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, MessageRole role) : base(kind != default ? kind : "unknown", id, patch, status, role != default ? role : "unknown")
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

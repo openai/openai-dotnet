@@ -75,13 +75,11 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (!Patch.Contains("$.button"u8))
             {
                 writer.WritePropertyName("button"u8);
-                writer.WriteStringValue(Button.ToSerialString());
+                writer.WriteStringValue(Button.ToString());
             }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (!Patch.Contains("$.x"u8))
             {
                 writer.WritePropertyName("x"u8);
@@ -112,7 +110,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionClick DeserializeInternalComputerActionClick(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -130,12 +127,12 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToComputerCallActionKind();
+                    kind = new ComputerCallActionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("button"u8))
                 {
-                    button = prop.Value.GetString().ToComputerCallActionMouseButton();
+                    button = new ComputerCallActionMouseButton(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("x"u8))
@@ -152,6 +149,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionClick(kind, patch, button, x, y);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }
