@@ -251,8 +251,12 @@ Read `/tmp/codegen-output.txt`, identify the failing phase, and apply the approp
 > base spec; client names, locations, access, and other SDK-specific customizations usually
 > belong in the client spec or custom C# code. Follow the surrounding `.tsp` file conventions,
 > including namespaces, imports, file placement, naming, decorators, and documentation. Change
-> `codegen/generator/src/` only for Category 3 and Category 4 fixes that require generator
-> plugin or visitor changes.
+> `codegen/emitter/src/` or `codegen/generator/src/` only for Category 3 and Category 4 fixes
+> that require emitter, generator plugin, or visitor changes.
+>
+> **Never edit generated files.** Files under `*/Generated/` must only change by re-running
+> `Invoke-CodeGen.ps1`. If an error is in generated code, fix its source (spec, custom code,
+> emitter, or generator) and regenerate. Manual edits are overwritten by the next codegen run.
 
 The following workflow-specific guides are included in the prompt before the target branch
 is checked out:
@@ -317,9 +321,12 @@ git diff --name-only -- '*/Generated/*'
 ```
 
 - **Agent fixes:** files you edited to fix errors, such as `specification/base/`,
-  `specification/client/`, `OpenAI/src/Custom/`, `OpenAI.Responses/src/Custom/`, and
-  `codegen/generator/src/`. Match these to the entries in `/tmp/codegen-fixes.md`.
-- **Generated code:** files under `*/Generated/` produced by `Invoke-CodeGen.ps1`.
+  `specification/client/`, `OpenAI/src/Custom/`, `OpenAI.Responses/src/Custom/`,
+  `codegen/emitter/src/`, and `codegen/generator/src/`. Match these to the entries in
+  `/tmp/codegen-fixes.md`.
+- **Generated code:** files under `*/Generated/` produced by `Invoke-CodeGen.ps1`. These must
+  never appear as agent fixes. If you edited a generated file, revert it, fix the source instead,
+  and re-run Step 1.
 - **API surface:** files under `api/in-progress/` produced by `Export-Api.ps1`.
 
 For generated code, inspect the diff and group related changes by pattern instead of listing
