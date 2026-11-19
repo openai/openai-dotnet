@@ -50,8 +50,13 @@ public class ResponsesWebSocketTransportTests
                 context.Request.Headers["OpenAI-Organization"].ToString(),
                 context.Request.Headers["OpenAI-Project"].ToString(),
                 context.Request.Headers["X-Test"].ToString(),
-                context.Request.QueryString.Value ?? ""
+                context.Request.QueryString.Value ?? "",
+                context.Request.Headers["X-Per-Call"].ToString(),
+                context.Request.Headers["X-Per-Try"].ToString(),
+                context.Request.Headers["X-Before-Transport"].ToString(),
+                context.Request.Headers["User-Agent"].ToString(),
             });
+            context.Response.Headers["X-Handshake"] = "accepted";
             using WebSocket socket = await context.WebSockets.AcceptWebSocketAsync();
             byte[] buffer = new byte[4096];
             WebSocketReceiveResult result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), context.RequestAborted);
@@ -68,8 +73,15 @@ public class ResponsesWebSocketTransportTests
         {
             Endpoint = new Uri(address + endpointPath),
             OrganizationId = "test-org",
-            ProjectId = "test-project"
+            ProjectId = "test-project",
+            UserAgentApplicationId = "websocket-test-app",
         };
+        HeaderPolicy perCall = new("X-Per-Call");
+        HeaderPolicy perTry = new("X-Per-Try");
+        HeaderPolicy beforeTransport = new("X-Before-Transport");
+        options.AddPolicy(perCall, PipelinePosition.PerCall);
+        options.AddPolicy(perTry, PipelinePosition.PerTry);
+        options.AddPolicy(beforeTransport, PipelinePosition.BeforeTransport);
         options.Headers.Add("X-Test", "snapshot");
         await using ResponsesWebSocketClient client = useAuthenticationPolicy
             ? new ResponsesWebSocketClient(
@@ -80,9 +92,141 @@ public class ResponsesWebSocketTransportTests
         Subscribe(client);
         await client.ConnectAsync().WaitAsync(Timeout);
         string[] headers = await upgrade.Task.WaitAsync(Timeout);
-        Assert.That(headers, Is.EqualTo(new[] { "Bearer updated-test-key", "test-org", "test-project", "snapshot", query }));
+        Assert.That(headers.Take(8), Is.EqualTo(new[]
+        {
+            "Bearer updated-test-key", "test-org", "test-project", "snapshot", query, "policy", "policy", "policy",
+        }));
+        if (!PlatformTelemetry.IsTelemetryDisabled())
+        {
+            Assert.That(headers[8], Does.Contain("websocket-test-app"));
+        }
+        Assert.That(new[] { perCall, perTry, beforeTransport }, Has.All.Property(nameof(HeaderPolicy.Status)).EqualTo(101));
+        Assert.That(new[] { perCall, perTry, beforeTransport }, Has.All.Property(nameof(HeaderPolicy.ResponseHeader)).EqualTo("accepted"));
         await client.CloseAsync().WaitAsync(Timeout);
         await server.StopAsync();
+    }
+
+    [Test]
+    public async Task ResponseAwareAuthenticationCanRetryARejectedUpgrade()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseKestrel().UseUrls("http://127.0.0.1:0");
+        await using WebApplication server = builder.Build();
+        server.UseWebSockets();
+        ConcurrentQueue<string> authorization = new();
+        server.Map("/v1/responses", async context =>
+        {
+            string value = context.Request.Headers["Authorization"].ToString();
+            authorization.Enqueue(value);
+            if (value != "Bearer refreshed")
+            {
+                context.Response.StatusCode = 401;
+                context.Response.Headers["WWW-Authenticate"] = "Bearer error=\"invalid_token\"";
+                return;
+            }
+
+            context.Response.Headers["X-Handshake"] = "accepted";
+            using WebSocket socket = await context.WebSockets.AcceptWebSocketAsync();
+            byte[] buffer = new byte[4096];
+            WebSocketReceiveResult result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), context.RequestAborted);
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await socket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", context.RequestAborted);
+            }
+        });
+        await server.StartAsync();
+        string address = server.Services.GetRequiredService<IServer>().Features
+            .Get<IServerAddressesFeature>().Addresses.Single();
+        ResponseAwareAuthenticationPolicy policy = new();
+        await using ResponsesWebSocketClient client = new(policy, new ResponsesWebSocketClientOptions
+        {
+            Endpoint = new Uri(address + "/v1"),
+        });
+        Subscribe(client);
+
+        await client.ConnectAsync().WaitAsync(Timeout);
+        Assert.That(authorization, Is.EqualTo(new[] { "Bearer stale", "Bearer refreshed" }));
+        Assert.That(policy.Statuses, Is.EqualTo(new[] { 401, 101 }));
+        Assert.That(policy.Challenge, Is.EqualTo("Bearer error=\"invalid_token\""));
+        Assert.That(policy.ResponseHeader, Is.EqualTo("accepted"));
+        Assert.That(policy.FailedResponseBodyUnavailable, Is.True);
+        await client.CloseAsync().WaitAsync(Timeout);
+        await server.StopAsync();
+    }
+
+    [Test]
+    public async Task RejectedUpgradeWithoutRetryPreservesTheHandshakeException()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseKestrel().UseUrls("http://127.0.0.1:0");
+        await using WebApplication server = builder.Build();
+        server.Map("/v1/responses", context =>
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        });
+        await server.StartAsync();
+        string address = server.Services.GetRequiredService<IServer>().Features
+            .Get<IServerAddressesFeature>().Addresses.Single();
+        await using ResponsesWebSocketClient client = new(new ApiKeyCredential("test-key"), new ResponsesWebSocketClientOptions
+        {
+            Endpoint = new Uri(address + "/v1"),
+        });
+        Subscribe(client);
+
+        WebSocketException error = await Assert.ThrowsAsync<WebSocketException>(
+            async () => await client.ConnectAsync().WaitAsync(Timeout));
+        Assert.That(error.Message, Does.Contain("401"));
+        await server.StopAsync();
+    }
+
+    [Test]
+    public async Task UpgradeHonorsThePipelineNetworkTimeout()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseKestrel().UseUrls("http://127.0.0.1:0");
+        await using WebApplication server = builder.Build();
+        TaskCompletionSource<bool> received = Signal();
+        server.Map("/v1/responses", async context =>
+        {
+            received.TrySetResult(true);
+            try
+            {
+                await Task.Delay(System.Threading.Timeout.Infinite, context.RequestAborted);
+            }
+            catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
+            {
+            }
+        });
+        await server.StartAsync();
+        string address = server.Services.GetRequiredService<IServer>().Features
+            .Get<IServerAddressesFeature>().Addresses.Single();
+        await using ResponsesWebSocketClient client = new(new ApiKeyCredential("test-key"), new ResponsesWebSocketClientOptions
+        {
+            Endpoint = new Uri(address + "/v1"),
+            NetworkTimeout = TimeSpan.FromMilliseconds(500),
+            RetryPolicy = new ClientRetryPolicy(maxRetries: 0),
+        });
+        Subscribe(client);
+
+        Task connecting = client.ConnectAsync();
+        await received.Task.WaitAsync(Timeout);
+        await Assert.CatchAsync<OperationCanceledException>(async () => await connecting.WaitAsync(TimeSpan.FromSeconds(5)));
+    }
+
+    [Test]
+    public async Task UpgradeRejectsUnsupportedEndpointSchemes()
+    {
+        await using ResponsesWebSocketClient client = new(new ApiKeyCredential("test-key"), new ResponsesWebSocketClientOptions
+        {
+            Endpoint = new Uri("ftp://127.0.0.1/v1"),
+        });
+        Subscribe(client);
+
+        await Assert.ThrowsAsync<NotSupportedException>(() => client.ConnectAsync());
     }
 
     [Test]
@@ -534,6 +678,60 @@ public class ResponsesWebSocketTransportTests
     }
 
     private static TaskCompletionSource<bool> Signal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private sealed class HeaderPolicy(string headerName) : PipelinePolicy
+    {
+        public int Status { get; private set; }
+        public string ResponseHeader { get; private set; }
+
+        public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
+            => throw new NotSupportedException();
+
+        public override async ValueTask ProcessAsync(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
+        {
+            message.Request.Headers.Set(headerName, "policy");
+            await ProcessNextAsync(message, pipeline, currentIndex);
+            Status = message.Response.Status;
+            message.Response.Headers.TryGetValue("X-Handshake", out string value);
+            ResponseHeader = value;
+        }
+    }
+
+    private sealed class ResponseAwareAuthenticationPolicy : AuthenticationPolicy
+    {
+        public List<int> Statuses { get; } = new();
+        public string Challenge { get; private set; }
+        public string ResponseHeader { get; private set; }
+        public bool FailedResponseBodyUnavailable { get; private set; }
+
+        public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
+            => throw new NotSupportedException();
+
+        public override async ValueTask ProcessAsync(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
+        {
+            message.Request.Headers.Set("Authorization", "Bearer stale");
+            await ProcessNextAsync(message, pipeline, currentIndex);
+            Statuses.Add(message.Response.Status);
+            if (message.Response.Status == 401)
+            {
+                message.Response.Headers.TryGetValue("WWW-Authenticate", out string challenge);
+                Challenge = challenge;
+                try
+                {
+                    _ = message.Response.Content;
+                }
+                catch (NotSupportedException)
+                {
+                    FailedResponseBodyUnavailable = true;
+                }
+                message.Request.Headers.Set("Authorization", "Bearer refreshed");
+                await ProcessNextAsync(message, pipeline, currentIndex);
+                Statuses.Add(message.Response.Status);
+            }
+            message.Response.Headers.TryGetValue("X-Handshake", out string responseHeader);
+            ResponseHeader = responseHeader;
+        }
+    }
 
     private sealed class TestClient : ResponsesWebSocketClient
     {

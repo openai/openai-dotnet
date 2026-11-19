@@ -13,14 +13,13 @@ namespace OpenAI.Responses;
 /// Subscribe to <see cref="MessageReceivedAsync"/> and <see cref="ErrorOccurredAsync"/> before calling
 /// <see cref="ConnectAsync"/>. Each event registration has its own bounded queue; dispose the client to stop
 /// receiving and cancel the tokens exposed by handler event arguments.
+/// On .NET Standard 2.0, failed upgrade responses and upgrade headers are not available to pipeline policies.
+/// Upgrade response bodies and reason phrases are unavailable on all targets.
 /// </remarks>
 [Experimental("OPENAI001")]
 public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 {
-    private readonly AuthenticationPolicy _authenticationPolicy;
     private readonly ClientPipeline _pipeline;
-    private readonly string _organizationId;
-    private readonly string _projectId;
     private readonly ResponsesWebSocketClientOptions _options;
     private readonly Uri _websocketEndpoint;
     // Protects client lifetime, transport state, subscriptions, and buffered-byte accounting.
@@ -49,6 +48,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// <param name="credential">The credential to authenticate with the service.</param>
     /// <param name="options">The options to configure the client. Settings are snapshotted at construction.</param>
     /// <exception cref="ArgumentNullException"><paramref name="credential"/> is null.</exception>
+    /// <exception cref="NotSupportedException">A custom HTTP transport is configured.</exception>
     public ResponsesWebSocketClient(ApiKeyCredential credential, ResponsesWebSocketClientOptions options)
         : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
@@ -75,12 +75,13 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
             throw new NotSupportedException("Responses WebSockets require the default HTTP transport.");
         }
 
-        _authenticationPolicy = authenticationPolicy;
         _options = SnapshotOptions(options);
         _websocketEndpoint = GetWebSocketEndpoint(OpenAIClientUtilities.GetEndpoint(options.Endpoint));
-        _organizationId = options.OrganizationId;
-        _projectId = options.ProjectId;
-        _pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        ClientPipelineOptions pipelineOptions = options.Clone();
+        pipelineOptions.Transport = new WebSocketPipelineTransport();
+        options.Freeze();
+        _pipeline = OpenAIClientUtilities.CreatePipeline(
+            authenticationPolicy, pipelineOptions, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
     }
 
     /// <summary>Receives every server message, including protocol errors and unknown event types.</summary>

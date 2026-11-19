@@ -141,25 +141,8 @@ public partial class ResponsesWebSocketClient
     public Task Completion => _transportCompletion.Task;
 
     /// <summary>Creates and connects the underlying socket. Override for testing with an in-memory socket.</summary>
-    protected virtual async Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
-    {
-        var socket = new ClientWebSocket();
-        try
-        {
-            foreach (var header in _options.Headers)
-            {
-                socket.Options.SetRequestHeader(header.Key, header.Value);
-            }
-            await AuthenticateWebSocketAsync(socket, _websocketEndpoint, cancellationToken).ConfigureAwait(false);
-            await socket.ConnectAsync(_websocketEndpoint, cancellationToken).ConfigureAwait(false);
-            return socket;
-        }
-        catch
-        {
-            socket.Dispose();
-            throw;
-        }
-    }
+    protected virtual Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
+        => ConnectThroughPipelineAsync(cancellationToken);
 
     /// <summary>Opens the initial socket once and starts the single receive loop.</summary>
     private async Task ConnectTransportAsync(CancellationToken cancellationToken)
