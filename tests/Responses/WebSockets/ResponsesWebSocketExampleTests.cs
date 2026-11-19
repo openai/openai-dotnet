@@ -155,6 +155,66 @@ public class ResponsesWebSocketExampleTests
         Assert.That(client.Connections, Is.EqualTo(1));
     }
 
+    [Test]
+    public async Task ParallelStreamsExampleRoutesOutOfOrderResponses()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        using CancellationTokenSource timeout = new(Timeout);
+        Task<ResponseResult[]> responses = ResponsesWebSocketExamples.CreateParallelResponsesAsync(client, timeout.Token);
+
+        await WaitForSentAsync(socket, 2, timeout.Token);
+        string[] sent = socket.Sent.ToArray();
+        using JsonDocument travel = JsonDocument.Parse(sent[0]);
+        using JsonDocument food = JsonDocument.Parse(sent[1]);
+        Assert.That(travel.RootElement.GetProperty("stream_id").GetString(), Is.EqualTo("travel"));
+        Assert.That(food.RootElement.GetProperty("stream_id").GetString(), Is.EqualTo("food"));
+
+        socket.Add(StreamResponseEvent("response.created", "resp_travel", "in_progress", "travel"), true);
+        socket.Add(StreamResponseEvent("response.created", "resp_food", "in_progress", "food"), true);
+        socket.Add(StreamResponseEvent("response.completed", "resp_food", "completed", "food"), true);
+        socket.Add(StreamResponseEvent("response.completed", "resp_travel", "completed", "travel"), true);
+
+        ResponseResult[] results = await responses.WaitAsync(timeout.Token);
+        Assert.That(results[0].Id, Is.EqualTo("resp_travel"));
+        Assert.That(results[1].Id, Is.EqualTo("resp_food"));
+        Assert.That(client.Connections, Is.EqualTo(1));
+    }
+
+    [TestCase("protocol")]
+    [TestCase("unknown-stream")]
+    [TestCase("close")]
+    public async Task ParallelStreamsExampleReportsErrors(string failure)
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket, new ResponsesWebSocketClientOptions { ShouldReconnect = false });
+        using CancellationTokenSource timeout = new(Timeout);
+        Task<ResponseResult[]> responses = ResponsesWebSocketExamples.CreateParallelResponsesAsync(client, timeout.Token);
+
+        await WaitForSentAsync(socket, 2, timeout.Token);
+        if (failure == "protocol")
+        {
+            socket.Add("""{"type":"error","error":{"code":"rate_limit_exceeded","message":"Too many requests"}}""", true);
+        }
+        else if (failure == "unknown-stream")
+        {
+            socket.Add(StreamResponseEvent("response.completed", "resp_unknown", "completed", "unknown"), true);
+        }
+        else
+        {
+            socket.CloseFromServer();
+        }
+
+        InvalidOperationException error = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await responses.WaitAsync(timeout.Token));
+        Assert.That(error.Message, Does.Contain(failure switch
+        {
+            "protocol" => "Too many requests",
+            "unknown-stream" => "unknown stream",
+            _ => "closed before both responses completed",
+        }));
+    }
+
     private static async Task WaitForSentAsync(FakeSocket socket, int count, CancellationToken cancellationToken)
     {
         while (socket.Sent.Count < count)
@@ -179,6 +239,9 @@ public class ResponsesWebSocketExampleTests
                 }
             }
             """;
+
+    private static string StreamResponseEvent(string type, string id, string status, string streamId)
+        => ResponseEvent(type, id, status).Replace("\"type\":", $"\"stream_id\":\"{streamId}\",\"type\":");
 
     private sealed class TestClient : ResponsesWebSocketClient
     {
