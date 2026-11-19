@@ -8,6 +8,9 @@
 
 ### Bugs Fixed
 
+- OpenAI.Chat:
+  - Fixed `ChatClient.CompleteChatStreaming` and `CompleteChatStreamingAsync` dropping `include_usage` from the request when `stream_options` is set through `ChatCompletionOptions.Patch`. Because of this, the stream carried no usage chunk and `StreamingChatCompletionUpdate.Usage` stayed null.
+
 ### Other Changes
 
 ### Breaking Changes in Experimental APIs
