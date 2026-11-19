@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Models
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Models
+  description: List and describe the various models available in the API.
+paths:
+  /models:
+    get:
+      operationId: listModels
+      tags:
+      - Models
+      summary: Lists the currently available models, and provides basic information about each one such as the owner and availability.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListModelsResponse"
+  /models/{model}:
+    get:
+      operationId: retrieveModel
+      tags:
+      - Models
+      summary: Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
+      parameters:
+      - in: path
+        name: model
+        required: true
+        schema:
+          type: string
+          example: gpt-4o-mini
+        description: The ID of the model to use for this request
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Model"
+    delete:
+      operationId: deleteModel
+      tags:
+      - Models
+      summary: Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
+      parameters:
+      - in: path
+        name: model
+        required: true
+        schema:
+          type: string
+          example: ft:gpt-4o-mini:acemeco:suffix:abc123
+        description: The model to delete
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteModelResponse"
+components:
+  schemas:
+    DeleteModelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+      required:
+      - id
+      - object
+      - deleted
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Model"
+      required:
+      - object
+      - data
+    Model:
+      title: Model
+      description: Describes an OpenAI model offering that can be used with the API.
+      properties:
+        id:
+          type: string
+          description: The model identifier, which can be referenced in the API endpoints.
+        created:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) when the model was created.
+        object:
+          type: string
+          description: The object type, which is always "model".
+          enum:
+          - model
+          x-stainless-const: true
+        owned_by:
+          type: string
+          description: The organization that owns the model.
+      required:
+      - id
+      - object
+      - created
+      - owned_by
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
