@@ -92,6 +92,69 @@ public class ResponsesWebSocketExampleTests
     }
 
     [Test]
+    public async Task SteeringExampleReportsNormalCloseWithoutAResponse()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        using CancellationTokenSource timeout = new(Timeout);
+        Task<ResponseResult> response = ResponsesWebSocketExamples.CreateSteeredResponseAsync(client, timeout.Token);
+        await WaitForSentAsync(socket, 1, timeout.Token);
+
+        socket.CloseFromServer();
+
+        InvalidOperationException error = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await response.WaitAsync(TimeSpan.FromSeconds(3)));
+        Assert.That(error.Message, Does.Contain("closed before the response completed"));
+    }
+
+    [Test]
+    public async Task ResponseWaitDrainsACompletedResponseQueuedBeforeNormalClose()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        using CancellationTokenSource timeout = new(Timeout);
+        TaskCompletionSource<bool> entered = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<bool> release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<bool> response = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        client.MessageReceivedAsync += async args =>
+        {
+            if (args.Message.Kind.ToString() == "future.event")
+            {
+                entered.SetResult(true);
+                await release.Task.WaitAsync(timeout.Token);
+            }
+            else if (args.Message.Update is StreamingResponseCompletedUpdate)
+            {
+                response.TrySetResult(true);
+            }
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync(timeout.Token);
+        Task waiting = ResponsesWebSocketExamples.WaitForResponseAsync(client, response.Task, timeout.Token);
+        socket.Add("""{"type":"future.event"}""", true);
+        await entered.Task.WaitAsync(timeout.Token);
+        try
+        {
+            socket.Add(ResponseEvent("response.completed", "resp_queued", "completed"), true);
+            socket.CloseFromServer();
+            await client.Completion.WaitAsync(timeout.Token);
+            while (client.State != ResponsesWebSocketConnectionState.Disposed)
+            {
+                await Task.Delay(1, timeout.Token);
+            }
+            Assert.That(waiting.IsCompleted, Is.False);
+
+            release.SetResult(true);
+            await waiting.WaitAsync(timeout.Token);
+            Assert.That(response.Task.IsCompletedSuccessfully, Is.True);
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [Test]
     public async Task LongRunningExampleReusesOneConnectionForFiftyResponses()
     {
         FakeSocket socket = new();

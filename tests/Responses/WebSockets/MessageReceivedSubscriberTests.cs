@@ -226,6 +226,102 @@ public class MessageReceivedSubscriberTests
     }
 
     [Test]
+    public async Task CompletionDrainsQueuedMessagesAndInFlightEnqueues()
+    {
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> release = CreateSignal();
+        ConcurrentQueue<int> received = new();
+        await using MessageReceivedSubscriber<int> subscriber = new(async item =>
+        {
+            received.Enqueue(item);
+            if (item == 0)
+            {
+                entered.SetResult(true);
+                await release.Task.WaitAsync(TestTimeout);
+            }
+        }, capacity: 1);
+        await subscriber.EnqueueAsync(0);
+        await entered.Task.WaitAsync(TestTimeout);
+        await subscriber.EnqueueAsync(1);
+        Task blocked = subscriber.EnqueueAsync(2);
+        Assert.That(blocked.IsCompleted, Is.False);
+
+        subscriber.Complete();
+        subscriber.Complete();
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => subscriber.EnqueueAsync(3));
+        Assert.That(subscriber.Completion.IsCompleted, Is.False);
+        release.SetResult(true);
+
+        await blocked.WaitAsync(TestTimeout);
+        await subscriber.Completion.WaitAsync(TestTimeout);
+        Assert.That(received, Is.EqualTo(new[] { 0, 1, 2 }));
+    }
+
+    [Test]
+    public async Task DisposalInterruptsGracefulCompletion()
+    {
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> release = CreateSignal();
+        ConcurrentQueue<int> received = new();
+        await using MessageReceivedSubscriber<int> subscriber = new(async item =>
+        {
+            received.Enqueue(item);
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(TestTimeout);
+        });
+        await subscriber.EnqueueAsync(1);
+        await entered.Task.WaitAsync(TestTimeout);
+        await subscriber.EnqueueAsync(2);
+
+        subscriber.Complete();
+        subscriber.Dispose();
+        release.SetResult(true);
+
+        await subscriber.Completion.WaitAsync(TestTimeout);
+        Assert.That(received, Is.EqualTo(new[] { 1 }));
+    }
+
+    [Test]
+    public async Task ConcurrentCompletionAndEnqueuesDoNotLoseAcceptedMessages()
+    {
+        using CancellationTokenSource timeout = new(TestTimeout);
+        for (int iteration = 0; iteration < 50; iteration++)
+        {
+            ConcurrentBag<int> accepted = new();
+            ConcurrentBag<int> received = new();
+            await using MessageReceivedSubscriber<int> subscriber = new(item =>
+            {
+                received.Add(item);
+                return Task.CompletedTask;
+            }, capacity: 1);
+            TaskCompletionSource<bool> start = CreateSignal();
+            Task[] producers = Enumerable.Range(0, 8).Select(item => Task.Run(async () =>
+            {
+                await start.Task;
+                try
+                {
+                    await subscriber.EnqueueAsync(item, timeout.Token);
+                    accepted.Add(item);
+                }
+                catch (ObjectDisposedException exception)
+                {
+                    Assert.That(exception.ObjectName, Is.EqualTo("MessageReceivedSubscriber"));
+                }
+            })).ToArray();
+            Task[] completions = Enumerable.Range(0, 4).Select(_ => Task.Run(async () =>
+            {
+                await start.Task;
+                subscriber.Complete();
+            })).ToArray();
+
+            start.SetResult(true);
+            await Task.WhenAll(producers.Concat(completions)).WaitAsync(timeout.Token);
+            await subscriber.Completion.WaitAsync(timeout.Token);
+            Assert.That(received, Is.EquivalentTo(accepted));
+        }
+    }
+
+    [Test]
     public async Task DisposalCancelsProducersBlockedOnAFullQueue()
     {
         TaskCompletionSource<bool> entered = CreateSignal();

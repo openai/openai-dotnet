@@ -26,6 +26,8 @@ public partial class ResponsesWebSocketClient
         TaskCreationOptions.RunContinuationsAsynchronously);
     private int _transportOperationCount = 1;
     private bool _transportStopped;
+    private bool _normalCloseReceived;
+    private bool _drainingAfterNormalClose;
 
     private sealed class TransportOperation : IDisposable
     {
@@ -226,7 +228,12 @@ public partial class ResponsesWebSocketClient
                     var data = await ReceiveMessageAsync(_webSocket, token).ConfigureAwait(false);
                     if (data is null)
                     {
+                        bool normalClose = _webSocket.CloseStatus == WebSocketCloseStatus.NormalClosure;
                         await HandleCloseReceivedAsync(token).ConfigureAwait(false);
+                        lock (_syncLock)
+                        {
+                            _normalCloseReceived = normalClose && !_disposed && !token.IsCancellationRequested;
+                        }
                         return;
                     }
                     var message = ParseMessage(data);
@@ -692,15 +699,20 @@ public partial class ResponsesWebSocketClient
     }
 
     /// <summary>Cancels transport operations and aborts the socket without waiting for callbacks.</summary>
-    private void StopTransport()
+    private void StopTransport(bool drainAfterNormalClose = false)
     {
         lock (_syncLock)
         {
             if (_transportStopped)
             {
+                if (!drainAfterNormalClose)
+                {
+                    _drainingAfterNormalClose = false;
+                }
                 return;
             }
             _transportStopped = true;
+            _drainingAfterNormalClose = drainAfterNormalClose && _normalCloseReceived;
             _disposed = true;
             CancelLifetime();
             _webSocket?.Abort();

@@ -416,6 +416,148 @@ public class ResponsesWebSocketTransportTests
         Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Disposed));
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task AsyncDisposalDrainsQueuedMessagesAfterNormalClose(bool clientInitiated)
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        TaskCompletionSource<bool> entered = Signal();
+        TaskCompletionSource<bool> release = Signal();
+        ConcurrentQueue<int> received = new();
+        bool queuedTokenCanceled = false;
+        client.MessageReceivedAsync += async args =>
+        {
+            using JsonDocument document = JsonDocument.Parse(args.Message.RawData);
+            int value = document.RootElement.GetProperty("value").GetInt32();
+            received.Enqueue(value);
+            if (value == 0)
+            {
+                entered.SetResult(true);
+                await release.Task.WaitAsync(Timeout);
+            }
+            else if (value == 1)
+            {
+                queuedTokenCanceled = args.CancellationToken.IsCancellationRequested;
+            }
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\",\"value\":0}", true);
+        await entered.Task.WaitAsync(Timeout);
+        try
+        {
+            socket.Add("{\"type\":\"future.event\",\"value\":1}", true);
+            socket.Add("{\"type\":\"future.event\",\"value\":2}", true);
+            if (clientInitiated)
+            {
+                await client.CloseAsync().WaitAsync(Timeout);
+            }
+            else
+            {
+                socket.CloseFromServer();
+            }
+            await client.Completion.WaitAsync(Timeout);
+
+            Task disposal = client.DisposeAsync().AsTask();
+            Assert.That(disposal.IsCompleted, Is.False);
+            release.SetResult(true);
+            await disposal.WaitAsync(Timeout);
+            Assert.That(received, Is.EqualTo(new[] { 0, 1, 2 }));
+            Assert.That(queuedTokenCanceled, Is.True);
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task HandlerFailureDuringNormalCloseDrainIsReported(bool disposeBeforeRelease)
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        TaskCompletionSource<bool> entered = Signal();
+        TaskCompletionSource<bool> release = Signal();
+        TaskCompletionSource<Exception> reported = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        ConcurrentQueue<int> received = new();
+        InvalidOperationException failure = new("Queued callback failed.");
+        client.MessageReceivedAsync += async args =>
+        {
+            using JsonDocument document = JsonDocument.Parse(args.Message.RawData);
+            int value = document.RootElement.GetProperty("value").GetInt32();
+            received.Enqueue(value);
+            if (value == 0)
+            {
+                entered.SetResult(true);
+                await release.Task.WaitAsync(Timeout);
+            }
+            else if (value == 1)
+            {
+                throw failure;
+            }
+        };
+        client.ErrorOccurredAsync += args => { reported.TrySetResult(args.Exception); return Task.CompletedTask; };
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\",\"value\":0}", true);
+        await entered.Task.WaitAsync(Timeout);
+        try
+        {
+            socket.Add("{\"type\":\"future.event\",\"value\":1}", true);
+            socket.Add("{\"type\":\"future.event\",\"value\":2}", true);
+            socket.CloseFromServer();
+            await client.Completion.WaitAsync(Timeout);
+            Task disposal = disposeBeforeRelease ? client.DisposeAsync().AsTask() : null;
+
+            release.SetResult(true);
+            Assert.That(await reported.Task.WaitAsync(Timeout), Is.SameAs(failure));
+            await (disposal ?? client.DisposeAsync().AsTask()).WaitAsync(Timeout);
+            Assert.That(received, Is.EqualTo(new[] { 0, 1, 2 }));
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [Test]
+    public async Task SynchronousDisposalCanInterruptNormalCloseDrain()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        TaskCompletionSource<bool> entered = Signal();
+        TaskCompletionSource<bool> release = Signal();
+        ConcurrentQueue<int> received = new();
+        client.MessageReceivedAsync += async args =>
+        {
+            using JsonDocument document = JsonDocument.Parse(args.Message.RawData);
+            received.Enqueue(document.RootElement.GetProperty("value").GetInt32());
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(Timeout);
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\",\"value\":0}", true);
+        await entered.Task.WaitAsync(Timeout);
+        try
+        {
+            socket.Add("{\"type\":\"future.event\",\"value\":1}", true);
+            socket.CloseFromServer();
+            await client.Completion.WaitAsync(Timeout);
+
+            Task disposal = client.DisposeAsync().AsTask();
+            client.Dispose();
+            release.SetResult(true);
+            await disposal.WaitAsync(Timeout);
+            Assert.That(received, Is.EqualTo(new[] { 0 }));
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
     [Test]
     public async Task ThrowingCancellationCallbackDoesNotBlockActiveTransportDisposal()
     {
@@ -803,6 +945,7 @@ public class ResponsesWebSocketTransportTests
         private readonly ConcurrentQueue<(byte[] Data, bool End, Exception Failure)> _frames = new();
         private readonly SemaphoreSlim _ready = new(0);
         private WebSocketState _state = WebSocketState.Open;
+        private WebSocketCloseStatus? _closeStatus;
         private int _sending;
         private int _reads;
         public int ReadCount => Volatile.Read(ref _reads);
@@ -811,7 +954,7 @@ public class ResponsesWebSocketTransportTests
         public int MaximumConcurrentSends { get; private set; }
         public int CloseOutputCalls { get; private set; }
         public Action OnTextReceived { get; set; }
-        public override WebSocketCloseStatus? CloseStatus => _state == WebSocketState.CloseReceived ? WebSocketCloseStatus.NormalClosure : null;
+        public override WebSocketCloseStatus? CloseStatus => _closeStatus;
         public override string CloseStatusDescription => null;
         public override WebSocketState State => _state;
         public override string SubProtocol => null;
@@ -825,6 +968,11 @@ public class ResponsesWebSocketTransportTests
             _frames.Enqueue((null, true, exception));
             _ready.Release();
         }
+        public void CloseFromServer()
+        {
+            _frames.Enqueue((null, true, null));
+            _ready.Release();
+        }
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
             await _ready.WaitAsync(cancellationToken);
@@ -833,6 +981,7 @@ public class ResponsesWebSocketTransportTests
             if (Interlocked.Increment(ref _reads) == 3) ThirdRead.TrySetResult(true);
             if (frame.Data is null)
             {
+                _closeStatus = WebSocketCloseStatus.NormalClosure;
                 _state = _state == WebSocketState.CloseSent ? WebSocketState.Closed : WebSocketState.CloseReceived;
                 return new WebSocketReceiveResult(0, WebSocketMessageType.Close, true, WebSocketCloseStatus.NormalClosure, "");
             }

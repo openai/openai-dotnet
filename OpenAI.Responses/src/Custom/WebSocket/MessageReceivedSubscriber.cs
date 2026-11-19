@@ -17,12 +17,15 @@ internal sealed class MessageReceivedSubscriber<T> : IDisposable, IAsyncDisposab
     private readonly BoundedConcurrentQueue<T> _queue;
     private readonly SemaphoreSlim _availableItems = new SemaphoreSlim(0);
     private readonly CancellationTokenSource _stopSource = new CancellationTokenSource();
+    private readonly object _enqueueLock = new object();
     private readonly TaskCompletionSource<bool> _resourcesDisposed = new TaskCompletionSource<bool>(
         TaskCreationOptions.RunContinuationsAsynchronously);
     // The drain loop owns the initial reference. Enqueue and cancellation operations add their own.
     private int _activeOperations = 1;
+    private int _pendingEnqueues;
     private int _cleanupStarted;
     private int _disposed;
+    private bool _completionRequested;
 
     /// <summary>Gets the task that completes after dispatch stops and owned resources are released.</summary>
     /// <remarks>
@@ -55,11 +58,17 @@ internal sealed class MessageReceivedSubscriber<T> : IDisposable, IAsyncDisposab
     internal async Task EnqueueAsync(T message, CancellationToken cancellationToken = default)
     {
         Interlocked.Increment(ref _activeOperations);
+        bool pending = false;
         try
         {
-            if (Volatile.Read(ref _disposed) != 0)
+            lock (_enqueueLock)
             {
-                throw new ObjectDisposedException(nameof(MessageReceivedSubscriber<T>));
+                if (Volatile.Read(ref _disposed) != 0 || _completionRequested)
+                {
+                    throw new ObjectDisposedException(nameof(MessageReceivedSubscriber<T>));
+                }
+                _pendingEnqueues++;
+                pending = true;
             }
 
             using CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(
@@ -67,6 +76,42 @@ internal sealed class MessageReceivedSubscriber<T> : IDisposable, IAsyncDisposab
             await _queue.EnqueueAsync(message, linkedSource.Token).ConfigureAwait(false);
             _stopSource.Token.ThrowIfCancellationRequested();
             _availableItems.Release();
+        }
+        finally
+        {
+            if (pending)
+            {
+                lock (_enqueueLock)
+                {
+                    _pendingEnqueues--;
+                    if (_completionRequested && _pendingEnqueues == 0 && Volatile.Read(ref _disposed) == 0)
+                    {
+                        _availableItems.Release();
+                    }
+                }
+            }
+            ReleaseOperation();
+        }
+    }
+
+    /// <summary>Stops accepting messages and finishes dispatching accepted and in-flight enqueues.</summary>
+    internal void Complete()
+    {
+        Interlocked.Increment(ref _activeOperations);
+        try
+        {
+            lock (_enqueueLock)
+            {
+                if (Volatile.Read(ref _disposed) == 0 && !_completionRequested)
+                {
+                    _completionRequested = true;
+                    if (_pendingEnqueues == 0)
+                    {
+                        // The extra signal ends the drain after all in-flight enqueues have finished.
+                        _availableItems.Release();
+                    }
+                }
+            }
         }
         finally
         {
@@ -93,6 +138,16 @@ internal sealed class MessageReceivedSubscriber<T> : IDisposable, IAsyncDisposab
                 if (!stopToken.IsCancellationRequested && _queue.TryDequeue(out T message))
                 {
                     await _handler(message).ConfigureAwait(false);
+                }
+                else if (!stopToken.IsCancellationRequested)
+                {
+                    lock (_enqueueLock)
+                    {
+                        if (_completionRequested && _pendingEnqueues == 0)
+                        {
+                            return;
+                        }
+                    }
                 }
             }
         }

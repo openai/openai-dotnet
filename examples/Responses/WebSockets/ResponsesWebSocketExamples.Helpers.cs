@@ -45,18 +45,23 @@ public partial class ResponsesWebSocketExamples
         return await response;
     }
 
-    private static async Task WaitForResponseAsync(
+    internal static async Task WaitForResponseAsync(
         ResponsesWebSocketClient client,
         Task response,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string closedMessage = "The WebSocket closed before the response completed.")
     {
         Task finished = await Task.WhenAny(response, client.Completion).WaitAsync(cancellationToken);
         if (finished != response && !response.IsCompleted)
         {
             await client.Completion;
+            await client.DisposeAsync().AsTask().WaitAsync(cancellationToken);
+            if (!response.IsCompleted)
+            {
+                throw new InvalidOperationException(closedMessage);
+            }
         }
 
-        // A normal close can precede dispatch of the queued response.completed callback.
         await response.WaitAsync(cancellationToken);
     }
 }

@@ -312,21 +312,24 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     public virtual Task CloseAsync(CancellationToken cancellationToken = default)
         => CloseTransportAsync(cancellationToken);
 
-    /// <summary>Immediately terminates the connection and releases owned resources without waiting for callbacks.</summary>
+    /// <summary>Immediately terminates the connection and discards queued callbacks without waiting for active callbacks.</summary>
     public virtual void Dispose()
     {
         StopTransport();
         _ = StopMessageReceivedSubscribers();
     }
 
-    /// <summary>Closes the connection and awaits processing shutdown before releasing owned resources.</summary>
+    /// <summary>Terminates the connection and awaits callback cleanup before releasing owned resources.</summary>
     /// <remarks>
+    /// After a normal close, queued callbacks are invoked before disposal completes, with their cancellation
+    /// tokens already canceled. Otherwise, pending callbacks are discarded. Calling <see cref="Dispose"/>
+    /// interrupts the drain. Active callbacks are always awaited.
     /// A message or error handler must not await this method, because disposal waits for that handler to finish.
     /// Call <see cref="Dispose"/> from a handler to request shutdown without awaiting callback cleanup.
     /// </remarks>
     public virtual async ValueTask DisposeAsync()
     {
-        StopTransport();
+        StopTransport(drainAfterNormalClose: true);
         try
         {
             if (_receiveTask != null)
@@ -338,7 +341,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         {
             try
             {
-                await StopMessageReceivedSubscribers().ConfigureAwait(false);
+                await StopMessageReceivedSubscribers(drainAfterNormalClose: true).ConfigureAwait(false);
             }
             finally
             {
@@ -347,31 +350,97 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         }
     }
 
-    private Task StopMessageReceivedSubscribers()
+    private Task StopMessageReceivedSubscribers(bool drainAfterNormalClose = false)
     {
         lock (_syncLock)
         {
+            bool drain = drainAfterNormalClose && _drainingAfterNormalClose;
             if (_disposeCompletion != null)
             {
+                if (!drain)
+                {
+                    DisposeSubscribers();
+                }
                 return _disposeCompletion;
             }
 
             _disposed = true;
+            List<Task> completions = new List<Task>(_retiredSubscriberCompletions);
             foreach (MessageReceivedSubscription subscription in _messageReceivedSubscribers)
             {
-                ReleaseBufferedBytes(subscription, subscription.PendingBytes);
-                subscription.Subscriber.Dispose();
-                _retiredSubscriberCompletions.Add(subscription.Subscriber.Completion);
+                if (drain)
+                {
+                    subscription.Subscriber.Complete();
+                }
+                else
+                {
+                    ReleaseBufferedBytes(subscription, subscription.PendingBytes);
+                    subscription.Subscriber.Dispose();
+                }
+                completions.Add(subscription.Subscriber.Completion);
             }
-            _messageReceivedSubscribers.Clear();
+            if (drain)
+            {
+                completions.Add(CompleteErrorSubscribersAfterMessagesAsync(Task.WhenAll(completions)));
+            }
             foreach (ErrorOccurredSubscription subscription in _errorOccurredSubscribers)
             {
-                subscription.Subscriber.Dispose();
-                _retiredSubscriberCompletions.Add(subscription.Subscriber.Completion);
+                if (!drain)
+                {
+                    subscription.Subscriber.Dispose();
+                }
+                completions.Add(subscription.Subscriber.Completion);
             }
-            _errorOccurredSubscribers.Clear();
-            _disposeCompletion = Task.WhenAll(_retiredSubscriberCompletions);
+            _disposeCompletion = AwaitSubscriberCleanupAsync(Task.WhenAll(completions));
             return _disposeCompletion;
+        }
+    }
+
+    private async Task CompleteErrorSubscribersAfterMessagesAsync(Task messages)
+    {
+        try
+        {
+            await messages.ConfigureAwait(false);
+        }
+        finally
+        {
+            // Message callbacks can still report errors while they drain.
+            lock (_syncLock)
+            {
+                foreach (ErrorOccurredSubscription subscription in _errorOccurredSubscribers)
+                {
+                    subscription.Subscriber.Complete();
+                }
+            }
+        }
+    }
+
+    private void DisposeSubscribers()
+    {
+        foreach (MessageReceivedSubscription subscription in _messageReceivedSubscribers)
+        {
+            ReleaseBufferedBytes(subscription, subscription.PendingBytes);
+            subscription.Subscriber.Dispose();
+        }
+        foreach (ErrorOccurredSubscription subscription in _errorOccurredSubscribers)
+        {
+            subscription.Subscriber.Dispose();
+        }
+    }
+
+    private async Task AwaitSubscriberCleanupAsync(Task completion)
+    {
+        try
+        {
+            await completion.ConfigureAwait(false);
+        }
+        finally
+        {
+            lock (_syncLock)
+            {
+                _messageReceivedSubscribers.Clear();
+                _errorOccurredSubscribers.Clear();
+            }
         }
     }
 
@@ -405,28 +474,58 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         ResponsesWebSocketErrorEventArgs error,
         CancellationToken cancellationToken = default)
     {
-        Task[] enqueues;
         lock (_syncLock)
         {
             ThrowIfDisposed();
-            enqueues = new Task[_errorOccurredSubscribers.Count];
-            for (int i = 0; i < _errorOccurredSubscribers.Count; i++)
-            {
-                enqueues[i] = EnqueueErrorAsync(_errorOccurredSubscribers[i], error, cancellationToken);
-            }
+            return DispatchErrorLocked(error, cancellationToken);
         }
+    }
 
+    private Task DispatchErrorLocked(ResponsesWebSocketErrorEventArgs error, CancellationToken cancellationToken)
+    {
+        Task[] enqueues = new Task[_errorOccurredSubscribers.Count];
+        for (int i = 0; i < _errorOccurredSubscribers.Count; i++)
+        {
+            enqueues[i] = EnqueueErrorAsync(_errorOccurredSubscribers[i], error, cancellationToken);
+        }
         return Task.WhenAll(enqueues);
     }
 
     private Task InvokeMessageHandlersAsync(
         Func<ResponsesWebSocketMessageReceivedEventArgs, Task> handlers,
         ResponsesWebSocketMessageReceivedEventArgs message)
+        => InvokeHandlersAsync(handlers, message, message.CancellationToken, ReportMessageHandlerExceptionAsync);
+
+    private async Task ReportMessageHandlerExceptionAsync(Exception exception)
     {
-        return InvokeHandlersAsync(handlers, message, message.CancellationToken, exception =>
-            _lifetimeSource.IsCancellationRequested
-                ? Task.CompletedTask
-                : DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, false, _lifetimeSource.Token), _lifetimeSource.Token));
+        Task dispatch;
+        lock (_syncLock)
+        {
+            if ((_lifetimeSource.IsCancellationRequested && !_normalCloseReceived)
+                || (_disposed && !_drainingAfterNormalClose))
+            {
+                return;
+            }
+            dispatch = DispatchErrorLocked(
+                new ResponsesWebSocketErrorEventArgs(exception, false, _lifetimeSource.Token), CancellationToken.None);
+        }
+
+        try
+        {
+            await dispatch.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (IsDiscardingCallbacks())
+        {
+            // Immediate disposal cancels error enqueues blocked on subscriber capacity.
+        }
+    }
+
+    private bool IsDiscardingCallbacks()
+    {
+        lock (_syncLock)
+        {
+            return _disposed && !_drainingAfterNormalClose;
+        }
     }
 
     private Task InvokeErrorHandlersAsync(

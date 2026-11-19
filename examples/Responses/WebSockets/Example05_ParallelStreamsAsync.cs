@@ -88,14 +88,8 @@ public partial class ResponsesWebSocketExamples
             cancellationToken: cancellationToken);
 
         Task<ResponseResult[]> responses = Task.WhenAll(streams["travel"].Task, streams["food"].Task);
-        Task finished = await Task.WhenAny(responses, client.Completion).WaitAsync(cancellationToken);
-        if (finished != responses && !responses.IsCompleted)
-        {
-            await client.Completion;
-            throw new InvalidOperationException("The WebSocket closed before both responses completed.");
-        }
-
-        return await responses.WaitAsync(cancellationToken);
+        await WaitForResponseAsync(client, responses, cancellationToken, "The WebSocket closed before both responses completed.");
+        return await responses;
     }
 }
 

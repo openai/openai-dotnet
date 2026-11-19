@@ -81,15 +81,9 @@ public partial class ResponsesWebSocketExamples
                     cancellationToken: session.Token);
 
                 Task<ResponseResult> response = responses.Reader.ReadAsync(session.Token).AsTask();
-                await Task.WhenAny(response, client.Completion)
+                await WaitForResponseAsync(client, response, session.Token,
+                    $"The WebSocket closed before the session finished (response {index}/{responseCount}).")
                     .WaitAsync(TimeSpan.FromMinutes(2), session.Token);
-                if (client.Completion.IsCompleted)
-                {
-                    await client.Completion;
-                    throw new InvalidOperationException(
-                        $"The WebSocket closed before the session finished (response {index}/{responseCount}).");
-                }
-
                 ResponseResult result = await response;
                 Console.WriteLine($"[{elapsed.Elapsed.TotalSeconds:F1}s] {index}/{responseCount}: {result.GetOutputText()}");
                 if (index < responseCount)
