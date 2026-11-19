@@ -111,13 +111,13 @@ public partial class ResponsesWebSocketClient
                     _transportCompletion.TrySetException(reportingException);
                 }
             }
-            _lifetimeSource.Cancel();
+            CancelLifetime();
             _webSocket?.Abort();
         }
     }
 
-    /// <summary>Completes when the connection ends; faults on terminal transport or callback failures.</summary>
-    /// <remarks>Does not wait for user callbacks. Use DisposeAsync to await subscriber cleanup.</remarks>
+    /// <summary>Completes when the connection ends; faults on terminal failures observed before completion.</summary>
+    /// <remarks>Does not wait for user callbacks. Use <see cref="DisposeAsync"/> to await subscriber cleanup.</remarks>
     public Task Completion => _transportCompletion.Task;
 
     /// <summary>Creates and connects the underlying socket. Override for testing with an in-memory socket.</summary>
@@ -269,7 +269,7 @@ public partial class ResponsesWebSocketClient
         }
         finally
         {
-            _lifetimeSource.Cancel();
+            CancelLifetime();
             _webSocket?.Abort();
             lock (_syncLock)
             {
@@ -658,7 +658,7 @@ public partial class ResponsesWebSocketClient
         }
         finally
         {
-            _lifetimeSource.Cancel();
+            CancelLifetime();
             _webSocket?.Abort();
             lock (_syncLock)
             {
@@ -679,7 +679,7 @@ public partial class ResponsesWebSocketClient
             }
             _transportStopped = true;
             _disposed = true;
-            _lifetimeSource.Cancel();
+            CancelLifetime();
             _webSocket?.Abort();
             SetState(ResponsesWebSocketConnectionState.Disposed);
             if (_receiveTask is null)
@@ -689,6 +689,18 @@ public partial class ResponsesWebSocketClient
         }
         // Keep the lifetime reference alive until cancellation and socket abort have completed.
         ReleaseTransportOperation();
+    }
+
+    private void CancelLifetime()
+    {
+        try
+        {
+            _lifetimeSource.Cancel();
+        }
+        catch (AggregateException exception)
+        {
+            _transportCompletion.TrySetException(exception);
+        }
     }
 
     private void SetState(ResponsesWebSocketConnectionState state) => Volatile.Write(ref _connectionState, (int)state);

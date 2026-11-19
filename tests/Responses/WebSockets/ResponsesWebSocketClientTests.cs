@@ -262,6 +262,28 @@ public class ResponsesWebSocketClientTests
         await client.DisposeAsync();
     }
 
+    [Test]
+    public async Task ThrowingCancellationCallbackIsReportedWithoutPreventingCleanup()
+    {
+        ResponsesWebSocketClient client = new TestClient();
+        InvalidOperationException failure = new("Cancellation callback failed.");
+        TaskCompletionSource<bool> registered = CreateSignal();
+        client.MessageReceivedAsync += args =>
+        {
+            args.CancellationToken.Register(() => throw failure);
+            registered.TrySetResult(true);
+            return Task.CompletedTask;
+        };
+
+        await DispatchAsync(client).WaitAsync(TestTimeout);
+        await registered.Task.WaitAsync(TestTimeout);
+        Assert.DoesNotThrow(client.Dispose);
+        AggregateException error = await Assert.ThrowsAsync<AggregateException>(
+            async () => await client.Completion.WaitAsync(TestTimeout));
+        Assert.That(error.InnerExceptions, Does.Contain(failure));
+        await client.DisposeAsync().AsTask().WaitAsync(TestTimeout);
+    }
+
     private static TaskCompletionSource<bool> CreateSignal()
         => new(TaskCreationOptions.RunContinuationsAsynchronously);
 

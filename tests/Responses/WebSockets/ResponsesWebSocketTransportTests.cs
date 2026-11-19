@@ -241,6 +241,32 @@ public class ResponsesWebSocketTransportTests
         await Assert.CatchAsync<Exception>(() => client.CreateResponseAsync(BinaryData.FromString("{}")));
     }
 
+    [Test]
+    public async Task ThrowingCancellationCallbackDoesNotBlockActiveTransportDisposal()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        InvalidOperationException failure = new("Cancellation callback failed.");
+        TaskCompletionSource<bool> registered = Signal();
+        client.MessageReceivedAsync += args =>
+        {
+            args.CancellationToken.Register(() => throw failure);
+            registered.TrySetResult(true);
+            return Task.CompletedTask;
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\"}", true);
+        await registered.Task.WaitAsync(Timeout);
+
+        Assert.DoesNotThrow(client.Dispose);
+        AggregateException error = await Assert.ThrowsAsync<AggregateException>(
+            async () => await client.Completion.WaitAsync(Timeout));
+        Assert.That(error.InnerExceptions, Does.Contain(failure));
+        await client.DisposeAsync().AsTask().WaitAsync(Timeout);
+        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Disposed));
+    }
+
     [TestCase(true)]
     [TestCase(false)]
     public async Task WebSocketRequestsRejectHttpTransportFlags(bool streaming)
