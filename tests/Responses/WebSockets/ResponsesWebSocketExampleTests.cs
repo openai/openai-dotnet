@@ -215,6 +215,60 @@ public class ResponsesWebSocketExampleTests
         }));
     }
 
+    [Test]
+    public async Task ForkExampleContinuesBothBranchesFromParent()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        using CancellationTokenSource timeout = new(Timeout);
+        var responses = ResponsesWebSocketExamples.CreateForkedConversationsAsync(client, timeout.Token);
+
+        await WaitForSentAsync(socket, 2, timeout.Token);
+        socket.Add(StreamResponseEvent("response.completed", "resp_research", "completed", "research"), true);
+        socket.Add(StreamResponseEvent("response.completed", "resp_planner", "completed", "planner"), true);
+
+        await WaitForSentAsync(socket, 3, timeout.Token);
+        await Task.Delay(50, timeout.Token);
+        Assert.That(socket.Sent.Count, Is.EqualTo(3), "The original branch must wait for the fork to start.");
+        socket.Add(StreamResponseEvent("response.in_progress", "resp_critic", "in_progress", "critic"), true);
+
+        await WaitForSentAsync(socket, 4, timeout.Token);
+        socket.Add(StreamResponseEvent("response.completed", "resp_planner_2", "completed", "planner"), true);
+        socket.Add(StreamResponseEvent("response.completed", "resp_critic", "completed", "critic"), true);
+
+        var results = await responses.WaitAsync(timeout.Token);
+        Assert.That(results.Select(r => (r.StreamId, r.Response.Id)), Is.EqualTo(new[]
+        {
+            ("planner", "resp_planner"),
+            ("research", "resp_research"),
+            ("critic", "resp_critic"),
+            ("planner", "resp_planner_2"),
+        }));
+
+        var sent = socket.Sent.Select(json => JsonDocument.Parse(json).RootElement).ToArray();
+        Assert.That(sent.Select(e => e.GetProperty("stream_id").GetString()),
+            Is.EqualTo(new[] { "planner", "research", "critic", "planner" }));
+        string PreviousId(JsonElement e) => e.TryGetProperty("previous_response_id", out JsonElement id) ? id.GetString() : null;
+        Assert.That(sent.Select(PreviousId), Is.EqualTo(new[] { null, null, "resp_planner", "resp_planner" }));
+        Assert.That(sent.All(e => !e.GetProperty("store").GetBoolean()), Is.True);
+    }
+
+    [Test]
+    public async Task ForkExampleReportsProtocolErrors()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket, new ResponsesWebSocketClientOptions { ShouldReconnect = false });
+        using CancellationTokenSource timeout = new(Timeout);
+        var responses = ResponsesWebSocketExamples.CreateForkedConversationsAsync(client, timeout.Token);
+
+        await WaitForSentAsync(socket, 2, timeout.Token);
+        socket.Add("""{"type":"error","error":{"code":"rate_limit_exceeded","message":"Too many requests"}}""", true);
+
+        InvalidOperationException error = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await responses.WaitAsync(timeout.Token));
+        Assert.That(error.Message, Does.Contain("Too many requests"));
+    }
+
     private static async Task WaitForSentAsync(FakeSocket socket, int count, CancellationToken cancellationToken)
     {
         while (socket.Sent.Count < count)
