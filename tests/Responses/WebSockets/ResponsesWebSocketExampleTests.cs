@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OpenAI.Examples;
 using OpenAI.Responses;
 using System;
 using System.ClientModel;
@@ -11,7 +12,7 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace OpenAI.Examples;
+namespace OpenAI.Tests.Responses.WebSockets;
 
 #pragma warning disable OPENAI001
 

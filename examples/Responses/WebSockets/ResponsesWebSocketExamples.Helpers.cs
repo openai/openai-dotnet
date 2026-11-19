@@ -7,6 +7,8 @@ namespace OpenAI.Examples;
 
 #pragma warning disable OPENAI001
 
+/// <summary>Responses WebSocket samples. Each sample is in its own <c>ExampleNN_*.cs</c> file.</summary>
+/// <remarks>This file contains only shared helpers for error handling and waiting for completion.</remarks>
 public partial class ResponsesWebSocketExamples
 {
     private static Exception GetResponseError(ResponsesWebSocketMessage message)

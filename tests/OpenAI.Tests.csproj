@@ -38,6 +38,13 @@
     <Compile Include="..\examples\MutualTls\Example01_MutualTlsAsync.cs" LinkBase="Shared\Examples" />
   </ItemGroup>
 
+  <!-- Linked so ResponsesWebSocketExampleTests can exercise the examples' internal helpers. Live examples are [Explicit]. -->
+  <ItemGroup>
+    <Compile Include="..\examples\Responses\WebSockets\ResponsesWebSocketExamples.Helpers.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example03_SteerResponseAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example04_LongRunningSessionAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+  </ItemGroup>
+
   <!-- The SSE collections are internal and the library is signed, so they are linked
        in rather than exposed through InternalsVisibleTo. -->
   <ItemGroup>
