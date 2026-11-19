@@ -594,13 +594,14 @@ public partial class ResponsesWebSocketClient
 
     private static CreateResponseOptions CreateOptions(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId)
     {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(inputItems, nameof(inputItems));
-        var options = new CreateResponseOptions { Model = model, PreviousResponseId = previousResponseId };
-        foreach (var item in inputItems)
+        var options = new CreateResponseOptions(model, inputItems);
+        foreach (var item in options.InputItems)
         {
             Argument.AssertNotNull(item, nameof(inputItems));
-            options.InputItems.Add(item);
+        }
+        if (previousResponseId is not null)
+        {
+            options.PreviousResponseId = previousResponseId;
         }
         return options;
     }

@@ -184,21 +184,10 @@ public partial class ResponsesClient
     // CUSTOM: Added convenience method with no options.
     public virtual ClientResult<ResponseResult> CreateResponse(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(inputItems, nameof(inputItems));
-
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-        };
+        var options = new CreateResponseOptions(model, inputItems);
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
-        }
-
-        foreach (var item in inputItems)
-        {
-            options.InputItems.Add(item);
         }
 
         return CreateResponse(options, cancellationToken);
@@ -207,21 +196,10 @@ public partial class ResponsesClient
     // CUSTOM: Added convenience method with no options.
     public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(inputItems, nameof(inputItems));
-
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-        };
+        var options = new CreateResponseOptions(model, inputItems);
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
-        }
-
-        foreach (var item in inputItems)
-        {
-            options.InputItems.Add(item);
         }
 
         return CreateResponseAsync(options, cancellationToken);
@@ -233,16 +211,11 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-        };
+        var options = new CreateResponseOptions(model, [ResponseItem.CreateUserMessageItem(userInputText)]);
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
         }
-
-        options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
         return CreateResponse(options, cancellationToken);
     }
@@ -253,16 +226,11 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-        };
+        var options = new CreateResponseOptions(model, [ResponseItem.CreateUserMessageItem(userInputText)]);
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
         }
-
-        options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
         return CreateResponseAsync(options, cancellationToken);
     }
@@ -301,22 +269,10 @@ public partial class ResponsesClient
     // CUSTOM: Added convenience method with no options.
     public virtual Task<AsyncStreamingResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(inputItems, nameof(inputItems));
-
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-            StreamingEnabled = true,
-        };
+        var options = new CreateResponseOptions(model, inputItems) { StreamingEnabled = true };
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
-        }
-
-        foreach (var item in inputItems)
-        {
-            options.InputItems.Add(item);
         }
 
         return CreateResponseStreamingAsync(options, cancellationToken);
@@ -328,17 +284,11 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
-        var options = new CreateResponseOptions
-        {
-            Model = model,
-            StreamingEnabled = true,
-        };
+        var options = new CreateResponseOptions(model, [ResponseItem.CreateUserMessageItem(userInputText)]) { StreamingEnabled = true };
         if (previousResponseId is not null)
         {
             options.PreviousResponseId = previousResponseId;
         }
-
-        options.InputItems.Add(ResponseItem.CreateUserMessageItem(userInputText));
 
         return CreateResponseStreamingAsync(options, cancellationToken);
     }
