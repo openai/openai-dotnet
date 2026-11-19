@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -13,6 +15,31 @@ namespace OpenAI.Tests.Responses.WebSockets;
 public class ResponsesWebSocketClientTests
 {
     private static readonly TimeSpan TestTimeout = TimeSpan.FromSeconds(10);
+
+    [Test]
+    public void ConstructorsRejectNullAuthentication()
+    {
+        Assert.Throws<ArgumentNullException>(() => new ResponsesWebSocketClient((string)null));
+        Assert.Throws<ArgumentNullException>(() => new ResponsesWebSocketClient((ApiKeyCredential)null));
+        Assert.Throws<ArgumentNullException>(() => new ResponsesWebSocketClient((ApiKeyCredential)null, null));
+        Assert.Throws<ArgumentNullException>(() => new ResponsesWebSocketClient((AuthenticationPolicy)null));
+        Assert.Throws<ArgumentNullException>(() => new ResponsesWebSocketClient((AuthenticationPolicy)null, null));
+    }
+
+    [Test]
+    public async Task ConstructorsAllowDefaultOptionsWithoutConnecting()
+    {
+        ApiKeyCredential credential = new("test-key");
+        AuthenticationPolicy policy = ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, "Authorization", "Bearer");
+        await using ResponsesWebSocketClient fromKey = new("test-key");
+        await using ResponsesWebSocketClient fromCredential = new(credential);
+        await using ResponsesWebSocketClient fromCredentialWithNullOptions = new(credential, null);
+        await using ResponsesWebSocketClient fromPolicy = new(policy);
+        await using ResponsesWebSocketClient fromPolicyWithNullOptions = new(policy, null);
+
+        Assert.That(new[] { fromKey, fromCredential, fromCredentialWithNullOptions, fromPolicy, fromPolicyWithNullOptions },
+            Has.All.Property(nameof(ResponsesWebSocketClient.State)).EqualTo(ResponsesWebSocketConnectionState.Created));
+    }
 
     [Test]
     public async Task SeparateRegistrationsDispatchInParallel()
@@ -277,7 +304,7 @@ public class ResponsesWebSocketClientTests
     private sealed class TestClient : ResponsesWebSocketClient
     {
         public TestClient()
-            : base(new ResponsesClient("test-key"), new ResponsesWebSocketClientOptions())
+            : base("test-key")
         {
         }
     }

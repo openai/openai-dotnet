@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -26,10 +27,14 @@ public class ResponsesWebSocketTransportTests
 {
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(10);
 
-    [TestCase("/v1", "")]
-    [TestCase("/v1/?contract=1", "?contract=1")]
-    [TestCase("/v1/responses?contract=1", "?contract=1")]
-    public async Task RealUpgradeUsesParentCredentialsEndpointAndHeaders(string endpointPath, string query)
+    [TestCase("/v1", "", false)]
+    [TestCase("/v1", "", true)]
+    [TestCase("/v1/?contract=1", "?contract=1", false)]
+    [TestCase("/v1/?contract=1", "?contract=1", true)]
+    [TestCase("/v1/responses?contract=1", "?contract=1", false)]
+    [TestCase("/v1/responses?contract=1", "?contract=1", true)]
+    public async Task RealUpgradeUsesCredentialsEndpointAndHeaders(
+        string endpointPath, string query, bool useAuthenticationPolicy)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
         builder.Logging.ClearProviders();
@@ -59,15 +64,17 @@ public class ResponsesWebSocketTransportTests
         string address = server.Services.GetRequiredService<IServer>().Features
             .Get<IServerAddressesFeature>().Addresses.Single();
         ApiKeyCredential credential = new("old-test-key");
-        ResponsesClient parent = new(credential, new ResponsesClientOptions
+        ResponsesWebSocketClientOptions options = new()
         {
             Endpoint = new Uri(address + endpointPath),
             OrganizationId = "test-org",
             ProjectId = "test-project"
-        });
-        ResponsesWebSocketClientOptions options = new();
+        };
         options.Headers.Add("X-Test", "snapshot");
-        await using ResponsesWebSocketClient client = parent.CreateWebSocketClient(options);
+        await using ResponsesWebSocketClient client = useAuthenticationPolicy
+            ? new ResponsesWebSocketClient(
+                ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, "Authorization", "Bearer"), options)
+            : new ResponsesWebSocketClient(credential, options);
         options.Headers["X-Test"] = "modified";
         credential.Update("updated-test-key");
         Subscribe(client);
@@ -97,7 +104,7 @@ public class ResponsesWebSocketTransportTests
         await using TestClient client = new(socket);
         Subscribe(client);
         await client.ConnectAsync();
-        await client.CreateAsync(new CreateResponseOptions { Model = "test-model", StoredOutputEnabled = false },
+        await client.CreateResponseAsync(new CreateResponseOptions { Model = "test-model", StoredOutputEnabled = false },
             new ResponsesWebSocketSendOptions { StreamId = "main", GenerationEnabled = false });
         using JsonDocument command = JsonDocument.Parse(socket.Sent.First());
         Assert.That(command.RootElement.GetProperty("type").GetString(), Is.EqualTo("response.create"));
@@ -105,9 +112,43 @@ public class ResponsesWebSocketTransportTests
         Assert.That(command.RootElement.GetProperty("stream_id").GetString(), Is.EqualTo("main"));
         Assert.That(command.RootElement.GetProperty("generate").GetBoolean(), Is.False);
         Assert.That(command.RootElement.TryGetProperty("stream", out _), Is.False);
-        await Task.WhenAll(Enumerable.Range(0, 20).Select(_ => client.CreateAsync(BinaryData.FromString("{\"type\":\"response.create\"}"))));
+        await Task.WhenAll(Enumerable.Range(0, 20).Select(_ => client.CreateResponseAsync(BinaryData.FromString("{\"type\":\"response.create\"}"))));
         Assert.That(socket.MaximumConcurrentSends, Is.EqualTo(1));
         Assert.That(socket.Sent.Count, Is.EqualTo(21));
+    }
+
+    [Test]
+    public async Task ConvenienceCreateSendsSameEnvelopeAsOptions(
+        [Values] bool useText,
+        [Values] bool useSendOptions,
+        [Values(null, "resp_prev")] string previousResponseId)
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        Subscribe(client);
+        await client.ConnectAsync();
+        ResponsesWebSocketSendOptions sendOptions = useSendOptions ? new() { StreamId = "main" } : null;
+
+        // Built via property setters to stay independent of the constructor under test.
+        CreateResponseOptions expected = new() { Model = "test-model" };
+        if (previousResponseId is not null)
+        {
+            expected.PreviousResponseId = previousResponseId;
+        }
+        expected.InputItems.Add(ResponseItem.CreateUserMessageItem("hello"));
+        await client.CreateResponseAsync(expected, sendOptions);
+
+        ResponseItem[] items = [ResponseItem.CreateUserMessageItem("hello")];
+        await ((useText, useSendOptions) switch
+        {
+            (true, true) => client.CreateResponseAsync("test-model", "hello", sendOptions, previousResponseId),
+            (true, false) => client.CreateResponseAsync("test-model", "hello", previousResponseId),
+            (false, true) => client.CreateResponseAsync("test-model", items, sendOptions, previousResponseId),
+            _ => client.CreateResponseAsync("test-model", items, previousResponseId),
+        });
+
+        Assert.That(socket.Sent, Has.Count.EqualTo(2));
+        Assert.That(socket.Sent.Last(), Is.EqualTo(socket.Sent.First()));
     }
 
     [Test]
@@ -172,7 +213,7 @@ public class ResponsesWebSocketTransportTests
         client.MessageReceivedAsync += _ => { recovered.TrySetResult(true); return Task.CompletedTask; };
         client.ErrorOccurredAsync += _ => { disconnected.TrySetResult(true); return Task.CompletedTask; };
         await client.ConnectAsync();
-        await client.CreateAsync(BinaryData.FromString("{\"type\":\"response.create\"}"));
+        await client.CreateResponseAsync(BinaryData.FromString("{\"type\":\"response.create\"}"));
         first.Fail(new WebSocketException("Disconnected"));
         await disconnected.Task.WaitAsync(Timeout);
         await Assert.ThrowsAsync<InvalidOperationException>(() => client.ConnectAsync());
@@ -195,7 +236,7 @@ public class ResponsesWebSocketTransportTests
         await client.Completion.WaitAsync(Timeout);
         Assert.That(socket.CloseOutputCalls, Is.EqualTo(1));
         Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Closed));
-        await Assert.CatchAsync<Exception>(() => client.CreateAsync(BinaryData.FromString("{}")));
+        await Assert.CatchAsync<Exception>(() => client.CreateResponseAsync(BinaryData.FromString("{}")));
     }
 
     [TestCase(true)]
@@ -206,7 +247,7 @@ public class ResponsesWebSocketTransportTests
         CreateResponseOptions options = new() { Model = "test" };
         if (streaming) options.StreamingEnabled = false;
         else options.BackgroundModeEnabled = false;
-        Assert.Throws<ArgumentException>(() => client.CreateAsync(options));
+        Assert.Throws<ArgumentException>(() => client.CreateResponseAsync(options));
     }
 
     [Test]
@@ -216,7 +257,7 @@ public class ResponsesWebSocketTransportTests
         await using TestClient client = new(socket);
         Subscribe(client);
         await client.ConnectAsync();
-        await client.SteerAsync("resp_parent", "Change direction");
+        await client.SteerResponseAsync("resp_parent", "Change direction");
         using JsonDocument command = JsonDocument.Parse(socket.Sent.Single());
         Assert.That(command.RootElement.GetProperty("type").GetString(), Is.EqualTo("response.steer"));
         Assert.That(command.RootElement.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_parent"));
@@ -232,10 +273,10 @@ public class ResponsesWebSocketTransportTests
         await client.ConnectAsync();
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Change direction");
         message.Status = MessageStatus.Completed;
-        Assert.Throws<ArgumentException>(() => client.SteerAsync("resp_parent", new[] { message }));
-        Assert.Throws<ArgumentException>(() => client.SteerAsync("resp_parent",
+        Assert.Throws<ArgumentException>(() => client.SteerResponseAsync("resp_parent", new[] { message }));
+        Assert.Throws<ArgumentException>(() => client.SteerResponseAsync("resp_parent",
             new[] { ResponseItem.CreateSystemMessageItem("Change direction") }));
-        Assert.Throws<ArgumentException>(() => client.SteerAsync("resp_parent",
+        Assert.Throws<ArgumentException>(() => client.SteerResponseAsync("resp_parent",
             new[] { ResponseItem.CreateFunctionCallOutputItem("call_test", "tool result") }));
         Assert.That(socket.Sent, Is.Empty);
     }
@@ -378,7 +419,7 @@ public class ResponsesWebSocketTransportTests
     public async Task RejectsInvalidStreamIds(string streamId)
     {
         await using TestClient client = new(new FakeSocket());
-        Assert.Throws<ArgumentException>(() => client.CreateAsync(new CreateResponseOptions { Model = "test" },
+        Assert.Throws<ArgumentException>(() => client.CreateResponseAsync(new CreateResponseOptions { Model = "test" },
             new ResponsesWebSocketSendOptions { StreamId = streamId }));
     }
 
@@ -396,7 +437,7 @@ public class ResponsesWebSocketTransportTests
         public int Connections { get; private set; }
         public TestClient(FakeSocket socket, ResponsesWebSocketClientOptions options = null) : this(new[] { socket }, options) { }
         public TestClient(IEnumerable<FakeSocket> sockets, ResponsesWebSocketClientOptions options = null)
-            : base(new ResponsesClient("test-key"), options ?? new ResponsesWebSocketClientOptions())
+            : base(new ApiKeyCredential("test-key"), options ?? new ResponsesWebSocketClientOptions())
             => _sockets = new Queue<FakeSocket>(sockets);
         protected override Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
         {
@@ -411,7 +452,7 @@ public class ResponsesWebSocketTransportTests
         private readonly TaskCompletionSource<bool> _started;
         private readonly TaskCompletionSource<WebSocket> _socket;
         public DelayedConnectClient(TaskCompletionSource<bool> started, TaskCompletionSource<WebSocket> socket)
-            : base(new ResponsesClient("test-key"), new ResponsesWebSocketClientOptions())
+            : base("test-key")
         {
             _started = started;
             _socket = socket;

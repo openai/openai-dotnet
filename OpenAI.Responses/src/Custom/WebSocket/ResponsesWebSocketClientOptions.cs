@@ -6,7 +6,7 @@ namespace OpenAI.Responses;
 
 /// <summary>Configures a Responses API WebSocket client.</summary>
 [Experimental("OPENAI001")]
-public class ResponsesWebSocketClientOptions
+public class ResponsesWebSocketClientOptions : ResponsesClientOptions
 {
     /// <summary>Whether to reconnect after a recoverable transport failure. Defaults to true. Commands are never replayed.</summary>
     public bool ShouldReconnect { get; set; } = true;
@@ -22,7 +22,7 @@ public class ResponsesWebSocketClientOptions
     /// <summary>Maximum UTF-8 payload bytes in one incoming or outgoing message. Zero (the default) disables this limit.</summary>
     public int MaxMessageBytes { get; set; }
 
-    /// <summary>Additional upgrade request headers. Authentication headers remain owned by the parent client.</summary>
+    /// <summary>Additional upgrade request headers. Authentication headers remain owned by the client.</summary>
     public IDictionary<string, string> Headers { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
 }

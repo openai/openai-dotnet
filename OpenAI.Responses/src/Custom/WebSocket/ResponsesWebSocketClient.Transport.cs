@@ -130,7 +130,7 @@ public partial class ResponsesWebSocketClient
             {
                 socket.Options.SetRequestHeader(header.Key, header.Value);
             }
-            await _responsesClient.AuthenticateWebSocketAsync(socket, _websocketEndpoint, cancellationToken).ConfigureAwait(false);
+            await AuthenticateWebSocketAsync(socket, _websocketEndpoint, cancellationToken).ConfigureAwait(false);
             await socket.ConnectAsync(_websocketEndpoint, cancellationToken).ConfigureAwait(false);
             return socket;
         }
@@ -710,7 +710,7 @@ public partial class ResponsesWebSocketClient
         {
             if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentException("Authentication headers are owned by the parent client.", nameof(options));
+                throw new ArgumentException("Authentication headers are owned by the client.", nameof(options));
             }
             snapshot.Headers.Add(header);
         }

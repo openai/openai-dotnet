@@ -51,7 +51,7 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
             }
         };
 
-        var webSocketResponse = await CreateWebSocketResponseAsync(client, options, timeout.Token);
+        var webSocketResponse = await CreateWebSocketResponseAsync(client.Endpoint, options, timeout.Token);
         var httpResponse = await CreateHttpResponseAsync(client, options, streamingHttp, timeout.Token);
 
         AssertEquivalentResponseMetadata(httpResponse, webSocketResponse);
@@ -100,7 +100,7 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
             }
         };
 
-        var webSocketResponse = await CreateWebSocketResponseAsync(client, options, timeout.Token);
+        var webSocketResponse = await CreateWebSocketResponseAsync(client.Endpoint, options, timeout.Token);
         var httpResponse = await CreateHttpResponseAsync(client, options, streamingHttp, timeout.Token);
 
         AssertEquivalentResponseMetadata(httpResponse, webSocketResponse);
@@ -163,11 +163,12 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
         return response;
     }
 
-    private static async Task<ResponseResult> CreateWebSocketResponseAsync(
-        ResponsesClient client, CreateResponseOptions options, CancellationToken cancellationToken)
+    private async Task<ResponseResult> CreateWebSocketResponseAsync(
+        Uri endpoint, CreateResponseOptions options, CancellationToken cancellationToken)
     {
-        await using var webSocket = client.CreateWebSocketClient(new ResponsesWebSocketClientOptions
+        await using var webSocket = new ResponsesWebSocketClient(TestEnvironment.ApiKeyCredential, new ResponsesWebSocketClientOptions
         {
+            Endpoint = endpoint,
             ShouldReconnect = false
         });
         var response = new TaskCompletionSource<ResponseResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -192,7 +193,7 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
         };
 
         await webSocket.ConnectAsync(cancellationToken);
-        await webSocket.CreateAsync(options, cancellationToken: cancellationToken);
+        await webSocket.CreateResponseAsync(options, cancellationToken: cancellationToken);
         var finished = await Task.WhenAny(response.Task, webSocket.Completion).WaitAsync(cancellationToken);
         if (finished != response.Task)
         {

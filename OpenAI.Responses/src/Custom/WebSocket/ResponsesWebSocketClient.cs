@@ -1,4 +1,6 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -15,7 +17,10 @@ namespace OpenAI.Responses;
 [Experimental("OPENAI001")]
 public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 {
-    private readonly ResponsesClient _responsesClient;
+    private readonly AuthenticationPolicy _authenticationPolicy;
+    private readonly ClientPipeline _pipeline;
+    private readonly string _organizationId;
+    private readonly string _projectId;
     private readonly ResponsesWebSocketClientOptions _options;
     private readonly Uri _websocketEndpoint;
     // Protects client lifetime, transport state, subscriptions, and buffered-byte accounting.
@@ -26,13 +31,56 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     private Task _disposeCompletion;
     private bool _disposed;
 
-    /// <summary>Initializes a client for mocking.</summary>
-    protected internal ResponsesWebSocketClient(ResponsesClient responsesClient, ResponsesWebSocketClientOptions options)
+    /// <summary>Initializes a disconnected WebSocket client.</summary>
+    /// <param name="apiKey">The API key to authenticate with the service.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="apiKey"/> is null.</exception>
+    public ResponsesWebSocketClient(string apiKey) : this(new ApiKeyCredential(apiKey))
     {
-        Argument.AssertNotNull(responsesClient, nameof(responsesClient));
-        _responsesClient = responsesClient;
-        _options = SnapshotOptions(options ?? new ResponsesWebSocketClientOptions());
-        _websocketEndpoint = GetWebSocketEndpoint(responsesClient.Endpoint);
+    }
+
+    /// <summary>Initializes a disconnected WebSocket client.</summary>
+    /// <param name="credential">The credential to authenticate with the service.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="credential"/> is null.</exception>
+    public ResponsesWebSocketClient(ApiKeyCredential credential) : this(credential, new ResponsesWebSocketClientOptions())
+    {
+    }
+
+    /// <summary>Initializes a disconnected WebSocket client.</summary>
+    /// <param name="credential">The credential to authenticate with the service.</param>
+    /// <param name="options">The options to configure the client. Settings are snapshotted at construction.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="credential"/> is null.</exception>
+    public ResponsesWebSocketClient(ApiKeyCredential credential, ResponsesWebSocketClientOptions options)
+        : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    /// <summary>Initializes a disconnected WebSocket client.</summary>
+    /// <param name="authenticationPolicy">The authentication policy used to authenticate with the service.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="authenticationPolicy"/> is null.</exception>
+    public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new ResponsesWebSocketClientOptions())
+    {
+    }
+
+    /// <summary>Initializes a disconnected WebSocket client.</summary>
+    /// <param name="authenticationPolicy">The authentication policy used to authenticate with the service.</param>
+    /// <param name="options">The options to configure the client. Settings are snapshotted at construction.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="authenticationPolicy"/> is null.</exception>
+    /// <exception cref="NotSupportedException">A custom HTTP transport is configured.</exception>
+    public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy, ResponsesWebSocketClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new ResponsesWebSocketClientOptions();
+        if (options.Transport is not null)
+        {
+            throw new NotSupportedException("Responses WebSockets require the default HTTP transport.");
+        }
+
+        _authenticationPolicy = authenticationPolicy;
+        _options = SnapshotOptions(options);
+        _websocketEndpoint = GetWebSocketEndpoint(OpenAIClientUtilities.GetEndpoint(options.Endpoint));
+        _organizationId = options.OrganizationId;
+        _projectId = options.ProjectId;
+        _pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
     }
 
     /// <summary>Receives every server message, including protocol errors and unknown event types.</summary>
@@ -175,12 +223,12 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// Completion means a local write, not server acceptance or response completion.
     /// Rejects sends while disconnected or reconnecting. Requests are never automatically replayed.
     /// </remarks>
-    public virtual Task CreateAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
-        => CreateAsync(options, null, cancellationToken);
+    public virtual Task CreateResponseAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
+        => CreateResponseAsync(options, null, cancellationToken);
 
     /// <summary>Creates a response with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the default-stream overload.</remarks>
-    public virtual Task CreateAsync(
+    public virtual Task CreateResponseAsync(
         CreateResponseOptions options,
         ResponsesWebSocketSendOptions webSocketOptions,
         CancellationToken cancellationToken = default)
@@ -188,45 +236,45 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Creates a response on the default stream from a model and input items, optionally continuing a previous response.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task CreateAsync(
+    public virtual Task CreateResponseAsync(
         string model,
         IEnumerable<ResponseItem> inputItems,
         string previousResponseId = null,
         CancellationToken cancellationToken = default)
-        => CreateAsync(CreateOptions(model, inputItems, previousResponseId), cancellationToken);
+        => CreateResponseAsync(CreateOptions(model, inputItems, previousResponseId), cancellationToken);
 
     /// <summary>Creates a response from a model and input items with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task CreateAsync(
+    public virtual Task CreateResponseAsync(
         string model,
         IEnumerable<ResponseItem> inputItems,
         ResponsesWebSocketSendOptions webSocketOptions,
         string previousResponseId = null,
         CancellationToken cancellationToken = default)
-        => CreateAsync(CreateOptions(model, inputItems, previousResponseId), webSocketOptions, cancellationToken);
+        => CreateResponseAsync(CreateOptions(model, inputItems, previousResponseId), webSocketOptions, cancellationToken);
 
     /// <summary>Creates a response on the default stream from a model and user text, optionally continuing a previous response.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task CreateAsync(
+    public virtual Task CreateResponseAsync(
         string model,
         string userInputText,
         string previousResponseId = null,
         CancellationToken cancellationToken = default)
-        => CreateAsync(model, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, previousResponseId, cancellationToken);
+        => CreateResponseAsync(model, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, previousResponseId, cancellationToken);
 
     /// <summary>Creates a response from a model and user text with WebSocket-specific stream or warmup settings.</summary>
     /// <remarks>Uses the same request validation and delivery semantics as the CreateResponseOptions overload.</remarks>
-    public virtual Task CreateAsync(
+    public virtual Task CreateResponseAsync(
         string model,
         string userInputText,
         ResponsesWebSocketSendOptions webSocketOptions,
         string previousResponseId = null,
         CancellationToken cancellationToken = default)
-        => CreateAsync(model, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, webSocketOptions, previousResponseId, cancellationToken);
+        => CreateResponseAsync(model, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, webSocketOptions, previousResponseId, cancellationToken);
 
     /// <summary>Sends one UTF-8 JSON object, including fields or command types not yet modeled by the SDK.</summary>
     /// <remarks>A failed or canceled physical write has uncertain delivery. It must not be retried blindly.</remarks>
-    public virtual Task CreateAsync(BinaryData command, CancellationToken cancellationToken = default)
+    public virtual Task CreateResponseAsync(BinaryData command, CancellationToken cancellationToken = default)
         => SendJsonAsync(command, cancellationToken);
 
     /// <summary>Queues user input to steer a response on this connection.</summary>
@@ -237,7 +285,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// Adds the response.steer discriminator internally. Completion means a local write, not steering acceptance.
     /// Rejects sends while disconnected or reconnecting. Requests are never automatically replayed.
     /// </remarks>
-    public virtual Task SteerAsync(
+    public virtual Task SteerResponseAsync(
         string previousResponseId,
         IEnumerable<ResponseItem> inputItems,
         CancellationToken cancellationToken = default)
@@ -245,11 +293,11 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Queues user text to steer a response on this connection.</summary>
     /// <remarks>Uses the same targeting and delivery semantics as the input-item overload.</remarks>
-    public virtual Task SteerAsync(
+    public virtual Task SteerResponseAsync(
         string previousResponseId,
         string userInputText,
         CancellationToken cancellationToken = default)
-        => SteerAsync(previousResponseId, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, cancellationToken);
+        => SteerResponseAsync(previousResponseId, new[] { ResponseItem.CreateUserMessageItem(userInputText) }, cancellationToken);
 
     /// <summary>Stops reconnecting and closes gracefully within an internal timeout. Repeated calls are safe.</summary>
     /// <remarks>
