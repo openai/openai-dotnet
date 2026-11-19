@@ -619,18 +619,24 @@ public partial class ResponsesWebSocketClient
             }
         }
         using var operation = AcquireTransportOperation();
+        bool wasReconnecting;
         lock (_syncLock)
         {
             if (_disposed || State == ResponsesWebSocketConnectionState.Closed)
             {
                 return;
             }
+            wasReconnecting = State == ResponsesWebSocketConnectionState.Reconnecting;
             SetState(ResponsesWebSocketConnectionState.Closing);
         }
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(10));
         try
         {
+            if (wasReconnecting)
+            {
+                CancelLifetime();
+            }
             await _sendSemaphore.WaitAsync(timeout.Token).ConfigureAwait(false);
             try
             {

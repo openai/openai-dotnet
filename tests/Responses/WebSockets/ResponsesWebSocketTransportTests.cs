@@ -242,6 +242,22 @@ public class ResponsesWebSocketTransportTests
     }
 
     [Test]
+    public async Task CloseCancelsAnInProgressReconnect()
+    {
+        FakeSocket socket = new();
+        await using RetryingClient client = new(socket);
+        Subscribe(client);
+        await client.ConnectAsync();
+        socket.Fail(new WebSocketException("Disconnected"));
+        await client.RetryStarted.Task.WaitAsync(Timeout);
+
+        await client.CloseAsync().WaitAsync(TimeSpan.FromSeconds(3));
+        await client.RetryCanceled.Task.WaitAsync(Timeout);
+        await client.Completion.WaitAsync(Timeout);
+        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Closed));
+    }
+
+    [Test]
     public async Task ThrowingCancellationCallbackDoesNotBlockActiveTransportDisposal()
     {
         FakeSocket socket = new();
@@ -489,6 +505,38 @@ public class ResponsesWebSocketTransportTests
         {
             _started.TrySetResult(true);
             return await _socket.Task.WaitAsync(cancellationToken);
+        }
+    }
+
+    private sealed class RetryingClient : ResponsesWebSocketClient
+    {
+        private readonly FakeSocket _socket;
+        private int _connections;
+
+        public RetryingClient(FakeSocket socket) : base("test-key") => _socket = socket;
+
+        public TaskCompletionSource<bool> RetryStarted { get; } = Signal();
+        public TaskCompletionSource<bool> RetryCanceled { get; } = Signal();
+
+        protected override async Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
+        {
+            if (Interlocked.Increment(ref _connections) == 1)
+            {
+                return _socket;
+            }
+
+            RetryStarted.TrySetResult(true);
+            try
+            {
+                await Task.Delay(System.Threading.Timeout.Infinite, cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                RetryCanceled.TrySetResult(true);
+                throw;
+            }
+
+            throw new InvalidOperationException("The reconnect delay ended unexpectedly.");
         }
     }
 
