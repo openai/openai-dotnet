@@ -8,7 +8,7 @@ using Microsoft.TypeSpec.Generator.Statements;
 
 namespace OpenAILibraryPlugin.Visitors;
 
-public class ImageVariationDeprecationVisitor : ScmLibraryVisitor
+public class ObsoleteAttributeVisitor : ScmLibraryVisitor
 {
     private static readonly HashSet<(string Namespace, string ClientName, string MethodName)> _methodsToDeprecate =
     [
