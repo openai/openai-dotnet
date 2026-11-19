@@ -169,13 +169,15 @@ public class ResponsesWebSocketTransportTests
         await client.ConnectAsync();
         socket.Add("{\"type\":\"response.output_text.delta\",\"sequence_number\":1,\"item_id\":\"item\",");
         socket.Add("\"output_index\":0,\"content_index\":0,\"delta\":\"hello\",\"stream_id\":\"main\"}", true);
-        socket.Add("{\"type\":\"future.event\",\"future_field\":42}", true);
+        socket.Add("{\"type\":\"future.event\",\"sequence_number\":2,\"status\":\"in_progress\",\"future_field\":42}", true);
         socket.Add("{\"type\":\"error\",\"status\":400,\"error\":{\"code\":\"invalid_request\",\"message\":\"bad request\"}}", true);
         await received.Task.WaitAsync(Timeout);
         Assert.That(messages[0].Update, Is.TypeOf<StreamingResponseOutputTextDeltaUpdate>());
         Assert.That(messages[0].StreamId, Is.EqualTo("main"));
         Assert.That(messages[1].Kind.ToString(), Is.EqualTo("future.event"));
         Assert.That(messages[1].RawData.ToString(), Does.Contain("\"future_field\":42"));
+        Assert.That(messages[1].Status, Is.Null);
+        Assert.That(messages[1].Update, Is.Not.Null);
         Assert.That(messages[2].Status, Is.EqualTo(400));
         Assert.That(messages[2].Error.Message, Is.EqualTo("bad request"));
         Assert.That(localErrors, Is.Zero);

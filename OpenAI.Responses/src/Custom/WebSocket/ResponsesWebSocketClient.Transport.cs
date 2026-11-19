@@ -411,7 +411,8 @@ public partial class ResponsesWebSocketClient
         var error = kind == "error" && root.TryGetProperty("error", out var errorJson)
             ? ResponseError.DeserializeResponseError(errorJson, BinaryData.FromString(errorJson.GetRawText()), ModelReaderWriterOptions.Json)
             : null;
-        int? status = root.TryGetProperty("status", out var statusJson) && statusJson.ValueKind != JsonValueKind.Null
+        int? status = kind == "error" && root.TryGetProperty("status", out var statusJson)
+            && statusJson.ValueKind != JsonValueKind.Null
             ? statusJson.GetInt32() : null;
         var update = kind != "error" && root.TryGetProperty("sequence_number", out _)
             ? StreamingResponseUpdate.DeserializeStreamingResponseUpdate(root, data, ModelReaderWriterOptions.Json)
