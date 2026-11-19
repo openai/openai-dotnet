@@ -11,7 +11,7 @@ namespace OpenAI.Examples;
 /// <remarks>This file contains only shared helpers for error handling and waiting for completion.</remarks>
 public partial class ResponsesWebSocketExamples
 {
-    private static Exception GetResponseError(ResponsesWebSocketMessage message)
+    private static InvalidOperationException GetResponseError(ResponsesWebSocketMessage message)
     {
         if (message.Kind == ResponsesWebSocketMessageKind.Error)
         {
@@ -41,6 +41,15 @@ public partial class ResponsesWebSocketExamples
         Task<ResponseResult> response,
         CancellationToken cancellationToken)
     {
+        await WaitForResponseAsync(client, (Task)response, cancellationToken);
+        return await response;
+    }
+
+    private static async Task WaitForResponseAsync(
+        ResponsesWebSocketClient client,
+        Task response,
+        CancellationToken cancellationToken)
+    {
         Task finished = await Task.WhenAny(response, client.Completion).WaitAsync(cancellationToken);
         if (finished != response && !response.IsCompleted)
         {
@@ -48,7 +57,7 @@ public partial class ResponsesWebSocketExamples
         }
 
         // A normal close can precede dispatch of the queued response.completed callback.
-        return await response.WaitAsync(cancellationToken);
+        await response.WaitAsync(cancellationToken);
     }
 }
 

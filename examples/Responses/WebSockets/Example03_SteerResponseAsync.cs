@@ -36,54 +36,9 @@ public partial class ResponsesWebSocketExamples
         ResponsesWebSocketClient client,
         CancellationToken cancellationToken)
     {
-        TaskCompletionSource<ResponseResult> response = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        string initialResponseId = null;
-        string continuationResponseId = null;
-
-        client.MessageReceivedAsync += async args =>
-        {
-            ResponsesWebSocketMessage message = args.Message;
-            if (message.Update is StreamingResponseIncompleteUpdate incomplete
-                && initialResponseId is not null
-                && incomplete.Response.Id == initialResponseId
-                && incomplete.Response.IncompleteStatusDetails?.Reason?.ToString() == "steered")
-            {
-                // Steering can interrupt the original response before creating the continuation.
-                return;
-            }
-
-            if (GetResponseError(message) is Exception error)
-            {
-                response.TrySetException(error);
-                return;
-            }
-
-            switch (message.Update)
-            {
-                case StreamingResponseCreatedUpdate created when initialResponseId is null:
-                    initialResponseId = created.Response.Id;
-                    await client.SteerResponseAsync(
-                        initialResponseId,
-                        "Focus on Kyoto and include only activities reachable by train.",
-                        cancellationToken);
-                    break;
-
-                case StreamingResponseCreatedUpdate created:
-                    continuationResponseId = created.Response.Id;
-                    break;
-
-                case StreamingResponseCompletedUpdate completed
-                    when continuationResponseId is not null && completed.Response.Id == continuationResponseId:
-                    response.TrySetResult(completed.Response);
-                    break;
-            }
-
-        };
-        client.ErrorOccurredAsync += args =>
-        {
-            response.TrySetException(args.Exception);
-            return Task.CompletedTask;
-        };
+        SteeredResponse steered = new(client, cancellationToken);
+        client.MessageReceivedAsync += steered.OnMessageReceivedAsync;
+        client.ErrorOccurredAsync += steered.OnErrorOccurredAsync;
 
         await client.ConnectAsync(cancellationToken);
         await client.CreateResponseAsync(
@@ -93,13 +48,71 @@ public partial class ResponsesWebSocketExamples
         try
         {
             // Acceptance queues the steering input; the continuation contains the steered result.
-            return await WaitForResponseAsync(client, response.Task, cancellationToken);
+            return await WaitForResponseAsync(client, steered.Response, cancellationToken);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             throw new TimeoutException(
-                $"Timed out waiting for the steered response. Initial: {initialResponseId ?? "none"}, continuation: {continuationResponseId ?? "none"}.");
+                $"Timed out waiting for the steered response. Initial: {steered.InitialResponseId ?? "none"}, continuation: {steered.ContinuationResponseId ?? "none"}.");
         }
+    }
+
+    /// <summary>Steers the first created response, then completes with its continuation.</summary>
+    private sealed class SteeredResponse(ResponsesWebSocketClient client, CancellationToken cancellationToken)
+    {
+        private readonly TaskCompletionSource<ResponseResult> _response = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Task<ResponseResult> Response => _response.Task;
+        public string InitialResponseId { get; private set; }
+        public string ContinuationResponseId { get; private set; }
+
+        public async Task OnMessageReceivedAsync(ResponsesWebSocketMessageReceivedEventArgs args)
+        {
+            ResponsesWebSocketMessage message = args.Message;
+            if (IsSteeredInitialResponse(message.Update))
+            {
+                // Steering can interrupt the original response before creating the continuation.
+                return;
+            }
+
+            if (GetResponseError(message) is Exception error)
+            {
+                _response.TrySetException(error);
+                return;
+            }
+
+            switch (message.Update)
+            {
+                case StreamingResponseCreatedUpdate created when InitialResponseId is null:
+                    InitialResponseId = created.Response.Id;
+                    await client.SteerResponseAsync(
+                        InitialResponseId,
+                        "Focus on Kyoto and include only activities reachable by train.",
+                        cancellationToken);
+                    break;
+
+                case StreamingResponseCreatedUpdate created:
+                    ContinuationResponseId = created.Response.Id;
+                    break;
+
+                case StreamingResponseCompletedUpdate completed
+                    when ContinuationResponseId is not null && completed.Response.Id == ContinuationResponseId:
+                    _response.TrySetResult(completed.Response);
+                    break;
+            }
+        }
+
+        public Task OnErrorOccurredAsync(ResponsesWebSocketErrorEventArgs args)
+        {
+            _response.TrySetException(args.Exception);
+            return Task.CompletedTask;
+        }
+
+        private bool IsSteeredInitialResponse(StreamingResponseUpdate update)
+            => update is StreamingResponseIncompleteUpdate incomplete
+                && InitialResponseId is not null
+                && incomplete.Response.Id == InitialResponseId
+                && incomplete.Response.IncompleteStatusDetails?.Reason?.ToString() == "steered";
     }
 }
 
