@@ -35,6 +35,11 @@
     - `WebSearchCallStatus`
   - Removed the `Unknown` value from `MessageRole`, `ResponseContentPartKind`, and `ResponseTextFormatKind`. Unrecognized values are now kept as-is.
   - Added the `InputAudio` and `OutputAudio` values to `ResponseContentPartKind`.
+  - Changed `FunctionCallOutputResponseItem` to support multimodal function outputs.
+    - `FunctionOutput` changed from a settable `string` to a get-only `IList<ResponseContentPart>`. To update the output on an existing item, modify the list instead of assigning the property.
+    - The `FunctionCallOutputResponseItem` constructor that takes a function output and the `ResponseItem.CreateFunctionCallOutputItem` factory now take `IEnumerable<ResponseContentPart>` instead of `string`. For text-only output, pass `[ResponseContentPart.CreateInputTextPart(output)]`.
+    - The JSON `output` field now serializes as an array of content parts. On deserialization, a plain string is still accepted and becomes a single input text part.
+  - Changed `FunctionCallOutputStatus` from a fixed enum to a string-backed extensible enum. The `InProgress`, `Completed`, and `Incomplete` values are still available.
 - OpenAI.VectorStores:
   - Converted the `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus` enums to extensible enums.
   - Removed the `Unknown` value from `VectorStoreExpirationAnchor`, `VectorStoreFileStatus`, and `VectorStoreStatus`. Unrecognized values are now kept as-is.
