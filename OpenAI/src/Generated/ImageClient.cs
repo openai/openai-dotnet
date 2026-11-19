@@ -77,6 +77,7 @@ namespace OpenAI.Images
             return AsyncStreamingResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+        [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
         public virtual ClientResult GenerateImageVariations(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -86,6 +87,7 @@ namespace OpenAI.Images
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
+        [Obsolete("This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image.")]
         public virtual async Task<ClientResult> GenerateImageVariationsAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
