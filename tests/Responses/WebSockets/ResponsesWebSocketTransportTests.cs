@@ -258,6 +258,21 @@ public class ResponsesWebSocketTransportTests
     }
 
     [Test]
+    public async Task DisposalRacingAReceivedMessageDoesNotFaultCompletion()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        Subscribe(client);
+        await client.ConnectAsync();
+        socket.OnTextReceived = client.Dispose;
+        socket.Add("{\"type\":\"future.event\"}", true);
+
+        await client.Completion.WaitAsync(Timeout);
+        await client.DisposeAsync().AsTask().WaitAsync(Timeout);
+        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Disposed));
+    }
+
+    [Test]
     public async Task ThrowingCancellationCallbackDoesNotBlockActiveTransportDisposal()
     {
         FakeSocket socket = new();
@@ -552,6 +567,7 @@ public class ResponsesWebSocketTransportTests
         public ConcurrentQueue<string> Sent { get; } = new();
         public int MaximumConcurrentSends { get; private set; }
         public int CloseOutputCalls { get; private set; }
+        public Action OnTextReceived { get; set; }
         public override WebSocketCloseStatus? CloseStatus => _state == WebSocketState.CloseReceived ? WebSocketCloseStatus.NormalClosure : null;
         public override string CloseStatusDescription => null;
         public override WebSocketState State => _state;
@@ -578,6 +594,7 @@ public class ResponsesWebSocketTransportTests
                 return new WebSocketReceiveResult(0, WebSocketMessageType.Close, true, WebSocketCloseStatus.NormalClosure, "");
             }
             Array.Copy(frame.Data, 0, buffer.Array, buffer.Offset, frame.Data.Length);
+            OnTextReceived?.Invoke();
             return new WebSocketReceiveResult(frame.Data.Length, WebSocketMessageType.Text, frame.End);
         }
         public override async Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage,

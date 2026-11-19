@@ -259,12 +259,26 @@ public partial class ResponsesWebSocketClient
         {
             // Aborting the socket during shutdown can surface as WebSocketException rather than cancellation.
         }
+        catch (ObjectDisposedException exception) when (token.IsCancellationRequested
+            && exception.ObjectName == nameof(ResponsesWebSocketClient))
+        {
+            // Disposal can win the race between receiving and dispatching a message.
+        }
         catch (Exception exception)
         {
             _transportCompletion.TrySetException(exception);
             if (!token.IsCancellationRequested)
             {
-                await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, true, token), token).ConfigureAwait(false);
+                try
+                {
+                    await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, true, token), token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+                }
+                catch (ObjectDisposedException) when (token.IsCancellationRequested)
+                {
+                }
             }
         }
         finally
