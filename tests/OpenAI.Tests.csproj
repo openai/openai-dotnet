@@ -52,9 +52,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\OpenAI.Responses\src\Custom\WebSocket\BoundedConcurrentQueue.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI.Responses\src\Custom\WebSocket\MessageReceivedSubscriber.cs" LinkBase="Utility\Shared" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>SourcePath</_Parameter1>
       <_Parameter2>$(MSBuildProjectDirectory)</_Parameter2>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include=".queue-validation\" />
   </ItemGroup>
 </Project>
