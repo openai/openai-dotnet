@@ -35,6 +35,72 @@ checkout:
   fetch:
     - "typespec/update-http-client-csharp-*"
 
+jobs:
+  detect_target:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      target-branch: ${{ steps.detect-branch.outputs.target-branch }}
+    steps:
+      - name: Detect target branch and validate trigger
+        id: detect-branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          WORKFLOW_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          INPUT_BRANCH: ${{ github.event.inputs.branch }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          echo "=== Trigger context ==="
+          echo "Event: $EVENT_NAME"
+          echo "Workflow run conclusion: $WORKFLOW_RUN_CONCLUSION"
+
+          # --- Resolve target branch ---
+          BRANCH="$INPUT_BRANCH"
+
+          if [ -n "$BRANCH" ]; then
+            echo "Using branch from workflow_dispatch input: $BRANCH"
+          else
+            echo "Auto-detecting target branch from open PRs..."
+            PR_JSON=$(gh pr list --repo "$REPOSITORY" --state open \
+              --json number,headRefName,title,createdAt \
+              --jq '[.[] | select(.headRefName | startswith("typespec/update-http-client-csharp-"))] | sort_by(.createdAt) | reverse | .[0]')
+
+            if [ -z "$PR_JSON" ] || [ "$PR_JSON" = "null" ]; then
+              echo "::error::No open PR found with a typespec/update-http-client-csharp-* branch."
+              exit 1
+            fi
+
+            BRANCH=$(echo "$PR_JSON" | jq -r '.headRefName')
+            PR_TITLE=$(echo "$PR_JSON" | jq -r '.title')
+            PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
+            echo "Found PR #${PR_NUMBER}: ${PR_TITLE}"
+            echo "Target branch: $BRANCH"
+
+            # --- Gate: only continue for "Succeeded with Issues" PRs on workflow_run triggers ---
+            if [ "$EVENT_NAME" = "workflow_run" ]; then
+              if echo "$PR_TITLE" | grep -q "^Succeeded with Issues:"; then
+                echo "PR title indicates codegen issues to fix. Continuing."
+              else
+                echo "::error::PR exists but title does not start with 'Succeeded with Issues:'."
+                echo "This may be an actual failure or the PR was already fixed. Exiting."
+                exit 1
+              fi
+            fi
+          fi
+
+          if [[ ! "$BRANCH" =~ ^typespec/update-http-client-csharp-[A-Za-z0-9._-]+$ ]]; then
+            echo "::error::Target branch must match typespec/update-http-client-csharp-*."
+            exit 1
+          fi
+
+          echo "target-branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Target branch resolved: $BRANCH"
+
 steps:
   - name: Setup .NET SDK
     uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -44,70 +110,19 @@ steps:
     uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
     with:
       node-version: '22.x'
-  - name: Detect target branch and validate trigger
-    id: detect-branch
-    env:
-      GH_TOKEN: ${{ github.token }}
-    run: |
-      set -euo pipefail
-
-      echo "=== Trigger context ==="
-      echo "Event: ${{ github.event_name }}"
-      echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
-
-      # --- Resolve target branch ---
-      BRANCH="${{ github.event.inputs.branch }}"
-
-      if [ -n "$BRANCH" ]; then
-        echo "Using branch from workflow_dispatch input: $BRANCH"
-      else
-        echo "Auto-detecting target branch from open PRs..."
-        PR_JSON=$(gh pr list --state open \
-          --json number,headRefName,title,createdAt \
-          --jq '[.[] | select(.headRefName | startswith("typespec/update-http-client-csharp-"))] | sort_by(.createdAt) | reverse | .[0]')
-
-        if [ -z "$PR_JSON" ] || [ "$PR_JSON" = "null" ]; then
-          echo "::error::No open PR found with a typespec/update-http-client-csharp-* branch."
-          exit 1
-        fi
-
-        BRANCH=$(echo "$PR_JSON" | jq -r '.headRefName')
-        PR_TITLE=$(echo "$PR_JSON" | jq -r '.title')
-        PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
-        echo "Found PR #${PR_NUMBER}: ${PR_TITLE}"
-        echo "Target branch: $BRANCH"
-
-        # --- Gate: only continue for "Succeeded with Issues" PRs on workflow_run triggers ---
-        if [ "${{ github.event_name }}" = "workflow_run" ]; then
-          if echo "$PR_TITLE" | grep -q "^Succeeded with Issues:"; then
-            echo "PR title indicates codegen issues to fix. Continuing."
-          else
-            echo "::error::PR exists but title does not start with 'Succeeded with Issues:'."
-            echo "This may be an actual failure or the PR was already fixed. Exiting."
-            exit 1
-          fi
-        fi
-      fi
-
-      if [[ ! "$BRANCH" =~ ^typespec/update-http-client-csharp-[A-Za-z0-9._-]+$ ]]; then
-        echo "::error::Target branch must match typespec/update-http-client-csharp-*."
-        exit 1
-      fi
-
-      echo "target-branch=$BRANCH" >> "$GITHUB_OUTPUT"
-      # The safe-output server uses this as the patch base instead of the PR tool's base argument.
-      echo "GH_AW_CUSTOM_BASE_BRANCH=$BRANCH" >> "$GITHUB_ENV"
-      echo "Target branch resolved: $BRANCH"
   - name: Check out target branch and verify
     run: |
       set -euo pipefail
 
-      BRANCH="${{ steps.detect-branch.outputs.target-branch }}"
+      BRANCH="${{ needs.detect_target.outputs.target-branch }}"
 
       if [ -z "$BRANCH" ]; then
-        echo "::error::No target branch resolved from previous step."
+        echo "::error::No target branch resolved by the detect_target job."
         exit 1
       fi
+
+      # The safe-output server uses this as the patch base instead of the PR tool's base argument.
+      echo "GH_AW_CUSTOM_BASE_BRANCH=$BRANCH" >> "$GITHUB_ENV"
 
       echo "Checking out branch: $BRANCH"
 
@@ -142,6 +157,36 @@ network:
 safe-outputs:
   max-patch-size: 10240
   max-patch-files: 1000
+  needs: [detect_target]
+  env:
+    # The write job uses this as the default PR base instead of the repository default branch.
+    GH_AW_CUSTOM_BASE_BRANCH: ${{ needs.detect_target.outputs.target-branch }}
+  steps:
+    - name: Enforce detected pull request base
+      env:
+        EXPECTED_BASE: ${{ needs.detect_target.outputs.target-branch }}
+      run: |
+        set -euo pipefail
+
+        if [[ ! "$EXPECTED_BASE" =~ ^typespec/update-http-client-csharp-[A-Za-z0-9._-]+$ ]]; then
+          echo "::error::Invalid detected target branch."
+          exit 1
+        fi
+
+        OUTPUT=/tmp/gh-aw/agent_output.json
+        if [ ! -f "$OUTPUT" ]; then
+          echo "No agent output found; nothing to validate."
+          exit 0
+        fi
+
+        if ! jq -e --arg expected "$EXPECTED_BASE" \
+          '[(.items // [])[] | select(.type == "create_pull_request") | select((.base // "") != $expected)] | length == 0' \
+          "$OUTPUT" > /dev/null; then
+          echo "::error::Every create_pull_request output must set base to '$EXPECTED_BASE'."
+          exit 1
+        fi
+
+        echo "All pull request outputs target '$EXPECTED_BASE'."
   create-pull-request:
     draft: true
     preserve-branch-name: true
@@ -170,6 +215,13 @@ generator version.
 ## Instructions
 
 ### Step 1: Run code generation
+
+Before changing anything, record the generator update branch that is checked out. Use it as the
+PR base in Step 6:
+
+```bash
+git branch --show-current | tee /tmp/target-branch.txt
+```
 
 Run `Invoke-CodeGen.ps1` and capture all output:
 
@@ -348,9 +400,10 @@ The PR body must include these sections:
   for each fix, generated-code change group, or API change, with a short explanation and
   confidence level. Include changes that could not be mapped to an upstream PR.
 
-Use the target branch from Step 1 (e.g., `typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`)
-as the **base branch** for the PR so it stacks on top of the generator update PR. Extract the
-version suffix from the branch name (e.g., `1.0.0-alpha.20250101.1`) for the PR title.
+Use the target branch recorded in `/tmp/target-branch.txt` (e.g.,
+`typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`) as the **base branch** for the PR so
+it stacks on top of the generator update PR. Extract the version suffix from the branch name
+(e.g., `1.0.0-alpha.20250101.1`) for the PR title.
 
 The PR title must be: `Fix codegen errors for <VERSION>` (e.g.,
 `Fix codegen errors for 1.0.0-alpha.20250101.1`).
@@ -360,7 +413,8 @@ the branch or run `gh pr create`; the agent has read-only GitHub permissions. In
 `create_pull_request` safe output with:
 
 - `branch`: the new local branch name
-- `base`: the target branch from Step 1
+- `base` (required): the branch recorded in `/tmp/target-branch.txt`. The write job rejects the
+  PR if `base` is missing or does not match the detected target branch.
 - `title`: `Fix codegen errors for <VERSION>`
 - `body`: the PR description with all sections listed above
 
