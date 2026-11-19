@@ -36,7 +36,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeImageDetailLevel(string value) => new RealtimeImageDetailLevel(value);
 
-        public static implicit operator RealtimeImageDetailLevel?(string value) => value == null ? null : new RealtimeImageDetailLevel(value);
+        public static implicit operator RealtimeImageDetailLevel?(string value) => value == null ? (RealtimeImageDetailLevel?)null : new RealtimeImageDetailLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeImageDetailLevel other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsFunctionToolCallOutputStatus(string value) => new DecisionsFunctionToolCallOutputStatus(value);
 
-        public static implicit operator DecisionsFunctionToolCallOutputStatus?(string value) => value == null ? null : new DecisionsFunctionToolCallOutputStatus(value);
+        public static implicit operator DecisionsFunctionToolCallOutputStatus?(string value) => value == null ? (DecisionsFunctionToolCallOutputStatus?)null : new DecisionsFunctionToolCallOutputStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsFunctionToolCallOutputStatus other && Equals(other);

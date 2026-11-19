@@ -30,7 +30,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsPromptCacheTimeToLive(string value) => new DecisionsPromptCacheTimeToLive(value);
 
-        public static implicit operator DecisionsPromptCacheTimeToLive?(string value) => value == null ? null : new DecisionsPromptCacheTimeToLive(value);
+        public static implicit operator DecisionsPromptCacheTimeToLive?(string value) => value == null ? (DecisionsPromptCacheTimeToLive?)null : new DecisionsPromptCacheTimeToLive(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsPromptCacheTimeToLive other && Equals(other);

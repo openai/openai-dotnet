@@ -36,7 +36,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsQuestionKind(string value) => new DecisionsQuestionKind(value);
 
-        public static implicit operator DecisionsQuestionKind?(string value) => value == null ? null : new DecisionsQuestionKind(value);
+        public static implicit operator DecisionsQuestionKind?(string value) => value == null ? (DecisionsQuestionKind?)null : new DecisionsQuestionKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsQuestionKind other && Equals(other);

@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeSessionCreateRequestGABaseTypeGA(string value) => new InternalRealtimeSessionCreateRequestGABaseTypeGA(value);
 
-        public static implicit operator InternalRealtimeSessionCreateRequestGABaseTypeGA?(string value) => value == null ? null : new InternalRealtimeSessionCreateRequestGABaseTypeGA(value);
+        public static implicit operator InternalRealtimeSessionCreateRequestGABaseTypeGA?(string value) => value == null ? (InternalRealtimeSessionCreateRequestGABaseTypeGA?)null : new InternalRealtimeSessionCreateRequestGABaseTypeGA(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeSessionCreateRequestGABaseTypeGA other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseReasoningContext(string value) => new ResponseReasoningContext(value);
 
-        public static implicit operator ResponseReasoningContext?(string value) => value == null ? null : new ResponseReasoningContext(value);
+        public static implicit operator ResponseReasoningContext?(string value) => value == null ? (ResponseReasoningContext?)null : new ResponseReasoningContext(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseReasoningContext other && Equals(other);

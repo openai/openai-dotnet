@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalCompoundFilterType(string value) => new InternalCompoundFilterType(value);
 
-        public static implicit operator InternalCompoundFilterType?(string value) => value == null ? null : new InternalCompoundFilterType(value);
+        public static implicit operator InternalCompoundFilterType?(string value) => value == null ? (InternalCompoundFilterType?)null : new InternalCompoundFilterType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCompoundFilterType other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator CustomToolCallOutputStatus(string value) => new CustomToolCallOutputStatus(value);
 
-        public static implicit operator CustomToolCallOutputStatus?(string value) => value == null ? null : new CustomToolCallOutputStatus(value);
+        public static implicit operator CustomToolCallOutputStatus?(string value) => value == null ? (CustomToolCallOutputStatus?)null : new CustomToolCallOutputStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is CustomToolCallOutputStatus other && Equals(other);

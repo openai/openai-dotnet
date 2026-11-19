@@ -39,7 +39,7 @@ namespace OpenAI.Files
 
         public static implicit operator FileUploadPurpose(string value) => new FileUploadPurpose(value);
 
-        public static implicit operator FileUploadPurpose?(string value) => value == null ? null : new FileUploadPurpose(value);
+        public static implicit operator FileUploadPurpose?(string value) => value == null ? (FileUploadPurpose?)null : new FileUploadPurpose(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FileUploadPurpose other && Equals(other);

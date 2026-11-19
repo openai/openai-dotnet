@@ -28,7 +28,7 @@ namespace OpenAI.Videos
 
         public static implicit operator InternalVideoModel(string value) => new InternalVideoModel(value);
 
-        public static implicit operator InternalVideoModel?(string value) => value == null ? null : new InternalVideoModel(value);
+        public static implicit operator InternalVideoModel?(string value) => value == null ? (InternalVideoModel?)null : new InternalVideoModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVideoModel other && Equals(other);

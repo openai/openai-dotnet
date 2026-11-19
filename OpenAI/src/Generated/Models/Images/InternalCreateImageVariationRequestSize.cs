@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageVariationRequestSize(string value) => new InternalCreateImageVariationRequestSize(value);
 
-        public static implicit operator InternalCreateImageVariationRequestSize?(string value) => value == null ? null : new InternalCreateImageVariationRequestSize(value);
+        public static implicit operator InternalCreateImageVariationRequestSize?(string value) => value == null ? (InternalCreateImageVariationRequestSize?)null : new InternalCreateImageVariationRequestSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageVariationRequestSize other && Equals(other);

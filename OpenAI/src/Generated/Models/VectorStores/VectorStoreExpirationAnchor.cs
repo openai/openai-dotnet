@@ -30,7 +30,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreExpirationAnchor(string value) => new VectorStoreExpirationAnchor(value);
 
-        public static implicit operator VectorStoreExpirationAnchor?(string value) => value == null ? null : new VectorStoreExpirationAnchor(value);
+        public static implicit operator VectorStoreExpirationAnchor?(string value) => value == null ? (VectorStoreExpirationAnchor?)null : new VectorStoreExpirationAnchor(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreExpirationAnchor other && Equals(other);

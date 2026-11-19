@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationToolModerationLevel(string value) => new ImageGenerationToolModerationLevel(value);
 
-        public static implicit operator ImageGenerationToolModerationLevel?(string value) => value == null ? null : new ImageGenerationToolModerationLevel(value);
+        public static implicit operator ImageGenerationToolModerationLevel?(string value) => value == null ? (ImageGenerationToolModerationLevel?)null : new ImageGenerationToolModerationLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolModerationLevel other && Equals(other);

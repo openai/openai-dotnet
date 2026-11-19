@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalToolChoiceBaseTypeGA(string value) => new InternalToolChoiceBaseTypeGA(value);
 
-        public static implicit operator InternalToolChoiceBaseTypeGA?(string value) => value == null ? null : new InternalToolChoiceBaseTypeGA(value);
+        public static implicit operator InternalToolChoiceBaseTypeGA?(string value) => value == null ? (InternalToolChoiceBaseTypeGA?)null : new InternalToolChoiceBaseTypeGA(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalToolChoiceBaseTypeGA other && Equals(other);

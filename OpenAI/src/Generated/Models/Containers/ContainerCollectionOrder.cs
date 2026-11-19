@@ -33,7 +33,7 @@ namespace OpenAI.Containers
 
         public static implicit operator ContainerCollectionOrder(string value) => new ContainerCollectionOrder(value);
 
-        public static implicit operator ContainerCollectionOrder?(string value) => value == null ? null : new ContainerCollectionOrder(value);
+        public static implicit operator ContainerCollectionOrder?(string value) => value == null ? (ContainerCollectionOrder?)null : new ContainerCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ContainerCollectionOrder other && Equals(other);

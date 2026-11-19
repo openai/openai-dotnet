@@ -35,7 +35,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeMcpToolConnectorId(string value) => new RealtimeMcpToolConnectorId(value);
 
-        public static implicit operator RealtimeMcpToolConnectorId?(string value) => value == null ? null : new RealtimeMcpToolConnectorId(value);
+        public static implicit operator RealtimeMcpToolConnectorId?(string value) => value == null ? (RealtimeMcpToolConnectorId?)null : new RealtimeMcpToolConnectorId(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeMcpToolConnectorId other && Equals(other);

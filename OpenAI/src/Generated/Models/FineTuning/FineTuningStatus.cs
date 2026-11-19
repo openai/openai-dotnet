@@ -45,7 +45,7 @@ namespace OpenAI.FineTuning
 
         public static implicit operator FineTuningStatus(string value) => new FineTuningStatus(value);
 
-        public static implicit operator FineTuningStatus?(string value) => value == null ? null : new FineTuningStatus(value);
+        public static implicit operator FineTuningStatus?(string value) => value == null ? (FineTuningStatus?)null : new FineTuningStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FineTuningStatus other && Equals(other);

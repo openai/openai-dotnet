@@ -39,7 +39,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeSemanticVadEagernessLevel(string value) => new RealtimeSemanticVadEagernessLevel(value);
 
-        public static implicit operator RealtimeSemanticVadEagernessLevel?(string value) => value == null ? null : new RealtimeSemanticVadEagernessLevel(value);
+        public static implicit operator RealtimeSemanticVadEagernessLevel?(string value) => value == null ? (RealtimeSemanticVadEagernessLevel?)null : new RealtimeSemanticVadEagernessLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeSemanticVadEagernessLevel other && Equals(other);

@@ -52,7 +52,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ComputerCallActionKind(string value) => new ComputerCallActionKind(value);
 
-        public static implicit operator ComputerCallActionKind?(string value) => value == null ? null : new ComputerCallActionKind(value);
+        public static implicit operator ComputerCallActionKind?(string value) => value == null ? (ComputerCallActionKind?)null : new ComputerCallActionKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ComputerCallActionKind other && Equals(other);

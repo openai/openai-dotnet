@@ -34,7 +34,7 @@ namespace OpenAI.Moderations
 
         public static implicit operator InternalCreateModerationRequestModel(string value) => new InternalCreateModerationRequestModel(value);
 
-        public static implicit operator InternalCreateModerationRequestModel?(string value) => value == null ? null : new InternalCreateModerationRequestModel(value);
+        public static implicit operator InternalCreateModerationRequestModel?(string value) => value == null ? (InternalCreateModerationRequestModel?)null : new InternalCreateModerationRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateModerationRequestModel other && Equals(other);

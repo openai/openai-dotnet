@@ -39,7 +39,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreFileBatchStatus(string value) => new VectorStoreFileBatchStatus(value);
 
-        public static implicit operator VectorStoreFileBatchStatus?(string value) => value == null ? null : new VectorStoreFileBatchStatus(value);
+        public static implicit operator VectorStoreFileBatchStatus?(string value) => value == null ? (VectorStoreFileBatchStatus?)null : new VectorStoreFileBatchStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreFileBatchStatus other && Equals(other);

@@ -42,7 +42,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator MessageFailureReason(string value) => new MessageFailureReason(value);
 
-        public static implicit operator MessageFailureReason?(string value) => value == null ? null : new MessageFailureReason(value);
+        public static implicit operator MessageFailureReason?(string value) => value == null ? (MessageFailureReason?)null : new MessageFailureReason(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is MessageFailureReason other && Equals(other);

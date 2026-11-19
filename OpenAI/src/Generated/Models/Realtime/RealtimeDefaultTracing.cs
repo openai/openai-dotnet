@@ -30,7 +30,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeDefaultTracing(string value) => new RealtimeDefaultTracing(value);
 
-        public static implicit operator RealtimeDefaultTracing?(string value) => value == null ? null : new RealtimeDefaultTracing(value);
+        public static implicit operator RealtimeDefaultTracing?(string value) => value == null ? (RealtimeDefaultTracing?)null : new RealtimeDefaultTracing(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeDefaultTracing other && Equals(other);

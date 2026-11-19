@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalImagesResponseQuality(string value) => new InternalImagesResponseQuality(value);
 
-        public static implicit operator InternalImagesResponseQuality?(string value) => value == null ? null : new InternalImagesResponseQuality(value);
+        public static implicit operator InternalImagesResponseQuality?(string value) => value == null ? (InternalImagesResponseQuality?)null : new InternalImagesResponseQuality(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImagesResponseQuality other && Equals(other);

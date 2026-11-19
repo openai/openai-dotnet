@@ -30,7 +30,7 @@ namespace OpenAI.Audio
 
         public static implicit operator AudioTranslationFormat(string value) => new AudioTranslationFormat(value);
 
-        public static implicit operator AudioTranslationFormat?(string value) => value == null ? null : new AudioTranslationFormat(value);
+        public static implicit operator AudioTranslationFormat?(string value) => value == null ? (AudioTranslationFormat?)null : new AudioTranslationFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AudioTranslationFormat other && Equals(other);

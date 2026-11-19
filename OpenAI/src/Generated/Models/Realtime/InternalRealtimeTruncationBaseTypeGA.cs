@@ -25,7 +25,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeTruncationBaseTypeGA(string value) => new InternalRealtimeTruncationBaseTypeGA(value);
 
-        public static implicit operator InternalRealtimeTruncationBaseTypeGA?(string value) => value == null ? null : new InternalRealtimeTruncationBaseTypeGA(value);
+        public static implicit operator InternalRealtimeTruncationBaseTypeGA?(string value) => value == null ? (InternalRealtimeTruncationBaseTypeGA?)null : new InternalRealtimeTruncationBaseTypeGA(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeTruncationBaseTypeGA other && Equals(other);

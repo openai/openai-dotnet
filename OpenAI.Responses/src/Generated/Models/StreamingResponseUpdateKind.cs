@@ -186,7 +186,7 @@ namespace OpenAI.Responses
 
         public static implicit operator StreamingResponseUpdateKind(string value) => new StreamingResponseUpdateKind(value);
 
-        public static implicit operator StreamingResponseUpdateKind?(string value) => value == null ? null : new StreamingResponseUpdateKind(value);
+        public static implicit operator StreamingResponseUpdateKind?(string value) => value == null ? (StreamingResponseUpdateKind?)null : new StreamingResponseUpdateKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is StreamingResponseUpdateKind other && Equals(other);

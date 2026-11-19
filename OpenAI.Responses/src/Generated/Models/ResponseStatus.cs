@@ -45,7 +45,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseStatus(string value) => new ResponseStatus(value);
 
-        public static implicit operator ResponseStatus?(string value) => value == null ? null : new ResponseStatus(value);
+        public static implicit operator ResponseStatus?(string value) => value == null ? (ResponseStatus?)null : new ResponseStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseStatus other && Equals(other);

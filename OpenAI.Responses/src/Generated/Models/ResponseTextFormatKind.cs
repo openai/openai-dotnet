@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseTextFormatKind(string value) => new ResponseTextFormatKind(value);
 
-        public static implicit operator ResponseTextFormatKind?(string value) => value == null ? null : new ResponseTextFormatKind(value);
+        public static implicit operator ResponseTextFormatKind?(string value) => value == null ? (ResponseTextFormatKind?)null : new ResponseTextFormatKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseTextFormatKind other && Equals(other);

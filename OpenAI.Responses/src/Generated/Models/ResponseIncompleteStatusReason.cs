@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseIncompleteStatusReason(string value) => new ResponseIncompleteStatusReason(value);
 
-        public static implicit operator ResponseIncompleteStatusReason?(string value) => value == null ? null : new ResponseIncompleteStatusReason(value);
+        public static implicit operator ResponseIncompleteStatusReason?(string value) => value == null ? (ResponseIncompleteStatusReason?)null : new ResponseIncompleteStatusReason(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseIncompleteStatusReason other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator FunctionCallOutputStatus(string value) => new FunctionCallOutputStatus(value);
 
-        public static implicit operator FunctionCallOutputStatus?(string value) => value == null ? null : new FunctionCallOutputStatus(value);
+        public static implicit operator FunctionCallOutputStatus?(string value) => value == null ? (FunctionCallOutputStatus?)null : new FunctionCallOutputStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FunctionCallOutputStatus other && Equals(other);

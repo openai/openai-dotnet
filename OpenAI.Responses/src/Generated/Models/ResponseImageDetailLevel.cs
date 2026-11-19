@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseImageDetailLevel(string value) => new ResponseImageDetailLevel(value);
 
-        public static implicit operator ResponseImageDetailLevel?(string value) => value == null ? null : new ResponseImageDetailLevel(value);
+        public static implicit operator ResponseImageDetailLevel?(string value) => value == null ? (ResponseImageDetailLevel?)null : new ResponseImageDetailLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseImageDetailLevel other && Equals(other);

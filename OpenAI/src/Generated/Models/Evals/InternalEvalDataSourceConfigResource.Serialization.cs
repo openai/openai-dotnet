@@ -103,8 +103,6 @@ namespace OpenAI.Evals
             return DeserializeInternalEvalDataSourceConfigResource(document.RootElement, options);
         }
 
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static InternalEvalDataSourceConfigResource DeserializeInternalEvalDataSourceConfigResource(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -125,7 +123,5 @@ namespace OpenAI.Evals
             }
             return InternalUnknownEvalDataSourceConfigResource.DeserializeInternalUnknownEvalDataSourceConfigResource(element, options);
         }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

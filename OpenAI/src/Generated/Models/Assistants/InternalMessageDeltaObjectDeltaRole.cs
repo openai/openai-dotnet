@@ -28,7 +28,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalMessageDeltaObjectDeltaRole(string value) => new InternalMessageDeltaObjectDeltaRole(value);
 
-        public static implicit operator InternalMessageDeltaObjectDeltaRole?(string value) => value == null ? null : new InternalMessageDeltaObjectDeltaRole(value);
+        public static implicit operator InternalMessageDeltaObjectDeltaRole?(string value) => value == null ? (InternalMessageDeltaObjectDeltaRole?)null : new InternalMessageDeltaObjectDeltaRole(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalMessageDeltaObjectDeltaRole other && Equals(other);

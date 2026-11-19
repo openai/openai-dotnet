@@ -42,7 +42,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ComputerCallActionMouseButton(string value) => new ComputerCallActionMouseButton(value);
 
-        public static implicit operator ComputerCallActionMouseButton?(string value) => value == null ? null : new ComputerCallActionMouseButton(value);
+        public static implicit operator ComputerCallActionMouseButton?(string value) => value == null ? (ComputerCallActionMouseButton?)null : new ComputerCallActionMouseButton(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ComputerCallActionMouseButton other && Equals(other);

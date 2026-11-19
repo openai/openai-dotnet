@@ -33,7 +33,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreCollectionOrder(string value) => new VectorStoreCollectionOrder(value);
 
-        public static implicit operator VectorStoreCollectionOrder?(string value) => value == null ? null : new VectorStoreCollectionOrder(value);
+        public static implicit operator VectorStoreCollectionOrder?(string value) => value == null ? (VectorStoreCollectionOrder?)null : new VectorStoreCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreCollectionOrder other && Equals(other);

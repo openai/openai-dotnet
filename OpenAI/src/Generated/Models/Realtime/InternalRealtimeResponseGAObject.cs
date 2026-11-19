@@ -25,7 +25,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeResponseGAObject(string value) => new InternalRealtimeResponseGAObject(value);
 
-        public static implicit operator InternalRealtimeResponseGAObject?(string value) => value == null ? null : new InternalRealtimeResponseGAObject(value);
+        public static implicit operator InternalRealtimeResponseGAObject?(string value) => value == null ? (InternalRealtimeResponseGAObject?)null : new InternalRealtimeResponseGAObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeResponseGAObject other && Equals(other);

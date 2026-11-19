@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalTruncationEnum(string value) => new InternalTruncationEnum(value);
 
-        public static implicit operator InternalTruncationEnum?(string value) => value == null ? null : new InternalTruncationEnum(value);
+        public static implicit operator InternalTruncationEnum?(string value) => value == null ? (InternalTruncationEnum?)null : new InternalTruncationEnum(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalTruncationEnum other && Equals(other);

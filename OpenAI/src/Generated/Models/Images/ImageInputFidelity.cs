@@ -33,7 +33,7 @@ namespace OpenAI.Images
 
         public static implicit operator ImageInputFidelity(string value) => new ImageInputFidelity(value);
 
-        public static implicit operator ImageInputFidelity?(string value) => value == null ? null : new ImageInputFidelity(value);
+        public static implicit operator ImageInputFidelity?(string value) => value == null ? (ImageInputFidelity?)null : new ImageInputFidelity(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageInputFidelity other && Equals(other);

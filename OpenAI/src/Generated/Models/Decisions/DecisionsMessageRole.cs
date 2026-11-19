@@ -39,7 +39,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsMessageRole(string value) => new DecisionsMessageRole(value);
 
-        public static implicit operator DecisionsMessageRole?(string value) => value == null ? null : new DecisionsMessageRole(value);
+        public static implicit operator DecisionsMessageRole?(string value) => value == null ? (DecisionsMessageRole?)null : new DecisionsMessageRole(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsMessageRole other && Equals(other);

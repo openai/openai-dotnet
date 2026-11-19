@@ -28,7 +28,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalSubmitToolOutputsToRunRequestAccept(string value) => new InternalSubmitToolOutputsToRunRequestAccept(value);
 
-        public static implicit operator InternalSubmitToolOutputsToRunRequestAccept?(string value) => value == null ? null : new InternalSubmitToolOutputsToRunRequestAccept(value);
+        public static implicit operator InternalSubmitToolOutputsToRunRequestAccept?(string value) => value == null ? (InternalSubmitToolOutputsToRunRequestAccept?)null : new InternalSubmitToolOutputsToRunRequestAccept(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalSubmitToolOutputsToRunRequestAccept other && Equals(other);

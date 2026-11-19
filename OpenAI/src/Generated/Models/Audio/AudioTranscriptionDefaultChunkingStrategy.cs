@@ -30,7 +30,7 @@ namespace OpenAI.Audio
 
         public static implicit operator AudioTranscriptionDefaultChunkingStrategy(string value) => new AudioTranscriptionDefaultChunkingStrategy(value);
 
-        public static implicit operator AudioTranscriptionDefaultChunkingStrategy?(string value) => value == null ? null : new AudioTranscriptionDefaultChunkingStrategy(value);
+        public static implicit operator AudioTranscriptionDefaultChunkingStrategy?(string value) => value == null ? (AudioTranscriptionDefaultChunkingStrategy?)null : new AudioTranscriptionDefaultChunkingStrategy(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AudioTranscriptionDefaultChunkingStrategy other && Equals(other);

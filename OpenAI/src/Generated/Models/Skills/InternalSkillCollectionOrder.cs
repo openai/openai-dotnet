@@ -28,7 +28,7 @@ namespace OpenAI.Skills
 
         public static implicit operator InternalSkillCollectionOrder(string value) => new InternalSkillCollectionOrder(value);
 
-        public static implicit operator InternalSkillCollectionOrder?(string value) => value == null ? null : new InternalSkillCollectionOrder(value);
+        public static implicit operator InternalSkillCollectionOrder?(string value) => value == null ? (InternalSkillCollectionOrder?)null : new InternalSkillCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalSkillCollectionOrder other && Equals(other);

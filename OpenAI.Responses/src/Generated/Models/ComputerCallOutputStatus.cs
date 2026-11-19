@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ComputerCallOutputStatus(string value) => new ComputerCallOutputStatus(value);
 
-        public static implicit operator ComputerCallOutputStatus?(string value) => value == null ? null : new ComputerCallOutputStatus(value);
+        public static implicit operator ComputerCallOutputStatus?(string value) => value == null ? (ComputerCallOutputStatus?)null : new ComputerCallOutputStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ComputerCallOutputStatus other && Equals(other);

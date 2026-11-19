@@ -25,7 +25,7 @@ namespace OpenAI.Files
 
         public static implicit operator InternalUploadObject(string value) => new InternalUploadObject(value);
 
-        public static implicit operator InternalUploadObject?(string value) => value == null ? null : new InternalUploadObject(value);
+        public static implicit operator InternalUploadObject?(string value) => value == null ? (InternalUploadObject?)null : new InternalUploadObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalUploadObject other && Equals(other);

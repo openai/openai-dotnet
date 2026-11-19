@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator RunStepCollectionOrder(string value) => new RunStepCollectionOrder(value);
 
-        public static implicit operator RunStepCollectionOrder?(string value) => value == null ? null : new RunStepCollectionOrder(value);
+        public static implicit operator RunStepCollectionOrder?(string value) => value == null ? (RunStepCollectionOrder?)null : new RunStepCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RunStepCollectionOrder other && Equals(other);

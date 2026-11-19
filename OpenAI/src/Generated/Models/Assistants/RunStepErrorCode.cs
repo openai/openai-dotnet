@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator RunStepErrorCode(string value) => new RunStepErrorCode(value);
 
-        public static implicit operator RunStepErrorCode?(string value) => value == null ? null : new RunStepErrorCode(value);
+        public static implicit operator RunStepErrorCode?(string value) => value == null ? (RunStepErrorCode?)null : new RunStepErrorCode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RunStepErrorCode other && Equals(other);

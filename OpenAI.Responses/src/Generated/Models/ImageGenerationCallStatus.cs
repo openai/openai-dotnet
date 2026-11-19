@@ -39,7 +39,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationCallStatus(string value) => new ImageGenerationCallStatus(value);
 
-        public static implicit operator ImageGenerationCallStatus?(string value) => value == null ? null : new ImageGenerationCallStatus(value);
+        public static implicit operator ImageGenerationCallStatus?(string value) => value == null ? (ImageGenerationCallStatus?)null : new ImageGenerationCallStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationCallStatus other && Equals(other);

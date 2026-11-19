@@ -37,7 +37,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateTranscriptionRequestModel(string value) => new InternalCreateTranscriptionRequestModel(value);
 
-        public static implicit operator InternalCreateTranscriptionRequestModel?(string value) => value == null ? null : new InternalCreateTranscriptionRequestModel(value);
+        public static implicit operator InternalCreateTranscriptionRequestModel?(string value) => value == null ? (InternalCreateTranscriptionRequestModel?)null : new InternalCreateTranscriptionRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionRequestModel other && Equals(other);

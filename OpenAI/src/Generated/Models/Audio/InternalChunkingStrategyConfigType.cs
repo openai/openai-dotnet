@@ -25,7 +25,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalChunkingStrategyConfigType(string value) => new InternalChunkingStrategyConfigType(value);
 
-        public static implicit operator InternalChunkingStrategyConfigType?(string value) => value == null ? null : new InternalChunkingStrategyConfigType(value);
+        public static implicit operator InternalChunkingStrategyConfigType?(string value) => value == null ? (InternalChunkingStrategyConfigType?)null : new InternalChunkingStrategyConfigType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChunkingStrategyConfigType other && Equals(other);

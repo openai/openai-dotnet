@@ -34,7 +34,7 @@ namespace OpenAI.Videos
 
         public static implicit operator InternalVideoSize(string value) => new InternalVideoSize(value);
 
-        public static implicit operator InternalVideoSize?(string value) => value == null ? null : new InternalVideoSize(value);
+        public static implicit operator InternalVideoSize?(string value) => value == null ? (InternalVideoSize?)null : new InternalVideoSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVideoSize other && Equals(other);

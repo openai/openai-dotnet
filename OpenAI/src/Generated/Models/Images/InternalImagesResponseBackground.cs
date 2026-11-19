@@ -28,7 +28,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalImagesResponseBackground(string value) => new InternalImagesResponseBackground(value);
 
-        public static implicit operator InternalImagesResponseBackground?(string value) => value == null ? null : new InternalImagesResponseBackground(value);
+        public static implicit operator InternalImagesResponseBackground?(string value) => value == null ? (InternalImagesResponseBackground?)null : new InternalImagesResponseBackground(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImagesResponseBackground other && Equals(other);

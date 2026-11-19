@@ -34,7 +34,7 @@ namespace OpenAI.Files
 
         public static implicit operator InternalUploadStatus(string value) => new InternalUploadStatus(value);
 
-        public static implicit operator InternalUploadStatus?(string value) => value == null ? null : new InternalUploadStatus(value);
+        public static implicit operator InternalUploadStatus?(string value) => value == null ? (InternalUploadStatus?)null : new InternalUploadStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalUploadStatus other && Equals(other);

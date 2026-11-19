@@ -28,7 +28,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateTranscriptionRequestTimestampGranularities(string value) => new InternalCreateTranscriptionRequestTimestampGranularities(value);
 
-        public static implicit operator InternalCreateTranscriptionRequestTimestampGranularities?(string value) => value == null ? null : new InternalCreateTranscriptionRequestTimestampGranularities(value);
+        public static implicit operator InternalCreateTranscriptionRequestTimestampGranularities?(string value) => value == null ? (InternalCreateTranscriptionRequestTimestampGranularities?)null : new InternalCreateTranscriptionRequestTimestampGranularities(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionRequestTimestampGranularities other && Equals(other);

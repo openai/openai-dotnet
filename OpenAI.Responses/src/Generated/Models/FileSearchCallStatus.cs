@@ -42,7 +42,7 @@ namespace OpenAI.Responses
 
         public static implicit operator FileSearchCallStatus(string value) => new FileSearchCallStatus(value);
 
-        public static implicit operator FileSearchCallStatus?(string value) => value == null ? null : new FileSearchCallStatus(value);
+        public static implicit operator FileSearchCallStatus?(string value) => value == null ? (FileSearchCallStatus?)null : new FileSearchCallStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FileSearchCallStatus other && Equals(other);

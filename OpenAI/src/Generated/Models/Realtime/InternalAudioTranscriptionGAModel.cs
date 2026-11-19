@@ -37,7 +37,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalAudioTranscriptionGAModel(string value) => new InternalAudioTranscriptionGAModel(value);
 
-        public static implicit operator InternalAudioTranscriptionGAModel?(string value) => value == null ? null : new InternalAudioTranscriptionGAModel(value);
+        public static implicit operator InternalAudioTranscriptionGAModel?(string value) => value == null ? (InternalAudioTranscriptionGAModel?)null : new InternalAudioTranscriptionGAModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAudioTranscriptionGAModel other && Equals(other);

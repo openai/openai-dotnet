@@ -30,7 +30,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsPromptCacheBreakpointMode(string value) => new DecisionsPromptCacheBreakpointMode(value);
 
-        public static implicit operator DecisionsPromptCacheBreakpointMode?(string value) => value == null ? null : new DecisionsPromptCacheBreakpointMode(value);
+        public static implicit operator DecisionsPromptCacheBreakpointMode?(string value) => value == null ? (DecisionsPromptCacheBreakpointMode?)null : new DecisionsPromptCacheBreakpointMode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsPromptCacheBreakpointMode other && Equals(other);
