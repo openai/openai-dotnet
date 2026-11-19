@@ -31,7 +31,7 @@ namespace OpenAI.Moderations
 
         public static implicit operator ModerationInputPartKind(string value) => new ModerationInputPartKind(value);
 
-        public static implicit operator ModerationInputPartKind?(string value) => value == null ? null : new ModerationInputPartKind(value);
+        public static implicit operator ModerationInputPartKind?(string value) => value == null ? (ModerationInputPartKind?)null : new ModerationInputPartKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ModerationInputPartKind other && Equals(other);

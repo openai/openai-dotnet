@@ -60,7 +60,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeClientCommandKind(string value) => new RealtimeClientCommandKind(value);
 
-        public static implicit operator RealtimeClientCommandKind?(string value) => value == null ? null : new RealtimeClientCommandKind(value);
+        public static implicit operator RealtimeClientCommandKind?(string value) => value == null ? (RealtimeClientCommandKind?)null : new RealtimeClientCommandKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeClientCommandKind other && Equals(other);

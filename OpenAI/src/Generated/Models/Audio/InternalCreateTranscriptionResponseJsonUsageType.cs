@@ -28,7 +28,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateTranscriptionResponseJsonUsageType(string value) => new InternalCreateTranscriptionResponseJsonUsageType(value);
 
-        public static implicit operator InternalCreateTranscriptionResponseJsonUsageType?(string value) => value == null ? null : new InternalCreateTranscriptionResponseJsonUsageType(value);
+        public static implicit operator InternalCreateTranscriptionResponseJsonUsageType?(string value) => value == null ? (InternalCreateTranscriptionResponseJsonUsageType?)null : new InternalCreateTranscriptionResponseJsonUsageType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionResponseJsonUsageType other && Equals(other);

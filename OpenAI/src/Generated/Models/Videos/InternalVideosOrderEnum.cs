@@ -28,7 +28,7 @@ namespace OpenAI.Videos
 
         public static implicit operator InternalVideosOrderEnum(string value) => new InternalVideosOrderEnum(value);
 
-        public static implicit operator InternalVideosOrderEnum?(string value) => value == null ? null : new InternalVideosOrderEnum(value);
+        public static implicit operator InternalVideosOrderEnum?(string value) => value == null ? (InternalVideosOrderEnum?)null : new InternalVideosOrderEnum(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVideosOrderEnum other && Equals(other);

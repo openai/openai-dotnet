@@ -25,7 +25,7 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalEvalItemType(string value) => new InternalEvalItemType(value);
 
-        public static implicit operator InternalEvalItemType?(string value) => value == null ? null : new InternalEvalItemType(value);
+        public static implicit operator InternalEvalItemType?(string value) => value == null ? (InternalEvalItemType?)null : new InternalEvalItemType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalEvalItemType other && Equals(other);

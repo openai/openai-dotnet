@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeResponseContentPartKind(string value) => new RealtimeResponseContentPartKind(value);
 
-        public static implicit operator RealtimeResponseContentPartKind?(string value) => value == null ? null : new RealtimeResponseContentPartKind(value);
+        public static implicit operator RealtimeResponseContentPartKind?(string value) => value == null ? (RealtimeResponseContentPartKind?)null : new RealtimeResponseContentPartKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeResponseContentPartKind other && Equals(other);

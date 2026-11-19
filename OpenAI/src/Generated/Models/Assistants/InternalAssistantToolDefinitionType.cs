@@ -31,7 +31,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalAssistantToolDefinitionType(string value) => new InternalAssistantToolDefinitionType(value);
 
-        public static implicit operator InternalAssistantToolDefinitionType?(string value) => value == null ? null : new InternalAssistantToolDefinitionType(value);
+        public static implicit operator InternalAssistantToolDefinitionType?(string value) => value == null ? (InternalAssistantToolDefinitionType?)null : new InternalAssistantToolDefinitionType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAssistantToolDefinitionType other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ApplyPatchOperationKind(string value) => new ApplyPatchOperationKind(value);
 
-        public static implicit operator ApplyPatchOperationKind?(string value) => value == null ? null : new ApplyPatchOperationKind(value);
+        public static implicit operator ApplyPatchOperationKind?(string value) => value == null ? (ApplyPatchOperationKind?)null : new ApplyPatchOperationKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ApplyPatchOperationKind other && Equals(other);

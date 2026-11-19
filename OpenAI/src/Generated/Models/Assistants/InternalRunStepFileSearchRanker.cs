@@ -28,7 +28,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalRunStepFileSearchRanker(string value) => new InternalRunStepFileSearchRanker(value);
 
-        public static implicit operator InternalRunStepFileSearchRanker?(string value) => value == null ? null : new InternalRunStepFileSearchRanker(value);
+        public static implicit operator InternalRunStepFileSearchRanker?(string value) => value == null ? (InternalRunStepFileSearchRanker?)null : new InternalRunStepFileSearchRanker(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRunStepFileSearchRanker other && Equals(other);

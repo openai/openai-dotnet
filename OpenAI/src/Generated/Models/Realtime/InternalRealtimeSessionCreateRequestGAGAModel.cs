@@ -64,7 +64,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeSessionCreateRequestGAGAModel(string value) => new InternalRealtimeSessionCreateRequestGAGAModel(value);
 
-        public static implicit operator InternalRealtimeSessionCreateRequestGAGAModel?(string value) => value == null ? null : new InternalRealtimeSessionCreateRequestGAGAModel(value);
+        public static implicit operator InternalRealtimeSessionCreateRequestGAGAModel?(string value) => value == null ? (InternalRealtimeSessionCreateRequestGAGAModel?)null : new InternalRealtimeSessionCreateRequestGAGAModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeSessionCreateRequestGAGAModel other && Equals(other);

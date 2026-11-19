@@ -42,7 +42,7 @@ namespace OpenAI.Responses
 
         public static implicit operator CodeInterpreterCallStatus(string value) => new CodeInterpreterCallStatus(value);
 
-        public static implicit operator CodeInterpreterCallStatus?(string value) => value == null ? null : new CodeInterpreterCallStatus(value);
+        public static implicit operator CodeInterpreterCallStatus?(string value) => value == null ? (CodeInterpreterCallStatus?)null : new CodeInterpreterCallStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is CodeInterpreterCallStatus other && Equals(other);

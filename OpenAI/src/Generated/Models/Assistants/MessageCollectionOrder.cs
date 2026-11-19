@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator MessageCollectionOrder(string value) => new MessageCollectionOrder(value);
 
-        public static implicit operator MessageCollectionOrder?(string value) => value == null ? null : new MessageCollectionOrder(value);
+        public static implicit operator MessageCollectionOrder?(string value) => value == null ? (MessageCollectionOrder?)null : new MessageCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is MessageCollectionOrder other && Equals(other);

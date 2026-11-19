@@ -25,7 +25,7 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalChatCompletionMessageToolCallChunkType(string value) => new InternalChatCompletionMessageToolCallChunkType(value);
 
-        public static implicit operator InternalChatCompletionMessageToolCallChunkType?(string value) => value == null ? null : new InternalChatCompletionMessageToolCallChunkType(value);
+        public static implicit operator InternalChatCompletionMessageToolCallChunkType?(string value) => value == null ? (InternalChatCompletionMessageToolCallChunkType?)null : new InternalChatCompletionMessageToolCallChunkType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChatCompletionMessageToolCallChunkType other && Equals(other);

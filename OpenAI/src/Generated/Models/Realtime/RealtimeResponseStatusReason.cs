@@ -39,7 +39,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeResponseStatusReason(string value) => new RealtimeResponseStatusReason(value);
 
-        public static implicit operator RealtimeResponseStatusReason?(string value) => value == null ? null : new RealtimeResponseStatusReason(value);
+        public static implicit operator RealtimeResponseStatusReason?(string value) => value == null ? (RealtimeResponseStatusReason?)null : new RealtimeResponseStatusReason(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeResponseStatusReason other && Equals(other);

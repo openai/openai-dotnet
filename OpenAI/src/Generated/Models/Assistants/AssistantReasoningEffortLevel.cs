@@ -37,7 +37,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator AssistantReasoningEffortLevel(string value) => new AssistantReasoningEffortLevel(value);
 
-        public static implicit operator AssistantReasoningEffortLevel?(string value) => value == null ? null : new AssistantReasoningEffortLevel(value);
+        public static implicit operator AssistantReasoningEffortLevel?(string value) => value == null ? (AssistantReasoningEffortLevel?)null : new AssistantReasoningEffortLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AssistantReasoningEffortLevel other && Equals(other);

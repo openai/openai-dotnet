@@ -51,7 +51,7 @@ namespace OpenAI.Responses
 
         public static implicit operator IncludedResponseProperty(string value) => new IncludedResponseProperty(value);
 
-        public static implicit operator IncludedResponseProperty?(string value) => value == null ? null : new IncludedResponseProperty(value);
+        public static implicit operator IncludedResponseProperty?(string value) => value == null ? (IncludedResponseProperty?)null : new IncludedResponseProperty(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is IncludedResponseProperty other && Equals(other);

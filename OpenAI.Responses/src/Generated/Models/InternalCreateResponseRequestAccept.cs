@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalCreateResponseRequestAccept(string value) => new InternalCreateResponseRequestAccept(value);
 
-        public static implicit operator InternalCreateResponseRequestAccept?(string value) => value == null ? null : new InternalCreateResponseRequestAccept(value);
+        public static implicit operator InternalCreateResponseRequestAccept?(string value) => value == null ? (InternalCreateResponseRequestAccept?)null : new InternalCreateResponseRequestAccept(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateResponseRequestAccept other && Equals(other);

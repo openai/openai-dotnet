@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeTurnDetectionBaseTypeGA(string value) => new InternalRealtimeTurnDetectionBaseTypeGA(value);
 
-        public static implicit operator InternalRealtimeTurnDetectionBaseTypeGA?(string value) => value == null ? null : new InternalRealtimeTurnDetectionBaseTypeGA(value);
+        public static implicit operator InternalRealtimeTurnDetectionBaseTypeGA?(string value) => value == null ? (InternalRealtimeTurnDetectionBaseTypeGA?)null : new InternalRealtimeTurnDetectionBaseTypeGA(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeTurnDetectionBaseTypeGA other && Equals(other);

@@ -28,7 +28,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateSpeechRequestStreamFormat(string value) => new InternalCreateSpeechRequestStreamFormat(value);
 
-        public static implicit operator InternalCreateSpeechRequestStreamFormat?(string value) => value == null ? null : new InternalCreateSpeechRequestStreamFormat(value);
+        public static implicit operator InternalCreateSpeechRequestStreamFormat?(string value) => value == null ? (InternalCreateSpeechRequestStreamFormat?)null : new InternalCreateSpeechRequestStreamFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateSpeechRequestStreamFormat other && Equals(other);

@@ -36,7 +36,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeDefaultToolChoice(string value) => new RealtimeDefaultToolChoice(value);
 
-        public static implicit operator RealtimeDefaultToolChoice?(string value) => value == null ? null : new RealtimeDefaultToolChoice(value);
+        public static implicit operator RealtimeDefaultToolChoice?(string value) => value == null ? (RealtimeDefaultToolChoice?)null : new RealtimeDefaultToolChoice(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeDefaultToolChoice other && Equals(other);

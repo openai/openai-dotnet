@@ -25,7 +25,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalImageGenToolModel(string value) => new InternalImageGenToolModel(value);
 
-        public static implicit operator InternalImageGenToolModel?(string value) => value == null ? null : new InternalImageGenToolModel(value);
+        public static implicit operator InternalImageGenToolModel?(string value) => value == null ? (InternalImageGenToolModel?)null : new InternalImageGenToolModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImageGenToolModel other && Equals(other);

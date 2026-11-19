@@ -39,7 +39,7 @@ namespace OpenAI.Graders
 
         public static implicit operator GraderStringCheckOperation(string value) => new GraderStringCheckOperation(value);
 
-        public static implicit operator GraderStringCheckOperation?(string value) => value == null ? null : new GraderStringCheckOperation(value);
+        public static implicit operator GraderStringCheckOperation?(string value) => value == null ? (GraderStringCheckOperation?)null : new GraderStringCheckOperation(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GraderStringCheckOperation other && Equals(other);

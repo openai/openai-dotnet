@@ -30,7 +30,7 @@ namespace OpenAI.Containers
 
         public static implicit operator ContainerExpirationPolicyAnchor(string value) => new ContainerExpirationPolicyAnchor(value);
 
-        public static implicit operator ContainerExpirationPolicyAnchor?(string value) => value == null ? null : new ContainerExpirationPolicyAnchor(value);
+        public static implicit operator ContainerExpirationPolicyAnchor?(string value) => value == null ? (ContainerExpirationPolicyAnchor?)null : new ContainerExpirationPolicyAnchor(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ContainerExpirationPolicyAnchor other && Equals(other);

@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeIncludedProperty(string value) => new RealtimeIncludedProperty(value);
 
-        public static implicit operator RealtimeIncludedProperty?(string value) => value == null ? null : new RealtimeIncludedProperty(value);
+        public static implicit operator RealtimeIncludedProperty?(string value) => value == null ? (RealtimeIncludedProperty?)null : new RealtimeIncludedProperty(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeIncludedProperty other && Equals(other);

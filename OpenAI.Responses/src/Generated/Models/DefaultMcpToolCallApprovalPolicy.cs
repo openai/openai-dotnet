@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator DefaultMcpToolCallApprovalPolicy(string value) => new DefaultMcpToolCallApprovalPolicy(value);
 
-        public static implicit operator DefaultMcpToolCallApprovalPolicy?(string value) => value == null ? null : new DefaultMcpToolCallApprovalPolicy(value);
+        public static implicit operator DefaultMcpToolCallApprovalPolicy?(string value) => value == null ? (DefaultMcpToolCallApprovalPolicy?)null : new DefaultMcpToolCallApprovalPolicy(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DefaultMcpToolCallApprovalPolicy other && Equals(other);

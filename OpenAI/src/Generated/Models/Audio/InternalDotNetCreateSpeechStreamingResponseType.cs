@@ -28,7 +28,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalDotNetCreateSpeechStreamingResponseType(string value) => new InternalDotNetCreateSpeechStreamingResponseType(value);
 
-        public static implicit operator InternalDotNetCreateSpeechStreamingResponseType?(string value) => value == null ? null : new InternalDotNetCreateSpeechStreamingResponseType(value);
+        public static implicit operator InternalDotNetCreateSpeechStreamingResponseType?(string value) => value == null ? (InternalDotNetCreateSpeechStreamingResponseType?)null : new InternalDotNetCreateSpeechStreamingResponseType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalDotNetCreateSpeechStreamingResponseType other && Equals(other);

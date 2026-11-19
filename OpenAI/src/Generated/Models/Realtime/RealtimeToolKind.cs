@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeToolKind(string value) => new RealtimeToolKind(value);
 
-        public static implicit operator RealtimeToolKind?(string value) => value == null ? null : new RealtimeToolKind(value);
+        public static implicit operator RealtimeToolKind?(string value) => value == null ? (RealtimeToolKind?)null : new RealtimeToolKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeToolKind other && Equals(other);

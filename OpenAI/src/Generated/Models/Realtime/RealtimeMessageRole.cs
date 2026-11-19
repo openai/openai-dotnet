@@ -36,7 +36,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeMessageRole(string value) => new RealtimeMessageRole(value);
 
-        public static implicit operator RealtimeMessageRole?(string value) => value == null ? null : new RealtimeMessageRole(value);
+        public static implicit operator RealtimeMessageRole?(string value) => value == null ? (RealtimeMessageRole?)null : new RealtimeMessageRole(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeMessageRole other && Equals(other);

@@ -25,7 +25,7 @@ namespace OpenAI.Batch
 
         public static implicit operator InternalBatchErrorsObject(string value) => new InternalBatchErrorsObject(value);
 
-        public static implicit operator InternalBatchErrorsObject?(string value) => value == null ? null : new InternalBatchErrorsObject(value);
+        public static implicit operator InternalBatchErrorsObject?(string value) => value == null ? (InternalBatchErrorsObject?)null : new InternalBatchErrorsObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalBatchErrorsObject other && Equals(other);

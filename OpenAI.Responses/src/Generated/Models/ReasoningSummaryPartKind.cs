@@ -30,7 +30,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ReasoningSummaryPartKind(string value) => new ReasoningSummaryPartKind(value);
 
-        public static implicit operator ReasoningSummaryPartKind?(string value) => value == null ? null : new ReasoningSummaryPartKind(value);
+        public static implicit operator ReasoningSummaryPartKind?(string value) => value == null ? (ReasoningSummaryPartKind?)null : new ReasoningSummaryPartKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ReasoningSummaryPartKind other && Equals(other);

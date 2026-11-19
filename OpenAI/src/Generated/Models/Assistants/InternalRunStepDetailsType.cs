@@ -28,7 +28,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalRunStepDetailsType(string value) => new InternalRunStepDetailsType(value);
 
-        public static implicit operator InternalRunStepDetailsType?(string value) => value == null ? null : new InternalRunStepDetailsType(value);
+        public static implicit operator InternalRunStepDetailsType?(string value) => value == null ? (InternalRunStepDetailsType?)null : new InternalRunStepDetailsType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRunStepDetailsType other && Equals(other);

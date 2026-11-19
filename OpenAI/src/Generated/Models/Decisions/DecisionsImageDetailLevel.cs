@@ -39,7 +39,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsImageDetailLevel(string value) => new DecisionsImageDetailLevel(value);
 
-        public static implicit operator DecisionsImageDetailLevel?(string value) => value == null ? null : new DecisionsImageDetailLevel(value);
+        public static implicit operator DecisionsImageDetailLevel?(string value) => value == null ? (DecisionsImageDetailLevel?)null : new DecisionsImageDetailLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsImageDetailLevel other && Equals(other);

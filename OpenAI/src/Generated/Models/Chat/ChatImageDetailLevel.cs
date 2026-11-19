@@ -34,7 +34,7 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatImageDetailLevel(string value) => new ChatImageDetailLevel(value);
 
-        public static implicit operator ChatImageDetailLevel?(string value) => value == null ? null : new ChatImageDetailLevel(value);
+        public static implicit operator ChatImageDetailLevel?(string value) => value == null ? (ChatImageDetailLevel?)null : new ChatImageDetailLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatImageDetailLevel other && Equals(other);

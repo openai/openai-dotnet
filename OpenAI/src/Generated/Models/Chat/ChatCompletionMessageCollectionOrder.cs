@@ -33,7 +33,7 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatCompletionMessageCollectionOrder(string value) => new ChatCompletionMessageCollectionOrder(value);
 
-        public static implicit operator ChatCompletionMessageCollectionOrder?(string value) => value == null ? null : new ChatCompletionMessageCollectionOrder(value);
+        public static implicit operator ChatCompletionMessageCollectionOrder?(string value) => value == null ? (ChatCompletionMessageCollectionOrder?)null : new ChatCompletionMessageCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatCompletionMessageCollectionOrder other && Equals(other);

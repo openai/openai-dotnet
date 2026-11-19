@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator GeneratedImageStyle(string value) => new GeneratedImageStyle(value);
 
-        public static implicit operator GeneratedImageStyle?(string value) => value == null ? null : new GeneratedImageStyle(value);
+        public static implicit operator GeneratedImageStyle?(string value) => value == null ? (GeneratedImageStyle?)null : new GeneratedImageStyle(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedImageStyle other && Equals(other);

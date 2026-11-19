@@ -36,7 +36,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator RunErrorCode(string value) => new RunErrorCode(value);
 
-        public static implicit operator RunErrorCode?(string value) => value == null ? null : new RunErrorCode(value);
+        public static implicit operator RunErrorCode?(string value) => value == null ? (RunErrorCode?)null : new RunErrorCode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RunErrorCode other && Equals(other);

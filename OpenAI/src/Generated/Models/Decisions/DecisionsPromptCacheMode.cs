@@ -33,7 +33,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsPromptCacheMode(string value) => new DecisionsPromptCacheMode(value);
 
-        public static implicit operator DecisionsPromptCacheMode?(string value) => value == null ? null : new DecisionsPromptCacheMode(value);
+        public static implicit operator DecisionsPromptCacheMode?(string value) => value == null ? (DecisionsPromptCacheMode?)null : new DecisionsPromptCacheMode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsPromptCacheMode other && Equals(other);

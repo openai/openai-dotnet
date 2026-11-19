@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationToolInputFidelity(string value) => new ImageGenerationToolInputFidelity(value);
 
-        public static implicit operator ImageGenerationToolInputFidelity?(string value) => value == null ? null : new ImageGenerationToolInputFidelity(value);
+        public static implicit operator ImageGenerationToolInputFidelity?(string value) => value == null ? (ImageGenerationToolInputFidelity?)null : new ImageGenerationToolInputFidelity(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolInputFidelity other && Equals(other);

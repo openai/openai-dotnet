@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalGetInputTokenCountsRequestContentType(string value) => new InternalGetInputTokenCountsRequestContentType(value);
 
-        public static implicit operator InternalGetInputTokenCountsRequestContentType?(string value) => value == null ? null : new InternalGetInputTokenCountsRequestContentType(value);
+        public static implicit operator InternalGetInputTokenCountsRequestContentType?(string value) => value == null ? (InternalGetInputTokenCountsRequestContentType?)null : new InternalGetInputTokenCountsRequestContentType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalGetInputTokenCountsRequestContentType other && Equals(other);

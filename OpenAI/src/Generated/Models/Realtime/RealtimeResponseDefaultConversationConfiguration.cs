@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeResponseDefaultConversationConfiguration(string value) => new RealtimeResponseDefaultConversationConfiguration(value);
 
-        public static implicit operator RealtimeResponseDefaultConversationConfiguration?(string value) => value == null ? null : new RealtimeResponseDefaultConversationConfiguration(value);
+        public static implicit operator RealtimeResponseDefaultConversationConfiguration?(string value) => value == null ? (RealtimeResponseDefaultConversationConfiguration?)null : new RealtimeResponseDefaultConversationConfiguration(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeResponseDefaultConversationConfiguration other && Equals(other);

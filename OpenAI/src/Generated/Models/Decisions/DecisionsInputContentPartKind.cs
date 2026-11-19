@@ -36,7 +36,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsInputContentPartKind(string value) => new DecisionsInputContentPartKind(value);
 
-        public static implicit operator DecisionsInputContentPartKind?(string value) => value == null ? null : new DecisionsInputContentPartKind(value);
+        public static implicit operator DecisionsInputContentPartKind?(string value) => value == null ? (DecisionsInputContentPartKind?)null : new DecisionsInputContentPartKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsInputContentPartKind other && Equals(other);

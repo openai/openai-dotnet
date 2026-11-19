@@ -31,7 +31,7 @@ namespace OpenAI.LegacyCompletions
 
         public static implicit operator InternalCreateCompletionRequestModel(string value) => new InternalCreateCompletionRequestModel(value);
 
-        public static implicit operator InternalCreateCompletionRequestModel?(string value) => value == null ? null : new InternalCreateCompletionRequestModel(value);
+        public static implicit operator InternalCreateCompletionRequestModel?(string value) => value == null ? (InternalCreateCompletionRequestModel?)null : new InternalCreateCompletionRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateCompletionRequestModel other && Equals(other);

@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageStreamingOutputFormat(string value) => new InternalCreateImageStreamingOutputFormat(value);
 
-        public static implicit operator InternalCreateImageStreamingOutputFormat?(string value) => value == null ? null : new InternalCreateImageStreamingOutputFormat(value);
+        public static implicit operator InternalCreateImageStreamingOutputFormat?(string value) => value == null ? (InternalCreateImageStreamingOutputFormat?)null : new InternalCreateImageStreamingOutputFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageStreamingOutputFormat other && Equals(other);

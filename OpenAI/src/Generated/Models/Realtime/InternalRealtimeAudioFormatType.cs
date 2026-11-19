@@ -31,7 +31,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeAudioFormatType(string value) => new InternalRealtimeAudioFormatType(value);
 
-        public static implicit operator InternalRealtimeAudioFormatType?(string value) => value == null ? null : new InternalRealtimeAudioFormatType(value);
+        public static implicit operator InternalRealtimeAudioFormatType?(string value) => value == null ? (InternalRealtimeAudioFormatType?)null : new InternalRealtimeAudioFormatType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeAudioFormatType other && Equals(other);

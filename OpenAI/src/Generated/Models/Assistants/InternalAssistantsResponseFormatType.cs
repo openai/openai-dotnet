@@ -31,7 +31,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalAssistantsResponseFormatType(string value) => new InternalAssistantsResponseFormatType(value);
 
-        public static implicit operator InternalAssistantsResponseFormatType?(string value) => value == null ? null : new InternalAssistantsResponseFormatType(value);
+        public static implicit operator InternalAssistantsResponseFormatType?(string value) => value == null ? (InternalAssistantsResponseFormatType?)null : new InternalAssistantsResponseFormatType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAssistantsResponseFormatType other && Equals(other);

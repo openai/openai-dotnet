@@ -25,7 +25,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeConversationItemMessageGAObject(string value) => new InternalRealtimeConversationItemMessageGAObject(value);
 
-        public static implicit operator InternalRealtimeConversationItemMessageGAObject?(string value) => value == null ? null : new InternalRealtimeConversationItemMessageGAObject(value);
+        public static implicit operator InternalRealtimeConversationItemMessageGAObject?(string value) => value == null ? (InternalRealtimeConversationItemMessageGAObject?)null : new InternalRealtimeConversationItemMessageGAObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeConversationItemMessageGAObject other && Equals(other);

@@ -51,7 +51,7 @@ namespace OpenAI.Conversations
 
         public static implicit operator IncludedConversationItemProperty(string value) => new IncludedConversationItemProperty(value);
 
-        public static implicit operator IncludedConversationItemProperty?(string value) => value == null ? null : new IncludedConversationItemProperty(value);
+        public static implicit operator IncludedConversationItemProperty?(string value) => value == null ? (IncludedConversationItemProperty?)null : new IncludedConversationItemProperty(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is IncludedConversationItemProperty other && Equals(other);

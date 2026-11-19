@@ -229,7 +229,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalModelIdsCompaction(string value) => new InternalModelIdsCompaction(value);
 
-        public static implicit operator InternalModelIdsCompaction?(string value) => value == null ? null : new InternalModelIdsCompaction(value);
+        public static implicit operator InternalModelIdsCompaction?(string value) => value == null ? (InternalModelIdsCompaction?)null : new InternalModelIdsCompaction(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalModelIdsCompaction other && Equals(other);

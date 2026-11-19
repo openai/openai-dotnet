@@ -39,7 +39,7 @@ namespace OpenAI.Responses
 
         public static implicit operator MessageRole(string value) => new MessageRole(value);
 
-        public static implicit operator MessageRole?(string value) => value == null ? null : new MessageRole(value);
+        public static implicit operator MessageRole?(string value) => value == null ? (MessageRole?)null : new MessageRole(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is MessageRole other && Equals(other);

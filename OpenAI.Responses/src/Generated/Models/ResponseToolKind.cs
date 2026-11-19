@@ -72,7 +72,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseToolKind(string value) => new ResponseToolKind(value);
 
-        public static implicit operator ResponseToolKind?(string value) => value == null ? null : new ResponseToolKind(value);
+        public static implicit operator ResponseToolKind?(string value) => value == null ? (ResponseToolKind?)null : new ResponseToolKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseToolKind other && Equals(other);

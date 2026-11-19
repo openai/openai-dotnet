@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalToolCallCallerType(string value) => new InternalToolCallCallerType(value);
 
-        public static implicit operator InternalToolCallCallerType?(string value) => value == null ? null : new InternalToolCallCallerType(value);
+        public static implicit operator InternalToolCallCallerType?(string value) => value == null ? (InternalToolCallCallerType?)null : new InternalToolCallCallerType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalToolCallCallerType other && Equals(other);

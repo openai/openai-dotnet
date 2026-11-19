@@ -30,7 +30,7 @@ namespace OpenAI.Responses
 
         public static implicit operator WebSearchToolLocationKind(string value) => new WebSearchToolLocationKind(value);
 
-        public static implicit operator WebSearchToolLocationKind?(string value) => value == null ? null : new WebSearchToolLocationKind(value);
+        public static implicit operator WebSearchToolLocationKind?(string value) => value == null ? (WebSearchToolLocationKind?)null : new WebSearchToolLocationKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is WebSearchToolLocationKind other && Equals(other);

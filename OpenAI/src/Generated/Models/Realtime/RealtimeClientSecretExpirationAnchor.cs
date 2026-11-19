@@ -30,7 +30,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeClientSecretExpirationAnchor(string value) => new RealtimeClientSecretExpirationAnchor(value);
 
-        public static implicit operator RealtimeClientSecretExpirationAnchor?(string value) => value == null ? null : new RealtimeClientSecretExpirationAnchor(value);
+        public static implicit operator RealtimeClientSecretExpirationAnchor?(string value) => value == null ? (RealtimeClientSecretExpirationAnchor?)null : new RealtimeClientSecretExpirationAnchor(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeClientSecretExpirationAnchor other && Equals(other);

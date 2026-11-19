@@ -33,7 +33,7 @@ namespace OpenAI.FineTuning
 
         public static implicit operator FineTuningJobEventKind(string value) => new FineTuningJobEventKind(value);
 
-        public static implicit operator FineTuningJobEventKind?(string value) => value == null ? null : new FineTuningJobEventKind(value);
+        public static implicit operator FineTuningJobEventKind?(string value) => value == null ? (FineTuningJobEventKind?)null : new FineTuningJobEventKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FineTuningJobEventKind other && Equals(other);

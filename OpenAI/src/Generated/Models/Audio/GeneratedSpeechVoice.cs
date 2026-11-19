@@ -64,7 +64,7 @@ namespace OpenAI.Audio
 
         public static implicit operator GeneratedSpeechVoice(string value) => new GeneratedSpeechVoice(value);
 
-        public static implicit operator GeneratedSpeechVoice?(string value) => value == null ? null : new GeneratedSpeechVoice(value);
+        public static implicit operator GeneratedSpeechVoice?(string value) => value == null ? (GeneratedSpeechVoice?)null : new GeneratedSpeechVoice(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedSpeechVoice other && Equals(other);

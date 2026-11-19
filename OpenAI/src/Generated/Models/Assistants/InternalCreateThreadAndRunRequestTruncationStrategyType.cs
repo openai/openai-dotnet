@@ -28,7 +28,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalCreateThreadAndRunRequestTruncationStrategyType(string value) => new InternalCreateThreadAndRunRequestTruncationStrategyType(value);
 
-        public static implicit operator InternalCreateThreadAndRunRequestTruncationStrategyType?(string value) => value == null ? null : new InternalCreateThreadAndRunRequestTruncationStrategyType(value);
+        public static implicit operator InternalCreateThreadAndRunRequestTruncationStrategyType?(string value) => value == null ? (InternalCreateThreadAndRunRequestTruncationStrategyType?)null : new InternalCreateThreadAndRunRequestTruncationStrategyType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateThreadAndRunRequestTruncationStrategyType other && Equals(other);

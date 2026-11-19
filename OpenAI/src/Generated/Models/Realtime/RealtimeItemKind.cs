@@ -48,7 +48,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeItemKind(string value) => new RealtimeItemKind(value);
 
-        public static implicit operator RealtimeItemKind?(string value) => value == null ? null : new RealtimeItemKind(value);
+        public static implicit operator RealtimeItemKind?(string value) => value == null ? (RealtimeItemKind?)null : new RealtimeItemKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeItemKind other && Equals(other);

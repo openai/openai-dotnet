@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeOutputModality(string value) => new RealtimeOutputModality(value);
 
-        public static implicit operator RealtimeOutputModality?(string value) => value == null ? null : new RealtimeOutputModality(value);
+        public static implicit operator RealtimeOutputModality?(string value) => value == null ? (RealtimeOutputModality?)null : new RealtimeOutputModality(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeOutputModality other && Equals(other);

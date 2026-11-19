@@ -46,7 +46,7 @@ namespace OpenAI.Batch
 
         public static implicit operator InternalBatchStatus(string value) => new InternalBatchStatus(value);
 
-        public static implicit operator InternalBatchStatus?(string value) => value == null ? null : new InternalBatchStatus(value);
+        public static implicit operator InternalBatchStatus?(string value) => value == null ? (InternalBatchStatus?)null : new InternalBatchStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalBatchStatus other && Equals(other);

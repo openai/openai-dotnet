@@ -57,7 +57,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeVoice(string value) => new RealtimeVoice(value);
 
-        public static implicit operator RealtimeVoice?(string value) => value == null ? null : new RealtimeVoice(value);
+        public static implicit operator RealtimeVoice?(string value) => value == null ? (RealtimeVoice?)null : new RealtimeVoice(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeVoice other && Equals(other);
