@@ -339,6 +339,7 @@ public class ImagesMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+#pragma warning disable CS0618
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationDeserializesRevisedPrompt(ImageSourceKind imageSourceKind)
@@ -467,6 +468,7 @@ public class ImagesMockTests : ClientTestBase
         Assert.That(async () => await client.GenerateImageVariationsAsync(stream, "filename", 2, cancellationToken: cancellationSource.Token),
             Throws.InstanceOf<OperationCanceledException>());
     }
+#pragma warning restore CS0618
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
