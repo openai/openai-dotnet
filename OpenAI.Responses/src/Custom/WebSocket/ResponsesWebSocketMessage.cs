@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace OpenAI.Responses;
 
@@ -41,48 +40,4 @@ public class ResponsesWebSocketMessage
 
     /// <summary>The complete original JSON, preserving unknown types and fields. May contain sensitive customer data.</summary>
     public virtual BinaryData RawData { get; }
-}
-
-/// <summary>Context for an awaitable message callback.</summary>
-[Experimental("OPENAI001")]
-public class ResponsesWebSocketMessageReceivedEventArgs : EventArgs
-{
-    protected ResponsesWebSocketMessageReceivedEventArgs()
-    {
-    }
-
-    internal ResponsesWebSocketMessageReceivedEventArgs(ResponsesWebSocketMessage message, CancellationToken cancellationToken)
-    {
-        Message = message;
-        CancellationToken = cancellationToken;
-    }
-
-    public virtual ResponsesWebSocketMessage Message { get; }
-
-    /// <summary>Signals cooperative cancellation of message processing during client shutdown.</summary>
-    public virtual CancellationToken CancellationToken { get; }
-}
-
-/// <summary>Context for a local failure, distinct from a server protocol error message.</summary>
-[Experimental("OPENAI001")]
-public class ResponsesWebSocketErrorEventArgs : EventArgs
-{
-    protected ResponsesWebSocketErrorEventArgs()
-    {
-    }
-
-    internal ResponsesWebSocketErrorEventArgs(Exception exception, bool isTerminal, CancellationToken cancellationToken)
-    {
-        Exception = exception;
-        IsTerminal = isTerminal;
-        CancellationToken = cancellationToken;
-    }
-
-    public virtual Exception Exception { get; }
-
-    /// <summary>Whether this failure stops client processing without further automatic recovery, even when reconnect is enabled.</summary>
-    public virtual bool IsTerminal { get; }
-
-    /// <summary>Signals cooperative cancellation of error processing when the client shuts down.</summary>
-    public virtual CancellationToken CancellationToken { get; }
 }

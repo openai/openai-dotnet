@@ -5,6 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 /// <summary>The wire event type of a Responses WebSocket message, including types unknown to this SDK version.</summary>
+/// <remarks>
+/// Most values mirror <see cref="StreamingResponseUpdateKind"/>; steering events are WebSocket-specific.
+/// See the <see href="https://developers.openai.com/api/reference/resources/responses/streaming-events">Responses streaming events</see>
+/// and <see href="https://developers.openai.com/api/reference/resources/responses/websocket-events">WebSocket events</see> references.
+/// </remarks>
 [Experimental("OPENAI001")]
 public readonly partial struct ResponsesWebSocketMessageKind : IEquatable<ResponsesWebSocketMessageKind>
 {
