@@ -17,6 +17,8 @@ public partial class ResponsesWebSocketClient
         authenticationEndpoint.Scheme = endpoint.Scheme == "ws" ? "http" : "https";
         message.Request.Uri = authenticationEndpoint.Uri;
         message.Apply(new RequestOptions { CancellationToken = cancellationToken });
+        // Authentication policies advance the pipeline; terminate it here so credentials are applied without
+        // letting the normal HTTP transport send this synthetic upgrade request.
         PipelinePolicy[] policies = { _authenticationPolicy, new WebSocketAuthenticationTerminalPolicy() };
         await _authenticationPolicy.ProcessAsync(message, policies, 0).ConfigureAwait(false);
         foreach (KeyValuePair<string, string> header in message.Request.Headers)
@@ -33,7 +35,8 @@ public partial class ResponsesWebSocketClient
         }
     }
 
-    // Run authentication without sending an HTTP request through the REST transport.
+    // The authentication policy calls ProcessNext after setting headers. This terminal step intentionally
+    // does nothing: the WebSocket handshake consumes the headers, not the REST HTTP pipeline.
     private sealed class WebSocketAuthenticationTerminalPolicy : PipelinePolicy
     {
         public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex) { }
