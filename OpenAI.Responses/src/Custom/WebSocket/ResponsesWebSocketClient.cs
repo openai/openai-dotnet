@@ -138,8 +138,10 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
                 {
                     if (_messageReceivedSubscribers[i].Handler == value)
                     {
-                        var subscriber = _messageReceivedSubscribers[i].Subscriber;
-                        ReleaseBufferedBytes(_messageReceivedSubscribers[i], _messageReceivedSubscribers[i].PendingBytes);
+                        var subscription = _messageReceivedSubscribers[i];
+                        var subscriber = subscription.Subscriber;
+                        subscription.IsRetired = true;
+                        ReleaseBufferedBytes(subscription, subscription.PendingBytes);
                         _messageReceivedSubscribers.RemoveAt(i);
                         subscriber.Dispose();
                         _retiredSubscriberCompletions.Add(subscriber.Completion);
@@ -192,7 +194,9 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
                 {
                     if (_errorOccurredSubscribers[i].Handler == value)
                     {
-                        var subscriber = _errorOccurredSubscribers[i].Subscriber;
+                        var subscription = _errorOccurredSubscribers[i];
+                        var subscriber = subscription.Subscriber;
+                        subscription.IsRetired = true;
                         _errorOccurredSubscribers.RemoveAt(i);
                         subscriber.Dispose();
                         _retiredSubscriberCompletions.Add(subscriber.Completion);
@@ -407,7 +411,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
             enqueues = new Task[_errorOccurredSubscribers.Count];
             for (int i = 0; i < _errorOccurredSubscribers.Count; i++)
             {
-                enqueues[i] = _errorOccurredSubscribers[i].Subscriber.EnqueueAsync(error, cancellationToken);
+                enqueues[i] = EnqueueErrorAsync(_errorOccurredSubscribers[i], error, cancellationToken);
             }
         }
 
@@ -492,6 +496,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         public Func<ResponsesWebSocketMessageReceivedEventArgs, Task> Handler { get; }
         public MessageReceivedSubscriber<ResponsesWebSocketMessageReceivedEventArgs> Subscriber { get; }
         public long PendingBytes { get; set; }
+        public volatile bool IsRetired;
 
         public MessageReceivedSubscription(
             Func<ResponsesWebSocketMessageReceivedEventArgs, Task> handler,
@@ -506,6 +511,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     {
         public Func<ResponsesWebSocketErrorEventArgs, Task> Handler { get; }
         public MessageReceivedSubscriber<ResponsesWebSocketErrorEventArgs> Subscriber { get; }
+        public volatile bool IsRetired;
 
         public ErrorOccurredSubscription(
             Func<ResponsesWebSocketErrorEventArgs, Task> handler,

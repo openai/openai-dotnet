@@ -78,6 +78,13 @@ public partial class ResponsesWebSocketClient
         {
             await subscription.Subscriber.EnqueueAsync(message, cancellationToken).ConfigureAwait(false);
         }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && subscription.IsRetired)
+        {
+            lock (_syncLock)
+            {
+                ReleaseBufferedBytes(subscription, bytes);
+            }
+        }
         catch
         {
             lock (_syncLock)
@@ -85,6 +92,19 @@ public partial class ResponsesWebSocketClient
                 ReleaseBufferedBytes(subscription, bytes);
             }
             throw;
+        }
+    }
+
+    private static async Task EnqueueErrorAsync(ErrorOccurredSubscription subscription,
+        ResponsesWebSocketErrorEventArgs error, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await subscription.Subscriber.EnqueueAsync(error, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && subscription.IsRetired)
+        {
+            // Removing a subscription cancels only its own pending enqueue.
         }
     }
 

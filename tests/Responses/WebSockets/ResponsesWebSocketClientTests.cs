@@ -99,6 +99,92 @@ public class ResponsesWebSocketClientTests
     }
 
     [Test]
+    public async Task RemovingFullMessageRegistrationDoesNotCancelDispatch()
+    {
+        await using ResponsesWebSocketClient client = new TestClient(new ResponsesWebSocketClientOptions { MaxBufferedMessages = 1 });
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> release = CreateSignal();
+        TaskCompletionSource<bool> retainedReceivedThird = CreateSignal();
+        int retainedCalls = 0;
+        Func<ResponsesWebSocketMessageReceivedEventArgs, Task> removed = async _ =>
+        {
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(TestTimeout);
+        };
+        client.MessageReceivedAsync += removed;
+        client.MessageReceivedAsync += _ =>
+        {
+            if (Interlocked.Increment(ref retainedCalls) == 3)
+            {
+                retainedReceivedThird.TrySetResult(true);
+            }
+            return Task.CompletedTask;
+        };
+
+        try
+        {
+            await DispatchAsync(client).WaitAsync(TestTimeout);
+            await entered.Task.WaitAsync(TestTimeout);
+            await DispatchAsync(client).WaitAsync(TestTimeout);
+            Task blocked = DispatchAsync(client);
+            Assert.That(blocked.IsCompleted, Is.False);
+
+            client.MessageReceivedAsync -= removed;
+            await blocked.WaitAsync(TestTimeout);
+            await retainedReceivedThird.Task.WaitAsync(TestTimeout);
+            await DispatchAsync(client).WaitAsync(TestTimeout);
+            Assert.That(client.Completion.IsCompleted, Is.False);
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [Test]
+    public async Task RemovingFullErrorRegistrationDoesNotCancelDispatch()
+    {
+        await using ResponsesWebSocketClient client = new TestClient(new ResponsesWebSocketClientOptions { MaxBufferedMessages = 1 });
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> release = CreateSignal();
+        TaskCompletionSource<bool> retainedReceivedThird = CreateSignal();
+        int retainedCalls = 0;
+        Func<ResponsesWebSocketErrorEventArgs, Task> removed = async _ =>
+        {
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(TestTimeout);
+        };
+        client.ErrorOccurredAsync += removed;
+        client.ErrorOccurredAsync += _ =>
+        {
+            if (Interlocked.Increment(ref retainedCalls) == 3)
+            {
+                retainedReceivedThird.TrySetResult(true);
+            }
+            return Task.CompletedTask;
+        };
+
+        try
+        {
+            await DispatchErrorAsync(client).WaitAsync(TestTimeout);
+            await entered.Task.WaitAsync(TestTimeout);
+            await DispatchErrorAsync(client).WaitAsync(TestTimeout);
+            Task blocked = DispatchErrorAsync(client);
+            Assert.That(blocked.IsCompleted, Is.False);
+
+            client.ErrorOccurredAsync -= removed;
+            await blocked.WaitAsync(TestTimeout);
+            await retainedReceivedThird.Task.WaitAsync(TestTimeout);
+            await DispatchErrorAsync(client).WaitAsync(TestTimeout);
+            Assert.That(client.Completion.IsCompleted, Is.False);
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [Test]
     public async Task RemovingDuplicateRegistrationRemovesOnlyLastMatch()
     {
         using ResponsesWebSocketClient client = new TestClient();
@@ -325,8 +411,8 @@ public class ResponsesWebSocketClientTests
 
     private sealed class TestClient : ResponsesWebSocketClient
     {
-        public TestClient()
-            : base("test-key")
+        public TestClient(ResponsesWebSocketClientOptions options = null)
+            : base(new ApiKeyCredential("test-key"), options ?? new ResponsesWebSocketClientOptions())
         {
         }
     }

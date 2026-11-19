@@ -421,6 +421,51 @@ public class ResponsesWebSocketTransportTests
     }
 
     [Test]
+    public async Task RemovingBackpressuredSubscriberDoesNotStopReceiving()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket, new ResponsesWebSocketClientOptions { MaxBufferedMessages = 1 });
+        TaskCompletionSource<bool> entered = Signal();
+        TaskCompletionSource<bool> release = Signal();
+        TaskCompletionSource<bool> thirdReceived = Signal();
+        TaskCompletionSource<bool> fourthReceived = Signal();
+        Func<ResponsesWebSocketMessageReceivedEventArgs, Task> removed = async _ =>
+        {
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(Timeout);
+        };
+        int retainedCount = 0;
+        client.MessageReceivedAsync += removed;
+        client.MessageReceivedAsync += _ =>
+        {
+            int count = Interlocked.Increment(ref retainedCount);
+            if (count == 3) thirdReceived.TrySetResult(true);
+            if (count == 4) fourthReceived.TrySetResult(true);
+            return Task.CompletedTask;
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\"}", true);
+        await entered.Task.WaitAsync(Timeout);
+        try
+        {
+            socket.Add("{\"type\":\"future.event\"}", true);
+            socket.Add("{\"type\":\"future.event\"}", true);
+            await thirdReceived.Task.WaitAsync(Timeout);
+
+            client.MessageReceivedAsync -= removed;
+            socket.Add("{\"type\":\"future.event\"}", true);
+            await fourthReceived.Task.WaitAsync(Timeout);
+            Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Connected));
+            Assert.That(client.Completion.IsCompleted, Is.False);
+        }
+        finally
+        {
+            release.TrySetResult(true);
+        }
+    }
+
+    [Test]
     public async Task CallbackFailureIsReportedAndReceivingContinues()
     {
         FakeSocket socket = new();
