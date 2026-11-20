@@ -940,4 +940,22 @@ public partial class OpenAIChatModelFactoryTests
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.EqualTo(functionArgumentsUpdate));
     }
+
+    [Test]
+    public void ChatCompletionMessageListDatumWithOnlyRequiredPropertiesWorks()
+    {
+        ChatCompletionMessageListDatum datum = OpenAIChatModelFactory.ChatCompletionMessageListDatum(
+            id: "msg_123",
+            content: "Hello",
+            refusal: null,
+            role: ChatMessageRole.Assistant);
+
+        Assert.That(datum.Id, Is.EqualTo("msg_123"));
+        Assert.That(datum.Content, Is.EqualTo("Hello"));
+        Assert.That(datum.Refusal, Is.Null);
+        Assert.That(datum.ToolCalls, Is.Not.Null.And.Empty);
+        Assert.That(datum.Annotations, Is.Not.Null.And.Empty);
+        Assert.That(datum.ContentParts, Is.Not.Null.And.Empty);
+        Assert.That(datum.OutputAudio, Is.Null);
+    }
 }
