@@ -8,6 +8,9 @@
 
 ### Bugs Fixed
 
+- OpenAI.Assistants:
+  - Fixed `FileSearchToolDefinition.RankingOptions` throwing a `NullReferenceException`, and the `MaxResults` and `RankingOptions` setters throwing, when the tool was deserialized without a `file_search` object (for example, from a message attachment).
+
 ### Other Changes
 
 ### Breaking Changes in Experimental APIs
