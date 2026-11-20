@@ -1,7 +1,9 @@
 import "@typespec/openapi";
 import "@typespec/http";
+import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.OpenAPI;
 using TypeSpec.Http;
+using Azure.ClientGenerator.Core;
 namespace OpenAI;
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model CreateFileRequest {
@@ -51,17 +53,49 @@ model DeleteFileResponse {
 model ListFilesResponse {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   object: string;
+
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @pageItems
   data: OpenAIFile[];
+
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   first_id: string;
+
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @continuationToken
   last_id: string;
+
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   has_more: boolean;
+}
+
+union FileCollectionOrder {
+  string,
+  Ascending: "asc",
+  Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model FileCollectionOptions {
+  /** Only return files with the given purpose. */
+  @query purpose?: UploadFilePurpose;
+
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken afterId?: string;
+
+  /** A limit on the number of objects to be returned. */
+  @query pageSizeLimit?: int32 = 10000;
+
+  /** Sort order by the `created_at` timestamp of the objects. */
+  @query order?: FileCollectionOrder;
 }
 
 /** The `File` object represents a document that has been uploaded to OpenAI. */
@@ -112,17 +146,7 @@ model OpenAIFile {
   object: "file";
 
   /** The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`, and `user_data`. */
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-  purpose:
-    | "assistants"
-    | "assistants_output"
-    | "batch"
-    | "batch_output"
-    | "fine-tune"
-    | "fine-tune-results"
-    | "vision"
-    | "user_data";
+  purpose: UploadFilePurpose;
 
   /** Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`. */
   #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
@@ -134,6 +158,19 @@ model OpenAIFile {
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   #deprecated "deprecated"
   status_details?: string;
+}
+
+/** The intended purpose of a file returned by or used to filter the list-files endpoint. */
+#suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
+union UploadFilePurpose {
+  assistants: "assistants",
+  assistants_output: "assistants_output",
+  batch: "batch",
+  batch_output: "batch_output",
+  `fine-tune`: "fine-tune",
+  `fine-tune-results`: "fine-tune-results",
+  vision: "vision",
+  user_data: "user_data",
 }
 
 /** The intended purpose of the uploaded file. One of: - `assistants`: Used in the Assistants API - `batch`: Used in the Batch API - `fine-tune`: Used for fine-tuning - `vision`: Images used for vision fine-tuning - `user_data`: Flexible file type for any purpose - `evals`: Used for eval data sets */

@@ -184,6 +184,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(EmbeddingTokenUsage))]
     [ModelReaderWriterBuildable(typeof(FileChunkingStrategy))]
     [ModelReaderWriterBuildable(typeof(FileCitationMessageAnnotation))]
+    [ModelReaderWriterBuildable(typeof(FileCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(FileDeletionResult))]
     [ModelReaderWriterBuildable(typeof(FileFromStoreRemovalResult))]
     [ModelReaderWriterBuildable(typeof(FilePathMessageAnnotation))]
