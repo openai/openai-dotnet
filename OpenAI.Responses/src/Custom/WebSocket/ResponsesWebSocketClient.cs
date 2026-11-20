@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -502,10 +503,21 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         lock (_syncLock)
         {
             ThrowIfDisposed();
-            enqueues = new Task[_messageReceivedSubscribers.Count];
+            int subscriberCount = _messageReceivedSubscribers.Count;
+            int bytes = message.Message?.RawData?.ToMemory().Length ?? 0;
+            long bytesToReserve = (long)bytes * subscriberCount;
+            if (_options.MaxBufferedBytes > 0 && bytesToReserve > _options.MaxBufferedBytes - _bufferedMessageBytes)
+            {
+                return Task.FromException(new InvalidDataException("The incoming message queues exceed MaxBufferedBytes."));
+            }
+
+            _bufferedMessageBytes += bytesToReserve;
+            enqueues = new Task[subscriberCount];
             for (int i = 0; i < _messageReceivedSubscribers.Count; i++)
             {
-                enqueues[i] = EnqueueMessageAsync(_messageReceivedSubscribers[i], message, cancellationToken);
+                MessageReceivedSubscription subscription = _messageReceivedSubscribers[i];
+                subscription.PendingBytes += bytes;
+                enqueues[i] = EnqueueMessageAsync(subscription, message, bytes, cancellationToken);
             }
         }
 

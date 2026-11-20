@@ -403,6 +403,31 @@ public class ResponsesWebSocketTransportTests
         Assert.That(localErrors, Is.Zero);
     }
 
+    [Test]
+    public async Task ReceivesProtocolErrorWithNullCode()
+    {
+        FakeSocket socket = new();
+        await using TestClient client = new(socket);
+        TaskCompletionSource<ResponsesWebSocketMessage> received = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        int localErrors = 0;
+        client.MessageReceivedAsync += args =>
+        {
+            received.TrySetResult(args.Message);
+            return Task.CompletedTask;
+        };
+        client.ErrorOccurredAsync += _ => { Interlocked.Increment(ref localErrors); return Task.CompletedTask; };
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"error\",\"status\":400,\"error\":{\"code\":null,\"message\":\"bad request\"}}", true);
+
+        ResponsesWebSocketMessage message = await received.Task.WaitAsync(Timeout);
+        Assert.That(message.Error, Is.Not.Null);
+        Assert.That(message.Error.Code.ToString(), Is.Null);
+        Assert.That(message.Error.Message, Is.EqualTo("bad request"));
+        Assert.That(localErrors, Is.Zero);
+        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Connected));
+        Assert.That(client.Completion.IsCompleted, Is.False);
+    }
+
     [TestCase("{", 0)]
     [TestCase("{\"type\":\"future.event\"}", 4)]
     public async Task InvalidOrOversizeMessagesReportTerminalLocalErrors(string data, int maxBytes)
@@ -891,6 +916,59 @@ public class ResponsesWebSocketTransportTests
         {
             release.TrySetResult(true);
         }
+    }
+
+    [Test]
+    public async Task ByteBudgetOverflowCancelsHandlersEvenWhenAnotherQueueIsFull()
+    {
+        const string payload = "{\"type\":\"future.event\"}";
+        int payloadBytes = Encoding.UTF8.GetByteCount(payload);
+        FakeSocket socket = new();
+        await using TestClient client = new(socket, new ResponsesWebSocketClientOptions
+        {
+            MaxBufferedMessages = 1,
+            MaxBufferedBytes = payloadBytes * 3,
+            ShouldReconnect = false
+        });
+        TaskCompletionSource<bool> handlersEntered = Signal();
+        TaskCompletionSource<bool> handlersCanceled = Signal();
+        TaskCompletionSource<ResponsesWebSocketErrorEventArgs> error = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        int enteredCount = 0;
+        int canceledCount = 0;
+        Func<ResponsesWebSocketMessageReceivedEventArgs, Task> handler = async args =>
+        {
+            if (Interlocked.Increment(ref enteredCount) == 2)
+            {
+                handlersEntered.TrySetResult(true);
+            }
+            try
+            {
+                await Task.Delay(System.Threading.Timeout.Infinite, args.CancellationToken);
+            }
+            finally
+            {
+                if (args.CancellationToken.IsCancellationRequested && Interlocked.Increment(ref canceledCount) == 2)
+                {
+                    handlersCanceled.TrySetResult(true);
+                }
+            }
+        };
+        client.MessageReceivedAsync += handler;
+        client.MessageReceivedAsync += handler;
+        client.ErrorOccurredAsync += args => { error.TrySetResult(args); return Task.CompletedTask; };
+        await client.ConnectAsync();
+        socket.Add(payload, true);
+        await handlersEntered.Task.WaitAsync(Timeout);
+
+        socket.Add(payload, true);
+        socket.Add(payload, true);
+
+        ResponsesWebSocketErrorEventArgs reported = await error.Task.WaitAsync(Timeout);
+        Assert.That(reported.IsTerminal, Is.True);
+        Assert.That(reported.Exception, Is.TypeOf<InvalidDataException>());
+        await handlersCanceled.Task.WaitAsync(Timeout);
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await client.Completion.WaitAsync(Timeout));
+        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Closed));
     }
 
     [Test]

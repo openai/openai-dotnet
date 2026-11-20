@@ -68,17 +68,10 @@ public partial class ResponsesWebSocketClient
         _bufferedMessageBytes -= released;
     }
 
-    /// <summary>Accounts for a message against the shared byte budget before placing it in a subscriber queue.</summary>
+    /// <summary>Places a pre-accounted message in a subscriber queue.</summary>
     private async Task EnqueueMessageAsync(MessageReceivedSubscription subscription,
-        ResponsesWebSocketMessageReceivedEventArgs message, CancellationToken cancellationToken)
+        ResponsesWebSocketMessageReceivedEventArgs message, int bytes, CancellationToken cancellationToken)
     {
-        var bytes = message.Message?.RawData?.ToMemory().Length ?? 0;
-        if (_options.MaxBufferedBytes > 0 && bytes > _options.MaxBufferedBytes - _bufferedMessageBytes)
-        {
-            throw new InvalidDataException("The incoming message queues exceed MaxBufferedBytes.");
-        }
-        _bufferedMessageBytes += bytes;
-        subscription.PendingBytes += bytes;
         try
         {
             await subscription.Subscriber.EnqueueAsync(message, cancellationToken).ConfigureAwait(false);
