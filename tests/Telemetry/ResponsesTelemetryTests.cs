@@ -1060,7 +1060,9 @@ public class ResponsesTelemetryTests
             {
                 ConversationId = ConversationId,
             },
+#pragma warning disable CS0618
             EndUserId = "sensitive-user",
+#pragma warning restore CS0618
             Instructions = "sensitive instructions",
             MaxOutputTokenCount = 100,
             PreviousResponseId = PreviousResponseId,
