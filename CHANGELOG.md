@@ -6,6 +6,9 @@
 
 ### Features Added
 
+- OpenAI.Realtime:
+  - Removed a redundant copy of serialized WebSocket commands when their existing memory can be sent directly, reducing allocations for audio uploads.
+
 ### Bugs Fixed
 
 ### Other Changes
