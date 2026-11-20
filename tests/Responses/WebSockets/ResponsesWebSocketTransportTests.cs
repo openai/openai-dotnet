@@ -806,11 +806,22 @@ public class ResponsesWebSocketTransportTests
     [TestCase("")]
     [TestCase("has spaces")]
     [TestCase("stream/id")]
-    public async Task RejectsInvalidStreamIds(string streamId)
+    [TestCase("caf\u00e9")]
+    public void RejectsInvalidStreamIds(string streamId)
     {
-        await using TestClient client = new(new FakeSocket());
-        Assert.Throws<ArgumentException>(() => client.CreateResponseAsync(new CreateResponseOptions { Model = "test" },
-            new ResponsesWebSocketSendOptions { StreamId = streamId }));
+        ResponsesWebSocketSendOptions options = new() { StreamId = "valid" };
+        Assert.Throws<ArgumentException>(() => options.StreamId = streamId);
+        Assert.That(options.StreamId, Is.EqualTo("valid"));
+    }
+
+    [Test]
+    public void StreamIdValidatesLengthAndCanBeResetToDefault()
+    {
+        ResponsesWebSocketSendOptions options = new() { StreamId = new string('a', 256) };
+        Assert.Throws<ArgumentException>(() => options.StreamId = new string('a', 257));
+        options.StreamId = "Main_1-test.stream";
+        options.StreamId = null;
+        Assert.That(options.StreamId, Is.Null);
     }
 
     private static void Subscribe(ResponsesWebSocketClient client)

@@ -1846,7 +1846,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponsesWebSocketSendOptions {
         public bool? GenerationEnabled { get; set; }
-        public string StreamId { get; set; }
+        public string? StreamId { get; set; }
     }
     [Experimental("OPENAI001")]
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {

@@ -509,25 +509,6 @@ public partial class ResponsesWebSocketClient
         {
             throw new ArgumentException("StreamingEnabled and BackgroundModeEnabled must be unset for WebSocket requests.", nameof(options));
         }
-        if (webSocketOptions?.StreamId == "")
-        {
-            throw new ArgumentException("StreamId must not be empty.", nameof(webSocketOptions));
-        }
-        if (webSocketOptions?.StreamId is string streamId)
-        {
-            if (streamId.Length > 256)
-            {
-                throw new ArgumentException("StreamId must be at most 256 characters.", nameof(webSocketOptions));
-            }
-            foreach (var character in streamId)
-            {
-                if (!(character >= 'a' && character <= 'z') && !(character >= 'A' && character <= 'Z')
-                    && !(character >= '0' && character <= '9') && character != '_' && character != '-' && character != '.')
-                {
-                    throw new ArgumentException("StreamId may contain only ASCII letters, digits, underscores, hyphens, and periods.", nameof(webSocketOptions));
-                }
-            }
-        }
         var body = ModelReaderWriter.Write(options, new ModelReaderWriterOptions("W"), OpenAIContext.Default);
         using var document = JsonDocument.Parse(body);
         using var stream = new MemoryStream();
