@@ -194,15 +194,25 @@ public class ResponsesWebSocketIntegrationTests : OpenAIRecordedTestBase
 
         await webSocket.ConnectAsync(cancellationToken);
         await webSocket.CreateResponseAsync(options, cancellationToken: cancellationToken);
-        var finished = await Task.WhenAny(response.Task, webSocket.Completion).WaitAsync(cancellationToken);
-        if (finished != response.Task)
-        {
-            await webSocket.Completion;
-            throw new InvalidOperationException("The WebSocket closed without response.completed.");
-        }
-
-        var result = await response.Task;
+        var result = await WaitForResponseAsync(webSocket, response.Task, cancellationToken);
         await webSocket.CloseAsync(cancellationToken);
         return result;
+    }
+
+    internal static async Task<ResponseResult> WaitForResponseAsync(
+        ResponsesWebSocketClient webSocket, Task<ResponseResult> response, CancellationToken cancellationToken)
+    {
+        var finished = await Task.WhenAny(response, webSocket.Completion).WaitAsync(cancellationToken);
+        if (finished != response && !response.IsCompleted)
+        {
+            await webSocket.Completion;
+            await webSocket.DisposeAsync().AsTask().WaitAsync(cancellationToken);
+            if (!response.IsCompleted)
+            {
+                throw new InvalidOperationException("The WebSocket closed without response.completed.");
+            }
+        }
+
+        return await response.WaitAsync(cancellationToken);
     }
 }

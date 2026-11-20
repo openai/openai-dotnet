@@ -165,7 +165,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
                         ReleaseBufferedBytes(subscription, subscription.PendingBytes);
                         _messageReceivedSubscribers.RemoveAt(i);
                         subscriber.Dispose();
-                        _retiredSubscriberCompletions.Add(subscriber.Completion);
+                        RetireSubscriber(subscriber.Completion);
                         break;
                     }
                 }
@@ -220,7 +220,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
                         subscription.IsRetired = true;
                         _errorOccurredSubscribers.RemoveAt(i);
                         subscriber.Dispose();
-                        _retiredSubscriberCompletions.Add(subscriber.Completion);
+                        RetireSubscriber(subscriber.Completion);
                         break;
                     }
                 }
@@ -421,6 +421,22 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         }
     }
 
+    private void RetireSubscriber(Task completion)
+    {
+        _retiredSubscriberCompletions.Add(completion);
+        _ = completion.ContinueWith(
+            completed =>
+            {
+                lock (_syncLock)
+                {
+                    _retiredSubscriberCompletions.Remove(completed);
+                }
+            },
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+    }
+
     private async Task CompleteErrorSubscribersAfterMessagesAsync(Task messages)
     {
         try
@@ -465,6 +481,7 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
             {
                 _messageReceivedSubscribers.Clear();
                 _errorOccurredSubscribers.Clear();
+                _retiredSubscriberCompletions.Clear();
             }
         }
     }
@@ -557,7 +574,15 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
         Func<ResponsesWebSocketErrorEventArgs, Task> handlers,
         ResponsesWebSocketErrorEventArgs error)
     {
-        return InvokeHandlersAsync(handlers, error, error.CancellationToken);
+        return InvokeHandlersAsync(handlers, error, error.CancellationToken, ReportErrorHandlerExceptionAsync);
+    }
+
+    private Task ReportErrorHandlerExceptionAsync(Exception exception)
+    {
+        _transportCompletion.TrySetException(exception);
+        CancelLifetime();
+        _webSocket?.Abort();
+        return Task.FromException(exception);
     }
 
     private static Task InvokeHandlersAsync<TEventArgs>(

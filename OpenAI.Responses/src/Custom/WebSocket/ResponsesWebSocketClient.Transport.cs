@@ -16,6 +16,9 @@ public partial class ResponsesWebSocketClient
     private readonly SemaphoreSlim _connectSemaphore = new SemaphoreSlim(1, 1);
     private readonly SemaphoreSlim _sendSemaphore = new SemaphoreSlim(1, 1);
     private readonly CancellationTokenSource _lifetimeSource = new CancellationTokenSource();
+    private readonly TaskCompletionSource<bool> _lifetimeCancellationFinished = new TaskCompletionSource<bool>(
+        TaskCreationOptions.RunContinuationsAsynchronously);
+    private int _lifetimeCancellationStarted;
     private readonly TaskCompletionSource<bool> _transportCompletion = new TaskCompletionSource<bool>(
         TaskCreationOptions.RunContinuationsAsynchronously);
     private WebSocket _webSocket;
@@ -178,6 +181,11 @@ public partial class ResponsesWebSocketClient
             var socket = await ConnectWebSocketAsync(linked.Token).ConfigureAwait(false);
             lock (_syncLock)
             {
+                if (_disposed)
+                {
+                    socket.Dispose();
+                    throw new ObjectDisposedException(nameof(ResponsesWebSocketClient));
+                }
                 if (_lifetimeSource.IsCancellationRequested)
                 {
                     socket.Dispose();
@@ -269,8 +277,8 @@ public partial class ResponsesWebSocketClient
         {
             // Aborting the socket during shutdown can surface as WebSocketException rather than cancellation.
         }
-        catch (ObjectDisposedException exception) when (token.IsCancellationRequested
-            && exception.ObjectName == nameof(ResponsesWebSocketClient))
+        catch (ObjectDisposedException exception) when (exception.ObjectName == nameof(ResponsesWebSocketClient)
+            && IsTransportStopping(token))
         {
             // Disposal can win the race between receiving and dispatching a message.
         }
@@ -279,9 +287,11 @@ public partial class ResponsesWebSocketClient
             _transportCompletion.TrySetException(exception);
             if (!token.IsCancellationRequested)
             {
+                CancelLifetime();
                 try
                 {
-                    await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, true, token), token).ConfigureAwait(false);
+                    await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, true, token), CancellationToken.None)
+                        .ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
@@ -299,6 +309,7 @@ public partial class ResponsesWebSocketClient
             {
                 SetState(_disposed ? ResponsesWebSocketConnectionState.Disposed : ResponsesWebSocketConnectionState.Closed);
             }
+            await _lifetimeCancellationFinished.Task.ConfigureAwait(false);
             _transportCompletion.TrySetResult(true);
         }
     }
@@ -373,6 +384,11 @@ public partial class ResponsesWebSocketClient
                 }
             }
             catch (WebSocketException exception)
+            {
+                await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, false, cancellationToken), cancellationToken)
+                    .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException exception) when (!cancellationToken.IsCancellationRequested)
             {
                 await DispatchErrorAsync(new ResponsesWebSocketErrorEventArgs(exception, false, cancellationToken), cancellationToken)
                     .ConfigureAwait(false);
@@ -675,6 +691,7 @@ public partial class ResponsesWebSocketClient
             {
                 SetState(_disposed ? ResponsesWebSocketConnectionState.Disposed : ResponsesWebSocketConnectionState.Closed);
             }
+            await _lifetimeCancellationFinished.Task.ConfigureAwait(false);
             _transportCompletion.TrySetResult(true);
         }
     }
@@ -682,6 +699,7 @@ public partial class ResponsesWebSocketClient
     /// <summary>Cancels transport operations and aborts the socket without waiting for callbacks.</summary>
     private void StopTransport(bool drainAfterNormalClose = false)
     {
+        WebSocket socket;
         lock (_syncLock)
         {
             if (_transportStopped)
@@ -695,20 +713,31 @@ public partial class ResponsesWebSocketClient
             _transportStopped = true;
             _drainingAfterNormalClose = drainAfterNormalClose && _normalCloseReceived;
             _disposed = true;
-            CancelLifetime();
-            _webSocket?.Abort();
             SetState(ResponsesWebSocketConnectionState.Disposed);
+            socket = _webSocket;
+        }
+        try
+        {
+            CancelLifetime();
+            socket?.Abort();
             if (_receiveTask is null)
             {
-                _transportCompletion.TrySetResult(true);
+                _ = CompleteTransportAfterCancellationAsync();
             }
         }
-        // Keep the lifetime reference alive until cancellation and socket abort have completed.
-        ReleaseTransportOperation();
+        finally
+        {
+            // Keep the lifetime reference alive until cancellation and socket abort have completed.
+            ReleaseTransportOperation();
+        }
     }
 
     private void CancelLifetime()
     {
+        if (Interlocked.CompareExchange(ref _lifetimeCancellationStarted, 1, 0) != 0)
+        {
+            return;
+        }
         try
         {
             _lifetimeSource.Cancel();
@@ -716,6 +745,28 @@ public partial class ResponsesWebSocketClient
         catch (AggregateException exception)
         {
             _transportCompletion.TrySetException(exception);
+        }
+        finally
+        {
+            _lifetimeCancellationFinished.TrySetResult(true);
+        }
+    }
+
+    private async Task CompleteTransportAfterCancellationAsync()
+    {
+        await _lifetimeCancellationFinished.Task.ConfigureAwait(false);
+        _transportCompletion.TrySetResult(true);
+    }
+
+    private bool IsTransportStopping(CancellationToken token)
+    {
+        if (token.IsCancellationRequested)
+        {
+            return true;
+        }
+        lock (_syncLock)
+        {
+            return _transportStopped;
         }
     }
 

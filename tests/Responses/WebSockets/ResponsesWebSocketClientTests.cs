@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Linq;
@@ -206,6 +207,50 @@ public class ResponsesWebSocketClientTests
     }
 
     [Test]
+    public async Task CompletedRetiredSubscriptionsAreReleased()
+    {
+        await using ResponsesWebSocketClient client = new TestClient();
+        Func<ResponsesWebSocketMessageReceivedEventArgs, Task> message = _ => Task.CompletedTask;
+        Func<ResponsesWebSocketErrorEventArgs, Task> error = _ => Task.CompletedTask;
+
+        for (int i = 0; i < 50; i++)
+        {
+            client.MessageReceivedAsync += message;
+            client.ErrorOccurredAsync += error;
+            client.MessageReceivedAsync -= message;
+            client.ErrorOccurredAsync -= error;
+        }
+
+        await WaitUntilAsync(() => RetiredCount(client) == 0);
+    }
+
+    [Test]
+    public async Task DisposalWaitsForRetiredErrorHandlerAndObservesItsFailure()
+    {
+        ResponsesWebSocketClient client = new TestClient();
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> release = CreateSignal();
+        InvalidOperationException failure = new("Retired handler failed.");
+        Func<ResponsesWebSocketErrorEventArgs, Task> handler = async _ =>
+        {
+            entered.TrySetResult(true);
+            await release.Task.WaitAsync(TestTimeout);
+            throw failure;
+        };
+        client.ErrorOccurredAsync += handler;
+        await DispatchErrorAsync(client).WaitAsync(TestTimeout);
+        await entered.Task.WaitAsync(TestTimeout);
+        client.ErrorOccurredAsync -= handler;
+        Task disposal = client.DisposeAsync().AsTask();
+        Assert.That(disposal.IsCompleted, Is.False);
+        release.TrySetResult(true);
+        InvalidOperationException actual = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await disposal.WaitAsync(TestTimeout));
+        Assert.That(actual, Is.SameAs(failure));
+        Assert.That(RetiredCount(client), Is.Zero);
+    }
+
+    [Test]
     public async Task MulticastRegistrationAwaitsHandlersInParallel()
     {
         using ResponsesWebSocketClient client = new TestClient();
@@ -298,6 +343,42 @@ public class ResponsesWebSocketClientTests
     }
 
     [Test]
+    public async Task MulticastErrorHandlerFailureCancelsSiblingBeforeAwaitingCleanup()
+    {
+        using ResponsesWebSocketClient client = new TestClient();
+        TaskCompletionSource<bool> entered = CreateSignal();
+        TaskCompletionSource<bool> canceled = CreateSignal();
+        InvalidOperationException failure = new("Error handler failed.");
+        Func<ResponsesWebSocketErrorEventArgs, Task> handlers = async args =>
+        {
+            entered.TrySetResult(true);
+            try
+            {
+                await Task.Delay(Timeout.Infinite, args.CancellationToken);
+            }
+            finally
+            {
+                canceled.TrySetResult(args.CancellationToken.IsCancellationRequested);
+            }
+        };
+        handlers += async _ =>
+        {
+            await entered.Task.WaitAsync(TestTimeout);
+            throw failure;
+        };
+        client.ErrorOccurredAsync += handlers;
+
+        await DispatchErrorAsync(client).WaitAsync(TestTimeout);
+        InvalidOperationException actual = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await client.Completion.WaitAsync(TestTimeout));
+        Assert.That(actual, Is.SameAs(failure));
+        Assert.That(await canceled.Task.WaitAsync(TestTimeout), Is.True);
+        actual = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await client.DisposeAsync().AsTask().WaitAsync(TestTimeout));
+        Assert.That(actual, Is.SameAs(failure));
+    }
+
+    [Test]
     public async Task ClientDisposalCancelsBothHandlerTokens()
     {
         ResponsesWebSocketClient client = new TestClient();
@@ -368,6 +449,65 @@ public class ResponsesWebSocketClientTests
             async () => await client.Completion.WaitAsync(TestTimeout));
         Assert.That(error.InnerExceptions, Does.Contain(failure));
         await client.DisposeAsync().AsTask().WaitAsync(TestTimeout);
+    }
+
+    [Test]
+    public async Task DisposalDoesNotHoldClientLockWhileCancelingHandlerToken()
+    {
+        ResponsesWebSocketClient client = new TestClient();
+        object applicationLock = new();
+        TaskCompletionSource<bool> registered = CreateSignal();
+        TaskCompletionSource<bool> applicationLockHeld = CreateSignal();
+        TaskCompletionSource<bool> callbackStarted = CreateSignal();
+        TaskCompletionSource<bool> callbackAcquiredLock = CreateSignal();
+        client.MessageReceivedAsync += args =>
+        {
+            args.CancellationToken.Register(() =>
+            {
+                callbackStarted.TrySetResult(true);
+                bool acquired = Monitor.TryEnter(applicationLock, TimeSpan.FromSeconds(3));
+                if (acquired) Monitor.Exit(applicationLock);
+                callbackAcquiredLock.TrySetResult(acquired);
+            });
+            registered.TrySetResult(true);
+            return Task.CompletedTask;
+        };
+        await DispatchAsync(client).WaitAsync(TestTimeout);
+        await registered.Task.WaitAsync(TestTimeout);
+
+        Task application = Task.Run(() =>
+        {
+            lock (applicationLock)
+            {
+                applicationLockHeld.TrySetResult(true);
+                if (!callbackStarted.Task.Wait(TestTimeout))
+                {
+                    throw new TimeoutException("Cancellation did not start.");
+                }
+                try
+                {
+                    client.MessageReceivedAsync += _ => Task.CompletedTask;
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+            }
+        });
+        await applicationLockHeld.Task.WaitAsync(TestTimeout);
+        Task disposal = Task.Run(client.Dispose);
+        Assert.That(await callbackAcquiredLock.Task.WaitAsync(TestTimeout), Is.True);
+        await Task.WhenAll(application, disposal).WaitAsync(TestTimeout);
+        await client.DisposeAsync().AsTask().WaitAsync(TestTimeout);
+    }
+
+    private static int RetiredCount(ResponsesWebSocketClient client)
+    {
+        FieldInfo lockField = typeof(ResponsesWebSocketClient).GetField("_syncLock", BindingFlags.Instance | BindingFlags.NonPublic);
+        FieldInfo retiredField = typeof(ResponsesWebSocketClient).GetField("_retiredSubscriberCompletions", BindingFlags.Instance | BindingFlags.NonPublic);
+        lock (lockField.GetValue(client))
+        {
+            return ((ICollection)retiredField.GetValue(client)).Count;
+        }
     }
 
     private static TaskCompletionSource<bool> CreateSignal()
