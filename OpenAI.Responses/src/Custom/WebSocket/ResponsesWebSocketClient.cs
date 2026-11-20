@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,8 +14,19 @@ namespace OpenAI.Responses;
 /// Subscribe to <see cref="MessageReceivedAsync"/> and <see cref="ErrorOccurredAsync"/> before calling
 /// <see cref="ConnectAsync"/>. Each event registration has its own bounded queue; dispose the client to stop
 /// receiving and cancel the tokens exposed by handler event arguments.
-/// On .NET Standard 2.0, failed upgrade responses and upgrade headers are not available to pipeline policies.
-/// Upgrade response bodies and reason phrases are unavailable on all targets.
+/// <para>
+/// The WebSocket upgrade request runs through the client pipeline, so pipeline policies see the handshake as a
+/// <see cref="PipelineResponse"/>. Upgrade response bodies and reason phrases are unavailable on all targets.
+/// </para>
+/// <para>
+/// <b>.NET Standard 2.0 limitation:</b> apps that load the .NET Standard 2.0 build (for example, .NET Framework
+/// and .NET 6/7) cannot inspect the upgrade response, because <see cref="ClientWebSocket"/> does not expose it on
+/// that target. A successful upgrade has status 101 with no headers. A rejected upgrade (for example, 401 or 403)
+/// throws a <see cref="WebSocketException"/> instead of returning a response to pipeline policies, so policies
+/// cannot read the status or headers such as <c>WWW-Authenticate</c>. As a result, an
+/// <see cref="AuthenticationPolicy"/> that refreshes credentials and retries after a 401 is not supported on this
+/// target; supply a valid credential before calling <see cref="ConnectAsync"/>.
+/// </para>
 /// </remarks>
 [Experimental("OPENAI001")]
 public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
@@ -56,6 +68,10 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
 
     /// <summary>Initializes a disconnected WebSocket client.</summary>
     /// <param name="authenticationPolicy">The authentication policy used to authenticate with the service.</param>
+    /// <remarks>
+    /// On .NET Standard 2.0, the policy cannot observe a rejected upgrade response, so retrying after a 401 is not
+    /// supported. See <see cref="ResponsesWebSocketClient"/> remarks.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="authenticationPolicy"/> is null.</exception>
     public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new ResponsesWebSocketClientOptions())
     {
@@ -64,6 +80,10 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// <summary>Initializes a disconnected WebSocket client.</summary>
     /// <param name="authenticationPolicy">The authentication policy used to authenticate with the service.</param>
     /// <param name="options">The options to configure the client. Settings are snapshotted at construction.</param>
+    /// <remarks>
+    /// On .NET Standard 2.0, the policy cannot observe a rejected upgrade response, so retrying after a 401 is not
+    /// supported. See <see cref="ResponsesWebSocketClient"/> remarks.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="authenticationPolicy"/> is null.</exception>
     /// <exception cref="NotSupportedException">A custom HTTP transport is configured.</exception>
     public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy, ResponsesWebSocketClientOptions options)
@@ -218,6 +238,11 @@ public partial class ResponsesWebSocketClient : IDisposable, IAsyncDisposable
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     /// No handler is subscribed to <see cref="MessageReceivedAsync"/> or <see cref="ErrorOccurredAsync"/>.
+    /// </exception>
+    /// <exception cref="WebSocketException">
+    /// The server rejected the upgrade and no pipeline policy recovered. On .NET Standard 2.0, this is always the
+    /// outcome of a rejected upgrade; its status code is not exposed as structured data and may appear in the
+    /// exception message, depending on the runtime.
     /// </exception>
     public virtual Task ConnectAsync(CancellationToken cancellationToken = default)
         => ConnectTransportAsync(cancellationToken);
