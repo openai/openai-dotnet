@@ -38,6 +38,15 @@
     <Compile Include="..\examples\MutualTls\Example01_MutualTlsAsync.cs" LinkBase="Shared\Examples" />
   </ItemGroup>
 
+  <!-- Linked so ResponsesWebSocketExampleTests can exercise the examples' internal helpers. Live examples are [Explicit]. -->
+  <ItemGroup>
+    <Compile Include="..\examples\Responses\WebSockets\ResponsesWebSocketExamples.Helpers.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example03_SteerResponseAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example04_LongRunningSessionAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example05_ParallelStreamsAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+    <Compile Include="..\examples\Responses\WebSockets\Example06_ForkConversationAsync.cs" LinkBase="Shared\Examples\Responses\WebSockets" />
+  </ItemGroup>
+
   <!-- The SSE collections are internal and the library is signed, so they are linked
        in rather than exposed through InternalsVisibleTo. -->
   <ItemGroup>
@@ -52,9 +61,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\OpenAI.Responses\src\Custom\WebSocket\BoundedConcurrentQueue.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI.Responses\src\Custom\WebSocket\MessageReceivedSubscriber.cs" LinkBase="Utility\Shared" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>SourcePath</_Parameter1>
       <_Parameter2>$(MSBuildProjectDirectory)</_Parameter2>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include=".queue-validation\" />
   </ItemGroup>
 </Project>
