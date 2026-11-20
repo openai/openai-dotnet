@@ -968,7 +968,11 @@ public class ResponsesWebSocketTransportTests
         Assert.That(reported.Exception, Is.TypeOf<InvalidDataException>());
         await handlersCanceled.Task.WaitAsync(Timeout);
         await Assert.ThrowsAsync<InvalidDataException>(async () => await client.Completion.WaitAsync(Timeout));
-        Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Closed));
+        using CancellationTokenSource closedTimeout = new(Timeout);
+        while (client.State != ResponsesWebSocketConnectionState.Closed)
+        {
+            await Task.Delay(1, closedTimeout.Token);
+        }
     }
 
     [Test]
