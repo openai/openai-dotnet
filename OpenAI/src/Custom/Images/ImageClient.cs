@@ -2,6 +2,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -682,6 +683,242 @@ public partial class ImageClient
         return GenerateImageEdits(imageStream, imageFilePath, prompt, maskStream, maskFilePath, imageCount, options);
     }
 
+    /// <summary> Generates an edited or extended image based on multiple reference images and a prompt. </summary>
+    /// <param name="images">
+    ///     The image streams to use as references. Each image must be a supported image file. The GPT image models accept
+    ///     up to 16 reference images per request.
+    /// </param>
+    /// <param name="imageFilenames">
+    ///     The filenames associated with each image stream, in the same order as <paramref name="images"/>. Each filename's
+    ///     extension (for example: .png) will be used to validate the format of the corresponding input image. The request
+    ///     may fail if a filename's extension and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="images"/>, <paramref name="imageFilenames"/>, or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="images"/> or <paramref name="imageFilenames"/> is empty or contains a null or empty entry, the two collections do not have the same number of elements, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(IEnumerable<Stream> images, IEnumerable<string> imageFilenames, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(images, nameof(images));
+        Argument.AssertNotNull(imageFilenames, nameof(imageFilenames));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        options ??= new();
+        using MultiPartFormDataBinaryContent content = CreateMultipleImageEditContent(images, imageFilenames, prompt, null, options);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
+    }
+
+    /// <summary> Generates an edited or extended image based on multiple reference images and a prompt. </summary>
+    /// <param name="images">
+    ///     The image streams to use as references. Each image must be a supported image file. The GPT image models accept
+    ///     up to 16 reference images per request.
+    /// </param>
+    /// <param name="imageFilenames">
+    ///     The filenames associated with each image stream, in the same order as <paramref name="images"/>. Each filename's
+    ///     extension (for example: .png) will be used to validate the format of the corresponding input image. The request
+    ///     may fail if a filename's extension and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="images"/>, <paramref name="imageFilenames"/>, or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="images"/> or <paramref name="imageFilenames"/> is empty or contains a null or empty entry, the two collections do not have the same number of elements, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(IEnumerable<Stream> images, IEnumerable<string> imageFilenames, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(images, nameof(images));
+        Argument.AssertNotNull(imageFilenames, nameof(imageFilenames));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        options ??= new();
+        using MultiPartFormDataBinaryContent content = CreateMultipleImageEditContent(images, imageFilenames, prompt, null, options);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
+    }
+
+    /// <summary> Generates an edited or extended image based on multiple reference images and a prompt. </summary>
+    /// <param name="imageFilePaths">
+    ///     The paths of the image files to use as references. Each image must be a supported image file. The GPT image
+    ///     models accept up to 16 reference images per request. Each file path's extension (for example: .png) will be
+    ///     used to validate the format of the corresponding input image. The request may fail if a file path's extension
+    ///     and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="imageFilePaths"/> or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="imageFilePaths"/> is empty or contains a null or empty entry, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(IEnumerable<string> imageFilePaths, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(imageFilePaths, nameof(imageFilePaths));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        List<string> imageFilePathList = imageFilePaths.ToList();
+        List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
+        try
+        {
+            return await GenerateImageEditAsync(imageStreams, GetImageFilenames(imageFilePathList), prompt, options, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            DisposeImageFiles(imageStreams);
+        }
+    }
+
+    /// <summary> Generates an edited or extended image based on multiple reference images and a prompt. </summary>
+    /// <param name="imageFilePaths">
+    ///     The paths of the image files to use as references. Each image must be a supported image file. The GPT image
+    ///     models accept up to 16 reference images per request. Each file path's extension (for example: .png) will be
+    ///     used to validate the format of the corresponding input image. The request may fail if a file path's extension
+    ///     and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="imageFilePaths"/> or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="imageFilePaths"/> is empty or contains a null or empty entry, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(IEnumerable<string> imageFilePaths, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(imageFilePaths, nameof(imageFilePaths));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        List<string> imageFilePathList = imageFilePaths.ToList();
+        List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
+        try
+        {
+            return GenerateImageEdit(imageStreams, GetImageFilenames(imageFilePathList), prompt, options, cancellationToken);
+        }
+        finally
+        {
+            DisposeImageFiles(imageStreams);
+        }
+    }
+
+    /// <summary> Generates edited or extended images based on multiple reference images and a prompt. </summary>
+    /// <param name="images">
+    ///     The image streams to use as references. Each image must be a supported image file. The GPT image models accept
+    ///     up to 16 reference images per request.
+    /// </param>
+    /// <param name="imageFilenames">
+    ///     The filenames associated with each image stream, in the same order as <paramref name="images"/>. Each filename's
+    ///     extension (for example: .png) will be used to validate the format of the corresponding input image. The request
+    ///     may fail if a filename's extension and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="images"/>, <paramref name="imageFilenames"/>, or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="images"/> or <paramref name="imageFilenames"/> is empty or contains a null or empty entry, the two collections do not have the same number of elements, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(IEnumerable<Stream> images, IEnumerable<string> imageFilenames, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(images, nameof(images));
+        Argument.AssertNotNull(imageFilenames, nameof(imageFilenames));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        options ??= new();
+        using MultiPartFormDataBinaryContent content = CreateMultipleImageEditContent(images, imageFilenames, prompt, imageCount, options);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
+    }
+
+    /// <summary> Generates edited or extended images based on multiple reference images and a prompt. </summary>
+    /// <param name="images">
+    ///     The image streams to use as references. Each image must be a supported image file. The GPT image models accept
+    ///     up to 16 reference images per request.
+    /// </param>
+    /// <param name="imageFilenames">
+    ///     The filenames associated with each image stream, in the same order as <paramref name="images"/>. Each filename's
+    ///     extension (for example: .png) will be used to validate the format of the corresponding input image. The request
+    ///     may fail if a filename's extension and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="images"/>, <paramref name="imageFilenames"/>, or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="images"/> or <paramref name="imageFilenames"/> is empty or contains a null or empty entry, the two collections do not have the same number of elements, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(IEnumerable<Stream> images, IEnumerable<string> imageFilenames, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(images, nameof(images));
+        Argument.AssertNotNull(imageFilenames, nameof(imageFilenames));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        options ??= new();
+        using MultiPartFormDataBinaryContent content = CreateMultipleImageEditContent(images, imageFilenames, prompt, imageCount, options);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
+    }
+
+    /// <summary> Generates edited or extended images based on multiple reference images and a prompt. </summary>
+    /// <param name="imageFilePaths">
+    ///     The paths of the image files to use as references. Each image must be a supported image file. The GPT image
+    ///     models accept up to 16 reference images per request. Each file path's extension (for example: .png) will be
+    ///     used to validate the format of the corresponding input image. The request may fail if a file path's extension
+    ///     and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="imageFilePaths"/> or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="imageFilePaths"/> is empty or contains a null or empty entry, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(IEnumerable<string> imageFilePaths, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(imageFilePaths, nameof(imageFilePaths));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        List<string> imageFilePathList = imageFilePaths.ToList();
+        List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
+        try
+        {
+            return await GenerateImageEditsAsync(imageStreams, GetImageFilenames(imageFilePathList), prompt, imageCount, options, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            DisposeImageFiles(imageStreams);
+        }
+    }
+
+    /// <summary> Generates edited or extended images based on multiple reference images and a prompt. </summary>
+    /// <param name="imageFilePaths">
+    ///     The paths of the image files to use as references. Each image must be a supported image file. The GPT image
+    ///     models accept up to 16 reference images per request. Each file path's extension (for example: .png) will be
+    ///     used to validate the format of the corresponding input image. The request may fail if a file path's extension
+    ///     and the actual format of its input image do not match.
+    /// </param>
+    /// <param name="prompt"> A text description of the desired image. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="imageFilePaths"/> or <paramref name="prompt"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="imageFilePaths"/> is empty or contains a null or empty entry, or <paramref name="prompt"/> is an empty string. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(IEnumerable<string> imageFilePaths, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(imageFilePaths, nameof(imageFilePaths));
+        Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
+
+        List<string> imageFilePathList = imageFilePaths.ToList();
+        List<FileStream> imageStreams = OpenImageFiles(imageFilePathList);
+        try
+        {
+            return GenerateImageEdits(imageStreams, GetImageFilenames(imageFilePathList), prompt, imageCount, options, cancellationToken);
+        }
+        finally
+        {
+            DisposeImageFiles(imageStreams);
+        }
+    }
+
     #endregion
 
     #region GenerateImageVariations
@@ -872,6 +1109,92 @@ public partial class ImageClient
         options.Prompt = prompt;
         options.N = imageCount;
         options.Model = _model;
+    }
+
+    private MultiPartFormDataBinaryContent CreateMultipleImageEditContent(IEnumerable<Stream> images, IEnumerable<string> imageFilenames, string prompt, int? imageCount, ImageEditOptions options)
+    {
+        List<Stream> imageList = images.ToList();
+        List<string> imageFilenameList = imageFilenames.ToList();
+        ValidateImages(imageList, imageFilenameList);
+
+        // As in the single-image edit overloads, a null image count also clears any count left on a
+        // reused options instance.
+        options.Prompt = prompt;
+        options.N = imageCount;
+        options.Model = _model;
+
+        return options.ToMultipartContent(imageList, imageFilenameList, null, null);
+    }
+
+    private static void ValidateImages(List<Stream> images, List<string> imageFilenames)
+    {
+        if (images.Count == 0)
+        {
+            throw new ArgumentException("At least one image must be provided.", nameof(images));
+        }
+
+        if (images.Count != imageFilenames.Count)
+        {
+            throw new ArgumentException("The number of images and the number of image filenames must match.", nameof(imageFilenames));
+        }
+
+        for (int i = 0; i < images.Count; i++)
+        {
+            if (images[i] is null)
+            {
+                throw new ArgumentException("The collection of images cannot contain a null entry.", nameof(images));
+            }
+
+            if (string.IsNullOrEmpty(imageFilenames[i]))
+            {
+                throw new ArgumentException("The collection of image filenames cannot contain a null or empty entry.", nameof(imageFilenames));
+            }
+        }
+    }
+
+    private static List<FileStream> OpenImageFiles(List<string> imageFilePaths)
+    {
+        if (imageFilePaths.Count == 0)
+        {
+            throw new ArgumentException("At least one image file path must be provided.", nameof(imageFilePaths));
+        }
+
+        // Check every path before opening any file, so an invalid entry fails without file I/O.
+        if (imageFilePaths.Any(string.IsNullOrEmpty))
+        {
+            throw new ArgumentException("The collection of image file paths cannot contain a null or empty entry.", nameof(imageFilePaths));
+        }
+
+        List<FileStream> imageStreams = new(imageFilePaths.Count);
+        try
+        {
+            foreach (string imageFilePath in imageFilePaths)
+            {
+                imageStreams.Add(File.OpenRead(imageFilePath));
+            }
+        }
+        catch
+        {
+            DisposeImageFiles(imageStreams);
+            throw;
+        }
+
+        return imageStreams;
+    }
+
+    // The multipart body carries only each file's name. Sending the full path would pass the caller's local
+    // directory names to the service.
+    private static List<string> GetImageFilenames(List<string> imageFilePaths)
+    {
+        return imageFilePaths.Select(imageFilePath => Path.GetFileName(imageFilePath)).ToList();
+    }
+
+    private static void DisposeImageFiles(List<FileStream> imageStreams)
+    {
+        foreach (FileStream imageStream in imageStreams)
+        {
+            imageStream.Dispose();
+        }
     }
 
     private void CreateImageVariationOptions(Stream image, string imageFilename, int? imageCount, ref ImageVariationOptions options)
