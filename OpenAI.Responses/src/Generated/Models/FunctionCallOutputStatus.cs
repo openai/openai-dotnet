@@ -13,8 +13,8 @@ namespace OpenAI.Responses
     public readonly partial struct FunctionCallOutputStatus : IEquatable<FunctionCallOutputStatus>
     {
         private readonly string _value;
-        private const string InProgressValue = "in_progress";
         private const string CompletedValue = "completed";
+        private const string InProgressValue = "in_progress";
         private const string IncompleteValue = "incomplete";
 
         public FunctionCallOutputStatus(string value)
@@ -24,9 +24,9 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static FunctionCallOutputStatus InProgress { get; } = new FunctionCallOutputStatus(InProgressValue);
-
         public static FunctionCallOutputStatus Completed { get; } = new FunctionCallOutputStatus(CompletedValue);
+
+        public static FunctionCallOutputStatus InProgress { get; } = new FunctionCallOutputStatus(InProgressValue);
 
         public static FunctionCallOutputStatus Incomplete { get; } = new FunctionCallOutputStatus(IncompleteValue);
 

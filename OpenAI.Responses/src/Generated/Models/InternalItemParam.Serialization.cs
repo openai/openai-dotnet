@@ -113,8 +113,6 @@ namespace OpenAI.Responses
                         return InternalFileSearchToolCallItemParam.DeserializeInternalFileSearchToolCallItemParam(element, data, options);
                     case "function_call":
                         return InternalFunctionToolCallItemParam.DeserializeInternalFunctionToolCallItemParam(element, data, options);
-                    case "function_call_output":
-                        return InternalFunctionToolCallOutputItemParam.DeserializeInternalFunctionToolCallOutputItemParam(element, data, options);
                     case "image_generation_call":
                         return InternalImageGenToolCallItemParam.DeserializeInternalImageGenToolCallItemParam(element, data, options);
                     case "item_reference":

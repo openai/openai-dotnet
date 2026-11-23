@@ -97,7 +97,7 @@ public partial class ResponseItem
         return new FunctionCallResponseItem(callId, functionName, functionArguments);
     }
 
-    public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput)
+    public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, IEnumerable<ResponseContentPart> functionOutput)
     {
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }

@@ -16,9 +16,9 @@ internal partial class InternalItemContentInputFile
         set
         {
             _internalFileData = value;
-            if (value is not null && !DataEncodingHelpers.TryParseDataUri(value, out _inputFileBytes, out _inputFileBytesMediaType))
+            if (value is not null && !DataEncodingHelpers.TryParseFileData(value, out _inputFileBytes, out _inputFileBytesMediaType))
             {
-                throw new ArgumentException($"Input did not parse a valid data URI.");
+                throw new ArgumentException("Expected file data to be a Base64 string or a Base64 data URI.");
             }
         }
     }

@@ -18,9 +18,9 @@ internal partial class InternalChatCompletionRequestMessageContentPartFileFile
         set
         {
             _internalFileData = value;
-            if (value is not null && !DataEncodingHelpers.TryParseDataUri(value, out _fileBytes, out _fileBytesMediaType))
+            if (value is not null && !DataEncodingHelpers.TryParseFileData(value, out _fileBytes, out _fileBytesMediaType))
             {
-                throw new ArgumentException($"Input did not parse a valid data URI.");
+                throw new ArgumentException("Expected file data to be a Base64 string or a Base64 data URI.");
             }
         }
     }
