@@ -1755,13 +1755,24 @@ namespace OpenAI.Responses {
         public ResponseShellToolChoice() : base(default);
     }
     [Experimental("OPENAI001")]
-    public enum ResponseStatus {
-        InProgress = 0,
-        Completed = 1,
-        Cancelled = 2,
-        Queued = 3,
-        Incomplete = 4,
-        Failed = 5
+    public readonly partial struct ResponseStatus : IEquatable<ResponseStatus> {
+        public ResponseStatus(string value);
+        public static ResponseStatus Cancelled { get; }
+        public static ResponseStatus Completed { get; }
+        public static ResponseStatus Failed { get; }
+        public static ResponseStatus Incomplete { get; }
+        public static ResponseStatus InProgress { get; }
+        public static ResponseStatus Queued { get; }
+        public readonly bool Equals(ResponseStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseStatus left, ResponseStatus right);
+        public static implicit operator ResponseStatus(string value);
+        public static implicit operator ResponseStatus?(string value);
+        public static bool operator !=(ResponseStatus left, ResponseStatus right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {

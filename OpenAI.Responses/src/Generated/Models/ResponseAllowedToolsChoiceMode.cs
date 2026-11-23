@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseAllowedToolsChoiceMode(string value) => new ResponseAllowedToolsChoiceMode(value);
 
-        public static implicit operator ResponseAllowedToolsChoiceMode?(string value) => value == null ? null : new ResponseAllowedToolsChoiceMode(value);
+        public static implicit operator ResponseAllowedToolsChoiceMode?(string value) => value == null ? (ResponseAllowedToolsChoiceMode?)null : new ResponseAllowedToolsChoiceMode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseAllowedToolsChoiceMode other && Equals(other);
