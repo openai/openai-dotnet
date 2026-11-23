@@ -492,14 +492,17 @@ public partial class ResponsesWebSocketClient
             await _webSocket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, linked.Token)
                 .ConfigureAwait(false);
         }
-        catch (WebSocketException)
+        catch (WebSocketException exception)
         {
+            _transportCompletion.TrySetException(exception);
+            CancelLifetime();
             _webSocket?.Abort();
             throw;
         }
         catch (OperationCanceledException)
         {
             // A canceled physical write has uncertain delivery and cannot safely be retried.
+            CancelLifetime();
             _webSocket?.Abort();
             throw;
         }

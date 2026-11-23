@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -504,7 +505,8 @@ public class ResponsesWebSocketTransportTests
     {
         FakeSocket first = new();
         FakeSocket second = new();
-        await using TestClient client = new(new[] { first, second });
+        TaskCompletionSource<bool> allowReconnect = Signal();
+        await using TestClient client = new(new[] { first, second }, secondConnectionGate: allowReconnect.Task);
         TaskCompletionSource<bool> recovered = Signal();
         TaskCompletionSource<bool> disconnected = Signal();
         client.MessageReceivedAsync += _ => { recovered.TrySetResult(true); return Task.CompletedTask; };
@@ -513,13 +515,74 @@ public class ResponsesWebSocketTransportTests
         await client.CreateResponseAsync(BinaryData.FromString("{\"type\":\"response.create\"}"));
         first.Fail(new WebSocketException("Disconnected"));
         await disconnected.Task.WaitAsync(Timeout);
+        await client.SecondConnectionStarted.Task.WaitAsync(Timeout);
         await Assert.ThrowsAsync<InvalidOperationException>(() => client.ConnectAsync());
         Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Reconnecting));
+        allowReconnect.TrySetResult(true);
         second.Add("{\"type\":\"future.event\"}", true);
         await recovered.Task.WaitAsync(Timeout);
         Assert.That(client.Connections, Is.EqualTo(2));
         Assert.That(second.Sent, Is.Empty);
         Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Connected));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task FailedOrCanceledWriteCancelsBackpressuredReceive(bool cancelWrite)
+    {
+        WebSocketException writeFailure = new("Write failed.");
+        TaskCompletionSource<bool> allowSend = Signal();
+        FakeSocket socket = new()
+        {
+            SendFailure = cancelWrite ? null : writeFailure,
+            SendGate = cancelWrite ? allowSend.Task : null
+        };
+        await using TestClient client = new(socket, new ResponsesWebSocketClientOptions
+        {
+            MaxBufferedMessages = 1,
+            ShouldReconnect = false
+        });
+        TaskCompletionSource<bool> handlerEntered = Signal();
+        TaskCompletionSource<bool> handlerCanceled = Signal();
+        client.MessageReceivedAsync += async args =>
+        {
+            handlerEntered.TrySetResult(true);
+            try
+            {
+                await Task.Delay(System.Threading.Timeout.Infinite, args.CancellationToken);
+            }
+            finally
+            {
+                handlerCanceled.TrySetResult(args.CancellationToken.IsCancellationRequested);
+            }
+        };
+        client.ErrorOccurredAsync += _ => Task.CompletedTask;
+        await client.ConnectAsync();
+        socket.Add("{\"type\":\"future.event\"}", true);
+        await handlerEntered.Task.WaitAsync(Timeout);
+        socket.Add("{\"type\":\"future.event\"}", true);
+        socket.Add("{\"type\":\"future.event\"}", true);
+        await socket.ThirdRead.Task.WaitAsync(Timeout);
+        await WaitForPendingMessageEnqueueAsync(client);
+
+        if (cancelWrite)
+        {
+            using CancellationTokenSource cancellation = new();
+            Task send = client.CreateResponseAsync(BinaryData.FromString("{\"type\":\"response.create\"}"), cancellation.Token);
+            await socket.SendStarted.Task.WaitAsync(Timeout);
+            cancellation.Cancel();
+            await Assert.CatchAsync<OperationCanceledException>(async () => await send.WaitAsync(Timeout));
+            await client.Completion.WaitAsync(Timeout);
+        }
+        else
+        {
+            await Assert.ThrowsAsync<WebSocketException>(
+                async () => await client.CreateResponseAsync(BinaryData.FromString("{\"type\":\"response.create\"}")));
+            await Assert.ThrowsAsync<WebSocketException>(async () => await client.Completion.WaitAsync(Timeout));
+        }
+
+        Assert.That(await handlerCanceled.Task.WaitAsync(Timeout), Is.True);
+        await WaitUntilAsync(() => client.State == ResponsesWebSocketConnectionState.Closed);
     }
 
     [Test]
@@ -1161,6 +1224,25 @@ public class ResponsesWebSocketTransportTests
         client.ErrorOccurredAsync += _ => Task.CompletedTask;
     }
 
+    private static async Task WaitForPendingMessageEnqueueAsync(ResponsesWebSocketClient client)
+    {
+        FieldInfo subscriptionsField = typeof(ResponsesWebSocketClient).GetField(
+            "_messageReceivedSubscribers", BindingFlags.Instance | BindingFlags.NonPublic);
+        object subscription = ((System.Collections.IEnumerable)subscriptionsField.GetValue(client)).Cast<object>().Single();
+        object subscriber = subscription.GetType().GetProperty("Subscriber").GetValue(subscription);
+        FieldInfo pendingEnqueuesField = subscriber.GetType().GetField("_pendingEnqueues", BindingFlags.Instance | BindingFlags.NonPublic);
+        await WaitUntilAsync(() => (int)pendingEnqueuesField.GetValue(subscriber) > 0);
+    }
+
+    private static async Task WaitUntilAsync(Func<bool> condition)
+    {
+        using CancellationTokenSource timeout = new(Timeout);
+        while (!condition())
+        {
+            await Task.Delay(1, timeout.Token);
+        }
+    }
+
     private static TaskCompletionSource<bool> Signal() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     private sealed class HeaderPolicy(string headerName) : PipelinePolicy
@@ -1220,16 +1302,29 @@ public class ResponsesWebSocketTransportTests
     private sealed class TestClient : ResponsesWebSocketClient
     {
         private readonly Queue<FakeSocket> _sockets;
+        private readonly Task _secondConnectionGate;
         public int Connections { get; private set; }
+        public TaskCompletionSource<bool> SecondConnectionStarted { get; } = Signal();
         public TestClient(FakeSocket socket, ResponsesWebSocketClientOptions options = null) : this(new[] { socket }, options) { }
-        public TestClient(IEnumerable<FakeSocket> sockets, ResponsesWebSocketClientOptions options = null)
+        public TestClient(IEnumerable<FakeSocket> sockets, ResponsesWebSocketClientOptions options = null, Task secondConnectionGate = null)
             : base(new ApiKeyCredential("test-key"), options ?? new ResponsesWebSocketClientOptions())
-            => _sockets = new Queue<FakeSocket>(sockets);
-        protected override Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
+        {
+            _sockets = new Queue<FakeSocket>(sockets);
+            _secondConnectionGate = secondConnectionGate;
+        }
+        protected override async Task<WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Connections++;
-            return Task.FromResult<WebSocket>(_sockets.Dequeue());
+            if (Connections == 2)
+            {
+                SecondConnectionStarted.TrySetResult(true);
+                if (_secondConnectionGate != null)
+                {
+                    await _secondConnectionGate.WaitAsync(cancellationToken);
+                }
+            }
+            return _sockets.Dequeue();
         }
     }
 
@@ -1312,7 +1407,10 @@ public class ResponsesWebSocketTransportTests
         public TaskCompletionSource<bool> ThirdRead { get; } = Signal();
         public TaskCompletionSource<bool> WaitingForSecondReceive { get; } = Signal();
         public TaskCompletionSource<bool> ReceiveCanceled { get; } = Signal();
+        public TaskCompletionSource<bool> SendStarted { get; } = Signal();
         public Task SecondReceiveGate { get; set; }
+        public Task SendGate { get; set; }
+        public Exception SendFailure { get; set; }
         public ConcurrentQueue<string> Sent { get; } = new();
         public int MaximumConcurrentSends { get; private set; }
         public int CloseOutputCalls { get; private set; }
@@ -1375,7 +1473,10 @@ public class ResponsesWebSocketTransportTests
             try
             {
                 await Task.Yield();
+                SendStarted.TrySetResult(true);
+                if (SendGate != null) await SendGate.WaitAsync(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
+                if (SendFailure != null) throw SendFailure;
                 Sent.Enqueue(Encoding.UTF8.GetString(buffer.Array, buffer.Offset, buffer.Count));
             }
             finally { Interlocked.Decrement(ref _sending); }
