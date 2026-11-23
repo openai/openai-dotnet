@@ -423,6 +423,7 @@ public class ResponsesWebSocketTransportTests
         Assert.That(message.Error, Is.Not.Null);
         Assert.That(message.Error.Code.ToString(), Is.Null);
         Assert.That(message.Error.Message, Is.EqualTo("bad request"));
+        Assert.That(message.RawData.ToString(), Does.Contain("\"code\":null"));
         Assert.That(localErrors, Is.Zero);
         Assert.That(client.State, Is.EqualTo(ResponsesWebSocketConnectionState.Connected));
         Assert.That(client.Completion.IsCompleted, Is.False);
