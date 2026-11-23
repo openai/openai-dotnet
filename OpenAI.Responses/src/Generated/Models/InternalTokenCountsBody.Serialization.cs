@@ -449,7 +449,7 @@ namespace OpenAI.Responses
                 }
                 return Reasoning.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
-            if (local.StartsWith("tool_choice"u8))
+            if (local.StartsWith("tool_choice"u8) && !local.SequenceEqual("tool_choice"u8))
             {
                 if (ToolChoice == null)
                 {
@@ -506,7 +506,7 @@ namespace OpenAI.Responses
                 Reasoning.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
                 return true;
             }
-            if (local.StartsWith("tool_choice"u8))
+            if (local.StartsWith("tool_choice"u8) && !local.SequenceEqual("tool_choice"u8))
             {
                 if (ToolChoice == null)
                 {

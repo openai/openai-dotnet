@@ -1,3 +1,4 @@
+using System;
 using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
@@ -8,8 +9,16 @@ namespace OpenAI.Responses;
 [CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class ResponseToolChoice
 {
+    /// <summary>Creates a tool choice from a string-backed selection mode.</summary>
+    /// <param name="defaultToolChoice">The selection mode, such as <see cref="ResponseToolChoiceEnum.Auto"/>.</param>
+    /// <exception cref="ArgumentException"><paramref name="defaultToolChoice"/> is uninitialized.</exception>
     public ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice)
     {
+        if (defaultToolChoice == default)
+        {
+            throw new ArgumentException("The tool choice must be initialized.", nameof(defaultToolChoice));
+        }
+
         DefaultToolChoice = defaultToolChoice;
     #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         // CUSTOM: Initialize patch forwarding for publicly constructed union wrappers.

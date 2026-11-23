@@ -191,6 +191,8 @@ public partial class ResponsesSmokeTests
         AssertChoiceEqual(
             ResponseToolChoiceEnum.Required, @"""required""");
         AssertChoiceEqual(
+            new ResponseToolChoiceEnum("future_mode"), @"""future_mode""");
+        AssertChoiceEqual(
             new ResponseFunctionToolChoice("foo"),
             @"{""type"":""function"",""name"":""foo""}");
         AssertChoiceEqual(
@@ -237,8 +239,8 @@ public partial class ResponsesSmokeTests
         AssertChoiceEqual(
             new ResponseAllowedToolsChoice(
                 ResponseAllowedToolsChoiceMode.Required,
-                [ResponseTool.CreateCustomTool("foo")]),
-            @"{""type"":""allowed_tools"",""mode"":""required"",""tools"":[{""type"":""custom"",""name"":""foo""}]}");
+                [new ResponseFunctionToolChoice("search"), new ResponseCustomToolChoice("foo")]),
+            """{"type":"allowed_tools","mode":"required","tools":[{"type":"function","name":"search"},{"type":"custom","name":"foo"}]}""");
 
         AssertChoiceEqual(
             new ResponseCustomToolChoice("foo"),
@@ -247,6 +249,13 @@ public partial class ResponsesSmokeTests
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
             toolChoice => Assert.That(toolChoice.CustomToolChoice, Is.Not.Null));
+    }
+
+    [Test]
+    public void ToolChoiceRejectsUninitializedSelectionMode()
+    {
+        var exception = Assert.Throws<ArgumentException>(() => new ResponseToolChoice(default(ResponseToolChoiceEnum)));
+        Assert.That(exception.ParamName, Is.EqualTo("defaultToolChoice"));
     }
 
     [Test]
@@ -269,15 +278,15 @@ public partial class ResponsesSmokeTests
                 Assert.That(mcpChoice.ServerLabel, Is.EqualTo("server"));
             });
         AssertSerializationRoundTrip<ResponseToolChoice>(
-            """{"type":"allowed_tools","mode":"required","tools":[{"type":"custom","name":"search"}]}""",
+            """{"type":"allowed_tools","mode":"required","tools":[{"type":"function","name":"search"}]}""",
             choice =>
             {
                 Assert.That(choice.CustomToolChoice, Is.TypeOf<ResponseAllowedToolsChoice>());
                 ResponseAllowedToolsChoice allowedChoice = (ResponseAllowedToolsChoice)choice.CustomToolChoice;
                 Assert.That(allowedChoice.Mode, Is.EqualTo(ResponseAllowedToolsChoiceMode.Required));
                 Assert.That(allowedChoice.Tools, Has.Count.EqualTo(1));
-                Assert.That(allowedChoice.Tools[0], Is.TypeOf<CustomTool>());
-                Assert.That(((CustomTool)allowedChoice.Tools[0]).ToolName, Is.EqualTo("search"));
+                Assert.That(allowedChoice.Tools[0], Is.TypeOf<ResponseFunctionToolChoice>());
+                Assert.That(((ResponseFunctionToolChoice)allowedChoice.Tools[0]).FunctionName, Is.EqualTo("search"));
             });
     }
 
@@ -363,6 +372,25 @@ public partial class ResponsesSmokeTests
         Assert.That(json.RootElement.GetProperty("tool_choice").GetRawText(), Is.EqualTo(replacement));
     }
 
+    [TestCase("\"auto\"")]
+    [TestCase("""{"type":"function","name":"search"}""")]
+    public void ToolChoiceCanBeRemovedWithJsonPatch(string toolChoice)
+    {
+        BinaryData input = BinaryData.FromString($$"""{"tool_choice":{{toolChoice}}}""");
+        CreateResponseOptions options = ModelReaderWriter.Read<CreateResponseOptions>(input);
+        ResponseResult response = ModelReaderWriter.Read<ResponseResult>(input);
+
+#pragma warning disable SCME0001
+        options.Patch.Remove("$.tool_choice"u8);
+        response.Patch.Remove("$.tool_choice"u8);
+#pragma warning restore SCME0001
+
+        using JsonDocument optionsJson = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        using JsonDocument responseJson = JsonDocument.Parse(ModelReaderWriter.Write(response));
+        Assert.That(optionsJson.RootElement.TryGetProperty("tool_choice", out _), Is.False);
+        Assert.That(responseJson.RootElement.TryGetProperty("tool_choice", out _), Is.False);
+    }
+
     [TestCase(true)]
     [TestCase(false)]
     public void ToolChoicePropagatesJsonPatchThroughAllowedTools(bool fromRawJson)
@@ -373,12 +401,12 @@ public partial class ResponsesSmokeTests
             : new()
             {
                 ToolChoice = new ResponseAllowedToolsChoice(
-                    ResponseAllowedToolsChoiceMode.Required, [ResponseTool.CreateCustomTool("search")])
+                    ResponseAllowedToolsChoiceMode.Required, [new ResponseCustomToolChoice("search")])
             };
 
 #pragma warning disable SCME0001
         options.Patch.Set("$.tool_choice.tools[0].name"u8, "\"patched\""u8);
-        CustomTool tool = (CustomTool)((ResponseAllowedToolsChoice)options.ToolChoice.CustomToolChoice).Tools[0];
+        ResponseToolChoiceObject tool = ((ResponseAllowedToolsChoice)options.ToolChoice.CustomToolChoice).Tools[0];
         tool.Patch.Set("$.additional_property"u8, "\"added\""u8);
         Assert.That(options.Patch.TryGetEncodedValue("$.tool_choice.tools[0].additional_property"u8, out _), Is.True);
 #pragma warning restore SCME0001

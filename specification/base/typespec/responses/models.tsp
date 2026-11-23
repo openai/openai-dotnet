@@ -595,7 +595,9 @@ model ToolChoiceObjectShell extends ToolChoiceObject {
 model ToolChoiceObjectAllowedTools extends ToolChoiceObject {
   type: ToolChoiceObjectType.allowed_tools;
   mode: ToolChoiceAllowedMode;
-  tools: Tool[];
+
+  /** References to the tools the model may call, selected from the request's tool definitions. */
+  tools: ToolChoiceObject[];
 }
 // Tool customization (apply_discriminator): Apply discriminated type base
 /** Use this option to force the model to call a specific function. */

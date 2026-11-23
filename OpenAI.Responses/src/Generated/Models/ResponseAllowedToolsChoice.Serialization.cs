@@ -132,7 +132,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ResponseAllowedToolsChoiceMode mode = default;
-            IList<ResponseTool> tools = default;
+            IList<ResponseToolChoiceObject> tools = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -147,17 +147,17 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tools"u8))
                 {
-                    List<ResponseTool> array = new List<ResponseTool>();
+                    List<ResponseToolChoiceObject> array = new List<ResponseToolChoiceObject>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, item.GetUtf8Bytes(), options));
+                        array.Add(DeserializeResponseToolChoiceObject(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseAllowedToolsChoice(kind, patch, mode, tools ?? new ChangeTrackingList<ResponseTool>());
+            return new ResponseAllowedToolsChoice(kind, patch, mode, tools ?? new ChangeTrackingList<ResponseToolChoiceObject>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -232,7 +232,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<ResponseTool> ActiveTools()
+        private IEnumerable<ResponseToolChoiceObject> ActiveTools()
         {
             if (!Optional.IsCollectionDefined(Tools))
             {

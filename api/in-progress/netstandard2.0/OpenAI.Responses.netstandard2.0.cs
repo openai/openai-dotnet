@@ -1052,9 +1052,9 @@ namespace OpenAI.Responses {
     }
     public class ResponseAllowedToolsChoice : ResponseToolChoiceObject, IJsonModel<ResponseAllowedToolsChoice>, IPersistableModel<ResponseAllowedToolsChoice> {
         public ResponseAllowedToolsChoice() : base(default);
-        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools) : base(default);
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseToolChoiceObject> tools) : base(default);
         public ResponseAllowedToolsChoiceMode Mode { get; set; }
-        public IList<ResponseTool> Tools { get; }
+        public IList<ResponseToolChoiceObject> Tools { get; }
     }
     public readonly partial struct ResponseAllowedToolsChoiceMode : IEquatable<ResponseAllowedToolsChoiceMode> {
         public ResponseAllowedToolsChoiceMode(string value);

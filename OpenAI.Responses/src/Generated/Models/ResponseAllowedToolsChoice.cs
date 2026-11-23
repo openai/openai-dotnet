@@ -14,7 +14,7 @@ namespace OpenAI.Responses
     public partial class ResponseAllowedToolsChoice : ResponseToolChoiceObject
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseTool> tools) : base(ResponseToolChoiceKind.AllowedTools)
+        public ResponseAllowedToolsChoice(ResponseAllowedToolsChoiceMode mode, IEnumerable<ResponseToolChoiceObject> tools) : base(ResponseToolChoiceKind.AllowedTools)
         {
             Argument.AssertNotNull(tools, nameof(tools));
 
@@ -25,17 +25,17 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseAllowedToolsChoice(ResponseToolChoiceKind kind, in JsonPatch patch, ResponseAllowedToolsChoiceMode mode, IList<ResponseTool> tools) : base(kind, patch)
+        internal ResponseAllowedToolsChoice(ResponseToolChoiceKind kind, in JsonPatch patch, ResponseAllowedToolsChoiceMode mode, IList<ResponseToolChoiceObject> tools) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Mode = mode;
-            Tools = tools ?? new ChangeTrackingList<ResponseTool>();
+            Tools = tools ?? new ChangeTrackingList<ResponseToolChoiceObject>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ResponseAllowedToolsChoiceMode Mode { get; set; }
 
-        public IList<ResponseTool> Tools { get; }
+        public IList<ResponseToolChoiceObject> Tools { get; }
     }
 }
