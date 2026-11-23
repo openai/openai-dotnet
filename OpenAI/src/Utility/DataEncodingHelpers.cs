@@ -11,41 +11,54 @@ namespace OpenAI;
 
 internal static partial class DataEncodingHelpers
 {
+    private const string DataUriPattern = @"^data:(?<type>.+?);base64,(?<data>.*)$";
+
 #if NET8_0_OR_GREATER
-    [GeneratedRegex(@"^data:(?<type>.+?);base64,(?<data>.+)$")]
+    [GeneratedRegex(DataUriPattern)]
     private static partial Regex ParseDataUriRegex();
 #else
     private static Regex ParseDataUriRegex() => s_parseDataUriRegex;
-    private static readonly Regex s_parseDataUriRegex = new(@"^data:(?<type>.+?);base64,(?<data>.+)$", RegexOptions.Compiled);
+    private static readonly Regex s_parseDataUriRegex = new(DataUriPattern, RegexOptions.Compiled);
 #endif
+
+    public static bool TryParseFileData(string fileData, out BinaryData? bytes, out string? bytesMediaType)
+    {
+        if (fileData.StartsWith("data:", StringComparison.Ordinal))
+        {
+            return TryParseDataUri(fileData, out bytes, out bytesMediaType);
+        }
+
+        bytesMediaType = null;
+        return TryDecodeBase64(fileData, out bytes);
+    }
 
     public static bool TryParseDataUri(string dataUri, out BinaryData? bytes, out string? bytesMediaType)
     {
         Match parsedDataUri = ParseDataUriRegex().Match(dataUri);
 
-        if (!parsedDataUri.Success)
+        if (!parsedDataUri.Success || !TryDecodeBase64(parsedDataUri.Groups["data"].Value, out bytes))
         {
             bytes = null;
             bytesMediaType = null;
             return false;
         }
 
-        string matchedBase64Data = parsedDataUri.Groups["data"].Value;
-        byte[] matchedBase64RawBytes;
+        bytesMediaType = parsedDataUri.Groups["type"].Value;
+        return true;
+    }
+
+    private static bool TryDecodeBase64(string base64, out BinaryData? bytes)
+    {
         try
         {
-            matchedBase64RawBytes = Convert.FromBase64String(matchedBase64Data);
+            bytes = BinaryData.FromBytes(Convert.FromBase64String(base64));
+            return true;
         }
         catch (FormatException)
         {
             bytes = null;
-            bytesMediaType = null;
             return false;
         }
-        
-        bytes = BinaryData.FromBytes(matchedBase64RawBytes);
-        bytesMediaType = parsedDataUri.Groups["type"].Value;
-        return true;
     }
 
     public static string CreateDataUri(BinaryData bytes, string bytesMediaType)

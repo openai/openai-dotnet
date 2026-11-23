@@ -8,6 +8,8 @@
 
 ### Bugs Fixed
 
+- File content parts in Chat and Responses now accept bare Base64 file data and round-trip data URIs for empty files.
+
 ### Other Changes
 
 ### Breaking Changes in Experimental APIs

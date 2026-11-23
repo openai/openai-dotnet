@@ -906,6 +906,54 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
+    public void FunctionCallOutputRoundTripsBareBase64FileData()
+    {
+        BinaryData data = BinaryData.FromString("""
+            {
+                "type": "function_call_output",
+                "call_id": "call_123",
+                "output": [
+                    {"type": "input_file", "filename": "result.txt", "file_data": "SGVsbG8="}
+                ]
+            }
+            """);
+
+        FunctionCallOutputResponseItem item = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(data);
+        BinaryData serialized = ModelReaderWriter.Write(item);
+        using JsonDocument json = JsonDocument.Parse(serialized);
+        ResponseContentPart file = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(serialized).FunctionOutput.Single();
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(json.RootElement.GetProperty("output")[0].GetProperty("file_data").GetString(), Is.EqualTo("SGVsbG8="));
+            Assert.That(file.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(file.InputFilename, Is.EqualTo("result.txt"));
+            Assert.That(file.InputFileBytes?.ToArray(), Is.EqualTo(Encoding.UTF8.GetBytes("Hello")));
+            Assert.That(file.InputFileBytesMediaType, Is.Null);
+        }
+    }
+
+    [Test]
+    public void FunctionCallOutputRoundTripsEmptyFileDataUri()
+    {
+        FunctionCallOutputResponseItem item = new("call_123",
+            [ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(Array.Empty<byte>()), "text/plain", "empty.txt")]);
+
+        BinaryData serialized = ModelReaderWriter.Write(item);
+        using JsonDocument json = JsonDocument.Parse(serialized);
+        ResponseContentPart file = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(serialized).FunctionOutput.Single();
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(json.RootElement.GetProperty("output")[0].GetProperty("file_data").GetString(), Is.EqualTo("data:text/plain;base64,"));
+            Assert.That(file.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(file.InputFilename, Is.EqualTo("empty.txt"));
+            Assert.That(file.InputFileBytes?.ToArray(), Is.Empty);
+            Assert.That(file.InputFileBytesMediaType, Is.EqualTo("text/plain"));
+        }
+    }
+
+    [Test]
     public void DeserializeFunctionCallOutputAcceptsStringShorthand()
     {
         FunctionCallOutputResponseItem item = ModelReaderWriter.Read<FunctionCallOutputResponseItem>(BinaryData.FromString(
