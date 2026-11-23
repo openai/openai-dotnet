@@ -13,6 +13,39 @@ namespace OpenAI.Tests.Assistants;
 public class AssistantsSmokeTests
 {
     [Test]
+    public void FileSearchToolDefinitionWithoutFileSearchOptionsCanBeReadAndUpdated()
+    {
+        // Message attachments carry file search tools without a "file_search" object.
+        BinaryData messageData = BinaryData.FromString("""
+            {
+              "id": "msg_abc123",
+              "object": "thread.message",
+              "created_at": 1767865408,
+              "thread_id": "thread_abc123",
+              "status": "completed",
+              "role": "user",
+              "content": [],
+              "attachments": [
+                { "file_id": "file_abc123", "tools": [ { "type": "file_search" } ] }
+              ],
+              "metadata": {}
+            }
+            """);
+
+        ThreadMessage message = ModelReaderWriter.Read<ThreadMessage>(messageData);
+        FileSearchToolDefinition fileSearchTool = (FileSearchToolDefinition)message.Attachments[0].Tools[0];
+
+        Assert.That(fileSearchTool.MaxResults, Is.Null);
+        Assert.That(fileSearchTool.RankingOptions, Is.Null);
+
+        fileSearchTool.MaxResults = 5;
+        fileSearchTool.RankingOptions = new FileSearchRankingOptions(0.5f);
+
+        Assert.That(fileSearchTool.MaxResults, Is.EqualTo(5));
+        Assert.That(fileSearchTool.RankingOptions.ScoreThreshold, Is.EqualTo(0.5f));
+    }
+
+    [Test]
     public void VectorStoreDeserializationSupportsLargeUsageBytes()
     {
         long usageBytes = (long)int.MaxValue + 1;
