@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
 
         public static implicit operator AssistantCollectionOrder(string value) => new AssistantCollectionOrder(value);
 
-        public static implicit operator AssistantCollectionOrder?(string value) => value == null ? null : new AssistantCollectionOrder(value);
+        public static implicit operator AssistantCollectionOrder?(string value) => value == null ? (AssistantCollectionOrder?)null : new AssistantCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AssistantCollectionOrder other && Equals(other);

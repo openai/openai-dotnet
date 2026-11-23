@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponsePromptCacheRetentionPolicy(string value) => new ResponsePromptCacheRetentionPolicy(value);
 
-        public static implicit operator ResponsePromptCacheRetentionPolicy?(string value) => value == null ? null : new ResponsePromptCacheRetentionPolicy(value);
+        public static implicit operator ResponsePromptCacheRetentionPolicy?(string value) => value == null ? (ResponsePromptCacheRetentionPolicy?)null : new ResponsePromptCacheRetentionPolicy(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponsePromptCacheRetentionPolicy other && Equals(other);

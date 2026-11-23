@@ -36,7 +36,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeFunctionCallOutputStatus(string value) => new RealtimeFunctionCallOutputStatus(value);
 
-        public static implicit operator RealtimeFunctionCallOutputStatus?(string value) => value == null ? null : new RealtimeFunctionCallOutputStatus(value);
+        public static implicit operator RealtimeFunctionCallOutputStatus?(string value) => value == null ? (RealtimeFunctionCallOutputStatus?)null : new RealtimeFunctionCallOutputStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeFunctionCallOutputStatus other && Equals(other);

@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeDefaultMaxOutputTokenCount(string value) => new RealtimeDefaultMaxOutputTokenCount(value);
 
-        public static implicit operator RealtimeDefaultMaxOutputTokenCount?(string value) => value == null ? null : new RealtimeDefaultMaxOutputTokenCount(value);
+        public static implicit operator RealtimeDefaultMaxOutputTokenCount?(string value) => value == null ? (RealtimeDefaultMaxOutputTokenCount?)null : new RealtimeDefaultMaxOutputTokenCount(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeDefaultMaxOutputTokenCount other && Equals(other);

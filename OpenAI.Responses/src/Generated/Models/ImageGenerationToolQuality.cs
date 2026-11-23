@@ -39,7 +39,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationToolQuality(string value) => new ImageGenerationToolQuality(value);
 
-        public static implicit operator ImageGenerationToolQuality?(string value) => value == null ? null : new ImageGenerationToolQuality(value);
+        public static implicit operator ImageGenerationToolQuality?(string value) => value == null ? (ImageGenerationToolQuality?)null : new ImageGenerationToolQuality(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolQuality other && Equals(other);

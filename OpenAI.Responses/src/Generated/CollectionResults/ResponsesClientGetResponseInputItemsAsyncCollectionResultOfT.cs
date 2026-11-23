@@ -32,6 +32,7 @@ namespace OpenAI.Responses
             _options = options;
         }
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
             PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, _afterId, _beforeId, _options);
@@ -52,7 +53,9 @@ namespace OpenAI.Responses
                 message = _client.CreateGetResponseInputItemsRequest(_responseId, _pageSizeLimit, _order, nextToken, _beforeId, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ResponseItemCollectionPage)page).LastId;
@@ -65,7 +68,9 @@ namespace OpenAI.Responses
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         protected override async IAsyncEnumerable<ResponseItem> GetValuesFromPageAsync(ClientResult page)
         {
             foreach (ResponseItem item in ((ResponseItemCollectionPage)page).Data)
@@ -74,11 +79,14 @@ namespace OpenAI.Responses
                 await Task.Yield();
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
         {
             return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.

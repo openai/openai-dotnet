@@ -31,7 +31,7 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalEvalTextFormatConfigurationType(string value) => new InternalEvalTextFormatConfigurationType(value);
 
-        public static implicit operator InternalEvalTextFormatConfigurationType?(string value) => value == null ? null : new InternalEvalTextFormatConfigurationType(value);
+        public static implicit operator InternalEvalTextFormatConfigurationType?(string value) => value == null ? (InternalEvalTextFormatConfigurationType?)null : new InternalEvalTextFormatConfigurationType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalEvalTextFormatConfigurationType other && Equals(other);

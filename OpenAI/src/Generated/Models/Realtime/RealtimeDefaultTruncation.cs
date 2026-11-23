@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeDefaultTruncation(string value) => new RealtimeDefaultTruncation(value);
 
-        public static implicit operator RealtimeDefaultTruncation?(string value) => value == null ? null : new RealtimeDefaultTruncation(value);
+        public static implicit operator RealtimeDefaultTruncation?(string value) => value == null ? (RealtimeDefaultTruncation?)null : new RealtimeDefaultTruncation(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeDefaultTruncation other && Equals(other);

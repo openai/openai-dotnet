@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalCallableToolAllowedCaller(string value) => new InternalCallableToolAllowedCaller(value);
 
-        public static implicit operator InternalCallableToolAllowedCaller?(string value) => value == null ? null : new InternalCallableToolAllowedCaller(value);
+        public static implicit operator InternalCallableToolAllowedCaller?(string value) => value == null ? (InternalCallableToolAllowedCaller?)null : new InternalCallableToolAllowedCaller(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCallableToolAllowedCaller other && Equals(other);

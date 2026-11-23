@@ -28,7 +28,7 @@ namespace OpenAI.Conversations
 
         public static implicit operator InternalConversationItemCollectionOrder(string value) => new InternalConversationItemCollectionOrder(value);
 
-        public static implicit operator InternalConversationItemCollectionOrder?(string value) => value == null ? null : new InternalConversationItemCollectionOrder(value);
+        public static implicit operator InternalConversationItemCollectionOrder?(string value) => value == null ? (InternalConversationItemCollectionOrder?)null : new InternalConversationItemCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalConversationItemCollectionOrder other && Equals(other);

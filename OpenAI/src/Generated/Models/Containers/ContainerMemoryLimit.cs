@@ -39,7 +39,7 @@ namespace OpenAI.Containers
 
         public static implicit operator ContainerMemoryLimit(string value) => new ContainerMemoryLimit(value);
 
-        public static implicit operator ContainerMemoryLimit?(string value) => value == null ? null : new ContainerMemoryLimit(value);
+        public static implicit operator ContainerMemoryLimit?(string value) => value == null ? (ContainerMemoryLimit?)null : new ContainerMemoryLimit(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ContainerMemoryLimit other && Equals(other);

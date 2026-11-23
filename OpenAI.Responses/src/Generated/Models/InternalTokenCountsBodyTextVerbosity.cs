@@ -31,7 +31,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalTokenCountsBodyTextVerbosity(string value) => new InternalTokenCountsBodyTextVerbosity(value);
 
-        public static implicit operator InternalTokenCountsBodyTextVerbosity?(string value) => value == null ? null : new InternalTokenCountsBodyTextVerbosity(value);
+        public static implicit operator InternalTokenCountsBodyTextVerbosity?(string value) => value == null ? (InternalTokenCountsBodyTextVerbosity?)null : new InternalTokenCountsBodyTextVerbosity(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalTokenCountsBodyTextVerbosity other && Equals(other);

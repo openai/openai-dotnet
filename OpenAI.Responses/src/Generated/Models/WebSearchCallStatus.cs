@@ -39,7 +39,7 @@ namespace OpenAI.Responses
 
         public static implicit operator WebSearchCallStatus(string value) => new WebSearchCallStatus(value);
 
-        public static implicit operator WebSearchCallStatus?(string value) => value == null ? null : new WebSearchCallStatus(value);
+        public static implicit operator WebSearchCallStatus?(string value) => value == null ? (WebSearchCallStatus?)null : new WebSearchCallStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is WebSearchCallStatus other && Equals(other);

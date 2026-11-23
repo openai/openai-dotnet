@@ -8,7 +8,6 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    [Obsolete("This field is marked as deprecated.")]
     internal partial class InternalEvalStoredCompletionsDataSourceConfigParams : InternalEvalDataSourceConfigParams
     {
         public InternalEvalStoredCompletionsDataSourceConfigParams() : this(InternalEvalDataSourceConfigType.StoredCompletions, null, null)

@@ -39,7 +39,7 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatServiceTier(string value) => new ChatServiceTier(value);
 
-        public static implicit operator ChatServiceTier?(string value) => value == null ? null : new ChatServiceTier(value);
+        public static implicit operator ChatServiceTier?(string value) => value == null ? (ChatServiceTier?)null : new ChatServiceTier(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatServiceTier other && Equals(other);

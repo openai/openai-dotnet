@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeNoiseReductionKind(string value) => new RealtimeNoiseReductionKind(value);
 
-        public static implicit operator RealtimeNoiseReductionKind?(string value) => value == null ? null : new RealtimeNoiseReductionKind(value);
+        public static implicit operator RealtimeNoiseReductionKind?(string value) => value == null ? (RealtimeNoiseReductionKind?)null : new RealtimeNoiseReductionKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeNoiseReductionKind other && Equals(other);

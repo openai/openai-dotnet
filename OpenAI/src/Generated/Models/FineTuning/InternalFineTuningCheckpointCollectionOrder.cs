@@ -28,7 +28,7 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalFineTuningCheckpointCollectionOrder(string value) => new InternalFineTuningCheckpointCollectionOrder(value);
 
-        public static implicit operator InternalFineTuningCheckpointCollectionOrder?(string value) => value == null ? null : new InternalFineTuningCheckpointCollectionOrder(value);
+        public static implicit operator InternalFineTuningCheckpointCollectionOrder?(string value) => value == null ? (InternalFineTuningCheckpointCollectionOrder?)null : new InternalFineTuningCheckpointCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFineTuningCheckpointCollectionOrder other && Equals(other);

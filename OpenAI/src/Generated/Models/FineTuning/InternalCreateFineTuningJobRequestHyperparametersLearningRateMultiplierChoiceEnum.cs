@@ -25,7 +25,7 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum(string value) => new InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum(value);
 
-        public static implicit operator InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum?(string value) => value == null ? null : new InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum(value);
+        public static implicit operator InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum?(string value) => value == null ? (InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum?)null : new InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum other && Equals(other);

@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseTruncationMode(string value) => new ResponseTruncationMode(value);
 
-        public static implicit operator ResponseTruncationMode?(string value) => value == null ? null : new ResponseTruncationMode(value);
+        public static implicit operator ResponseTruncationMode?(string value) => value == null ? (ResponseTruncationMode?)null : new ResponseTruncationMode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseTruncationMode other && Equals(other);

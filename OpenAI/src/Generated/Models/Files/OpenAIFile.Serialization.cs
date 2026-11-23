@@ -120,27 +120,16 @@ namespace OpenAI.Files
                 writer.WritePropertyName("purpose"u8);
                 writer.WriteStringValue(Purpose.ToSerialString());
             }
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToSerialString());
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
             }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("status_details") != true)
+            if (Optional.IsDefined(StatusDetails) && _additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
-                if (Optional.IsDefined(StatusDetails))
-                {
-                    writer.WritePropertyName("status_details"u8);
-                    writer.WriteStringValue(StatusDetails);
-                }
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
+                writer.WritePropertyName("status_details"u8);
+                writer.WriteStringValue(StatusDetails);
             }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -177,8 +166,6 @@ namespace OpenAI.Files
             return DeserializeOpenAIFile(document.RootElement, options);
         }
 
-#pragma warning disable CS0612 // This generated code references obsolete functionality.
-#pragma warning disable CS0618 // This generated code references obsolete functionality.
         internal static OpenAIFile DeserializeOpenAIFile(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -266,7 +253,5 @@ namespace OpenAI.Files
                 statusDetails,
                 additionalBinaryDataProperties);
         }
-#pragma warning restore CS0612 // This generated code references obsolete functionality.
-#pragma warning restore CS0618 // This generated code references obsolete functionality.
     }
 }

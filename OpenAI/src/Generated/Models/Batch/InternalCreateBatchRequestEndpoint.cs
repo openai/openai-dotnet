@@ -28,7 +28,7 @@ namespace OpenAI.Batch
 
         public static implicit operator InternalCreateBatchRequestEndpoint(string value) => new InternalCreateBatchRequestEndpoint(value);
 
-        public static implicit operator InternalCreateBatchRequestEndpoint?(string value) => value == null ? null : new InternalCreateBatchRequestEndpoint(value);
+        public static implicit operator InternalCreateBatchRequestEndpoint?(string value) => value == null ? (InternalCreateBatchRequestEndpoint?)null : new InternalCreateBatchRequestEndpoint(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateBatchRequestEndpoint other && Equals(other);

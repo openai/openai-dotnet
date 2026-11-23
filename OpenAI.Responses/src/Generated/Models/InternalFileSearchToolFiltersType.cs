@@ -40,7 +40,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalFileSearchToolFiltersType(string value) => new InternalFileSearchToolFiltersType(value);
 
-        public static implicit operator InternalFileSearchToolFiltersType?(string value) => value == null ? null : new InternalFileSearchToolFiltersType(value);
+        public static implicit operator InternalFileSearchToolFiltersType?(string value) => value == null ? (InternalFileSearchToolFiltersType?)null : new InternalFileSearchToolFiltersType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFileSearchToolFiltersType other && Equals(other);

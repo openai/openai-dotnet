@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalImagesResponseSize(string value) => new InternalImagesResponseSize(value);
 
-        public static implicit operator InternalImagesResponseSize?(string value) => value == null ? null : new InternalImagesResponseSize(value);
+        public static implicit operator InternalImagesResponseSize?(string value) => value == null ? (InternalImagesResponseSize?)null : new InternalImagesResponseSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImagesResponseSize other && Equals(other);

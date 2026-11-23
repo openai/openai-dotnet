@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator CustomToolFormatKind(string value) => new CustomToolFormatKind(value);
 
-        public static implicit operator CustomToolFormatKind?(string value) => value == null ? null : new CustomToolFormatKind(value);
+        public static implicit operator CustomToolFormatKind?(string value) => value == null ? (CustomToolFormatKind?)null : new CustomToolFormatKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is CustomToolFormatKind other && Equals(other);

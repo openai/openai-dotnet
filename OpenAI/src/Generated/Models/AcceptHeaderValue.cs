@@ -28,7 +28,7 @@ namespace OpenAI
 
         public static implicit operator AcceptHeaderValue(string value) => new AcceptHeaderValue(value);
 
-        public static implicit operator AcceptHeaderValue?(string value) => value == null ? null : new AcceptHeaderValue(value);
+        public static implicit operator AcceptHeaderValue?(string value) => value == null ? (AcceptHeaderValue?)null : new AcceptHeaderValue(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AcceptHeaderValue other && Equals(other);

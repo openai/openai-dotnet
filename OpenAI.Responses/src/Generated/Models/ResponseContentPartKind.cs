@@ -48,7 +48,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseContentPartKind(string value) => new ResponseContentPartKind(value);
 
-        public static implicit operator ResponseContentPartKind?(string value) => value == null ? null : new ResponseContentPartKind(value);
+        public static implicit operator ResponseContentPartKind?(string value) => value == null ? (ResponseContentPartKind?)null : new ResponseContentPartKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseContentPartKind other && Equals(other);

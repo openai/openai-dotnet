@@ -28,7 +28,7 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalFineTuneChatRequestInputMessageWeight(string value) => new InternalFineTuneChatRequestInputMessageWeight(value);
 
-        public static implicit operator InternalFineTuneChatRequestInputMessageWeight?(string value) => value == null ? null : new InternalFineTuneChatRequestInputMessageWeight(value);
+        public static implicit operator InternalFineTuneChatRequestInputMessageWeight?(string value) => value == null ? (InternalFineTuneChatRequestInputMessageWeight?)null : new InternalFineTuneChatRequestInputMessageWeight(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFineTuneChatRequestInputMessageWeight other && Equals(other);

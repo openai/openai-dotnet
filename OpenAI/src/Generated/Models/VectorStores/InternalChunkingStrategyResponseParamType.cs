@@ -28,7 +28,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator InternalChunkingStrategyResponseParamType(string value) => new InternalChunkingStrategyResponseParamType(value);
 
-        public static implicit operator InternalChunkingStrategyResponseParamType?(string value) => value == null ? null : new InternalChunkingStrategyResponseParamType(value);
+        public static implicit operator InternalChunkingStrategyResponseParamType?(string value) => value == null ? (InternalChunkingStrategyResponseParamType?)null : new InternalChunkingStrategyResponseParamType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChunkingStrategyResponseParamType other && Equals(other);

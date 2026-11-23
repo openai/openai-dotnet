@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeDefaultMcpToolCallApprovalPolicy(string value) => new RealtimeDefaultMcpToolCallApprovalPolicy(value);
 
-        public static implicit operator RealtimeDefaultMcpToolCallApprovalPolicy?(string value) => value == null ? null : new RealtimeDefaultMcpToolCallApprovalPolicy(value);
+        public static implicit operator RealtimeDefaultMcpToolCallApprovalPolicy?(string value) => value == null ? (RealtimeDefaultMcpToolCallApprovalPolicy?)null : new RealtimeDefaultMcpToolCallApprovalPolicy(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeDefaultMcpToolCallApprovalPolicy other && Equals(other);

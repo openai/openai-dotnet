@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseItemCollectionOrder(string value) => new ResponseItemCollectionOrder(value);
 
-        public static implicit operator ResponseItemCollectionOrder?(string value) => value == null ? null : new ResponseItemCollectionOrder(value);
+        public static implicit operator ResponseItemCollectionOrder?(string value) => value == null ? (ResponseItemCollectionOrder?)null : new ResponseItemCollectionOrder(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseItemCollectionOrder other && Equals(other);

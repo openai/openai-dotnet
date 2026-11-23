@@ -36,7 +36,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreStatus(string value) => new VectorStoreStatus(value);
 
-        public static implicit operator VectorStoreStatus?(string value) => value == null ? null : new VectorStoreStatus(value);
+        public static implicit operator VectorStoreStatus?(string value) => value == null ? (VectorStoreStatus?)null : new VectorStoreStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreStatus other && Equals(other);

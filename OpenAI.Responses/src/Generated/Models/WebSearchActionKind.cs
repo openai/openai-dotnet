@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator WebSearchActionKind(string value) => new WebSearchActionKind(value);
 
-        public static implicit operator WebSearchActionKind?(string value) => value == null ? null : new WebSearchActionKind(value);
+        public static implicit operator WebSearchActionKind?(string value) => value == null ? (WebSearchActionKind?)null : new WebSearchActionKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is WebSearchActionKind other && Equals(other);

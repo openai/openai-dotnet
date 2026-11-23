@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ReasoningStatus(string value) => new ReasoningStatus(value);
 
-        public static implicit operator ReasoningStatus?(string value) => value == null ? null : new ReasoningStatus(value);
+        public static implicit operator ReasoningStatus?(string value) => value == null ? (ReasoningStatus?)null : new ReasoningStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ReasoningStatus other && Equals(other);

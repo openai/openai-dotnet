@@ -25,7 +25,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeServerEventConversationCreatedConversationGAObject(string value) => new InternalRealtimeServerEventConversationCreatedConversationGAObject(value);
 
-        public static implicit operator InternalRealtimeServerEventConversationCreatedConversationGAObject?(string value) => value == null ? null : new InternalRealtimeServerEventConversationCreatedConversationGAObject(value);
+        public static implicit operator InternalRealtimeServerEventConversationCreatedConversationGAObject?(string value) => value == null ? (InternalRealtimeServerEventConversationCreatedConversationGAObject?)null : new InternalRealtimeServerEventConversationCreatedConversationGAObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeServerEventConversationCreatedConversationGAObject other && Equals(other);

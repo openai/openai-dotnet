@@ -31,7 +31,7 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalDotNetChatResponseFormatType(string value) => new InternalDotNetChatResponseFormatType(value);
 
-        public static implicit operator InternalDotNetChatResponseFormatType?(string value) => value == null ? null : new InternalDotNetChatResponseFormatType(value);
+        public static implicit operator InternalDotNetChatResponseFormatType?(string value) => value == null ? (InternalDotNetChatResponseFormatType?)null : new InternalDotNetChatResponseFormatType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalDotNetChatResponseFormatType other && Equals(other);

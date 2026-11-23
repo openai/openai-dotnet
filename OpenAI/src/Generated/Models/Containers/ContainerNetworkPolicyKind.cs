@@ -33,7 +33,7 @@ namespace OpenAI.Containers
 
         public static implicit operator ContainerNetworkPolicyKind(string value) => new ContainerNetworkPolicyKind(value);
 
-        public static implicit operator ContainerNetworkPolicyKind?(string value) => value == null ? null : new ContainerNetworkPolicyKind(value);
+        public static implicit operator ContainerNetworkPolicyKind?(string value) => value == null ? (ContainerNetworkPolicyKind?)null : new ContainerNetworkPolicyKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ContainerNetworkPolicyKind other && Equals(other);

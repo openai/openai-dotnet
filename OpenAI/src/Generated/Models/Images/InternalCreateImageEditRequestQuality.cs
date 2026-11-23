@@ -37,7 +37,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageEditRequestQuality(string value) => new InternalCreateImageEditRequestQuality(value);
 
-        public static implicit operator InternalCreateImageEditRequestQuality?(string value) => value == null ? null : new InternalCreateImageEditRequestQuality(value);
+        public static implicit operator InternalCreateImageEditRequestQuality?(string value) => value == null ? (InternalCreateImageEditRequestQuality?)null : new InternalCreateImageEditRequestQuality(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageEditRequestQuality other && Equals(other);

@@ -28,7 +28,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator InternalVectorStoreSearchRequestFiltersType1(string value) => new InternalVectorStoreSearchRequestFiltersType1(value);
 
-        public static implicit operator InternalVectorStoreSearchRequestFiltersType1?(string value) => value == null ? null : new InternalVectorStoreSearchRequestFiltersType1(value);
+        public static implicit operator InternalVectorStoreSearchRequestFiltersType1?(string value) => value == null ? (InternalVectorStoreSearchRequestFiltersType1?)null : new InternalVectorStoreSearchRequestFiltersType1(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVectorStoreSearchRequestFiltersType1 other && Equals(other);

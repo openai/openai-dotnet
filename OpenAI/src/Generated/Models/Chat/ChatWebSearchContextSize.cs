@@ -36,7 +36,7 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatWebSearchContextSize(string value) => new ChatWebSearchContextSize(value);
 
-        public static implicit operator ChatWebSearchContextSize?(string value) => value == null ? null : new ChatWebSearchContextSize(value);
+        public static implicit operator ChatWebSearchContextSize?(string value) => value == null ? (ChatWebSearchContextSize?)null : new ChatWebSearchContextSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatWebSearchContextSize other && Equals(other);

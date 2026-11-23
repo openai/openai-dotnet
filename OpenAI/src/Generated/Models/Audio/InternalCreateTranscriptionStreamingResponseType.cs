@@ -31,7 +31,7 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateTranscriptionStreamingResponseType(string value) => new InternalCreateTranscriptionStreamingResponseType(value);
 
-        public static implicit operator InternalCreateTranscriptionStreamingResponseType?(string value) => value == null ? null : new InternalCreateTranscriptionStreamingResponseType(value);
+        public static implicit operator InternalCreateTranscriptionStreamingResponseType?(string value) => value == null ? (InternalCreateTranscriptionStreamingResponseType?)null : new InternalCreateTranscriptionStreamingResponseType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionStreamingResponseType other && Equals(other);

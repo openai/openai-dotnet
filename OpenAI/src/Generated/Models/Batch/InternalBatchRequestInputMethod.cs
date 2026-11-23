@@ -25,7 +25,7 @@ namespace OpenAI.Batch
 
         public static implicit operator InternalBatchRequestInputMethod(string value) => new InternalBatchRequestInputMethod(value);
 
-        public static implicit operator InternalBatchRequestInputMethod?(string value) => value == null ? null : new InternalBatchRequestInputMethod(value);
+        public static implicit operator InternalBatchRequestInputMethod?(string value) => value == null ? (InternalBatchRequestInputMethod?)null : new InternalBatchRequestInputMethod(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalBatchRequestInputMethod other && Equals(other);

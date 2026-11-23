@@ -28,7 +28,7 @@ namespace OpenAI.Skills
 
         public static implicit operator InternalUpdateSkillDefaultVersionRequestContentType(string value) => new InternalUpdateSkillDefaultVersionRequestContentType(value);
 
-        public static implicit operator InternalUpdateSkillDefaultVersionRequestContentType?(string value) => value == null ? null : new InternalUpdateSkillDefaultVersionRequestContentType(value);
+        public static implicit operator InternalUpdateSkillDefaultVersionRequestContentType?(string value) => value == null ? (InternalUpdateSkillDefaultVersionRequestContentType?)null : new InternalUpdateSkillDefaultVersionRequestContentType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalUpdateSkillDefaultVersionRequestContentType other && Equals(other);

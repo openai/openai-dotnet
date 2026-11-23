@@ -43,7 +43,7 @@ namespace OpenAI.Evals
 
         public static implicit operator EvalReasoningEffortLevel(string value) => new EvalReasoningEffortLevel(value);
 
-        public static implicit operator EvalReasoningEffortLevel?(string value) => value == null ? null : new EvalReasoningEffortLevel(value);
+        public static implicit operator EvalReasoningEffortLevel?(string value) => value == null ? (EvalReasoningEffortLevel?)null : new EvalReasoningEffortLevel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is EvalReasoningEffortLevel other && Equals(other);

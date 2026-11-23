@@ -33,7 +33,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator RealtimeRateLimitName(string value) => new RealtimeRateLimitName(value);
 
-        public static implicit operator RealtimeRateLimitName?(string value) => value == null ? null : new RealtimeRateLimitName(value);
+        public static implicit operator RealtimeRateLimitName?(string value) => value == null ? (RealtimeRateLimitName?)null : new RealtimeRateLimitName(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RealtimeRateLimitName other && Equals(other);

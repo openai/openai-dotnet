@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalImagesResponseOutputFormat(string value) => new InternalImagesResponseOutputFormat(value);
 
-        public static implicit operator InternalImagesResponseOutputFormat?(string value) => value == null ? null : new InternalImagesResponseOutputFormat(value);
+        public static implicit operator InternalImagesResponseOutputFormat?(string value) => value == null ? (InternalImagesResponseOutputFormat?)null : new InternalImagesResponseOutputFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImagesResponseOutputFormat other && Equals(other);

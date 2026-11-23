@@ -33,7 +33,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ApplyPatchCallStatus(string value) => new ApplyPatchCallStatus(value);
 
-        public static implicit operator ApplyPatchCallStatus?(string value) => value == null ? null : new ApplyPatchCallStatus(value);
+        public static implicit operator ApplyPatchCallStatus?(string value) => value == null ? (ApplyPatchCallStatus?)null : new ApplyPatchCallStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ApplyPatchCallStatus other && Equals(other);

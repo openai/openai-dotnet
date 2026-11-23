@@ -40,7 +40,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageEditRequestSize(string value) => new InternalCreateImageEditRequestSize(value);
 
-        public static implicit operator InternalCreateImageEditRequestSize?(string value) => value == null ? null : new InternalCreateImageEditRequestSize(value);
+        public static implicit operator InternalCreateImageEditRequestSize?(string value) => value == null ? (InternalCreateImageEditRequestSize?)null : new InternalCreateImageEditRequestSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageEditRequestSize other && Equals(other);

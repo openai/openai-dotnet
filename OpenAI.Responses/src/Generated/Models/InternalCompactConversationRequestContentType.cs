@@ -28,7 +28,7 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalCompactConversationRequestContentType(string value) => new InternalCompactConversationRequestContentType(value);
 
-        public static implicit operator InternalCompactConversationRequestContentType?(string value) => value == null ? null : new InternalCompactConversationRequestContentType(value);
+        public static implicit operator InternalCompactConversationRequestContentType?(string value) => value == null ? (InternalCompactConversationRequestContentType?)null : new InternalCompactConversationRequestContentType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCompactConversationRequestContentType other && Equals(other);

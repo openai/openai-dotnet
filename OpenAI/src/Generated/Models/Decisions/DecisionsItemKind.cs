@@ -42,7 +42,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsItemKind(string value) => new DecisionsItemKind(value);
 
-        public static implicit operator DecisionsItemKind?(string value) => value == null ? null : new DecisionsItemKind(value);
+        public static implicit operator DecisionsItemKind?(string value) => value == null ? (DecisionsItemKind?)null : new DecisionsItemKind(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsItemKind other && Equals(other);

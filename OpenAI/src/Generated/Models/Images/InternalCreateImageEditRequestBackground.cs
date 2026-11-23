@@ -31,7 +31,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageEditRequestBackground(string value) => new InternalCreateImageEditRequestBackground(value);
 
-        public static implicit operator InternalCreateImageEditRequestBackground?(string value) => value == null ? null : new InternalCreateImageEditRequestBackground(value);
+        public static implicit operator InternalCreateImageEditRequestBackground?(string value) => value == null ? (InternalCreateImageEditRequestBackground?)null : new InternalCreateImageEditRequestBackground(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageEditRequestBackground other && Equals(other);

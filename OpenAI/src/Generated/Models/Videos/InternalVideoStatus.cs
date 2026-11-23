@@ -34,7 +34,7 @@ namespace OpenAI.Videos
 
         public static implicit operator InternalVideoStatus(string value) => new InternalVideoStatus(value);
 
-        public static implicit operator InternalVideoStatus?(string value) => value == null ? null : new InternalVideoStatus(value);
+        public static implicit operator InternalVideoStatus?(string value) => value == null ? (InternalVideoStatus?)null : new InternalVideoStatus(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVideoStatus other && Equals(other);

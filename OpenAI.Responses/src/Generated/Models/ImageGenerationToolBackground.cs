@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationToolBackground(string value) => new ImageGenerationToolBackground(value);
 
-        public static implicit operator ImageGenerationToolBackground?(string value) => value == null ? null : new ImageGenerationToolBackground(value);
+        public static implicit operator ImageGenerationToolBackground?(string value) => value == null ? (ImageGenerationToolBackground?)null : new ImageGenerationToolBackground(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolBackground other && Equals(other);

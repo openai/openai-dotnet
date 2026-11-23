@@ -36,7 +36,7 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreFileErrorCode(string value) => new VectorStoreFileErrorCode(value);
 
-        public static implicit operator VectorStoreFileErrorCode?(string value) => value == null ? null : new VectorStoreFileErrorCode(value);
+        public static implicit operator VectorStoreFileErrorCode?(string value) => value == null ? (VectorStoreFileErrorCode?)null : new VectorStoreFileErrorCode(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreFileErrorCode other && Equals(other);

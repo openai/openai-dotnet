@@ -34,7 +34,7 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageStreamingSize(string value) => new InternalCreateImageStreamingSize(value);
 
-        public static implicit operator InternalCreateImageStreamingSize?(string value) => value == null ? null : new InternalCreateImageStreamingSize(value);
+        public static implicit operator InternalCreateImageStreamingSize?(string value) => value == null ? (InternalCreateImageStreamingSize?)null : new InternalCreateImageStreamingSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageStreamingSize other && Equals(other);

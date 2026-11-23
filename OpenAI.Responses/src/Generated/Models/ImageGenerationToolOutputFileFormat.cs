@@ -36,7 +36,7 @@ namespace OpenAI.Responses
 
         public static implicit operator ImageGenerationToolOutputFileFormat(string value) => new ImageGenerationToolOutputFileFormat(value);
 
-        public static implicit operator ImageGenerationToolOutputFileFormat?(string value) => value == null ? null : new ImageGenerationToolOutputFileFormat(value);
+        public static implicit operator ImageGenerationToolOutputFileFormat?(string value) => value == null ? (ImageGenerationToolOutputFileFormat?)null : new ImageGenerationToolOutputFileFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolOutputFileFormat other && Equals(other);

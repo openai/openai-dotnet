@@ -33,7 +33,7 @@ namespace OpenAI.Decisions
 
         public static implicit operator DecisionsAssistantMessagePhase(string value) => new DecisionsAssistantMessagePhase(value);
 
-        public static implicit operator DecisionsAssistantMessagePhase?(string value) => value == null ? null : new DecisionsAssistantMessagePhase(value);
+        public static implicit operator DecisionsAssistantMessagePhase?(string value) => value == null ? (DecisionsAssistantMessagePhase?)null : new DecisionsAssistantMessagePhase(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is DecisionsAssistantMessagePhase other && Equals(other);

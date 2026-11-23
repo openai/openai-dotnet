@@ -187,7 +187,7 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalChatModelIds(string value) => new InternalChatModelIds(value);
 
-        public static implicit operator InternalChatModelIds?(string value) => value == null ? null : new InternalChatModelIds(value);
+        public static implicit operator InternalChatModelIds?(string value) => value == null ? (InternalChatModelIds?)null : new InternalChatModelIds(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChatModelIds other && Equals(other);

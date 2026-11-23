@@ -28,7 +28,7 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalTranscriptionTokenUsageBaseTypeGA(string value) => new InternalTranscriptionTokenUsageBaseTypeGA(value);
 
-        public static implicit operator InternalTranscriptionTokenUsageBaseTypeGA?(string value) => value == null ? null : new InternalTranscriptionTokenUsageBaseTypeGA(value);
+        public static implicit operator InternalTranscriptionTokenUsageBaseTypeGA?(string value) => value == null ? (InternalTranscriptionTokenUsageBaseTypeGA?)null : new InternalTranscriptionTokenUsageBaseTypeGA(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalTranscriptionTokenUsageBaseTypeGA other && Equals(other);
