@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, null, default, default)
+        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, "response", default, default, null, null, null, null, null, default, null, null, default, default)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadMessage : IJsonModel<ThreadMessage>
     {
-        internal ThreadMessage() : this(null, null, default, null, default, null, default, default, default, null, null, null, null, null, null)
+        internal ThreadMessage() : this(null, "thread.message", default, null, default, null, default, default, default, null, null, null, null, null, null)
         {
         }
 

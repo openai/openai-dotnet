@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
     {
-        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, default)
+        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, ChatMessageRole.Assistant, null, null, default)
         {
         }
 

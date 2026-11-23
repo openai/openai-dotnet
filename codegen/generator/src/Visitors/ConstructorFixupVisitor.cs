@@ -4,7 +4,6 @@ using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Microsoft.TypeSpec.Generator.Snippets.Snippet;
@@ -63,11 +62,7 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
             List<ValueExpression> initializationExpressions = [];
             foreach (ParameterProvider parameter in serializationConstructor?.Signature.Parameters ?? [])
             {
-                ValueExpression? propertyInitializationExpression = modelProvider!.Properties?
-                    .FirstOrDefault(property => string.Equals(property.Name, parameter.Name, StringComparison.OrdinalIgnoreCase))
-                    ?.Body is AutoPropertyBody propertyBody
-                        ? propertyBody.InitializationExpression
-                        : null;
+                ValueExpression? propertyInitializationExpression = GetPropertyInitializationExpression(parameter);
 
                 initializationExpressions.Add(
                     parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null
@@ -90,6 +85,29 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
         }
 
         return type;
+    }
+
+    private static ValueExpression? GetPropertyInitializationExpression(ParameterProvider parameter)
+    {
+        if (parameter.Property?.Body is not AutoPropertyBody autoPropertyBody
+            || autoPropertyBody.InitializationExpression is not ValueExpression initializationExpression)
+        {
+            return null;
+        }
+
+        // Custom code initializers that are not compile-time constants or enum members (for example, `= default` or
+        // `= []`) are read by the generator as string literals of their source text, wrapped in a ScopedApi. A string
+        // literal is therefore only a real value when the parameter is a string.
+        ValueExpression underlyingExpression = initializationExpression is ScopedApi scopedApi
+            ? scopedApi.Original
+            : initializationExpression;
+        if (underlyingExpression is LiteralExpression { Literal: string }
+            && !(parameter.Type.IsFrameworkType && parameter.Type.FrameworkType == typeof(string)))
+        {
+            return null;
+        }
+
+        return initializationExpression;
     }
 
     private static bool TryUpdateConstructorForCollectionInitialization(ConstructorProvider constructor)

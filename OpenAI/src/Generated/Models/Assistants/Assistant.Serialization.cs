@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class Assistant : IJsonModel<Assistant>
     {
-        internal Assistant() : this(null, null, default, null, null, null, null, null, null, null, default, default, null, null)
+        internal Assistant() : this(null, "assistant", default, null, null, null, null, null, null, null, default, default, null, null)
         {
         }
 

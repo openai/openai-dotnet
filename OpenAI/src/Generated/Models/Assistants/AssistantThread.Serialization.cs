@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantThread : IJsonModel<AssistantThread>
     {
-        internal AssistantThread() : this(null, null, default, null, null, null)
+        internal AssistantThread() : this(null, "thread", default, null, null, null)
         {
         }
 
