@@ -1,58 +1,49 @@
-using System.Diagnostics.CodeAnalysis;
+using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
-[Experimental("OPENAI001")]
+// CUSTOM: Added to represent a non-discriminated union.
+[CodeGenType("DotNetResponseToolChoice")]
+[CodeGenVisibility(nameof(ResponseToolChoice), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class ResponseToolChoice
 {
-    public ResponseToolChoiceKind Kind
-        => _toolChoiceOption?.ToResponseToolChoiceKind()
-        ?? _toolChoiceObject?.Kind.ToResponseToolChoiceKind()
-        ?? ResponseToolChoiceKind.Unknown;
-
-    public string FunctionName
-        => (_toolChoiceObject as InternalToolChoiceObjectFunction)?.Name;
-
-    private readonly InternalToolChoiceObject _toolChoiceObject;
-    private readonly InternalToolChoiceOptions? _toolChoiceOption;
-
-    public static ResponseToolChoice CreateFunctionChoice(string functionName)
-        => new(new InternalToolChoiceObjectFunction(functionName));
-
-    public static ResponseToolChoice CreateFileSearchChoice()
-        => new(new InternalToolChoiceObjectFileSearch());
-
-    public static ResponseToolChoice CreateWebSearchChoice()
-        => new(new InternalToolChoiceObjectWebSearch());
-
-    [Experimental("OPENAI001")]
-    public static ResponseToolChoice CreateComputerChoice()
-        => new(new InternalToolChoiceObjectComputer());
-
-    public static ResponseToolChoice CreateAutoChoice()
-        => new(InternalToolChoiceOptions.Auto);
-
-    public static ResponseToolChoice CreateNoneChoice()
-        => new(InternalToolChoiceOptions.None);
-
-    public static ResponseToolChoice CreateRequiredChoice()
-        => new(InternalToolChoiceOptions.Required);
-
-    internal ResponseToolChoice(InternalToolChoiceObject toolChoiceObject)
+    /// <summary>Creates a tool choice from a string-backed selection mode.</summary>
+    /// <param name="defaultToolChoice">The selection mode, such as <see cref="ResponseToolChoiceEnum.Auto"/>.</param>
+    /// <exception cref="ArgumentException"><paramref name="defaultToolChoice"/> is uninitialized.</exception>
+    public ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice)
     {
-        _toolChoiceObject = toolChoiceObject;
+        if (defaultToolChoice == default)
+        {
+            throw new ArgumentException("The tool choice must be initialized.", nameof(defaultToolChoice));
+        }
+
+        DefaultToolChoice = defaultToolChoice;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        // CUSTOM: Initialize patch forwarding for publicly constructed union wrappers.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
-    internal ResponseToolChoice(InternalToolChoiceOptions toolChoiceOption)
+    public ResponseToolChoice(ResponseToolChoiceObject customToolChoice)
     {
-        _toolChoiceOption = toolChoiceOption;
+        Argument.AssertNotNull(customToolChoice, nameof(customToolChoice));
+
+        CustomToolChoice = customToolChoice;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        // CUSTOM: Initialize patch forwarding for publicly constructed union wrappers.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
-    // CUSTOM: Supply an internal default constructor for serialization and mocking.
-    internal ResponseToolChoice()
-    { }
+    [CodeGenMember("DefaultToolChoice")]
+    public ResponseToolChoiceEnum? DefaultToolChoice { get; }
 
+    [CodeGenMember("CustomToolChoice")]
+    public ResponseToolChoiceObject CustomToolChoice { get; }
+
+    public static implicit operator ResponseToolChoice(ResponseToolChoiceEnum defaultToolChoice) => new(defaultToolChoice);
+
+    public static implicit operator ResponseToolChoice(ResponseToolChoiceObject customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
 }

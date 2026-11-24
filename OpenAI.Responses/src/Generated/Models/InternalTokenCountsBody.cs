@@ -32,7 +32,9 @@ namespace OpenAI.Responses
         private bool _instructionsIsDefined;
         private BinaryData _conversation;
         private bool _conversationIsDefined;
-        private BinaryData _toolChoice;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        private ResponseToolChoice _toolChoice;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private bool _toolChoiceIsDefined;
         private bool? _parallelToolCalls;
         private bool _parallelToolCallsIsDefined;
@@ -45,7 +47,7 @@ namespace OpenAI.Responses
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, BinaryData toolChoice, bool? parallelToolCalls, in JsonPatch patch)
+        internal InternalTokenCountsBody(string model, BinaryData input, string previousResponseId, IList<ResponseTool> tools, InternalResponseTextParam text, ResponseReasoningOptions reasoning, InternalTruncationEnum? truncation, string instructions, BinaryData conversation, ResponseToolChoice toolChoice, bool? parallelToolCalls, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             _model = model;
@@ -169,7 +171,8 @@ namespace OpenAI.Responses
             }
         }
 
-        public BinaryData ToolChoice
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+        public ResponseToolChoice ToolChoice
         {
             get
             {
@@ -181,6 +184,7 @@ namespace OpenAI.Responses
                 _toolChoiceIsDefined = true;
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public bool? ParallelToolCalls
         {
