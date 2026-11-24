@@ -16,7 +16,8 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" VersionOverride="11.0.0" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="'$(TargetFramework)' != 'net10.0'" />
     <PackageReference Include="System.Linq.AsyncEnumerable" />
   </ItemGroup>
 
