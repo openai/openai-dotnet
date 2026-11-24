@@ -10,9 +10,7 @@
   <!-- General Dependencies -->
   <ItemGroup>
     <PackageVersion Include="System.ClientModel" Version="1.17.0" />
-    <!-- DiagnosticSource 11.0.0 crashes on .NET 9: https://github.com/dotnet/runtime/issues/137725 -->
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.14" Condition="'$(TargetFramework)' != 'net10.0'" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="11.0.0" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.14" />
     <PackageVersion Include="System.Net.ServerSentEvents" Version="10.0.14" />
   </ItemGroup>
 
