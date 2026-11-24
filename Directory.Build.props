@@ -5,7 +5,7 @@
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
 
     <ClientTargetFrameworks>net10.0;net8.0;netstandard2.0</ClientTargetFrameworks>
-    <TestTargetFrameworks>net10.0;net9.0;net8.0</TestTargetFrameworks>
+    <TestTargetFrameworks>net11.0;net10.0</TestTargetFrameworks>
     <SampleTargetFrameworks>net10.0</SampleTargetFrameworks>
   </PropertyGroup>
 

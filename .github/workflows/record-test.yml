@@ -37,7 +37,7 @@ jobs:
       patch_sha256: ${{ steps.patch.outputs.sha256 }}
       patch_artifact_id: ${{ steps.upload_patch.outputs.artifact-id }}
     env:
-      LATEST_TEST_TFM: net10.0
+      LATEST_TEST_TFM: net11.0
       TEST_NUNIT_WHERE: ${{ inputs.nunit_where }}
       VERSION_SUFFIX_ARGS: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
@@ -46,20 +46,15 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup .NET 10
+      - name: Setup .NET 11
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           global-json-file: global.json
 
-      - name: Setup .NET 9
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
-          dotnet-version: '9.x'
-
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
-        with:
-          dotnet-version: '8.x'
+          dotnet-version: '10.x'
 
       - name: Restore tools
         run: dotnet tool restore
@@ -132,11 +127,24 @@ jobs:
 
           echo "### No unsanitized secrets detected in recordings" >> $GITHUB_STEP_SUMMARY
 
-      # Playback deliberately omits --framework to validate recordings across all TFMs.
-      - name: Validate recordings in Playback mode
+      - name: Validate recordings in Playback mode (net11.0)
         if: steps.changes.outputs.has_changes == 'true'
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
+          --framework net11.0
+          --logger "trx;LogFilePrefix=playback"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.VERSION_SUFFIX_ARGS }}
+          -- NUnit.Where="$TEST_NUNIT_WHERE"
+        env:
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
+
+      - name: Validate recordings in Playback mode (net10.0)
+        if: steps.changes.outputs.has_changes == 'true'
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --framework net10.0
           --logger "trx;LogFilePrefix=playback"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.VERSION_SUFFIX_ARGS }}
