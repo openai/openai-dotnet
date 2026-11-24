@@ -300,7 +300,7 @@ public class BatchTests : OpenAIRecordedTestBase
         JsonElement firstRoot = firstDoc.RootElement;
         JsonElement firstData = firstRoot.GetProperty("data");
         string afterId = firstRoot.TryGetProperty("last_id", out var lastIdProp) ? lastIdProp.GetString() : null;
-        var firstPageIds = new HashSet<string>(firstData.EnumerateArray().Select(e => e.GetProperty("id").GetString()));
+        var firstPageIds = firstData.EnumerateArray().Select(e => e.GetProperty("id").GetString()).ToHashSet();
 
         return (afterId, firstPageIds);
     }

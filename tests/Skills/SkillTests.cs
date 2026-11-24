@@ -23,7 +23,7 @@ public partial class SkillTests : OpenAIRecordedTestBase
         SkillClient client = GetProxiedOpenAIClient<SkillClient>();
 
         // Create a skill using multipart directory upload
-        byte[] skillMd = await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(Path.Combine("Assets", "skills_basic_math_SKILL.md"));
+        byte[] skillMd = await File.ReadAllBytesAsync(Path.Combine("Assets", "skills_basic_math_SKILL.md"));
 
         using MultiPartFormDataBinaryContent createContent = new();
         createContent.Add(skillMd, "files[]", "basic_math/SKILL.md", "text/markdown");
@@ -79,7 +79,7 @@ public partial class SkillTests : OpenAIRecordedTestBase
         SkillClient client = GetProxiedOpenAIClient<SkillClient>();
 
         // Create a skill — this also creates version 1
-        byte[] skillMd = await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(Path.Combine("Assets", "skills_basic_math_SKILL.md"));
+        byte[] skillMd = await File.ReadAllBytesAsync(Path.Combine("Assets", "skills_basic_math_SKILL.md"));
 
         using MultiPartFormDataBinaryContent createContent = new();
         createContent.Add(skillMd, "files[]", "basic_math/SKILL.md", "text/markdown");

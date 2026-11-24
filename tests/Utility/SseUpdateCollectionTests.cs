@@ -332,21 +332,12 @@ public class SseUpdateCollectionTests
         public override int Read(byte[] buffer, int offset, int count)
             => phase == "read" ? throw new IOException("read") : _inner.Read(buffer, offset, count);
 
-#if !NETFRAMEWORK
         public override int Read(Span<byte> buffer)
             => phase == "read" ? throw new IOException("read") : _inner.Read(buffer);
-#endif
 
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-#if NETFRAMEWORK
-            => phase == "read"
-                ? Task.FromException<int>(new IOException("read"))
-                : _inner.ReadAsync(buffer, offset, count, cancellationToken);
-#else
             => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
 
-#endif
-#if !NETFRAMEWORK
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
@@ -358,7 +349,6 @@ public class SseUpdateCollectionTests
 
             return await _inner.ReadAsync(buffer, cancellationToken);
         }
-#endif
 
         public override bool CanRead => true;
 

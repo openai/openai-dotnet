@@ -557,17 +557,13 @@ public class ExceptionLoggingTests
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read");
 
-#if !NETFRAMEWORK
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read");
-#endif
 
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => Task.FromException<int>(new IOException("sensitive read"));
 
-#if !NETFRAMEWORK
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => ValueTask.FromException<int>(new IOException("sensitive read"));
-#endif
     }
 
     private sealed class ThrowingLoggerFactory(string phase) : ILoggerFactory
@@ -674,29 +670,23 @@ public class ExceptionLoggingTests
 
         private static string Text(byte[] bytes) => Encoding.UTF8.GetString(bytes);
 
-        private static string Hex(byte[] bytes) => bytes is null ? null : BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+        private static string Hex(byte[] bytes) => bytes is null ? null : Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
     private sealed class CaptureHandler : HttpMessageHandler
     {
         public List<byte[]> Payloads { get; } = [];
 
-#if !NETFRAMEWORK
         protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Payloads.Add(request.Content.ReadAsByteArrayAsync(cancellationToken).GetAwaiter().GetResult());
 
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([]) };
         }
-#endif
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-#if NETFRAMEWORK
-            Payloads.Add(await request.Content.ReadAsByteArrayAsync());
-#else
             Payloads.Add(await request.Content.ReadAsByteArrayAsync(cancellationToken));
-#endif
 
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([]) };
         }

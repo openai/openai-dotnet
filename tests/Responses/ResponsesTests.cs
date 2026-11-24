@@ -637,9 +637,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        string imagePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "images_dog_and_cat.png");
+        string imagePath = Path.Join("Assets", "images_dog_and_cat.png");
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(imagePath), imageMediaType);
+        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath), imageMediaType);
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,
@@ -660,7 +660,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
-        string filePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "files_travis_favorite_food.pdf");
+        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
         OpenAIFile newFileToUse;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -689,7 +689,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        string filePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "files_travis_favorite_food.pdf");
+        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
         Stream fileStream = File.OpenRead(filePath);
         BinaryData fileBytes = await BinaryData.FromStreamAsync(fileStream);
 

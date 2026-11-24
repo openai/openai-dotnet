@@ -209,7 +209,7 @@ public class ResponsesTelemetryTests
         Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Error));
         Assert.That(activity.GetTagItem("error.type"), Is.EqualTo("400"));
         Assert.That(activity.StatusDescription, Is.Null);
-        Assert.That(activity.TagObjects.Select(tag => tag.Value?.ToString()).Concat(new[] { activity.StatusDescription }), Does.Not.Contain("sensitive request failure"));
+        Assert.That(activity.TagObjects.Select(tag => tag.Value?.ToString()).Append(activity.StatusDescription), Does.Not.Contain("sensitive request failure"));
         AssertProviderAttribute(activity, useLatestSemanticConventions);
 
         var duration = meterListener.GetMeasurements("gen_ai.client.operation.duration").Single();
@@ -713,9 +713,7 @@ public class ResponsesTelemetryTests
         AsyncStreamingResult<StreamingResponseUpdate> result = await client.CreateResponseStreamingAsync(options, cancellation.Token);
         await using var enumerator = ((IAsyncEnumerable<StreamingResponseUpdate>)result).GetAsyncEnumerator();
         var pendingMove = enumerator.MoveNextAsync().AsTask();
-        Task completed = await Task.WhenAny(stream.Started.Task, Task.Delay(TimeSpan.FromSeconds(5)));
-        Assert.That(completed, Is.SameAs(stream.Started.Task));
-        await stream.Started.Task;
+        await stream.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.That(Activity.Current, Is.SameAs(parent));
         cancellation.Cancel();
         await Assert.ThrowsAsync<TaskCanceledException>(async () => await pendingMove);
@@ -976,25 +974,17 @@ public class ResponsesTelemetryTests
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read failure");
 
-#if !NETFRAMEWORK
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read failure");
-#endif
 
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-#if NETFRAMEWORK
-            => Task.FromException<int>(new IOException("sensitive read failure"));
-#else
             => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
-#endif
 
-#if !NETFRAMEWORK
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
 
             throw new IOException("sensitive read failure");
         }
-#endif
     }
 
     private sealed class CancellableReadStream : Stream
@@ -1002,16 +992,6 @@ public class ResponsesTelemetryTests
         public TaskCompletionSource<bool> Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-#if NETFRAMEWORK
-            => ReadLegacyAsync(cancellationToken);
-
-        private async Task<int> ReadLegacyAsync(CancellationToken cancellationToken)
-        {
-            Started.TrySetResult(true);
-            await Task.Delay(Timeout.Infinite, cancellationToken);
-            return 0;
-        }
-#else
             => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
 
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
@@ -1021,7 +1001,6 @@ public class ResponsesTelemetryTests
 
             return 0;
         }
-#endif
 
         public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 
@@ -1160,7 +1139,7 @@ public class ResponsesTelemetryTests
         Assert.That(activity.GetTagItem("gen_ai.system_instructions"), Is.Null);
         Assert.That(activity.GetTagItem("gen_ai.tool.definitions"), Is.Null);
         Assert.That(activity.GetTagItem("user.id"), Is.Null);
-        var telemetryValues = activity.TagObjects.Select(tag => tag.Value?.ToString()).Concat(new[] { activity.StatusDescription });
+        var telemetryValues = activity.TagObjects.Select(tag => tag.Value?.ToString()).Append(activity.StatusDescription);
         Assert.That(telemetryValues, Does.Not.Contain(SensitiveInput));
         Assert.That(telemetryValues, Does.Not.Contain("sensitive output"));
         Assert.That(telemetryValues, Does.Not.Contain("sensitive instructions"));

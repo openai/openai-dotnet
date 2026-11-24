@@ -146,11 +146,7 @@ public class AudioStreamingTests
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-#if NETFRAMEWORK
-            await request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-#else
             await request.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-#endif
 
             HttpResponseMessage response = new(HttpStatusCode.OK)
             {

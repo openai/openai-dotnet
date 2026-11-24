@@ -314,10 +314,8 @@ public class LatestSpanTelemetryTests
         Assert.That(activity.GetTagItem("gen_ai.usage.input_tokens"), Is.EqualTo(0));
         Assert.That(activity.GetTagItem("gen_ai.request.stream"), Is.EqualTo(latest ? true : null));
         var duration = metrics.GetMeasurements("gen_ai.client.operation.duration").Single();
-        duration.tags.TryGetValue("gen_ai.response.model", out var responseModel);
-        duration.tags.TryGetValue("openai.response.system_fingerprint", out var systemFingerprint);
-        Assert.That(responseModel, Is.EqualTo(latest ? "later-model" : null));
-        Assert.That(systemFingerprint, Is.EqualTo(latest ? "fp_test" : null));
+        Assert.That(duration.tags.GetValueOrDefault("gen_ai.response.model"), Is.EqualTo(latest ? "later-model" : null));
+        Assert.That(duration.tags.GetValueOrDefault("openai.response.system_fingerprint"), Is.EqualTo(latest ? "fp_test" : null));
 
         if (latest)
         {
@@ -628,16 +626,12 @@ public class LatestSpanTelemetryTests
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read failure");
 
-#if !NETFRAMEWORK
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read failure");
-#endif
 
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => Task.FromException<int>(new IOException("sensitive read failure"));
 
-#if !NETFRAMEWORK
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => ValueTask.FromException<int>(new IOException("sensitive read failure"));
-#endif
     }
 }

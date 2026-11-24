@@ -104,29 +104,13 @@ internal sealed class TrackingStream : Stream
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        if (IsDisposed)
-        {
-            throw new ObjectDisposedException(nameof(TrackingStream));
-        }
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
         int read = _inner.Read(buffer, offset, count);
         BytesRead += read;
         return read;
     }
 
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-#if NETFRAMEWORK
-    {
-        if (IsDisposed)
-        {
-            throw new ObjectDisposedException(nameof(TrackingStream));
-        }
-        await Task.Yield();
-        cancellationToken.ThrowIfCancellationRequested();
-        int read = await _inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
-        BytesRead += read;
-        return read;
-    }
-#else
         => await ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
@@ -138,7 +122,6 @@ internal sealed class TrackingStream : Stream
         BytesRead += read;
         return read;
     }
-#endif
 
     public override void Flush()
     {
