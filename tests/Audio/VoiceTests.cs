@@ -25,7 +25,7 @@ public partial class VoiceTests : OpenAIRecordedTestBase
 
         // Step 1: Create a voice consent recording
         string consentAudioPath = Path.Combine("Assets", "audio_agent_reference.wav");
-        byte[] consentAudioBytes = await File.ReadAllBytesAsync(consentAudioPath);
+        byte[] consentAudioBytes = await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(consentAudioPath);
 
         using MultiPartFormDataBinaryContent consentContent = new();
         consentContent.Add("Test Consent", "name");
@@ -48,7 +48,7 @@ public partial class VoiceTests : OpenAIRecordedTestBase
 
         // Step 2: Create a custom voice using the consent
         string audioSamplePath = Path.Combine("Assets", "audio_agent_reference.wav");
-        byte[] audioSampleBytes = await File.ReadAllBytesAsync(audioSamplePath);
+        byte[] audioSampleBytes = await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(audioSamplePath);
 
         using MultiPartFormDataBinaryContent voiceContent = new();
         voiceContent.Add("Test Voice", "name");

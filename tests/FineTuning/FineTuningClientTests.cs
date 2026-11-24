@@ -203,19 +203,17 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public void GetJobs()
+    public async Task GetJobs()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
 
         // Arrange
         Console.WriteLine("Getting jobs");
-        var jobs = client.GetJobsAsync().Take(10).ToBlockingEnumerable();
-
         Console.WriteLine("Got jobs");
 
         // Act
         var counter = 0;
-        foreach (var job in jobs)  // Network call will happen here on first iteration.
+        await foreach (var job in client.GetJobsAsync().Take(10))
         {
             Console.WriteLine($"{counter} jobs");
             Console.WriteLine($"Job: {job.JobId}");
@@ -263,11 +261,20 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         job.CancelAndUpdate();
 
         // Act
-        var events = IsAsync
-            ? job.GetEventsAsync(options).ToBlockingEnumerable()
-            : job.GetEvents(options);
-
-        var first = events.FirstOrDefault();
+        FineTuningEvent first;
+        if (IsAsync)
+        {
+            first = null;
+            await foreach (FineTuningEvent item in job.GetEventsAsync(options))
+            {
+                first = item;
+                break;
+            }
+        }
+        else
+        {
+            first = job.GetEvents(options).FirstOrDefault();
+        }
 
         // Assert
         if (first is null)
@@ -287,10 +294,20 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
 
 
         // Act
-        var checkpoints = IsAsync
-            ? job.GetCheckpointsAsync().ToBlockingEnumerable()
-            : job.GetCheckpoints();
-        FineTuningCheckpoint first = checkpoints.FirstOrDefault();
+        FineTuningCheckpoint first;
+        if (IsAsync)
+        {
+            first = null;
+            await foreach (FineTuningCheckpoint checkpoint in job.GetCheckpointsAsync())
+            {
+                first = checkpoint;
+                break;
+            }
+        }
+        else
+        {
+            first = job.GetCheckpoints().FirstOrDefault();
+        }
 
         // Assert
         if (first is null)

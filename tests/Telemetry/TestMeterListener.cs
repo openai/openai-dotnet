@@ -46,7 +46,13 @@ internal class TestMeterListener : IDisposable
     {
         _instruments.TryAdd(instrument.Name, instrument);
 
-        var testMeasurement = new TestMeasurement(measurement, new Dictionary<string, object>(tags.ToArray()));
+        Dictionary<string, object> measurementTags = new();
+        foreach (KeyValuePair<string, object> tag in tags)
+        {
+            measurementTags.Add(tag.Key, tag.Value);
+        }
+
+        var testMeasurement = new TestMeasurement(measurement, measurementTags);
         _measurements.AddOrUpdate(instrument.Name,
             k => new() { testMeasurement },
             (k, l) =>

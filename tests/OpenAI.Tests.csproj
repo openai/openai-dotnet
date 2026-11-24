@@ -4,6 +4,10 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+    <NoWarn>$(NoWarn);SCME0002</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\OpenAI\src\OpenAI.csproj" />
   </ItemGroup>
@@ -24,6 +28,10 @@
   <!-- ASP.NET is used for demonstration in some example snippets -->
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' != 'net462'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Compile Remove="MutualTls\**\*.cs;Snippets\ExampleSnippets.cs;Snippets\ReadMeSnippets.cs;Snippets\MutualTlsReadMeSnippets.cs" />
   </ItemGroup>
 
   <ItemGroup>

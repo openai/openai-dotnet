@@ -313,6 +313,7 @@ public class DecisionsRequestModelTests
         Assert.That(image.PromptCacheBreakpoint, Is.Null);
     }
 
+#if !NETFRAMEWORK
     // Verifies all exported Decisions API types carry the expected experimental diagnostic.
     [Test]
 #pragma warning disable SCME0002
@@ -328,6 +329,7 @@ public class DecisionsRequestModelTests
         }
     }
 #pragma warning restore SCME0002
+#endif
 
     private sealed class ExternalMessage() : DecisionsMessageItem(new DecisionsMessageRole("external"))
     {

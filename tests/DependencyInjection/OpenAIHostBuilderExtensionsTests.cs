@@ -11,7 +11,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Tests.DependencyInjection;
 
+#if !NETFRAMEWORK
 [Experimental("SCME0002")]
+#endif
 [TestFixture]
 [NonParallelizable]
 public class OpenAIHostBuilderExtensionsTests

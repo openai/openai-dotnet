@@ -178,7 +178,11 @@ public class ChatTests : OpenAIRecordedTestBase
                 streamedAudioId ??= update.OutputAudioUpdate.Id;
             }
             transcriptBuilder.Append(update.OutputAudioUpdate?.TranscriptUpdate);
-            outputAudioStream.Write(update.OutputAudioUpdate?.AudioBytesUpdate);
+            if (update.OutputAudioUpdate?.AudioBytesUpdate is { } audioData)
+            {
+                byte[] audioBytes = audioData.ToArray();
+                outputAudioStream.Write(audioBytes, 0, audioBytes.Length);
+            }
         }
 
         Assert.That(streamedAudioId, Has.Length.GreaterThan("audio".Length));
@@ -194,12 +198,12 @@ public class ChatTests : OpenAIRecordedTestBase
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
 
-        string helloWorldAudioPath = Path.Join("Assets", "audio_hello_world.mp3");
+        string helloWorldAudioPath = Path.Combine("Assets", "audio_hello_world.mp3");
         BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));
         ChatMessageContentPart helloWorldAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
             helloWorldAudioBytes,
             ChatInputAudioFormat.Mp3);
-        string whatsTheWeatherAudioPath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        string whatsTheWeatherAudioPath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         BinaryData whatsTheWeatherAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(whatsTheWeatherAudioPath));
         ChatMessageContentPart whatsTheWeatherAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
             whatsTheWeatherAudioBytes,
@@ -268,7 +272,11 @@ public class ChatTests : OpenAIRecordedTestBase
                     streamedExpiresAt = outputAudioUpdate.ExpiresOn;
                 }
                 streamedTranscriptBuilder.Append(outputAudioUpdate.TranscriptUpdate);
-                outputAudioStream.Write(outputAudioUpdate.AudioBytesUpdate);
+                if (outputAudioUpdate.AudioBytesUpdate is { } audioData)
+                {
+                    byte[] audioBytes = audioData.ToArray();
+                    outputAudioStream.Write(audioBytes, 0, audioBytes.Length);
+                }
             }
         }
         Assert.That(streamedCorrelationId, Is.Not.Null.And.Not.Empty);
@@ -732,7 +740,7 @@ public class ChatTests : OpenAIRecordedTestBase
                       "feature_name": "test_feature",
                       "enabled": true
                     }
-                    """.ReplaceLineEndings("\n")),
+                    """.Replace("\r\n", "\n").Replace("\r", "\n")),
                 // One content part
                 ChatOutputPrediction.CreateStaticContentPrediction(
                 [
@@ -741,7 +749,7 @@ public class ChatTests : OpenAIRecordedTestBase
                       "feature_name": "test_feature",
                       "enabled": true
                     }
-                    """.ReplaceLineEndings("\n")),
+                    """.Replace("\r\n", "\n").Replace("\r", "\n")),
                 ]),
                 // Several content parts
                 ChatOutputPrediction.CreateStaticContentPrediction(
@@ -765,7 +773,7 @@ public class ChatTests : OpenAIRecordedTestBase
               "feature_name": "test_feature",
               "enabled": false
             }
-            """.ReplaceLineEndings("\n"));
+            """.Replace("\r\n", "\n").Replace("\r", "\n"));
 
             ChatCompletion completion = await client.CompleteChatAsync([message], options);
 
@@ -950,17 +958,17 @@ public class ChatTests : OpenAIRecordedTestBase
         ];
         ConcurrentBag<string> responses = [];
 
-        await Parallel.ForEachAsync(_messages, async (message, cancellationToken) =>
+        await Task.WhenAll(_messages.Select(async message =>
         {
             List<ChatMessage> messages =
             [
                 new UserChatMessage(message),
             ];
-            ChatCompletion completion = await client.CompleteChatAsync(messages, _options, cancellationToken);
+            ChatCompletion completion = await client.CompleteChatAsync(messages, _options, CancellationToken.None);
             responses.Add(completion.Content[0].Text);
             Console.WriteLine($"Message: {message}, Response: {completion.Content[0].Text}");
             Assert.That(completion.Content[0].Text, Does.StartWith(message.Substring(0, 7)));
-        });
+        }));
         Assert.That(responses, Has.Count.EqualTo(_messages.Count));
     }
 

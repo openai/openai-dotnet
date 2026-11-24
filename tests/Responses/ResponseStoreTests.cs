@@ -133,7 +133,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+        string filePath = Path.Combine("Assets", "files_travis_favorite_food.pdf");
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()

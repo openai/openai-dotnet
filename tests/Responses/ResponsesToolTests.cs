@@ -463,7 +463,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
                 BinaryData toolArguments = mcpCallArgumentsDoneUpdate.ToolArguments;
                 Assert.That(toolArguments, Is.Not.Null);
-                Assert.That(toolArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().ReplaceLineEndings(string.Empty)));
+                Assert.That(toolArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().Replace("\r\n", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty)));
 
                 argumentsBuilder.Clear();
             }
@@ -1169,7 +1169,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             {
                 if (computerCall.Action.Kind == ComputerCallActionKind.Screenshot)
                 {
-                    string screenshotPath = Path.Join("Assets", "images_screenshot_with_save_1024_768.png");
+                    string screenshotPath = Path.Combine("Assets", "images_screenshot_with_save_1024_768.png");
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
@@ -1383,7 +1383,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         string imagePath = Path.Combine("Assets", "images_empty_room.png");
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath), imageMediaType);
+        BinaryData imageBytes = BinaryData.FromBytes(await OpenAI.Tests.Utility.TestFile.ReadAllBytesAsync(imagePath), imageMediaType);
 
         string maskPath = Path.Combine("Assets", "images_empty_room_with_mask.png");
         string maskMediaType = "image/png";

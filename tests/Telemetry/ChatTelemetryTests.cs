@@ -173,7 +173,7 @@ public class ChatTelemetryTests
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
-        var error = new SocketException(42, "test error");
+        var error = new SocketException(42);
 
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
@@ -223,8 +223,8 @@ public class ChatTelemetryTests
 
                 if (t < numberOfSuccessfulResponses)
                 {
-                    var promptTokens = Random.Shared.Next(100);
-                    var completionTokens = Random.Shared.Next(100);
+                    var promptTokens = t * 10 + 1;
+                    var completionTokens = t * 10 + 2;
 
                     var completion = CreateChatCompletion(promptTokens, completionTokens);
                     totalPromptTokens += promptTokens;
