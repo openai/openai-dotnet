@@ -89,6 +89,8 @@ When recording tests, sensitive data such as API keys and other secrets are auto
 
 The library is generated from [TypeSpec](https://typespec.io/) definitions located in the `specification/` folder. The base API definitions are in `specification/base/`, and client-specific customizations are in `specification/client/`.
 
+To deprecate a generated client operation, annotate its TypeSpec declaration with `#deprecated "message"`. The generator uses that message in `[Obsolete]` on the generated client methods. Handwritten overloads in `src/Custom/` must be annotated separately.
+
 ### Regenerating Code
 
 To regenerate the code from the TypeSpec specification:

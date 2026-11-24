@@ -544,6 +544,7 @@ op createImageStreaming(
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("Create image variation")
+#deprecated "This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image."
 @post
 @route("/images/variations")
 @extension(

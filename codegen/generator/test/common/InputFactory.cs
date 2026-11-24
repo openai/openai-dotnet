@@ -590,6 +590,8 @@ namespace OpenAILibraryPlugin.Tests.Common
         /// <param name="requestMediaTypes"></param>
         /// <param name="path"></param>
         /// <param name="decorators"></param>
+        /// <param name="ns"></param>
+        /// <param name="deprecated"></param>
         /// <returns></returns>
         public static InputOperation Operation(
             string name,
@@ -599,13 +601,14 @@ namespace OpenAILibraryPlugin.Tests.Common
             IEnumerable<string>? requestMediaTypes = null,
             string? path = null,
             IReadOnlyList<InputDecoratorInfo>? decorators = null,
-            string? ns = null)
+            string? ns = null,
+            string? deprecated = null)
         {
             var operation = new InputOperation(
                 name,
                 null,
                 $"{name} description",
-                null,
+                deprecated,
                 access,
                 parameters is null ? [] : [.. parameters],
                 responses is null ? [OperationResponse()] : [.. responses],

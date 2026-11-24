@@ -12,6 +12,9 @@
 
 ### Other Changes
 
+- OpenAI.Images:
+  - Marked all `ImageClient` image variation overloads obsolete because the endpoint is retired. To create a variation, use `GenerateImageEdit` or `GenerateImageEditAsync` with a GPT Image model and a prompt.
+
 ### Breaking Changes in Experimental APIs
 
 - OpenAI.Moderations:

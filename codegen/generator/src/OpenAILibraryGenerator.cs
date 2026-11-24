@@ -39,6 +39,7 @@ namespace OpenAILibraryPlugin
             AddVisitor(new VisibilityVisitor());
             // Apply annotations after visitors have finalized public visibility, including promoted discriminator enums.
             AddVisitor(new ExperimentalAttributeVisitor());
+            AddVisitor(new DeprecatedOperationVisitor());
         }
     }
 }
