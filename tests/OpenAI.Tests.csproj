@@ -16,14 +16,14 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" VersionOverride="11.0.0" Condition="'$(TargetFramework)' == 'net10.0'" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="'$(TargetFramework)' != 'net10.0'" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" VersionOverride="11.0.0" Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
     <PackageReference Include="System.Linq.AsyncEnumerable" />
   </ItemGroup>
 
   <!-- ASP.NET is used for demonstration in some example snippets -->
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" Condition="'$(TargetFramework)' != 'net462'" />
   </ItemGroup>
 
   <ItemGroup>
