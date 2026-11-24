@@ -198,12 +198,12 @@ public class ChatTests : OpenAIRecordedTestBase
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
 
-        string helloWorldAudioPath = Path.Combine("Assets", "audio_hello_world.mp3");
+        string helloWorldAudioPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "audio_hello_world.mp3");
         BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));
         ChatMessageContentPart helloWorldAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
             helloWorldAudioBytes,
             ChatInputAudioFormat.Mp3);
-        string whatsTheWeatherAudioPath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        string whatsTheWeatherAudioPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         BinaryData whatsTheWeatherAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(whatsTheWeatherAudioPath));
         ChatMessageContentPart whatsTheWeatherAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
             whatsTheWeatherAudioBytes,

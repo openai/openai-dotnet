@@ -379,7 +379,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
         // transcription data arriving while audio is still being sent.
-        string inputPath = Path.Combine("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        string inputPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
         using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
         _ = sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
 
@@ -502,7 +502,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         await sessionClient.ConfigureTranscriptionSessionAsync(options, CancellationToken);
 
-        string inputPath = Path.Combine("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        string inputPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
         using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
         await sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
 
@@ -687,7 +687,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             cancellationToken: CancellationToken);
 
         // Step 2: Send input audio.
-        string inputAudioFilePath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        string inputAudioFilePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
 
         using TestDelayedFileReadStream delayedStream = new(
             path: inputAudioFilePath,
@@ -824,7 +824,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         // Step 3: Send input audio.
         _ = Task.Run(async () =>
         {
-            string inputAudioFilePath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+            string inputAudioFilePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
 
             if (audioSendType == TestAudioSendType.WithAudioStreamHelper)
             {
@@ -999,7 +999,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
 
 
-        string inputAudioFilePath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        string inputAudioFilePath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using Stream audioStream = File.OpenRead(inputAudioFilePath);
 
         await sessionClient.SendInputAudioAsync(audioStream, CancellationToken);
@@ -1471,7 +1471,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
         // transcription data arriving while audio is still being sent.
-        string inputPath = Path.Combine("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        string inputPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
         using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
         _ = sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
 

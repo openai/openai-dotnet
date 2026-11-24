@@ -1169,7 +1169,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             {
                 if (computerCall.Action.Kind == ComputerCallActionKind.Screenshot)
                 {
-                    string screenshotPath = Path.Combine("Assets", "images_screenshot_with_save_1024_768.png");
+                    string screenshotPath = OpenAI.Tests.Utility.TestFile.JoinPath("Assets", "images_screenshot_with_save_1024_768.png");
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
