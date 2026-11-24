@@ -1,8 +1,10 @@
 using System.ClientModel.Primitives;
 using System.Linq;
 using System.Threading;
+using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
+using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
 using NUnit.Framework;
 using OpenAILibraryPlugin.Tests.Common;
@@ -103,6 +105,40 @@ public class PaginationVisitorTests
             Is.EqualTo(new[] { "pageSizeLimit", "afterId", "beforeId", "options" }));
     }
 
+    [Test]
+    public void VisitMethod_RequiresHasMoreForContinuationToken()
+    {
+        var type = new TestTypeProvider("TestCollectionResult");
+        var pageParameter = new ParameterProvider("page", $"", typeof(TestPage));
+        _ = Snippet.Declare("page", typeof(TestPage), out VariableExpression page);
+        var nextPageAssignment = new AssignmentExpression(
+            Snippet.Declare("nextPage", typeof(string), out VariableExpression nextPage),
+            new MemberExpression(page, nameof(TestPage.LastId))).Terminate();
+        var tokenAvailable = Snippet.Not(
+            nextPage.Invoke("IsNullOrEmpty", nextPage).As<bool>());
+        var ifStatement = new IfStatement(tokenAvailable)
+        {
+            MethodBodyStatement.Empty,
+        };
+        var method = new MethodProvider(
+            new MethodSignature(
+                "GetContinuationToken",
+                $"",
+                MethodSignatureModifiers.Public,
+                typeof(void),
+                $"",
+                [pageParameter]),
+            new MethodBodyStatements([nextPageAssignment, ifStatement]),
+            type);
+
+        new TestPaginationVisitor().Apply(method);
+
+        string body = method.BodyStatements!.ToDisplayString();
+        Assert.That(body, Does.Contain("IsNullOrEmpty(nextPage)"));
+        Assert.That(body, Does.Contain("&&"));
+        Assert.That(body, Does.Contain("page.HasMore"));
+    }
+
     private sealed class TestPaginationVisitor : PaginationVisitor
     {
         public MethodProvider? Apply(MethodProvider method) => base.VisitMethod(method);
@@ -122,4 +158,10 @@ public class PaginationVisitorTests
     }
 
     private sealed class RunStep;
+
+    private sealed class TestPage
+    {
+        public string LastId { get; } = string.Empty;
+        public bool HasMore { get; }
+    }
 }
