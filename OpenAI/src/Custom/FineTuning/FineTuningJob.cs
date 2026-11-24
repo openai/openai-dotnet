@@ -280,7 +280,11 @@ public partial class FineTuningJob : OperationResult
     {
         if (EstimatedFinishAt.HasValue)
         {
-            return EstimatedFinishAt.Value - DateTimeOffset.UtcNow;
+            TimeSpan untilEstimatedFinish = EstimatedFinishAt.Value - DateTimeOffset.UtcNow;
+            if (untilEstimatedFinish > TimeSpan.Zero)
+            {
+                return untilEstimatedFinish;
+            }
         }
         return Status == FineTuningStatus.Running
             ? TimeSpan.FromSeconds(30)

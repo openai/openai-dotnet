@@ -9,6 +9,7 @@
 ### Bugs Fixed
 
 - File content parts in Chat and Responses now accept bare Base64 file data and round-trip data URIs for empty files.
+- Fixed an issue where `FineTuningJob.WaitForCompletion` and `WaitForCompletionAsync`, and `FineTune` and `FineTuneAsync` with `waitUntilCompleted: true`, threw an `ArgumentOutOfRangeException` when a running job passed its estimated finish time. The wait now keeps polling at the regular interval.
 
 ### Other Changes
 
