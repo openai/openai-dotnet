@@ -213,6 +213,33 @@ await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdat
 }
 ```
 
+### When a streaming request is sent and what must stay unchanged
+
+For chat, `CompleteChatStreaming` and `CompleteChatStreamingAsync` return their `CollectionResult<T>` or `AsyncCollectionResult<T>` before any request is sent. The request goes out when you start enumerating. `ChatClient` copies the top-level collections of the `ChatCompletionOptions` (messages, tools, stop sequences, metadata and similar) when you call the method, but it does not copy the objects inside them. The request body is written from those objects when enumeration starts, so a `ChatMessage`, a tool definition or any other nested value that you modify, dispose or reuse in the meantime is sent in its changed state. Not snapshotting the whole request avoids copying large histories or inline content for a result that may never be enumerated.
+
+```csharp
+CollectionResult<StreamingChatCompletionUpdate> updates = client.CompleteChatStreaming(messages, options);
+
+// Safe: the list that was passed in was copied by the call above.
+messages.Add(new UserChatMessage("A message for the next request"));
+
+// Not safe yet: the ChatMessage objects already in the list are read when enumeration starts.
+// Leave them (and the nested values of `options`) unchanged until the loop below ends or you abandon the result.
+
+foreach (StreamingChatCompletionUpdate update in updates)
+{
+    // ...
+}
+
+// After the enumeration has finished or been abandoned, the inputs can be changed or reused.
+```
+
+The streaming methods that return `Task<AsyncStreamingResult<T>>` behave differently: `CreateResponseStreamingAsync`, `GetResponseStreamingAsync`, `CreateRunStreamingAsync` and `GenerateSpeechStreamingAsync` (and the other `...StreamingAsync` methods that return this type) start sending as soon as they are called, and the task completes once the service response is established. Keep your options and request values unchanged until you have awaited that task. Do not use the same options instance for several calls running at the same time. Enumerating the result afterwards only reads the response stream.
+
+Some methods also write to the options instance you pass in rather than to a copy, for example `GenerateSpeechStreamingAsync` (it sets the input, voice, model and stream format on `SpeechGenerationOptions`) and `CreateRunStreamingAsync` (assistant ID and the stream flag on `RunCreationOptions`). Pass a separate options instance to each call if you reuse the same settings.
+
+`ChatMessageContentPart.CreateImagePart` with binary data builds its data URI when the part is created, so changing the original buffer afterwards does not change the request. This is specific to content parts that encode their bytes at creation; do not assume every caller-provided buffer is read before the request is sent.
+
 ## How to use chat completions with tools and function calling
 
 In this example, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want the model to be able to call these functions if it deems it necessary to have this information in order to respond to a user request as part of generating a chat completion. For illustrative purposes, consider the following:
