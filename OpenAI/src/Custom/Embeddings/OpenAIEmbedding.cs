@@ -45,6 +45,15 @@ public partial class OpenAIEmbedding
     {
         Index = index;
         _vector = vector;
+
+        // Match the little-endian base64 representation used by the service.
+        byte[] bytes = new byte[vector.Length * sizeof(float)];
+        ReadOnlySpan<int> bits = MemoryMarshal.Cast<float, int>(vector.Span);
+        for (int i = 0; i < bits.Length; i++)
+        {
+            BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(i * sizeof(float)), bits[i]);
+        }
+        EmbeddingProperty = BinaryData.FromString($"\"{Convert.ToBase64String(bytes)}\"");
     }
 
     // CUSTOM: Added as a public, custom method. For slightly better performance, the embedding is always requested as a base64-encoded
@@ -60,7 +69,7 @@ public partial class OpenAIEmbedding
         ReadOnlySpan<byte> bytes = binaryData.ToMemory().Span;
 
         // Remove quotes around base64 string.
-        if (bytes.Length > 2 && bytes[0] == (byte)'"' && bytes[bytes.Length - 1] == (byte)'"')
+        if (bytes.Length >= 2 && bytes[0] == (byte)'"' && bytes[bytes.Length - 1] == (byte)'"')
         {
             return ConvertFromBase64(bytes);
         }
