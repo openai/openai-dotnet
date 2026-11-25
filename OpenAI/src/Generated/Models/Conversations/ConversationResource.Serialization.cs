@@ -14,7 +14,7 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationResource : IJsonModel<ConversationResource>
     {
-        public ConversationResource() : this(null, null, null, default, default)
+        public ConversationResource() : this(null, "conversation", null, default, default)
         {
         }
 

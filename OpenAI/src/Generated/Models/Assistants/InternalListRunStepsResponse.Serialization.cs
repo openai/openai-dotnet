@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalListRunStepsResponse : IJsonModel<InternalListRunStepsResponse>
     {
-        internal InternalListRunStepsResponse() : this(null, null, null, null, default, null)
+        internal InternalListRunStepsResponse() : this("list", null, null, null, default, null)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Batch
 {
     public partial class BatchJob : IJsonModel<BatchJob>
     {
-        internal BatchJob() : this(null, null, null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
+        internal BatchJob() : this(null, "batch", null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
         {
         }
 

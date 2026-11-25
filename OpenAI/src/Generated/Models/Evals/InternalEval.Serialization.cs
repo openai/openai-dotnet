@@ -13,7 +13,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEval : IJsonModel<InternalEval>
     {
-        internal InternalEval() : this(null, null, null, null, null, default, null, null)
+        internal InternalEval() : this("eval", null, null, null, null, default, null, null)
         {
         }
 

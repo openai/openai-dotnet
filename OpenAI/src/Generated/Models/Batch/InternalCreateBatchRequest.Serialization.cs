@@ -12,7 +12,7 @@ namespace OpenAI.Batch
 {
     internal partial class InternalCreateBatchRequest : IJsonModel<InternalCreateBatchRequest>
     {
-        internal InternalCreateBatchRequest() : this(null, default, null, null, null)
+        internal InternalCreateBatchRequest() : this(null, default, "24h", null, null)
         {
         }
 

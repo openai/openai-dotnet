@@ -14,7 +14,7 @@ namespace OpenAI.Chat
 {
     public partial class StreamingChatCompletionUpdate : IJsonModel<StreamingChatCompletionUpdate>
     {
-        internal StreamingChatCompletionUpdate() : this(null, null, default, null, default, null, null, null, default)
+        internal StreamingChatCompletionUpdate() : this(null, null, default, null, default, null, "chat.completion.chunk", null, default)
         {
         }
 

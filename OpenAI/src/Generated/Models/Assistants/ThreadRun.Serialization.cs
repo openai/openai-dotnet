@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadRun : IJsonModel<ThreadRun>
     {
-        internal ThreadRun() : this(null, null, default, null, null, default, null, default, default, default, default, default, null, null, null, null, null, null, default, default, default, default, null, null, default, null, null, null)
+        internal ThreadRun() : this(null, "thread.run", default, null, null, default, null, default, default, default, default, default, null, null, null, null, null, null, default, default, default, default, null, null, default, null, null, null)
         {
         }
 

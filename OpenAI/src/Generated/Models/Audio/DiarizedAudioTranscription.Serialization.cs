@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>
     {
-        internal DiarizedAudioTranscription() : this(null, default, null, null, null, null)
+        internal DiarizedAudioTranscription() : this("transcribe", default, null, null, null, null)
         {
         }
 

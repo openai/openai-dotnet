@@ -13,7 +13,7 @@ namespace OpenAI.Skills
 {
     internal partial class InternalSkillListResource : IJsonModel<InternalSkillListResource>
     {
-        internal InternalSkillListResource() : this(null, null, null, null, default, null)
+        internal InternalSkillListResource() : this("list", null, null, null, default, null)
         {
         }
 

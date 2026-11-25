@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalTranscriptTextDeltaEvent : IJsonModel<InternalTranscriptTextDeltaEvent>
     {
-        internal InternalTranscriptTextDeltaEvent() : this(null, null, null, null, null)
+        internal InternalTranscriptTextDeltaEvent() : this("transcript.text.delta", null, null, null, null)
         {
         }
 

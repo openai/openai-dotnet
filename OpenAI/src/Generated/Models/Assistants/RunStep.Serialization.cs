@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunStep : IJsonModel<RunStep>
     {
-        internal RunStep() : this(null, null, default, null, null, null, default, default, null, null, default, default, default, default, null, null, null)
+        internal RunStep() : this(null, "thread.run.step", default, null, null, null, default, default, null, null, default, default, default, default, null, null, null)
         {
         }
 

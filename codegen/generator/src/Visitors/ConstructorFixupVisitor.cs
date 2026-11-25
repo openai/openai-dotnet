@@ -62,12 +62,25 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
             List<ValueExpression> initializationExpressions = [];
             foreach (ParameterProvider parameter in serializationConstructor?.Signature.Parameters ?? [])
             {
-                initializationExpressions.Add(
-                    parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null
-                        ? modelProvider.DiscriminatorValueExpression!
-                        : parameter.Type.IsValueType
-                            ? Default
-                            : Null);
+                ValueExpression initializationExpression;
+                if (parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null)
+                {
+                    initializationExpression = modelProvider.DiscriminatorValueExpression;
+                }
+                else if (GetPropertyInitializationExpression(parameter) is { } propertyInitializationExpression)
+                {
+                    initializationExpression = propertyInitializationExpression;
+                }
+                else if (parameter.Type.IsValueType)
+                {
+                    initializationExpression = Default;
+                }
+                else
+                {
+                    initializationExpression = Null;
+                }
+
+                initializationExpressions.Add(initializationExpression);
             }
 
             ConstructorSignature updatedSignature = new(
@@ -81,6 +94,29 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
         }
 
         return type;
+    }
+
+    private static ValueExpression? GetPropertyInitializationExpression(ParameterProvider parameter)
+    {
+        if (parameter.Property?.Body is not AutoPropertyBody autoPropertyBody
+            || autoPropertyBody.InitializationExpression is not ValueExpression initializationExpression)
+        {
+            return null;
+        }
+
+        // Custom code initializers that are not compile-time constants or enum members (for example, `= default` or
+        // `= []`) are read by the generator as string literals of their source text, wrapped in a ScopedApi. A string
+        // literal is therefore only a real value when the parameter is a string.
+        ValueExpression underlyingExpression = initializationExpression is ScopedApi scopedApi
+            ? scopedApi.Original
+            : initializationExpression;
+        if (underlyingExpression is LiteralExpression { Literal: string }
+            && !(parameter.Type.IsFrameworkType && parameter.Type.FrameworkType == typeof(string)))
+        {
+            return null;
+        }
+
+        return initializationExpression;
     }
 
     private static bool TryUpdateConstructorForCollectionInitialization(ConstructorProvider constructor)

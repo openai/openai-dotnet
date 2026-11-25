@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalVectorStoreSearchResultsPage : IJsonModel<InternalVectorStoreSearchResultsPage>
     {
-        internal InternalVectorStoreSearchResultsPage() : this(null, null, null, default, null, null)
+        internal InternalVectorStoreSearchResultsPage() : this("vector_store.search_results.page", null, null, default, null, null)
         {
         }
 

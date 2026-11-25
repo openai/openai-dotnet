@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal ChatCompletionMessageListDatum() : this(null, null, null, null, default, null, null, null, null, default)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, ChatMessageRole.Assistant, null, null, null, null, default)
         {
         }
 

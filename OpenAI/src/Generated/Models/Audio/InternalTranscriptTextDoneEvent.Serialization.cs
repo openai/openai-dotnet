@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalTranscriptTextDoneEvent : IJsonModel<InternalTranscriptTextDoneEvent>
     {
-        internal InternalTranscriptTextDoneEvent() : this(null, null, null, null, null)
+        internal InternalTranscriptTextDoneEvent() : this("transcript.text.done", null, null, null, null)
         {
         }
 

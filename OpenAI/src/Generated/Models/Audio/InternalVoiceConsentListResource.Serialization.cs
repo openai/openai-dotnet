@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalVoiceConsentListResource : IJsonModel<InternalVoiceConsentListResource>
     {
-        internal InternalVoiceConsentListResource() : this(null, null, null, null, default, null)
+        internal InternalVoiceConsentListResource() : this("list", null, null, null, default, null)
         {
         }
 

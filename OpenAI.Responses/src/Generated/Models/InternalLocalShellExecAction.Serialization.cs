@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellExecAction : IJsonModel<InternalLocalShellExecAction>
     {
-        public InternalLocalShellExecAction() : this(null, null, default, null, null, null, default)
+        public InternalLocalShellExecAction() : this("exec", null, default, null, null, null, default)
         {
         }
 

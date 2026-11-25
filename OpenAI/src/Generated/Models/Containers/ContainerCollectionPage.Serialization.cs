@@ -14,7 +14,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerCollectionPage : IJsonModel<ContainerCollectionPage>
     {
-        public ContainerCollectionPage() : this(null, null, null, null, default, default)
+        public ContainerCollectionPage() : this("list", null, null, null, default, default)
         {
         }
 

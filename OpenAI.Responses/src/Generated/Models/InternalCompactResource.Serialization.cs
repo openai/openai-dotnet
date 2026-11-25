@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCompactResource : IJsonModel<InternalCompactResource>
     {
-        public InternalCompactResource() : this(null, null, null, default, null, default)
+        public InternalCompactResource() : this(null, "response.compaction", null, default, null, default)
         {
         }
 

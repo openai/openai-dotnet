@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFile : IJsonModel<VectorStoreFile>
     {
-        internal VectorStoreFile() : this(null, null, default, default, null, default, null, null, null, null)
+        internal VectorStoreFile() : this(null, "vector_store.file", default, default, null, default, null, null, null, null)
         {
         }
 
