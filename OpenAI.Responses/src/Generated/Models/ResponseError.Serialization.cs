@@ -131,7 +131,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("code"u8))
                 {
-                    code = new ResponseErrorCode(prop.Value.GetString());
+                    DeserializeCodeValue(prop, ref code, options);
                     continue;
                 }
                 if (prop.NameEquals("message"u8))

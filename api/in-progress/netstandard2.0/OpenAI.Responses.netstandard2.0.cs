@@ -1604,6 +1604,146 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseStatus left, ResponseStatus right);
         public override readonly string ToString();
     }
+    public class ResponsesWebSocketClient : IDisposable, IAsyncDisposable {
+        public ResponsesWebSocketClient(ApiKeyCredential credential, ResponsesWebSocketClientOptions options);
+        public ResponsesWebSocketClient(ApiKeyCredential credential);
+        public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy, ResponsesWebSocketClientOptions options);
+        public ResponsesWebSocketClient(AuthenticationPolicy authenticationPolicy);
+        public ResponsesWebSocketClient(string apiKey);
+        public Task Completion { get; }
+        public virtual ResponsesWebSocketConnectionState State { get; }
+        public event Func<ResponsesWebSocketErrorEventArgs, Task> ErrorOccurredAsync {
+            add;
+            remove;
+        }
+        public event Func<ResponsesWebSocketMessageReceivedEventArgs, Task> MessageReceivedAsync {
+            add;
+            remove;
+        }
+        public virtual Task CloseAsync(CancellationToken cancellationToken = default);
+        public virtual Task ConnectAsync(CancellationToken cancellationToken = default);
+        protected virtual Task<Net.WebSockets.WebSocket> ConnectWebSocketAsync(CancellationToken cancellationToken);
+        public virtual Task CreateResponseAsync(CreateResponseOptions options, ResponsesWebSocketSendOptions webSocketOptions, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(BinaryData command, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, ResponsesWebSocketSendOptions webSocketOptions, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(string model, string userInputText, ResponsesWebSocketSendOptions webSocketOptions, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task CreateResponseAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual void Dispose();
+        public virtual ValueTask DisposeAsync();
+        public virtual Task SteerResponseAsync(string previousResponseId, IEnumerable<ResponseItem> inputItems, CancellationToken cancellationToken = default);
+        public virtual Task SteerResponseAsync(string previousResponseId, string userInputText, CancellationToken cancellationToken = default);
+    }
+    public class ResponsesWebSocketClientOptions : ResponsesClientOptions {
+        public IDictionary<string, string> Headers { get; }
+        public long MaxBufferedBytes { get; set; }
+        public int MaxBufferedMessages { get; set; }
+        public int MaxMessageBytes { get; set; }
+        public bool ShouldReconnect { get; set; }
+    }
+    public enum ResponsesWebSocketConnectionState {
+        Created = 0,
+        Connecting = 1,
+        Connected = 2,
+        Reconnecting = 3,
+        Closing = 4,
+        Closed = 5,
+        Disposed = 6
+    }
+    public class ResponsesWebSocketErrorEventArgs : EventArgs {
+        protected ResponsesWebSocketErrorEventArgs();
+        public virtual CancellationToken CancellationToken { get; }
+        public virtual Exception Exception { get; }
+        public virtual bool IsTerminal { get; }
+    }
+    public class ResponsesWebSocketMessage {
+        protected ResponsesWebSocketMessage();
+        public virtual ResponseError Error { get; }
+        public virtual ResponsesWebSocketMessageKind Kind { get; }
+        public virtual BinaryData RawData { get; }
+        public virtual int? Status { get; }
+        public virtual string StreamId { get; }
+        public virtual StreamingResponseUpdate Update { get; }
+    }
+    public readonly partial struct ResponsesWebSocketMessageKind : IEquatable<ResponsesWebSocketMessageKind> {
+        public ResponsesWebSocketMessageKind(string value);
+        public static ResponsesWebSocketMessageKind Error { get; }
+        public static ResponsesWebSocketMessageKind ResponseAudioDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseAudioDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseAudioTranscriptDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseAudioTranscriptDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseCodeInterpreterCallCodeDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseCodeInterpreterCallCodeDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseCodeInterpreterCallCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseCodeInterpreterCallInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseCodeInterpreterCallInterpreting { get; }
+        public static ResponsesWebSocketMessageKind ResponseCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseContentPartAdded { get; }
+        public static ResponsesWebSocketMessageKind ResponseContentPartDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseCreated { get; }
+        public static ResponsesWebSocketMessageKind ResponseCustomToolCallInputDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseCustomToolCallInputDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseFailed { get; }
+        public static ResponsesWebSocketMessageKind ResponseFileSearchCallCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseFileSearchCallInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseFileSearchCallSearching { get; }
+        public static ResponsesWebSocketMessageKind ResponseFunctionCallArgumentsDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseFunctionCallArgumentsDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseImageGenerationCallCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseImageGenerationCallGenerating { get; }
+        public static ResponsesWebSocketMessageKind ResponseImageGenerationCallInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseImageGenerationCallPartialImage { get; }
+        public static ResponsesWebSocketMessageKind ResponseIncomplete { get; }
+        public static ResponsesWebSocketMessageKind ResponseInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpCallArgumentsDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpCallArgumentsDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpCallCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpCallFailed { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpCallInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpListToolsCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpListToolsFailed { get; }
+        public static ResponsesWebSocketMessageKind ResponseMcpListToolsInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseOutputItemAdded { get; }
+        public static ResponsesWebSocketMessageKind ResponseOutputItemDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseOutputTextAnnotationAdded { get; }
+        public static ResponsesWebSocketMessageKind ResponseOutputTextDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseOutputTextDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseQueued { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningSummaryPartAdded { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningSummaryPartDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningSummaryTextDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningSummaryTextDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningTextDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseReasoningTextDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseRefusalDelta { get; }
+        public static ResponsesWebSocketMessageKind ResponseRefusalDone { get; }
+        public static ResponsesWebSocketMessageKind ResponseSteerAccepted { get; }
+        public static ResponsesWebSocketMessageKind ResponseSteerFailed { get; }
+        public static ResponsesWebSocketMessageKind ResponseSteerPending { get; }
+        public static ResponsesWebSocketMessageKind ResponseWebSearchCallCompleted { get; }
+        public static ResponsesWebSocketMessageKind ResponseWebSearchCallInProgress { get; }
+        public static ResponsesWebSocketMessageKind ResponseWebSearchCallSearching { get; }
+        public readonly bool Equals(ResponsesWebSocketMessageKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponsesWebSocketMessageKind left, ResponsesWebSocketMessageKind right);
+        public static implicit operator ResponsesWebSocketMessageKind(string value);
+        public static implicit operator ResponsesWebSocketMessageKind?(string value);
+        public static bool operator !=(ResponsesWebSocketMessageKind left, ResponsesWebSocketMessageKind right);
+        public override readonly string ToString();
+    }
+    public class ResponsesWebSocketMessageReceivedEventArgs : EventArgs {
+        protected ResponsesWebSocketMessageReceivedEventArgs();
+        public virtual CancellationToken CancellationToken { get; }
+        public virtual ResponsesWebSocketMessage Message { get; }
+    }
+    public class ResponsesWebSocketSendOptions {
+        public bool? GenerationEnabled { get; set; }
+        public string? StreamId { get; set; }
+    }
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
         public ResponseTextFormatKind Kind { get; set; }
         [Serialization.JsonIgnore]
