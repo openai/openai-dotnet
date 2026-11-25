@@ -6,6 +6,9 @@
 
 ### Features Added
 
+- OpenAI.Realtime:
+  - Removed a redundant copy of serialized WebSocket commands when their existing memory can be sent directly, reducing allocations for audio uploads.
+
 ### Bugs Fixed
 
 - File content parts in Chat and Responses now accept bare Base64 file data and round-trip data URIs for empty files.
