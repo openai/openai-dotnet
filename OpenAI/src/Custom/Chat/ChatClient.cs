@@ -398,7 +398,12 @@ public partial class ChatClient
         if (stream)
         {
             clonedOptions.Stream = true;
-            clonedOptions.StreamOptions = s_includeUsageStreamOptions;
+            clonedOptions.StreamOptions = clonedOptions.IncludeUsageInStreaming switch
+            {
+                true => s_includeUsageStreamOptions,
+                false => new InternalChatCompletionStreamOptions(includeUsage: false, patch: default),
+                null => null,
+            };
         }
         else
         {
