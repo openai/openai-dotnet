@@ -2,15 +2,19 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Conversations
 {
     internal partial class InternalConversationItemCollectionOptions
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public InternalConversationItemCollectionOptions(string conversationId)
         {
@@ -18,8 +22,9 @@ namespace OpenAI.Conversations
             Include = new ChangeTrackingList<IncludedConversationItemProperty>();
         }
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalConversationItemCollectionOptions(string conversationId, int? limit, InternalConversationItemCollectionOrder? order, string after, IList<IncludedConversationItemProperty> include, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalConversationItemCollectionOptions(string conversationId, int? limit, InternalConversationItemCollectionOrder? order, string after, IList<IncludedConversationItemProperty> include, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             ConversationId = conversationId;
@@ -27,9 +32,15 @@ namespace OpenAI.Conversations
             Order = order;
             After = after;
             Include = include ?? new ChangeTrackingList<IncludedConversationItemProperty>();
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string ConversationId { get; set; }
 
@@ -42,11 +53,5 @@ namespace OpenAI.Conversations
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<IncludedConversationItemProperty> Include { get; }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

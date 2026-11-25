@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +13,7 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalConversationItemCollectionOptions : IJsonModel<InternalConversationItemCollectionOptions>
     {
-        public InternalConversationItemCollectionOptions() : this(null, default, default, null, null, null)
+        public InternalConversationItemCollectionOptions() : this(null, default, default, null, null, default)
         {
         }
 
@@ -24,7 +25,7 @@ namespace OpenAI.Conversations
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalConversationItemCollectionOptions(document.RootElement, options);
+                        return DeserializeInternalConversationItemCollectionOptions(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalConversationItemCollectionOptions)} does not support reading '{options.Format}' format.");
@@ -51,6 +52,14 @@ namespace OpenAI.Conversations
 
         void IJsonModel<InternalConversationItemCollectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -63,26 +72,10 @@ namespace OpenAI.Conversations
             {
                 throw new FormatException($"The model {nameof(InternalConversationItemCollectionOptions)} does not support writing '{format}' format.");
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalConversationItemCollectionOptions IJsonModel<InternalConversationItemCollectionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -95,10 +88,10 @@ namespace OpenAI.Conversations
                 throw new FormatException($"The model {nameof(InternalConversationItemCollectionOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalConversationItemCollectionOptions(document.RootElement, options);
+            return DeserializeInternalConversationItemCollectionOptions(document.RootElement, null, options);
         }
 
-        internal static InternalConversationItemCollectionOptions DeserializeInternalConversationItemCollectionOptions(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalConversationItemCollectionOptions DeserializeInternalConversationItemCollectionOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -109,11 +102,12 @@ namespace OpenAI.Conversations
             InternalConversationItemCollectionOrder? order = default;
             string after = default;
             IList<IncludedConversationItemProperty> include = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalConversationItemCollectionOptions(
                 conversationId,
@@ -121,7 +115,7 @@ namespace OpenAI.Conversations
                 order,
                 after,
                 include ?? new ChangeTrackingList<IncludedConversationItemProperty>(),
-                additionalBinaryDataProperties);
+                patch);
         }
     }
 }
