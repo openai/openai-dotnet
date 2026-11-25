@@ -7,23 +7,23 @@ using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 using OpenAI.Responses;
 
-namespace OpenAI;
+namespace OpenAI.Conversations;
 
 /** List all items for a conversation with the given ID. */
+@tag("Conversations")
 @summary("List items")
 @get
 @route("/conversations/{conversation_id}/items")
-@tag("Conversations")
 @list
 op listConversationItems(
   ...ConversationItemCollectionOptions,
 ): ConversationItemCollection;
 
 /** Create items in a conversation with the given ID. */
+@tag("Conversations")
 @summary("Create items")
 @post
 @route("/conversations/{conversation_id}/items")
-@tag("Conversations")
 op createConversationItems(
   /** The ID of the conversation to add the item to. */
   @path
@@ -40,10 +40,10 @@ op createConversationItems(
 ): ConversationItemCollection;
 
 /** Delete an item from a conversation with the given IDs. */
+@tag("Conversations")
 @summary("Delete an item")
 @delete
 @route("/conversations/{conversation_id}/items/{item_id}")
-@tag("Conversations")
 op deleteConversationItem(
   /** The ID of the conversation that contains the item. */
   @path
@@ -55,10 +55,10 @@ op deleteConversationItem(
 ): ConversationResource;
 
 /** Get a single item from a conversation with the given IDs. */
+@tag("Conversations")
 @summary("Retrieve an item")
 @get
 @route("/conversations/{conversation_id}/items/{item_id}")
-@tag("Conversations")
 op getConversationItem(
   /** The ID of the conversation that contains the item. */
   @path
@@ -76,20 +76,20 @@ op getConversationItem(
 ): ItemResource;
 
 /** Create a conversation. */
+@tag("Conversations")
 @summary("Create a conversation")
 @post
 @route("/conversations")
-@tag("Conversations")
 op createConversation(
   @body
   options: CreateConversationBody,
 ): ConversationResource;
 
 /** Delete a conversation. Items in the conversation will not be deleted. */
+@tag("Conversations")
 @summary("Delete a conversation")
 @delete
 @route("/conversations/{conversation_id}")
-@tag("Conversations")
 op deleteConversation(
   /** The ID of the conversation to delete. */
   @path
@@ -97,10 +97,10 @@ op deleteConversation(
 ): DeletedConversationResource;
 
 /** Get a conversation */
+@tag("Conversations")
 @summary("Retrieve a conversation")
 @get
 @route("/conversations/{conversation_id}")
-@tag("Conversations")
 op getConversation(
   /** The ID of the conversation to retrieve. */
   @path
@@ -108,10 +108,10 @@ op getConversation(
 ): ConversationResource;
 
 /** Update a conversation */
+@tag("Conversations")
 @summary("Update a conversation")
 @post
 @route("/conversations/{conversation_id}")
-@tag("Conversations")
 op updateConversation(
   /** The ID of the conversation to update. */
   @path

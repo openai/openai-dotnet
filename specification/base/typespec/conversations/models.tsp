@@ -8,7 +8,7 @@ using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 using OpenAI.Responses;
 
-namespace OpenAI;
+namespace OpenAI.Conversations;
 
 model CreateConversationBody {
   metadata?: Record<string>;
