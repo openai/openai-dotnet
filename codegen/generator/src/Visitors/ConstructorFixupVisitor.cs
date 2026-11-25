@@ -62,16 +62,25 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
             List<ValueExpression> initializationExpressions = [];
             foreach (ParameterProvider parameter in serializationConstructor?.Signature.Parameters ?? [])
             {
-                ValueExpression? propertyInitializationExpression = GetPropertyInitializationExpression(parameter);
+                ValueExpression initializationExpression;
+                if (parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null)
+                {
+                    initializationExpression = modelProvider.DiscriminatorValueExpression;
+                }
+                else if (GetPropertyInitializationExpression(parameter) is { } propertyInitializationExpression)
+                {
+                    initializationExpression = propertyInitializationExpression;
+                }
+                else if (parameter.Type.IsValueType)
+                {
+                    initializationExpression = Default;
+                }
+                else
+                {
+                    initializationExpression = Null;
+                }
 
-                initializationExpressions.Add(
-                    parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null
-                        ? modelProvider.DiscriminatorValueExpression!
-                        : propertyInitializationExpression is not null
-                            ? propertyInitializationExpression
-                        : parameter.Type.IsValueType
-                            ? Default
-                            : Null);
+                initializationExpressions.Add(initializationExpression);
             }
 
             ConstructorSignature updatedSignature = new(
