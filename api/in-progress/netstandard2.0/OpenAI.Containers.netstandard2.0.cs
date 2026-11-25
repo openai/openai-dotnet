@@ -77,6 +77,9 @@ namespace OpenAI.Containers {
         public string Name { get; set; }
         public ContainerCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
     }
     public readonly partial struct ContainerCollectionOrder : IEquatable<ContainerCollectionOrder> {
         public ContainerCollectionOrder(string value);
@@ -159,6 +162,9 @@ namespace OpenAI.Containers {
         public string ContainerId { get; set; }
         public ContainerFileCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
     }
     public readonly partial struct ContainerFileCollectionOrder : IEquatable<ContainerFileCollectionOrder> {
         public ContainerFileCollectionOrder(string value);
