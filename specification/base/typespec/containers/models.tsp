@@ -3,7 +3,7 @@ import "@azure-tools/typespec-client-generator-core";
 using Http;
 using Azure.ClientGenerator.Core;
 
-namespace OpenAI;
+namespace OpenAI.Containers;
 
 model ContainersError {
   code: string | null;

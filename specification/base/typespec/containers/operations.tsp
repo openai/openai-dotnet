@@ -6,95 +6,102 @@ import "./models.tsp";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Containers;
 
-@route("/containers")
 @tag("Containers")
-interface Containers {
-  @post
-  @operationId("CreateContainer")
-  createContainer(
-    @body
-    options: ContainerCreationOptions,
-  ): ContainerResource | ContainersErrorResponse;
+@operationId("CreateContainer")
+@post
+@route("/containers")
+op createContainer(
+  @body
+  options: ContainerCreationOptions,
+): ContainerResource | ContainersErrorResponse;
 
-  @get
-  @route("{container_id}")
-  @operationId("RetrieveContainer")
-  retrieveContainer(
-    @path
-    container_id: string,
-  ): ContainerResource | ContainersErrorResponse;
+@tag("Containers")
+@operationId("RetrieveContainer")
+@get
+@route("/containers/{container_id}")
+op retrieveContainer(
+  @path
+  container_id: string,
+): ContainerResource | ContainersErrorResponse;
 
-  @delete
-  @route("{container_id}")
-  @operationId("DeleteContainer")
-  deleteContainer(
-    @path
-    container_id: string,
-  ): ContainerDeletionResult | ContainersErrorResponse;
+@tag("Containers")
+@operationId("DeleteContainer")
+@delete
+@route("/containers/{container_id}")
+op deleteContainer(
+  @path
+  container_id: string,
+): ContainerDeletionResult | ContainersErrorResponse;
 
-  @get
-  @operationId("ListContainers")
-  @list
-  listContainers(
-    ...ContainerCollectionOptions,
-  ): ContainerCollection | ContainersErrorResponse;
+@tag("Containers")
+@operationId("ListContainers")
+@get
+@route("/containers")
+@list
+op listContainers(
+  ...ContainerCollectionOptions,
+): ContainerCollection | ContainersErrorResponse;
 
-  @post
-  @route("{container_id}/files")
-  @operationId("CreateContainerFile")
-  createContainerFile(
-    @path
-    container_id: string,
+@tag("Containers")
+@operationId("CreateContainerFile")
+@post
+@route("/containers/{container_id}/files")
+op createContainerFile(
+  @path
+  container_id: string,
 
-    @header
-    contentType: "multipart/form-data",
+  @header
+  contentType: "multipart/form-data",
 
-    @multipartBody
-    options: ContainerFileUploadOptions,
-  ): ContainerFileResource | ContainersErrorResponse;
+  @multipartBody
+  options: ContainerFileUploadOptions,
+): ContainerFileResource | ContainersErrorResponse;
 
-  @get
-  @route("{container_id}/files/{file_id}")
-  @operationId("RetrieveContainerFile")
-  retrieveContainerFile(
-    @path
-    container_id: string,
+@tag("Containers")
+@operationId("RetrieveContainerFile")
+@get
+@route("/containers/{container_id}/files/{file_id}")
+op retrieveContainerFile(
+  @path
+  container_id: string,
 
-    @path
-    file_id: string,
-  ): ContainerFileResource | ContainersErrorResponse;
+  @path
+  file_id: string,
+): ContainerFileResource | ContainersErrorResponse;
 
-  @delete
-  @route("{container_id}/files/{file_id}")
-  @operationId("DeleteContainerFile")
-  deleteContainerFile(
-    @path
-    container_id: string,
+@tag("Containers")
+@operationId("DeleteContainerFile")
+@delete
+@route("/containers/{container_id}/files/{file_id}")
+op deleteContainerFile(
+  @path
+  container_id: string,
 
-    @path
-    file_id: string,
-  ): ContainerFileDeletionResult | ContainersErrorResponse;
+  @path
+  file_id: string,
+): ContainerFileDeletionResult | ContainersErrorResponse;
 
-  @get
-  @route("{container_id}/files")
-  @operationId("ListContainerFiles")
-  @list
-  listContainerFiles(
-    ...ContainerFileCollectionOptions,
-  ): ContainerFileCollection | ContainersErrorResponse;
+@tag("Containers")
+@operationId("ListContainerFiles")
+@get
+@route("/containers/{container_id}/files")
+@list
+op listContainerFiles(
+  ...ContainerFileCollectionOptions,
+): ContainerFileCollection | ContainersErrorResponse;
 
-  @get
-  @route("{container_id}/files/{file_id}/content")
-  @operationId("RetrieveContainerFileContent")
-  retrieveContainerFileContent(
-    @path
-    container_id: string,
+@tag("Containers")
+@operationId("RetrieveContainerFileContent")
+@get
+@route("/containers/{container_id}/files/{file_id}/content")
+op retrieveContainerFileContent(
+  @path
+  container_id: string,
 
-    @path
-    file_id: string,
-  ): {
-    @encode("base64") @body file_content: bytes;
-  } | ContainersErrorResponse;
-}
+  @path
+  file_id: string,
+): {
+  @encode("base64") @body file_content: bytes;
+} | ContainersErrorResponse;
