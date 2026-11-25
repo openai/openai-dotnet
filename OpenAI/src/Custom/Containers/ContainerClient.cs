@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Containers;
 
-[CodeGenType("Containers")]
+[CodeGenType("ContainersClient")]
 [CodeGenSuppress(nameof(ContainerClient), typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress(nameof(GetContainers), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress(nameof(GetContainers), typeof(int?), typeof(ContainerCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
