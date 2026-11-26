@@ -7,7 +7,7 @@ using TypeSpec.OpenAPI;
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-namespace OpenAI;
+namespace OpenAI.Realtime;
 
 model RealtimeError_GA {
   code: string | null;
