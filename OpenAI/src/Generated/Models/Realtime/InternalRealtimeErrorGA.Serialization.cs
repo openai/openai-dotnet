@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalRealtimeErrorGA(document.RootElement, options);
+                        return DeserializeInternalRealtimeErrorGA(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeErrorGA)} does not support reading '{options.Format}' format.");
@@ -51,6 +51,14 @@ namespace OpenAI.Realtime
 
         void IJsonModel<InternalRealtimeErrorGA>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -63,60 +71,38 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeErrorGA)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Code) && !Patch.Contains("$.code"u8))
             {
-                if (Optional.IsDefined(Code))
-                {
-                    writer.WritePropertyName("code"u8);
-                    writer.WriteStringValue(Code);
-                }
-                else
-                {
-                    writer.WriteNull("code"u8);
-                }
+                writer.WritePropertyName("code"u8);
+                writer.WriteStringValue(Code);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
+            else if (!Patch.Contains("$.code"u8))
+            {
+                writer.WriteNull("code"u8);
+            }
+            if (!Patch.Contains("$.message"u8))
             {
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
+            if (Optional.IsDefined(Param) && !Patch.Contains("$.param"u8))
             {
-                if (Optional.IsDefined(Param))
-                {
-                    writer.WritePropertyName("param"u8);
-                    writer.WriteStringValue(Param);
-                }
-                else
-                {
-                    writer.WriteNull("param"u8);
-                }
+                writer.WritePropertyName("param"u8);
+                writer.WriteStringValue(Param);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            else if (!Patch.Contains("$.param"u8))
+            {
+                writer.WriteNull("param"u8);
+            }
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalRealtimeErrorGA IJsonModel<InternalRealtimeErrorGA>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -129,10 +115,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(InternalRealtimeErrorGA)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalRealtimeErrorGA(document.RootElement, options);
+            return DeserializeInternalRealtimeErrorGA(document.RootElement, null, options);
         }
 
-        internal static InternalRealtimeErrorGA DeserializeInternalRealtimeErrorGA(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalRealtimeErrorGA DeserializeInternalRealtimeErrorGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -142,7 +128,9 @@ namespace OpenAI.Realtime
             string message = default;
             string @param = default;
             string kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("code"u8))
@@ -175,10 +163,9 @@ namespace OpenAI.Realtime
                     kind = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalRealtimeErrorGA(code, message, @param, kind, additionalBinaryDataProperties);
+            return new InternalRealtimeErrorGA(code, message, @param, kind, patch);
         }
     }
 }

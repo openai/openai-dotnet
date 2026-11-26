@@ -4,7 +4,7 @@ import "./models_GA.tsp";
 
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Realtime;
 
 model RealtimeResponseCreateParamsAudio_GA {
   output?: RealtimeResponseCreateParamsAudioOutput_GA;

@@ -6,7 +6,7 @@ import "./models_GA.tsp";
 using Http;
 using TypeSpec.OpenAPI;
 
-namespace OpenAI;
+namespace OpenAI.Realtime;
 
 union RealtimeServerEventType_GA {
   string,
