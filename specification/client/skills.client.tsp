@@ -1,8 +1,13 @@
 import "../base/typespec/skills/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
-using OpenAI;
 using Azure.ClientGenerator.Core;
+
+namespace OpenAI.Skills;
+
+@@clientName(OpenAI.Skills, "SkillsClient", "csharp");
+@@clientNamespace(OpenAI.Skills, "OpenAI.Skills", "csharp");
+@@dynamicModel(OpenAI.Skills, "csharp");
 
 @@alternateType(ListSkills::parameters.limit, int32);
 @@alternateType(ListSkillVersions::parameters.limit, int32);
@@ -34,16 +39,16 @@ using Azure.ClientGenerator.Core;
 @@scope(CreateSkillVersionJson, "!csharp");
 
 // Do not generate convenience methods - protocol only
-@@convenientAPI(ListSkills, false);
-@@convenientAPI(CreateSkillMultipart, false);
-@@convenientAPI(CreateSkillJson, false);
-@@convenientAPI(DeleteSkill, false);
-@@convenientAPI(GetSkill, false);
-@@convenientAPI(UpdateSkillDefaultVersion, false);
-@@convenientAPI(GetSkillContent, false);
-@@convenientAPI(ListSkillVersions, false);
-@@convenientAPI(CreateSkillVersionMultipart, false);
-@@convenientAPI(CreateSkillVersionJson, false);
-@@convenientAPI(DeleteSkillVersion, false);
-@@convenientAPI(GetSkillVersion, false);
-@@convenientAPI(GetSkillVersionContent, false);
+@@convenientAPI(ListSkills, false, "csharp");
+@@convenientAPI(CreateSkillMultipart, false, "csharp");
+@@convenientAPI(CreateSkillJson, false, "csharp");
+@@convenientAPI(DeleteSkill, false, "csharp");
+@@convenientAPI(GetSkill, false, "csharp");
+@@convenientAPI(UpdateSkillDefaultVersion, false, "csharp");
+@@convenientAPI(GetSkillContent, false, "csharp");
+@@convenientAPI(ListSkillVersions, false, "csharp");
+@@convenientAPI(CreateSkillVersionMultipart, false, "csharp");
+@@convenientAPI(CreateSkillVersionJson, false, "csharp");
+@@convenientAPI(DeleteSkillVersion, false, "csharp");
+@@convenientAPI(GetSkillVersion, false, "csharp");
+@@convenientAPI(GetSkillVersionContent, false, "csharp");

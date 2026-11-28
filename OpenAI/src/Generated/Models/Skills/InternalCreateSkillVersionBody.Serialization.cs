@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,7 +24,7 @@ namespace OpenAI.Skills
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalCreateSkillVersionBody(document.RootElement, options);
+                        return DeserializeInternalCreateSkillVersionBody(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateSkillVersionBody)} does not support reading '{options.Format}' format.");
@@ -51,6 +51,14 @@ namespace OpenAI.Skills
 
         void IJsonModel<InternalCreateSkillVersionBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -63,7 +71,8 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalCreateSkillVersionBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("files") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.files"u8))
             {
                 writer.WritePropertyName("files"u8);
 #if NET6_0_OR_GREATER
@@ -75,31 +84,14 @@ namespace OpenAI.Skills
                 }
 #endif
             }
-            if (Optional.IsDefined(Default) && _additionalBinaryDataProperties?.ContainsKey("default") != true)
+            if (Optional.IsDefined(Default) && !Patch.Contains("$.default"u8))
             {
                 writer.WritePropertyName("default"u8);
                 writer.WriteBooleanValue(Default.Value);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalCreateSkillVersionBody IJsonModel<InternalCreateSkillVersionBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -112,10 +104,10 @@ namespace OpenAI.Skills
                 throw new FormatException($"The model {nameof(InternalCreateSkillVersionBody)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateSkillVersionBody(document.RootElement, options);
+            return DeserializeInternalCreateSkillVersionBody(document.RootElement, null, options);
         }
 
-        internal static InternalCreateSkillVersionBody DeserializeInternalCreateSkillVersionBody(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalCreateSkillVersionBody DeserializeInternalCreateSkillVersionBody(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -123,7 +115,9 @@ namespace OpenAI.Skills
             }
             BinaryData files = default;
             bool? @default = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("files"u8))
@@ -140,10 +134,9 @@ namespace OpenAI.Skills
                     @default = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateSkillVersionBody(files, @default, additionalBinaryDataProperties);
+            return new InternalCreateSkillVersionBody(files, @default, patch);
         }
     }
 }
