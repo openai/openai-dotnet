@@ -3,34 +3,39 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Skills
 {
     internal partial class InternalCreateSkillVersionBody
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalCreateSkillVersionBody(BinaryData files)
         {
             Files = files;
         }
 
-        internal InternalCreateSkillVersionBody(BinaryData files, bool? @default, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateSkillVersionBody(BinaryData files, bool? @default, in JsonPatch patch)
         {
             Files = files;
             Default = @default;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public BinaryData Files { get; }
 
         public bool? Default { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

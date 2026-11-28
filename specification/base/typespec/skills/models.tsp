@@ -3,7 +3,8 @@ import "@typespec/http";
 
 using TypeSpec.OpenAPI;
 using TypeSpec.Http;
-namespace OpenAI;
+
+namespace OpenAI.Skills;
 
 model SkillsError {
   code: string | null;

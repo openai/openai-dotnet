@@ -3,13 +3,17 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Skills
 {
     internal partial class InternalSkillResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalSkillResource(string id, string name, string description, DateTimeOffset createdOn, string defaultVersion, string latestVersion)
         {
@@ -21,7 +25,8 @@ namespace OpenAI.Skills
             LatestVersion = latestVersion;
         }
 
-        internal InternalSkillResource(string id, string @object, string name, string description, DateTimeOffset createdOn, string defaultVersion, string latestVersion, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalSkillResource(string id, string @object, string name, string description, DateTimeOffset createdOn, string defaultVersion, string latestVersion, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
@@ -30,8 +35,14 @@ namespace OpenAI.Skills
             CreatedOn = createdOn;
             DefaultVersion = defaultVersion;
             LatestVersion = latestVersion;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
@@ -46,11 +57,5 @@ namespace OpenAI.Skills
         public string DefaultVersion { get; }
 
         public string LatestVersion { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

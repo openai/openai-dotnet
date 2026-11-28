@@ -3,13 +3,17 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Skills
 {
     internal partial class InternalSkillVersionResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalSkillVersionResource(string id, string skillId, string version, DateTimeOffset createdOn, string name, string description)
         {
@@ -21,7 +25,8 @@ namespace OpenAI.Skills
             Description = description;
         }
 
-        internal InternalSkillVersionResource(string @object, string id, string skillId, string version, DateTimeOffset createdOn, string name, string description, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalSkillVersionResource(string @object, string id, string skillId, string version, DateTimeOffset createdOn, string name, string description, in JsonPatch patch)
         {
             Object = @object;
             Id = id;
@@ -30,8 +35,14 @@ namespace OpenAI.Skills
             CreatedOn = createdOn;
             Name = name;
             Description = description;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         internal string Object { get; } = "skill.version";
 
@@ -46,11 +57,5 @@ namespace OpenAI.Skills
         public string Name { get; }
 
         public string Description { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }
