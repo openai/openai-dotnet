@@ -30,6 +30,7 @@ public partial class VectorStoreExamples
 
         store = await PollVectorStoreAsync(client, store.Id);
 
+        Assert.That(store.Status, Is.EqualTo(VectorStoreStatus.Completed));
         Console.WriteLine($"Vector store {store.Id} is ready (status: {store.Status})");
     }
 
